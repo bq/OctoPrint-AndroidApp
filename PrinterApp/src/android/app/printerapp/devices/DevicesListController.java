@@ -12,6 +12,7 @@ import android.app.printerapp.model.ModelPrinter;
  */
 public class DevicesListController {
 	
+	//List for the printers found
 	private ArrayList<ModelPrinter> mList;
 	
 	public DevicesListController(){
@@ -30,5 +31,5 @@ public class DevicesListController {
 	public ArrayList<ModelPrinter> getList(){
 		return mList;
 	}
-
+	
 }

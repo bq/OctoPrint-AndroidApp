@@ -1,11 +1,12 @@
 package android.app.printerapp.devices;
 
 import java.util.List;
+import java.util.Scanner;
 
 import android.app.printerapp.R;
+import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +43,54 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.list_column_1_text);
 		tag.setText(m.getName());
-		Log.i("OUT","EYEYY" + m.getName());
+		
+		ModelJob job = m.getJob();
+		
+		
+		//Job references, if there's no job, don't update anything
+		//TODO: Remove null option
+		if (job!=null){
+
+			TextView file = (TextView) v.findViewById(R.id.list_column_2);
+			file.setText(job.getFilename());
+			
+			TextView status = (TextView) v.findViewById(R.id.list_column_3);	
+			status.setText(String.valueOf(calculatePercentage(job.getPrinted(), job.getSize())
+					+ "% (" + job.getPrintTimeLeft() + " left)"));
+			
+		}
 		
 		
 		return v;
+	}
+	
+	
+	//Transform item size / current to a percentage to show	on the list view
+	public static int calculatePercentage(String c, String t){
+		
+		int result = 0;
+		
+		
+		
+		if ((c!="null") && (t!="null")){
+			
+			if (c.substring(c.length()-1).equals("B")){
+				Scanner sc = new Scanner(c);
+				sc.useDelimiter("[^0-9]+");			
+				int current = sc.nextInt();
+				sc.close();
+				
+				Scanner st = new Scanner(t);
+				st.useDelimiter("[^0-9]+");			
+				int total = st.nextInt();
+				st.close();
+				
+				result = ( current * 100 ) / total;
+			}
+			
+		}
+				
+		return result;
 	}
 
 }

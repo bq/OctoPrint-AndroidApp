@@ -46,6 +46,8 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		tag.setText(m.getName());
 		
+		v.findViewById(R.id.grid_warning_icon).setVisibility(1);
+		
 		
 		return v;
 	}

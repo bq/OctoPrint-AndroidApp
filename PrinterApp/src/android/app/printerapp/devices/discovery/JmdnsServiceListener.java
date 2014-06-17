@@ -112,9 +112,6 @@ public class JmdnsServiceListener implements ServiceListener{
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 			 mContext.listHandler(new ModelPrinter(service));
 		
-		
-		
-		
 		}
 		
 		//This method was obtained externally, basically it gets our IP Address, or return Android localhost by default.
