@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -25,10 +24,13 @@ import android.widget.TabHost.OnTabChangeListener;
  */
 public class DevicesFragment extends Fragment{
 	
-	DevicesListController mListController;
-	DevicesGridAdapter mGridAdapter;
-	DevicesListAdapter mListAdapter;
 	
+	//Controllers and adapters
+	private DevicesListController mListController;
+	//private DevicesGridAdapter mGridAdapter;
+	private DevicesListAdapter mListAdapter;
+	
+	private DevicesLayoutAdapter mLayoutAdapter;
 	
 	//Empty constructor
 	public DevicesFragment(){}
@@ -84,21 +86,44 @@ public class DevicesFragment extends Fragment{
 			//Set tab host for the view
 			setTabHost(rootView);
 			
+			//List controller
 			mListController = new DevicesListController();
+			
+			
+			//------------------------------- View references -----------------//
+			
 						
-			GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
+			/*GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
 					R.layout.grid_element, mListController.getList());
 	 
-			g.setAdapter(mGridAdapter);
+			g.setAdapter(mGridAdapter);*/
 			
+			
+			
+			
+			
+			/*******************************************************************/
+			
+			//Reference to the first tab
+			ViewGroup mViewGroup = (ViewGroup) rootView.findViewById(R.id.devices_grid);
+			
+			mLayoutAdapter = new DevicesLayoutAdapter(getActivity(), mViewGroup);
+			
+			
+			//Reference to the second tab, handled by an adapter
 			mListAdapter = new DevicesListAdapter(getActivity(), 
 					R.layout.list_element, mListController.getList());
 			
 			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
 			l.setAdapter(mListAdapter);
 			
+			
+			/*******************************************************************/
+			
+			
+			//Custom service listener
 			new JmdnsServiceListener(this);
 
 			
@@ -160,6 +185,7 @@ public class DevicesFragment extends Fragment{
 	
 	/**
 	 * LIST HANDLER
+	 * TODO: Eventually this will add elements to a Database
 	 */
 	
 	public void listHandler(final ModelPrinter m){
@@ -170,14 +196,20 @@ public class DevicesFragment extends Fragment{
 			public void run() {
 				
 				mListController.addToList(m);
+				
+				/*************************************************************
+				 * VIEW HANDLER
+				 *************************************************************/
 
-				mGridAdapter.notifyDataSetChanged();
+				//mGridAdapter.notifyDataSetChanged();
+				mLayoutAdapter.addToLayout(m);
 				mListAdapter.notifyDataSetChanged();
 				
 			}
 		});
-		
-		
+
 		
 	}
+	
+	
 }

@@ -15,6 +15,7 @@
             android:id="@+id/list_column_1_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:src="@drawable/working_icon" />
 
@@ -31,6 +32,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:text="File" />
 
     <TextView
@@ -38,6 +40,7 @@
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:text="Status" />
 
     <TextView
@@ -45,6 +48,7 @@
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:text="User" />
     
     <LinearLayout
@@ -52,6 +56,7 @@
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:orientation="horizontal" >
 
         <ImageView
@@ -73,8 +78,9 @@
         android:id="@+id/list_column_5"
         android:layout_width="0dip"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
+        android:layout_weight="1"
         android:src="@drawable/ic_tab_pieces" />
 
 </LinearLayout>
