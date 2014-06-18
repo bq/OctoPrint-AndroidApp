@@ -3,8 +3,11 @@ package android.app.printerapp.devices;
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +27,32 @@ public class DevicesLayoutAdapter {
 	
 	private ViewGroup mViewGroup;
 	private Context mContext;
+	private boolean mActionMode;
 	
 	//Need reference to the view (to update) and context (inflate)
 	public DevicesLayoutAdapter(Context context, ViewGroup v){
 		
 		mViewGroup = v;
 		mContext = context;
+		mActionMode = false;
+		
+		
+		//Inflate the view
+				LayoutInflater i = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View vw = i.inflate(R.layout.grid_element, null, false);
+				
+				//Printer tag reference
+				TextView tag = (TextView) vw.findViewById(R.id.grid_element_tag);
+				tag.setText("BASTARDO D:<");
+				MyCustomTouchListener listener = new MyCustomTouchListener(mViewGroup);
+				
+				vw.setOnTouchListener(listener);
+				vw.setOnLongClickListener(listener);
+				
+				
+				mViewGroup.addView(vw);
+				
+				mViewGroup.invalidate();
 		
 	}
 	
@@ -40,7 +63,7 @@ public class DevicesLayoutAdapter {
 		//Inflate the view
 		LayoutInflater i = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = i.inflate(R.layout.grid_element, null, false);
-		
+
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		tag.setText(m.getName());
@@ -55,6 +78,51 @@ public class DevicesLayoutAdapter {
 		
 		mViewGroup.invalidate();
 	}
+	
+	/**
+	 * Callback for the  contextual menu as described @ Android Developers
+	 */
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+		
+	    // Called when the action mode is created; startActionMode() was called
+	    @Override
+	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	        // Inflate a menu resource providing context menu items
+	        MenuInflater inflater = mode.getMenuInflater();
+	        inflater.inflate(R.menu.devices_cab_menu, menu);
+	        return true;
+	    }
+
+	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
+	    // may be called multiple times if the mode is invalidated.
+	    @Override
+	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	        return false; // Return false if nothing is done
+	    }
+
+	    // Called when the user selects a contextual menu item
+	    @Override
+	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	        switch (item.getItemId()) {
+	            case R.id.menu_cab_delete:
+	                mode.finish(); // Action picked, so close the CAB
+	                return true;
+	                
+	            case R.id.menu_cab_settings:
+	            	mode.finish(); // Action picked, so close the CAB
+	            	return true;
+	            default:
+	                return false;
+	        }
+	    }
+
+	    // Called when the user exits the action mode
+	    @Override
+	    public void onDestroyActionMode(ActionMode mode) {
+	       mActionMode = false;
+	    }
+	};
+	
 	
 /*******************************************************************************/
 	
@@ -89,16 +157,24 @@ public class DevicesLayoutAdapter {
 				  
 				  	//On image touch
 				     case MotionEvent.ACTION_DOWN:
-				        
+				    	 
+				    	 //Open contextual action bar
+				    	 if (!mActionMode){
+				    		 view.startActionMode(mActionModeCallback);
+				    		 mActionMode = true;
+				    	 }
+				    	 	
 				    	 //Image coordinates
 				         RelativeLayout.LayoutParams Params = 
 				            (RelativeLayout.LayoutParams) view.getLayoutParams();
 				         xDelta = X - Params.leftMargin;
 				         yDelta = Y - Params.topMargin;
+				         view.setSelected(true);
 				         break;
 				         
 				      //When we raise the finger we go back to the initial state   
 				     case MotionEvent.ACTION_UP:
+				    	 view.setSelected(false);
 				    	 onLong = false;
 				         break;
 

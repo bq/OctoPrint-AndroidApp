@@ -24,15 +24,10 @@ public class ModelJob {
 	private String mPrintTime;
 	private String mPrintTimeLeft;
 	private String mPrinted;
+	private String mProgress;
 	
 	public ModelJob(){
-		
-		//TODO Hardcoded test values
-		mFile = "Piggy-Bank.gcode";
-		mSize = "1000KB";
-		mPrinted = "390KB";
-		mPrintTimeLeft = "290h";
-		
+				
 	}
 	
 	/*************
@@ -67,6 +62,10 @@ public class ModelJob {
 		return mPrinted;
 	}
 	
+	public String getProgress(){
+		return mProgress;
+	}
+	
 	
 	/***************
 	 * 	SETS
@@ -84,6 +83,7 @@ public class ModelJob {
 			mSize = job.getString("filesize");
 			mEstimated = job.getString("estimatedPrintTime");
 			
+			
 			Log.i("MODEL", "Filename: " + mFile + " Filament: " + mFilament + " Estimated: " + mEstimated);
 			
 			
@@ -93,6 +93,7 @@ public class ModelJob {
 			mPrinted = progress.getString("filepos");
 			mPrintTime = progress.getString("printTime");
 			mPrintTimeLeft = progress.getString("printTimeLeft");
+			mProgress = progress.getString("progress");
 			
 			Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime + 
 					" Print time left: " + mPrintTimeLeft);

@@ -1,8 +1,6 @@
 package android.app.printerapp.devices;
 
 import java.util.List;
-import java.util.Scanner;
-
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
@@ -55,8 +53,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 			file.setText(job.getFilename());
 			
 			TextView status = (TextView) v.findViewById(R.id.list_column_3);	
-			status.setText(String.valueOf(calculatePercentage(job.getPrinted(), job.getSize())
-					+ "% (" + job.getPrintTimeLeft() + " left)"));
+			status.setText(job.getProgress() + "% (" + job.getPrintTimeLeft() + " left)");
 			
 		}
 		
@@ -66,13 +63,13 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 	
 	
 	//Transform item size / current to a percentage to show	on the list view
-	public static int calculatePercentage(String c, String t){
+	/*public static int calculatePercentage(String c, String t){
 		
 		int result = 0;
 		
-		
-		
 		if ((c!="null") && (t!="null")){
+			
+			Log.i("OUT","Percenages: " + c + "   " + t);
 			
 			if (c.substring(c.length()-1).equals("B")){
 				Scanner sc = new Scanner(c);
@@ -91,6 +88,6 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		}
 				
 		return result;
-	}
+	}*/
 
 }

@@ -28,7 +28,7 @@ public class DevicesFragment extends Fragment{
 	//Controllers and adapters
 	private DevicesListController mListController;
 	//private DevicesGridAdapter mGridAdapter;
-	private DevicesListAdapter mListAdapter;
+	private static DevicesListAdapter mListAdapter;
 	
 	private DevicesLayoutAdapter mLayoutAdapter;
 	
@@ -108,7 +108,6 @@ public class DevicesFragment extends Fragment{
 			
 			//Reference to the first tab
 			ViewGroup mViewGroup = (ViewGroup) rootView.findViewById(R.id.devices_grid);
-			
 			mLayoutAdapter = new DevicesLayoutAdapter(getActivity(), mViewGroup);
 			
 			
@@ -125,8 +124,7 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
-
-			
+		
 		}
 		return rootView;
 	}
@@ -210,6 +208,12 @@ public class DevicesFragment extends Fragment{
 
 		
 	}
+	
+	public static void notifyAdapter(){
+		mListAdapter.notifyDataSetChanged();
+	}
+	
+	
 	
 	
 }
