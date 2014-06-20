@@ -7,6 +7,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -18,8 +19,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
 
 /**
@@ -96,8 +99,7 @@ public class DevicesFragment extends Fragment{
 			
 			
 			//------------------------------- View references -----------------//
-			
-						
+									
 			GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
@@ -137,7 +139,14 @@ public class DevicesFragment extends Fragment{
 			
 			
 			/*******************************************************************/
+			SlidingUpPanelLayout s = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
+			TextView t = (TextView) rootView.findViewById(R.id.drag_text);
+			s.setDragView(t);
 			
+			
+			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearlayout_storage);
+			
+			new ControlBarStorage(ll,getActivity());
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
