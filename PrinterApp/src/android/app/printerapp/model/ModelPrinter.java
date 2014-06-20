@@ -20,7 +20,7 @@ public class ModelPrinter {
 		mJob = new ModelJob();
 		
 		//Initialize web socket connection
-		OctoprintConnection.getSettings(this, mAddress);
+		OctoprintConnection.getSettings(this);
 		
 	}
 	
@@ -34,6 +34,10 @@ public class ModelPrinter {
 	
 	public ModelJob getJob(){
 		return mJob;
+	}
+	
+	public String getAddress(){
+		return mAddress;
 	}
 	
 }

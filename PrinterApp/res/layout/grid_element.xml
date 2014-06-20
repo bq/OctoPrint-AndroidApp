@@ -3,7 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/grid_element_tag"
@@ -30,6 +30,18 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/grid_element_icon"
         android:layout_alignRight="@+id/grid_element_icon"
-        android:src="@drawable/warning_icon" />
+        android:src="@drawable/warning_icon" 
+        android:visibility="invisible"/>
+
+    <ProgressBar
+        android:id="@+id/grid_element_progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/grid_element_icon"
+        android:layout_alignTop="@+id/grid_warning_icon"
+        android:layout_marginLeft="18dp" 
+        android:visibility="invisible"/>
 
 </RelativeLayout>

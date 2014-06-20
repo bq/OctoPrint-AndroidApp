@@ -80,6 +80,7 @@ public class JmdnsServiceListener implements ServiceListener{
 				
 				//Search for an specific service type
 	            mJmdns.addServiceListener("_ipp3._tcp.local.", this);
+	            
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

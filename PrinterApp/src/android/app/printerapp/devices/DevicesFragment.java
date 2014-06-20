@@ -8,11 +8,16 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -27,10 +32,10 @@ public class DevicesFragment extends Fragment{
 	
 	//Controllers and adapters
 	private DevicesListController mListController;
-	//private DevicesGridAdapter mGridAdapter;
-	private DevicesListAdapter mListAdapter;
+	private DevicesGridAdapter mGridAdapter;
+	private static DevicesListAdapter mListAdapter;
 	
-	private DevicesLayoutAdapter mLayoutAdapter;
+	//private DevicesLayoutAdapter mLayoutAdapter;
 	
 	//Empty constructor
 	public DevicesFragment(){}
@@ -93,12 +98,23 @@ public class DevicesFragment extends Fragment{
 			//------------------------------- View references -----------------//
 			
 						
-			/*GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
+			GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
 					R.layout.grid_element, mListController.getList());
+			
+			g.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+
+					 arg1.startActionMode(mActionModeCallback);
+					
+				}
+			});
 	 
-			g.setAdapter(mGridAdapter);*/
+			g.setAdapter(mGridAdapter);
 			
 			
 			
@@ -107,9 +123,9 @@ public class DevicesFragment extends Fragment{
 			/*******************************************************************/
 			
 			//Reference to the first tab
-			ViewGroup mViewGroup = (ViewGroup) rootView.findViewById(R.id.devices_grid);
+			/*ViewGroup mViewGroup = (ViewGroup) rootView.findViewById(R.id.devices_grid);
+			mLayoutAdapter = new DevicesLayoutAdapter(getActivity(), mViewGroup);*/
 			
-			mLayoutAdapter = new DevicesLayoutAdapter(getActivity(), mViewGroup);
 			
 			
 			//Reference to the second tab, handled by an adapter
@@ -125,8 +141,7 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
-
-			
+		
 		}
 		return rootView;
 	}
@@ -201,8 +216,8 @@ public class DevicesFragment extends Fragment{
 				 * VIEW HANDLER
 				 *************************************************************/
 
-				//mGridAdapter.notifyDataSetChanged();
-				mLayoutAdapter.addToLayout(m);
+				mGridAdapter.notifyDataSetChanged();
+				//mLayoutAdapter.addToLayout(m);
 				mListAdapter.notifyDataSetChanged();
 				
 			}
@@ -210,6 +225,55 @@ public class DevicesFragment extends Fragment{
 
 		
 	}
+	
+	public static void notifyAdapter(){
+		mListAdapter.notifyDataSetChanged();
+	}
+	
+	/**
+	 * Callback for the  contextual menu as described @ Android Developers
+	 */
+	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+		
+	    // Called when the action mode is created; startActionMode() was called
+	    @Override
+	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	        // Inflate a menu resource providing context menu items
+	        MenuInflater inflater = mode.getMenuInflater();
+	        inflater.inflate(R.menu.devices_cab_menu, menu);
+	        return true;
+	    }
+
+	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
+	    // may be called multiple times if the mode is invalidated.
+	    @Override
+	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	        return false; // Return false if nothing is done
+	    }
+
+	    // Called when the user selects a contextual menu item
+	    @Override
+	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	        switch (item.getItemId()) {
+	            case R.id.menu_cab_delete:
+	                mode.finish(); // Action picked, so close the CAB
+	                return true;
+	                
+	            case R.id.menu_cab_settings:
+	            	mode.finish(); // Action picked, so close the CAB
+	            	return true;
+	            default:
+	                return false;
+	        }
+	    }
+
+	    // Called when the user exits the action mode
+	    @Override
+	    public void onDestroyActionMode(ActionMode mode) {
+	       //mActionMode = false;
+	    }
+	};
+	
 	
 	
 }

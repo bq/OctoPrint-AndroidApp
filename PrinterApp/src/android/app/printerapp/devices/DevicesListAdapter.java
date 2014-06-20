@@ -1,12 +1,11 @@
 package android.app.printerapp.devices;
 
 import java.util.List;
-import java.util.Scanner;
-
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,30 +48,51 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		//Job references, if there's no job, don't update anything
 		//TODO: Remove null option
-		if (job!=null){
+		try{
+			
 
 			TextView file = (TextView) v.findViewById(R.id.list_column_2);
 			file.setText(job.getFilename());
 			
 			TextView status = (TextView) v.findViewById(R.id.list_column_3);	
-			status.setText(String.valueOf(calculatePercentage(job.getPrinted(), job.getSize())
-					+ "% (" + job.getPrintTimeLeft() + " left)"));
 			
+			String state = job.getStatus();
+			
+			if (state.equals("Printing")){
+				status.setText(getProgress(job.getProgress()) + "% (" + job.getPrintTimeLeft() + " left)");
+				
+			} else status.setText(state);
+			
+		}catch (NullPointerException e){
+			Log.i("DEVICES", "No job");
 		}
 		
 		
 		return v;
 	}
 	
+	public String getProgress(String p){
+		
+		double value = 0;
+				
+		try {
+			value = Double.valueOf(p) * 100;			
+		}catch (NullPointerException e){
+			e.printStackTrace();
+		}
+		
+		return String.valueOf((int)value);
+	}
+	
 	
 	//Transform item size / current to a percentage to show	on the list view
-	public static int calculatePercentage(String c, String t){
+	/*public static int calculatePercentage(String c, String t){
 		
 		int result = 0;
 		
-		
-		
 		if ((c!="null") && (t!="null")){
+			
+			Log.i("OUT","Percenages: " + c + "   " + t);
 			
 			if (c.substring(c.length()-1).equals("B")){
 				Scanner sc = new Scanner(c);
@@ -91,6 +111,6 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		}
 				
 		return result;
-	}
+	}*/
 
 }

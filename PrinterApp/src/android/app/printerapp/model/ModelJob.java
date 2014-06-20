@@ -24,15 +24,11 @@ public class ModelJob {
 	private String mPrintTime;
 	private String mPrintTimeLeft;
 	private String mPrinted;
+	private String mProgress;
+	private String mStatus;
 	
 	public ModelJob(){
-		
-		//TODO Hardcoded test values
-		mFile = "Piggy-Bank.gcode";
-		mSize = "1000KB";
-		mPrinted = "390KB";
-		mPrintTimeLeft = "290h";
-		
+				
 	}
 	
 	/*************
@@ -67,14 +63,28 @@ public class ModelJob {
 		return mPrinted;
 	}
 	
+	public String getProgress(){
+		return mProgress;
+	}
+	
+	public String getStatus(){
+		return mStatus;
+	}
+	
 	
 	/***************
 	 * 	SETS
 	 *****************/
 		
 	public void updateJob(JSONObject status){
-		JSONObject job, progress;
+		JSONObject job, progress, state;
 		try {
+			
+			state = status.getJSONObject("state");
+			
+			mStatus = state.getString("stateString");
+			
+			Log.i("OUT","ADDED STATE: " + mStatus);
 			
 			//Current job status filesize/filament/estimated print time
 			job = status.getJSONObject("job");
@@ -83,6 +93,7 @@ public class ModelJob {
 			mFilament = job.getString("filament");
 			mSize = job.getString("filesize");
 			mEstimated = job.getString("estimatedPrintTime");
+			
 			
 			Log.i("MODEL", "Filename: " + mFile + " Filament: " + mFilament + " Estimated: " + mEstimated);
 			
@@ -93,6 +104,7 @@ public class ModelJob {
 			mPrinted = progress.getString("filepos");
 			mPrintTime = progress.getString("printTime");
 			mPrintTimeLeft = progress.getString("printTimeLeft");
+			mProgress = progress.getString("progress");
 			
 			Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime + 
 					" Print time left: " + mPrintTimeLeft);
