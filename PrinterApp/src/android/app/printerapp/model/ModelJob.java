@@ -25,6 +25,7 @@ public class ModelJob {
 	private String mPrintTimeLeft;
 	private String mPrinted;
 	private String mProgress;
+	private String mStatus;
 	
 	public ModelJob(){
 				
@@ -66,14 +67,24 @@ public class ModelJob {
 		return mProgress;
 	}
 	
+	public String getStatus(){
+		return mStatus;
+	}
+	
 	
 	/***************
 	 * 	SETS
 	 *****************/
 		
 	public void updateJob(JSONObject status){
-		JSONObject job, progress;
+		JSONObject job, progress, state;
 		try {
+			
+			state = status.getJSONObject("state");
+			
+			mStatus = state.getString("stateString");
+			
+			Log.i("OUT","ADDED STATE: " + mStatus);
 			
 			//Current job status filesize/filament/estimated print time
 			job = status.getJSONObject("job");

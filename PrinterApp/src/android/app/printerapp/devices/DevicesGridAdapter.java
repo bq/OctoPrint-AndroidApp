@@ -38,6 +38,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.grid_element, null, false);
 			
+			
 		} else {
 			v = convertView;
 		}
@@ -45,9 +46,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		tag.setText(m.getName());
-		
-		v.findViewById(R.id.grid_warning_icon).setVisibility(1);
-		
+				
 		
 		return v;
 	}

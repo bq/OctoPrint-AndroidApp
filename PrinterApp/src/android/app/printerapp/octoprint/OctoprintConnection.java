@@ -62,10 +62,6 @@ public class OctoprintConnection {
 		            	//Get the json string for "current" status
 		            	JSONObject response = new JSONObject(payload).getJSONObject("current");
 		            	
-		            	//Send "state" to the updater
-						JSONObject jsonState = response.getJSONObject("state");		
-						Log.i("OUT",jsonState.toString());
-						
 						//Update job with current status
 						p.getJob().updateJob(response);
 						
