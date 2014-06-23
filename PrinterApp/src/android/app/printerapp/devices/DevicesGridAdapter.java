@@ -27,20 +27,22 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		View v;
+		View v = convertView;
 		ModelPrinter m = getItem(position);
 		
 		
 		//View not yet created
-		if (convertView==null){
+		if (v==null){
 			
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.grid_element, null, false);
 			
+			v.setOnDragListener(new ControllerDrag(m));
+			
 			
 		} else {
-			v = convertView;
+			//v = convertView;
 		}
 		
 		//Printer tag reference

@@ -59,23 +59,31 @@
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
-        <ImageView
+        <ImageButton
             android:id="@+id/list_column_5_icon_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:src="@drawable/check_icon" />
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:src="@drawable/reload_icon" />
+        
+        <View
+		    android:layout_width="1dp"
+		    android:layout_height="fill_parent"
+		    android:background="@android:color/darker_gray"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/list_column_5_icon_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:src="@drawable/error_icon" />
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:src="@drawable/stop_icon" />
+
     </LinearLayout>
     
     <ImageView
-        android:id="@+id/list_column_5"
+        android:id="@+id/list_column_6"
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"

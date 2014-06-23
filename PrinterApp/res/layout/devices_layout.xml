@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.app.printerapp.devices.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+   android:gravity="bottom"
+   app:shadowHeight="4dp"
+   app:panelHeight="68dp"
+   app:fadeColor="@android:color/transparent" 
+   app:anchorPoint="0.2"
+   xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp">
 
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="390dp" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,11 +57,56 @@
                         android:id="@+id/devices_list"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" >
+                        android:layout_weight="1" 
+                        android:listSelector="@android:color/transparent"
+                        >
                     </ListView>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+    
 
-</LinearLayout>
+    
+    <LinearLayout
+                    android:id="@+id/storage_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+    	android:orientation="vertical" >
+        
+            <TextView
+                  android:id="@+id/drag_text"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center|top"
+        android:text="Quickprint"
+        android:textSize="16sp" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/scrollview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                        <LinearLayout
+                            android:id="@+id/linearlayout_storage"
+                            android:paddingTop="30px"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" >
+
+                            <ListView
+                                android:id="@+id/listView1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" >
+                            </ListView>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+    
+</android.app.printerapp.devices.SlidingUpPanelLayout>
