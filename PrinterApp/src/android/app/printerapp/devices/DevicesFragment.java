@@ -7,7 +7,6 @@ import android.app.printerapp.model.ModelPrinter;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -84,8 +83,6 @@ public class DevicesFragment extends Fragment{
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.devices_layout,
 					container, false);
-			
-
 			
 			/**
 			 * CUSTOM VIEW METHODS

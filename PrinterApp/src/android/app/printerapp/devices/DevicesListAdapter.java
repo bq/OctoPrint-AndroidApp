@@ -1,13 +1,16 @@
 package android.app.printerapp.devices;
 
 import java.util.List;
+
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintControl;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -22,21 +25,41 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		View v;
-		ModelPrinter m = getItem(position);
+		View v = convertView;
+		final ModelPrinter m = getItem(position);
 		
 		
 		//View not yet created
-		if (convertView==null){
-			
+		if (v==null){
 			
 			
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.list_element, null, false);
+			v.setOnClickListener(null);
+			v.setOnDragListener(new ControllerDrag(m));
+			
+			v.findViewById(R.id.list_column_5_icon_1).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendCommand(m.getAddress(), "start");
+					
+				}
+			});
+			
+			v.findViewById(R.id.list_column_5_icon_2).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					OctoprintControl.sendCommand(m.getAddress(), "cancel");
+					
+				}
+			});
 			
 		} else {
-			v = convertView;
+			//v = convertView;
 		}
 		
 		//Printer tag reference
