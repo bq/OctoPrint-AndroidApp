@@ -37,7 +37,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.list_element, null, false);
 			v.setOnClickListener(null);
-			v.setOnDragListener(new ControllerDrag(m));
+			v.setOnDragListener(new DevicesDragListener(m));
 			
 			v.findViewById(R.id.list_column_5_icon_1).setOnClickListener(new OnClickListener() {
 				
@@ -79,7 +79,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 			
 			TextView status = (TextView) v.findViewById(R.id.list_column_3);	
 			
-			String state = job.getStatus();
+			String state = m.getStatus();
 			
 			if (state.equals("Printing")){
 				status.setText(getProgress(job.getProgress()) + "% (" + job.getPrintTimeLeft() + " left)");
@@ -94,7 +94,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		return v;
 	}
 	
-	public String getProgress(String p){
+	public static String getProgress(String p){
 		
 		double value = 0;
 				

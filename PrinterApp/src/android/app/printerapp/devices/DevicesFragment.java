@@ -1,9 +1,13 @@
 package android.app.printerapp.devices;
 
+import java.util.zip.Inflater;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelPrinter;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -20,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
@@ -34,7 +39,7 @@ public class DevicesFragment extends Fragment{
 	
 	//Controllers and adapters
 	private DevicesListController mListController;
-	private DevicesGridAdapter mGridAdapter;
+	private static DevicesGridAdapter mGridAdapter;
 	private static DevicesListAdapter mListAdapter;
 	
 	//private DevicesLayoutAdapter mLayoutAdapter;
@@ -109,6 +114,50 @@ public class DevicesFragment extends Fragment{
 						int arg2, long arg3) {
 
 					 arg1.startActionMode(mActionModeCallback);
+					 
+					 ModelPrinter m = mListController.getList().get(arg2);
+					 					 
+					 if (m.getStatus().equals("Error")){
+						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+						 adb.setTitle("Error message");
+						 adb.setMessage((mListController.getList().get(arg2).getMessage()));
+						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
+						 adb.show();
+					 }
+					 
+					 if (m.getStatus().equals("Offline")){
+						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+						 adb.setTitle("Progress");
+						 adb.setIcon(getResources().getDrawable(R.drawable.printer_icon));
+						
+						/* TextView tv = new TextView(getActivity());
+						 tv.setText(m.getJob().getFilename());
+						 
+						 ProgressBar pb = new ProgressBar(getActivity());
+						 Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
+						 pb.setProgress(n.intValue());
+						 
+						 TextView tv2 = new TextView(getActivity());
+						 tv2.setText(DevicesListAdapter.getProgress(m.getJob().getProgress()) + "% (" + m.getJob().getPrintTimeLeft() + " left)");
+						 
+						 TextView tv3 = new TextView(getActivity());
+						// tv3.setText(text)
+						 
+						 LinearLayout ll = new LinearLayout(getActivity());
+						 ll.addView(tv);
+						 ll.addView(pb);
+						 ll.addView(tv2);
+						 
+						 adb.setView(ll);*/
+						 
+						//Inflate the view
+						LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+						View v = inflater.inflate(R.layout.progress_dialog, null, false);
+						 
+						adb.setView(v);
+						
+						 adb.show();
+					 }
 					
 				}
 			});
@@ -143,7 +192,7 @@ public class DevicesFragment extends Fragment{
 			
 			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearlayout_storage);
 			
-			new ControlBarStorage(ll,getActivity());
+			new DevicesQuickprint(ll,getActivity());
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
@@ -182,13 +231,13 @@ public class DevicesFragment extends Fragment{
 		TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
 		tabs.setup();
 		 
-		TabHost.TabSpec spec=tabs.newTabSpec("Status");
-		spec.setIndicator("Status");
+		TabHost.TabSpec spec=tabs.newTabSpec("Map");
+		spec.setIndicator("Map");
 		spec.setContent(R.id.tab1);
 		tabs.addTab(spec);
 		 
-		spec=tabs.newTabSpec("Videowall");
-		spec.setIndicator("Videowall");
+		spec=tabs.newTabSpec("List");
+		spec.setIndicator("List");
 		spec.setContent(R.id.tab2);
 		tabs.addTab(spec);
 		
@@ -234,6 +283,7 @@ public class DevicesFragment extends Fragment{
 	
 	public static void notifyAdapter(){
 		mListAdapter.notifyDataSetChanged();
+		mGridAdapter.notifyDataSetChanged();
 	}
 	
 	/**

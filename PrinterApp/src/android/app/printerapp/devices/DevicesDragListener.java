@@ -16,13 +16,13 @@ import android.view.View.OnDragListener;
  * @author alberto-baeza
  *
  */
-public class ControllerDrag implements OnDragListener {
+public class DevicesDragListener implements OnDragListener {
 		
 	//Reference to model
 	private ModelPrinter mModel;
 	
 	//Constructor
-	public ControllerDrag(ModelPrinter model){
+	public DevicesDragListener(ModelPrinter model){
 
 		mModel = model;
 	}

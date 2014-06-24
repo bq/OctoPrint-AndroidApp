@@ -27,7 +27,7 @@ import android.widget.Toast;
  * @author alberto-baeza
  *
  */
-public class ControlBarStorage {
+public class DevicesQuickprint {
 	
 	//Test demo file 
 	//private static final String DEMO_FILE = "bq-keychain";
@@ -45,7 +45,7 @@ public class ControlBarStorage {
 	
 	
 	
-	public ControlBarStorage(LinearLayout ll, Activity context){
+	public DevicesQuickprint(LinearLayout ll, Activity context){
 		
 		mLayout = ll;
 		mContext = context;
