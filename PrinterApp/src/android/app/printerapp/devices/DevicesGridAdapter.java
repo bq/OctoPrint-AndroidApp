@@ -53,6 +53,8 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
 		tag.setText(m.getName());
 				
 		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
+		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
+		
 		
 		String status = m.getStatus();
 		
@@ -60,18 +62,24 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
 			
 			if (status.equals("Operational")){
 				iv.setImageResource(R.drawable.tick_icon_small);
-				
+				iv.setVisibility(View.VISIBLE);
+				pb.setVisibility(View.GONE);
 			} else if (status.equals("Printing")){
-				
-				ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
-				pb.setVisibility(1);
+				iv.setVisibility(View.VISIBLE);
+				pb.setVisibility(View.VISIBLE);
 				Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
 				pb.setProgress(n.intValue());
 				
 				iv.setImageResource(R.drawable.printer_icon);
 			} else if (status.equals("Error")){
 				iv.setImageResource(R.drawable.warning_icon);
-			} else iv.setVisibility(0);
+				iv.setVisibility(View.VISIBLE);
+				pb.setVisibility(View.GONE);
+			} else{
+				iv.setVisibility(View.GONE);
+				pb.setVisibility(View.GONE);
+				Log.i("OUT","INVISIBLE!");
+			}
 		} else Log.i("OUT","NULL STATUS");
 		
 		

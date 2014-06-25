@@ -1,11 +1,12 @@
 package android.app.printerapp.devices;
 
-import java.util.zip.Inflater;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
+import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -125,38 +127,8 @@ public class DevicesFragment extends Fragment{
 						 adb.show();
 					 }
 					 
-					 if (m.getStatus().equals("Offline")){
-						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-						 adb.setTitle("Progress");
-						 adb.setIcon(getResources().getDrawable(R.drawable.printer_icon));
-						
-						/* TextView tv = new TextView(getActivity());
-						 tv.setText(m.getJob().getFilename());
-						 
-						 ProgressBar pb = new ProgressBar(getActivity());
-						 Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
-						 pb.setProgress(n.intValue());
-						 
-						 TextView tv2 = new TextView(getActivity());
-						 tv2.setText(DevicesListAdapter.getProgress(m.getJob().getProgress()) + "% (" + m.getJob().getPrintTimeLeft() + " left)");
-						 
-						 TextView tv3 = new TextView(getActivity());
-						// tv3.setText(text)
-						 
-						 LinearLayout ll = new LinearLayout(getActivity());
-						 ll.addView(tv);
-						 ll.addView(pb);
-						 ll.addView(tv2);
-						 
-						 adb.setView(ll);*/
-						 
-						//Inflate the view
-						LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						View v = inflater.inflate(R.layout.progress_dialog, null, false);
-						 
-						adb.setView(v);
-						
-						 adb.show();
+					 if (m.getStatus().equals("Printing")){
+						setDialogAdapter(m);
 					 }
 					
 				}
@@ -206,6 +178,27 @@ public class DevicesFragment extends Fragment{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.devices_menu, menu);
 	}
+	
+	//Option menu
+   @Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+	   
+	   switch (item.getItemId()) {
+	   
+	   case R.id.menu_add: //Add a new printer
+		   optionAdd();
+			return true;
+			
+       	case R.id.menu_filter: //Filter grid / list
+       		optionFilter();
+            return true;
+              
+          
+       default:
+           return super.onOptionsItemSelected(item);
+	   }
+	}
+   
 	
 	@Override
 	public void onDestroy() {
@@ -329,6 +322,83 @@ public class DevicesFragment extends Fragment{
 	       //mActionMode = false;
 	    }
 	};
+	
+	//Filter option for the device list
+	public void optionFilter(){
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle("Show...");
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
+		
+		adb.setView(v);
+		
+		adb.setPositiveButton("Filter", null);
+		adb.setNegativeButton("Cancel", null);
+		
+		adb.show();
+		
+	}
+	
+	//This is the actual discovery service
+	//TODO implement the discovery logic here
+	public void optionAdd(){
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle("Detected printer(s)");
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflater.inflate(R.layout.menu_add_dialog, null, false);
+		
+		ListView lv = (ListView) v.findViewById(R.id.add_dialog_list);
+		
+		ArrayList<String> list = new ArrayList<String>();
+		for (ModelPrinter m : mListController.getList()){
+			list.add(m.getName());
+		}
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,list);
+		lv.setAdapter(adapter);
+		adb.setView(v);
+		
+		adb.setPositiveButton("Add", null);
+		adb.setNegativeButton("Cancel", null);
+		
+		adb.show();
+		
+	}
+	
+	public void setDialogAdapter(ModelPrinter m){
+		
+		 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		 adb.setTitle("Progress");
+		 adb.setIcon(getResources().getDrawable(R.drawable.printer_icon));
+		 
+		//Inflate the view
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflater.inflate(R.layout.progress_dialog, null, false);
+		
+		ModelJob job = m.getJob();
+		
+		TextView tv1 = (TextView) v.findViewById(R.id.pd_tv1);
+		tv1.setText(job.getFilename());
+		
+		ProgressBar pb = (ProgressBar) v.findViewById(R.id.pd_pb);
+		Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
+		pb.setProgress(n.intValue());
+		
+		TextView tv2 = (TextView) v.findViewById(R.id.pd_tv2);
+		tv2.setText(n.intValue() + "%");
+		
+		TextView tv3= (TextView) v.findViewById(R.id.pd_tv3);
+		tv3.setText("Faltan " + job.getPrintTimeLeft() + " aprox");
+		
+		TextView tv4 = (TextView) v.findViewById(R.id.pd_tv4);
+		tv4.setText(m.getTemperature());
+		
+		 
+		adb.setView(v);
+		
+		adb.show();
+	}
 	
 	
 	

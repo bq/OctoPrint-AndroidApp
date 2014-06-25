@@ -1,10 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
- 
-    <item
-        android:id="@+id/menu_display"
-        android:showAsAction="never"
-        android:title="Toggle grid/list"/>
- 
+  
       <item
         android:id="@+id/menu_add"
         android:showAsAction="ifRoom"
