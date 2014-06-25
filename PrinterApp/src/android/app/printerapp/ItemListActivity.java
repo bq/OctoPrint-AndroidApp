@@ -1,8 +1,10 @@
 package android.app.printerapp;
 
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.library.LibraryFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
@@ -29,6 +31,11 @@ public class ItemListActivity extends FragmentActivity implements
 	 * device.
 	 */
 	private boolean mTwoPane;
+	
+	private DevicesFragment mDevicesFragment;
+	private LibraryFragment mLibraryFragment;
+	
+	private Fragment mCurrent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,9 @@ public class ItemListActivity extends FragmentActivity implements
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
+		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
+		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
+		
 	}
 
 	/**
@@ -65,23 +75,59 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			//Switch between list ids
 			
+			 if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
+							
 			switch (Integer.valueOf(id)){
 			
 				case 1:{
 					
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Devices")==null){
-						 DevicesFragment fragment = new DevicesFragment();
-						 
+						 mDevicesFragment = new DevicesFragment();
+						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mDevicesFragment, "Devices").commit();
+							
 						 //Replace the fragment with the desired tag for future checks
-							getSupportFragmentManager().beginTransaction()
-									.replace(R.id.item_detail_container, fragment, "Devices").commit();
-						
-					 } else Log.i("OUT","Devices Fragment exists");
+							/*getSupportFragmentManager().beginTransaction()
+									.replace(R.id.item_detail_container, fragment, "Devices").commit();*/
+						 
+						 
+						mCurrent = mDevicesFragment;
+					 } else {
+						 
+						  mCurrent = mDevicesFragment;
+						 	 
+						 Log.i("OUT","Devices Fragment exists");
+					 }
 					
 					} break;
+				
+				case 3:{
+					//Check if we already created the Fragment to avoid having multiple instances
+					 if (getSupportFragmentManager().findFragmentByTag("Library")==null){
+						 mLibraryFragment = new LibraryFragment();
+						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mLibraryFragment, "Library").commit();
+							
+						 //Replace the fragment with the desired tag for future checks
+							/*getSupportFragmentManager().beginTransaction()
+									.replace(R.id.item_detail_container, fragment, "Library").commit();*/
+						
+						
+						 mCurrent = mLibraryFragment;
+						
+					 } else {
+						 
+						 mCurrent = mLibraryFragment;
+						 
+						 
+						 Log.i("OUT","Libray Fragment exists");
+					 }
+				}
+					
 			
 			}
+			
+			getSupportFragmentManager().beginTransaction().show(mCurrent).commit();
+			
 			
 
 		} else {

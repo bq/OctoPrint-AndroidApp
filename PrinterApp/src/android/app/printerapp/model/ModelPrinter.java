@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.octoprint.OctoprintConnection;
-import android.util.Log;
 
 public class ModelPrinter {
 	
