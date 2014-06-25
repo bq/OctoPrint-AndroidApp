@@ -63,7 +63,7 @@ public class OctoprintConnection {
 		            	JSONObject response = new JSONObject(payload).getJSONObject("current");
 		            	
 						//Update job with current status
-						p.getJob().updateJob(response);
+						p.updatePrinter(response);
 						
 						DevicesFragment.notifyAdapter();
 						
