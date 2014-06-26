@@ -50,6 +50,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onOpen() {
 		            Log.i("SOCK", "Status: Connected to " + wsuri);
+		            OctoprintFiles.getFiles(p);
 		         }
 		 
 		         

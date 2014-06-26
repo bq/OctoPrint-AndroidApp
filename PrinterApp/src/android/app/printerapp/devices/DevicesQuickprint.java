@@ -49,7 +49,7 @@ public class DevicesQuickprint {
 		mLayout = ll;
 		mContext = context;
 		
-		mFileList = StorageController.retrieveFiles();
+		mFileList = StorageController.getFileList();
 		displayFiles();
 	}
 	

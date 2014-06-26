@@ -1,7 +1,9 @@
 package android.app.printerapp;
 
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.LibraryFragment;
+import android.app.printerapp.library.StorageController;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,6 +58,13 @@ public class ItemListActivity extends FragmentActivity implements
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
+		
+		//TODO List controllers
+		new StorageController();
+		new DevicesListController();
+		
+		
+		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
 		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
 		
@@ -121,12 +130,12 @@ public class ItemListActivity extends FragmentActivity implements
 						 
 						 Log.i("OUT","Libray Fragment exists");
 					 }
-				}
+				} break;
 					
 			
 			}
 			
-			getSupportFragmentManager().beginTransaction().show(mCurrent).commit();
+			if (mCurrent!=null )getSupportFragmentManager().beginTransaction().show(mCurrent).commit();
 			
 			
 

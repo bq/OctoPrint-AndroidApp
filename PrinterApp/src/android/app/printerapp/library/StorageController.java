@@ -15,14 +15,23 @@ import android.os.Environment;
  */
 public class StorageController {
 	
+	static ArrayList<ModelFile> mFileList = new ArrayList<ModelFile>();
+	
+	public StorageController(){
+		
+		retrieveFiles();
+	
+	}
+	
+	public static ArrayList<ModelFile> getFileList(){
+		return mFileList;
+	}
+	
 	
 	//Retrieve files from our system architecture.
-	public static ArrayList<ModelFile> retrieveFiles(){
+	public void retrieveFiles(){
 		
-		
-		//temporal array list
-		ArrayList<ModelFile> mFileList = new ArrayList<ModelFile>();
-				
+						
 		File mainFolder = getParentFolder();
 		File trashFolder = new File(Environment.getExternalStorageDirectory() + "/PrintManager");
 		
@@ -56,11 +65,7 @@ public class StorageController {
 				mFileList.add(m);
 			}
 		}
-			
-		
-		return mFileList;
-			
-					
+								
 	}
 	
 	//Retrieve main folder or create if doesn't exist
@@ -93,6 +98,10 @@ public class StorageController {
 		
 		return result;	
 		
+	}
+	
+	public static void addToList(ModelFile m ){
+		mFileList.add(m);
 	}
 
 }

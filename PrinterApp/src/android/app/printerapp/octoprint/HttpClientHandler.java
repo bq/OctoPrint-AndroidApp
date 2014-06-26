@@ -25,6 +25,8 @@ public class HttpClientHandler {
   //GET method for both APIs
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
       client.get(getAbsoluteUrl(url), params, responseHandler);
+      
+      Log.i("FILES", "LEL: " + getAbsoluteUrl(url));
   }
   
   //POST method for the old API

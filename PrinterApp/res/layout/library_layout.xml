@@ -45,6 +45,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" 
                     android:orientation="vertical">
+
+                    <GridView
+                        android:id="@+id/grid_storage_witbox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:numColumns="4" >
+                    </GridView>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -52,6 +60,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
+
+                    <GridView
+                        android:id="@+id/grid_storage_usb"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:numColumns="4" >
+                    </GridView>
+
                 </LinearLayout>
                 
                 

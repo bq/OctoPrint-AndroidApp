@@ -13,7 +13,7 @@ import android.app.printerapp.model.ModelPrinter;
 public class DevicesListController {
 	
 	//List for the printers found
-	private ArrayList<ModelPrinter> mList;
+	private static ArrayList<ModelPrinter> mList;
 	
 	public DevicesListController(){
 		
@@ -22,13 +22,14 @@ public class DevicesListController {
 	}
 	
 	//Add element to the list
-	public void addToList(ModelPrinter m){
+	public static void addToList(ModelPrinter m){
 		mList.add(m);
 		
 	}
 	
 	//Return the list
-	public ArrayList<ModelPrinter> getList(){
+	public static ArrayList<ModelPrinter> getList(){
+		
 		return mList;
 	}
 	

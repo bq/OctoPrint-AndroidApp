@@ -1,5 +1,6 @@
 package android.app.printerapp.library;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.printerapp.R;
@@ -10,13 +11,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class StorageAdapter extends ArrayAdapter<ModelFile> {
+
+/**
+ * This clas will handle the adapter for the library items
+ * @author alberto-baeza
+ *
+ */
+public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterable {
+	
+	//Original list and current list to be filtered
+	private ArrayList<ModelFile> mData;
+	private ArrayList<ModelFile> mOriginal;
+	
+	//Filter
+	private ListFilter mFilter;
 
 	public StorageAdapter(Context context, int resource, List<ModelFile> objects) {
 		super(context, resource, objects);
+		mOriginal = (ArrayList<ModelFile>) objects;
+		mData = (ArrayList<ModelFile>) objects;
+		mFilter = new ListFilter();
 	}
 	
 	@Override
@@ -53,6 +72,84 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> {
 		
 		
 		return v;
+	}
+	
+
+	//Retrieve item from current list
+	@Override
+	public ModelFile getItem(int position) {
+		return mData.get(position);
+	}
+	
+	//Retrieve count from current list
+	@Override
+	public int getCount() {
+		return mData.size();
+	}
+
+	//Get filter
+	@Override
+	public Filter getFilter() {
+		
+		if (mFilter == null)
+			mFilter = new ListFilter();
+		
+		return mFilter;
+	}
+	
+	/**
+	 * This class is the custom filter for the Library
+	 * @author alberto-baeza
+	 *
+	 */
+	private class ListFilter extends Filter{
+
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+			
+			//New filter result object
+            FilterResults result = new FilterResults();
+            
+            if(constraint != null && constraint.toString().length() > 0)
+            {
+            	//Temporal list
+                ArrayList<ModelFile> filt = new ArrayList<ModelFile>();
+                
+                //Check if every item from the original list has constaints
+                for (ModelFile m : mOriginal){
+                	
+                	if (m.getStorage().contains(constraint)){
+                		filt.add(m);
+                	}
+                	
+                }
+
+                //New list is filtered list
+                result.count = filt.size();
+                result.values = filt;
+            }
+            else
+            {
+            	//New list is original list (no filter, default)
+            	result.count = mOriginal.size();
+                result.values = mOriginal;
+                
+            }
+            return result;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint,
+				FilterResults results) {
+            
+			
+			//If there are results, update list
+			mData = (ArrayList<ModelFile>) results.values;
+			notifyDataSetChanged();
+			
+		}
+		
 	}
 
 }

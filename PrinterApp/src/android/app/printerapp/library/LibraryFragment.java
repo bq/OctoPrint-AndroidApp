@@ -1,10 +1,16 @@
 package android.app.printerapp.library;
 
+import java.util.ArrayList;
+
 import android.app.printerapp.R;
+import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.model.ModelFile;
+import android.app.printerapp.model.ModelPrinter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -12,6 +18,10 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
 public class LibraryFragment extends Fragment {
+	
+	StorageAdapter mAdapter;
+	
+	ArrayList<ModelFile> mCurrentFileList = new ArrayList<ModelFile>();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,10 +51,22 @@ public class LibraryFragment extends Fragment {
 			/**
 			 * CUSTOM VIEW METHODS
 			 */
+			retrieveAllFiles();
+
+			
+			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, mCurrentFileList);
+			
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
-			StorageAdapter adapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.retrieveFiles());
-			g.setAdapter(adapter);
+			g.setAdapter(mAdapter);
+			
+			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
+			gw.setAdapter(mAdapter);
+			
+			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
+			gu.setAdapter(mAdapter);
+			
+			
 			//Set tab host for the view
 			setTabHost(rootView);
 			
@@ -53,13 +75,39 @@ public class LibraryFragment extends Fragment {
 		return rootView;
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.library_menu, menu);
+	}
+	
+	//Option menu
+   @Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+	   
+	   switch (item.getItemId()) {
+	   
+	   case R.id.library_search: //Add a new printer;
+			return true;
+			
+       	case R.id.library_filter: //Filter grid / list
+
+            return true;
+              
+          
+       default:
+           return super.onOptionsItemSelected(item);
+	   }
+	}
+   
+	
 	/**
 	 * Constructor for the tab host
 	 * TODO: Should be moved to a View class since it only handles ui.
 	 */
 	public void setTabHost(View v){
 				 
-		TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
+		final TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Models");
@@ -88,9 +136,37 @@ public class LibraryFragment extends Fragment {
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
-		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
+		        
+		    	switch (tabs.getCurrentTab()) {
+				case 0:
+						mAdapter.getFilter().filter(null);
+					break;
+				case 1:
+						mAdapter.getFilter().filter("Witbox");
+					break;
+				case 2:
+						mAdapter.getFilter().filter("sd");
+					break;
+
+				default:
+					break;
+				}
+		    	
+		    	
 		    }
 		});
+		
+	}
+	
+	public void retrieveAllFiles(){
+		
+		mCurrentFileList = StorageController.getFileList();
+		
+		for (ModelPrinter p : DevicesListController.getList()){
+			
+			mCurrentFileList.addAll(p.getFiles());
+			
+		}
 		
 	}
 
