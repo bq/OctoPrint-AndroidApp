@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:id="@+id/radioGroup_library"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp" >
+
+        <RadioButton
+            android:id="@+id/lb_radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:checked="true"
+            android:text="Show everything" />
+
+        <RadioButton
+            android:id="@+id/lb_radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show GCODE files" />
+
+        <RadioButton
+            android:id="@+id/lb_radio2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show STL files" />
+        
+    </RadioGroup>
+
+</LinearLayout>

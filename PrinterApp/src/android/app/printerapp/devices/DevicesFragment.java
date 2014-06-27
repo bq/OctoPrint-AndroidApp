@@ -40,7 +40,6 @@ public class DevicesFragment extends Fragment{
 	
 	
 	//Controllers and adapters
-	private DevicesListController mListController;
 	private static DevicesGridAdapter mGridAdapter;
 	private static DevicesListAdapter mListAdapter;
 	
@@ -97,17 +96,14 @@ public class DevicesFragment extends Fragment{
 			
 			//Set tab host for the view
 			setTabHost(rootView);
-			
-			//List controller
-			mListController = new DevicesListController();
-			
+						
 			
 			//------------------------------- View references -----------------//
 									
 			GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
-					R.layout.grid_element, mListController.getList());
+					R.layout.grid_element, DevicesListController.getList());
 			
 			g.setOnItemClickListener(new OnItemClickListener() {
 
@@ -117,12 +113,12 @@ public class DevicesFragment extends Fragment{
 
 					 arg1.startActionMode(mActionModeCallback);
 					 
-					 ModelPrinter m = mListController.getList().get(arg2);
+					 ModelPrinter m = DevicesListController.getList().get(arg2);
 					 					 
 					 if (m.getStatus().equals("Error")){
 						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 						 adb.setTitle("Error message");
-						 adb.setMessage((mListController.getList().get(arg2).getMessage()));
+						 adb.setMessage((DevicesListController.getList().get(arg2).getMessage()));
 						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
 						 adb.show();
 					 }
@@ -150,7 +146,7 @@ public class DevicesFragment extends Fragment{
 			
 			//Reference to the second tab, handled by an adapter
 			mListAdapter = new DevicesListAdapter(getActivity(), 
-					R.layout.list_element, mListController.getList());
+					R.layout.list_element, DevicesListController.getList());
 			
 			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
 			l.setAdapter(mListAdapter);
@@ -258,7 +254,7 @@ public class DevicesFragment extends Fragment{
 			@Override
 			public void run() {
 				
-				mListController.addToList(m);
+				DevicesListController.addToList(m);
 				
 				/*************************************************************
 				 * VIEW HANDLER
@@ -351,7 +347,7 @@ public class DevicesFragment extends Fragment{
 		ListView lv = (ListView) v.findViewById(R.id.add_dialog_list);
 		
 		ArrayList<String> list = new ArrayList<String>();
-		for (ModelPrinter m : mListController.getList()){
+		for (ModelPrinter m : DevicesListController.getList()){
 			list.add(m.getName());
 		}
 		

@@ -106,34 +106,5 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		return String.valueOf((int)value);
 	}
-	
-	
-	//Transform item size / current to a percentage to show	on the list view
-	/*public static int calculatePercentage(String c, String t){
-		
-		int result = 0;
-		
-		if ((c!="null") && (t!="null")){
-			
-			Log.i("OUT","Percenages: " + c + "   " + t);
-			
-			if (c.substring(c.length()-1).equals("B")){
-				Scanner sc = new Scanner(c);
-				sc.useDelimiter("[^0-9]+");			
-				int current = sc.nextInt();
-				sc.close();
-				
-				Scanner st = new Scanner(t);
-				st.useDelimiter("[^0-9]+");			
-				int total = st.nextInt();
-				st.close();
-				
-				result = ( current * 100 ) / total;
-			}
-			
-		}
-				
-		return result;
-	}*/
 
 }

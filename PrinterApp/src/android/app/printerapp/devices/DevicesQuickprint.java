@@ -1,15 +1,14 @@
 package android.app.printerapp.devices;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.content.ClipData;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +49,7 @@ public class DevicesQuickprint {
 		mLayout = ll;
 		mContext = context;
 		
-		retrieveFiles();
+		mFileList = StorageController.getFileList();
 		displayFiles();
 	}
 	
@@ -59,53 +58,7 @@ public class DevicesQuickprint {
 	 * 			METHODS
 	 *****************************************************************************************/
 	
-	//Retrieve files from our system architecture.
-	private void retrieveFiles(){
-		
-		//Test
-		/*for (int i = 0; i<30; i++){
-			
-			mFileList.add("bq-keychain" + i);
-			
-		}*/
-		
-		File mainFolder = getParentFolder();
-		File trashFolder = new File(Environment.getExternalStorageDirectory() + "/PrintManager");
-		
-		/**
-		 * CHANGED FILE LOGIC, NOW RETRIEVES FOLDERS INSTEAD OF FILES, AND PARSES
-		 * INDIVIDUAL ELEMENTS LATER ON.
-		 */
-		File[] files = mainFolder.listFiles();
-		for (File file : files){
-			if (file.isDirectory()){	
-				
-				ModelFile m = new ModelFile(file.getName(), "Internal storage");
-				
-				//TODO: Move this to the ModelFile code
-				m.setPathStl(retrieveFile(m.getName(), "_stl"));	
-				m.setPathGcode(retrieveFile(m.getName(), "_gcode"));	
-				m.setSnapshot(getParentFolder() + "/" + m.getName() + "/" + m.getName() + ".png");
-				mFileList.add(m);
-				
-			}
-		}
-		
-		//TODO: TEST trash storage
-		
-		File[] trashFiles = trashFolder.listFiles();
-		for (File file : trashFiles){
-			if (!file.isDirectory()){
-				ModelFile m = new ModelFile(file.getName(), "Trash storage");
-				m.setPathStl(file.getAbsolutePath());	
-				m.setPathGcode(file.getAbsolutePath());	
-				mFileList.add(m);
-			}
-		}
-		
-		
-				
-	}
+	
 	
 	
 	//Display them on screen, should be done on an Adapter but we don't have one.
@@ -125,21 +78,16 @@ public class DevicesQuickprint {
 			ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 			
 			Drawable d;
-				d = Drawable.createFromPath(getParentFolder() + "/" + m.getName() + "/" + m.getName() + ".jpg");
+				d = Drawable.createFromPath(StorageController.getParentFolder() + "/Files/" + m.getName() + "/" + m.getName() + ".jpg");
 			
 				if (d!=null){
 					iv.setImageDrawable(d);
 				} else {
-					d = mContext.getResources().getDrawable(R.drawable.file_icon);
-					iv.setImageDrawable(d);
+					//d = mContext.getResources().getDrawable(R.drawable.file_icon);
+					iv.setImageResource(R.drawable.file_icon);
 				}
 				
-			 
-			
-
-			
-			
-	
+			 	
 			/*
 			 * On long click we start dragging the item, no need to make it invisible
 			 */
@@ -202,34 +150,5 @@ public class DevicesQuickprint {
 		mFileList.add(m);
 	}
 	
-	//Retrieve main folder or create if doesn't exist
-	//TODO: Changed main folder to FILES folder.
-	public static File getParentFolder(){
-		String parentFolder = Environment.getExternalStorageDirectory().toString();
-		File mainFolder = new File(parentFolder + "/PrintManager/Files");
-		mainFolder.mkdirs();
-		File temp_file = new File(mainFolder.toString());
-
-		return temp_file;
-	}
-	
-	public static String retrieveFile(String name, String type){
-		
-		String result = null;
-		
-		try {
-			File folder = new File(getParentFolder() + "/" + name + "/" + type + "/");
-			String file = folder.listFiles()[0].getName();
-			
-			result = folder + "/" + file; 
-		
-		} catch (ArrayIndexOutOfBoundsException e){
-			
-		}
-		
-		
-		return result;	
-		
-	}
 		
 }

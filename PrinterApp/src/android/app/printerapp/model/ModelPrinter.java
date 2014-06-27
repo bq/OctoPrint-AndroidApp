@@ -1,5 +1,7 @@
 package android.app.printerapp.model;
 
+import java.util.ArrayList;
+
 import javax.jmdns.ServiceInfo;
 
 import org.json.JSONArray;
@@ -7,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.octoprint.OctoprintConnection;
-import android.util.Log;
 
 public class ModelPrinter {
 	
@@ -18,6 +19,8 @@ public class ModelPrinter {
 	private String mMessage;
 	private String mTemperature;
 	
+	private ArrayList<ModelFile> mFileList;
+	
 	//Pending job
 	private ModelJob mJob;
 	
@@ -26,10 +29,10 @@ public class ModelPrinter {
 		mName = info.getName();
 		mAddress = info.getInetAddresses()[0].toString();
 		mJob = new ModelJob();
+		mFileList = new ArrayList<ModelFile>();
 		
 		//Initialize web socket connection
-		OctoprintConnection.getSettings(this);
-		
+		OctoprintConnection.getSettings(this);		
 	}
 	
 	/*********
@@ -60,6 +63,10 @@ public class ModelPrinter {
 		return mTemperature;
 	}
 	
+	public ArrayList<ModelFile> getFiles(){
+		return mFileList;
+	}
+	
 	/**********
 	 *  Sets
 	 **********/
@@ -75,15 +82,20 @@ public class ModelPrinter {
 				mStatus = "Error";
 				mMessage = state.getString("stateString");
 			} else mStatus = state.getString("stateString");
-			
+			if (mStatus.equals("Printing from SD")) mStatus = "Printing";
 			mJob.updateJob(status);
 			
 			temperature = status.getJSONArray("temperatures");
 			mTemperature = temperature.getJSONObject(0).getString("temp");
+			
+		
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public void updateFiles(ModelFile m){
+		mFileList.add(m);
+	}
 }
