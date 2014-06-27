@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Down" />
+
+    <Button
+        android:id="@+id/left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/down"
+        android:text="Left" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/right"
+        android:layout_alignBottom="@+id/right"
+        android:layout_toLeftOf="@+id/right"
+        android:text="Back" />
+
+    <Button
+        android:id="@+id/right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/down"
+        android:layout_toRightOf="@+id/down"
+        android:text="Right" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupMovement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="visible" >
+
+         <RadioButton
+            android:id="@+id/lightRotation"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Light" />
+         
+        <RadioButton
+            android:id="@+id/radioRotation"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Rotation" />
+
+        <RadioButton
+            android:id="@+id/radioTranslation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Translation" />
+    </RadioGroup>
+    
+     <SeekBar
+        android:id="@+id/barLayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/overhang"
+        />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="512dp"
+        android:layout_height="512dp"
+        android:layout_below="@+id/barLayer" >
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Normal" />
+    
+    <Button
+        android:id="@+id/overhang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/normal"
+        android:layout_alignParentTop="true"
+        android:text="Overhandle" />
+
+    <Button
+        android:id="@+id/xray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/overhang"
+        android:text="X-ray" />
+
+    <Button
+        android:id="@+id/layers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/transparent"
+        android:text="Layers" />
+
+    <Button
+        android:id="@+id/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/xray"
+        android:text="Transparent" />
+    
+     <Button
+        android:id="@+id/load_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Load File" />
+
+</RelativeLayout>

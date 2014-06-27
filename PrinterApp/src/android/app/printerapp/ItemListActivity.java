@@ -4,6 +4,7 @@ import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
+import android.app.printerapp.viewer.ViewerMain;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,7 @@ public class ItemListActivity extends FragmentActivity implements
 	
 	private DevicesFragment mDevicesFragment;
 	private LibraryFragment mLibraryFragment;
+	private ViewerMain mViewerFragment;
 	
 	private Fragment mCurrent;
 
@@ -62,12 +64,13 @@ public class ItemListActivity extends FragmentActivity implements
 		//TODO List controllers
 		new StorageController();
 		new DevicesListController();
+		new ViewerMain();
 		
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
 		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
-		
+		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag("Library");
 	}
 
 	/**
@@ -109,6 +112,30 @@ public class ItemListActivity extends FragmentActivity implements
 					 }
 					
 					} break;
+					
+				case 2:{
+					
+					//Check if we already created the Fragment to avoid having multiple instances
+					 if (getSupportFragmentManager().findFragmentByTag("Viewer")==null){
+						 mViewerFragment = new ViewerMain();
+						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mViewerFragment, "Viewer").commit();
+							
+						 //Replace the fragment with the desired tag for future checks
+							/*getSupportFragmentManager().beginTransaction()
+									.replace(R.id.item_detail_container, fragment, "Library").commit();*/
+						
+						
+						 mCurrent = mViewerFragment;
+						
+					 } else {
+						 
+						 mCurrent = mViewerFragment;
+						 
+						 
+						 Log.i("OUT","Viewer Fragment exists");
+					 }
+					
+				} break;
 				
 				case 3:{
 					//Check if we already created the Fragment to avoid having multiple instances
