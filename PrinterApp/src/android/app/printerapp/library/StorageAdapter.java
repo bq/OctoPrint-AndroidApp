@@ -25,7 +25,7 @@ import android.widget.TextView;
 public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterable {
 	
 	//Original list and current list to be filtered
-	private ArrayList<ModelFile> mData;
+	private ArrayList<ModelFile> mCurrent;
 	private ArrayList<ModelFile> mOriginal;
 	
 	//Filter
@@ -34,7 +34,7 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
 	public StorageAdapter(Context context, int resource, List<ModelFile> objects) {
 		super(context, resource, objects);
 		mOriginal = (ArrayList<ModelFile>) objects;
-		mData = (ArrayList<ModelFile>) objects;
+		mCurrent = (ArrayList<ModelFile>) objects;
 		mFilter = new ListFilter();
 	}
 	
@@ -60,14 +60,18 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
-		Drawable d;
-			d = Drawable.createFromPath(StorageController.getParentFolder() + "/" + m.getName() + "/" + m.getName() + ".jpg");
+		if (m.getStorage().equals("Internal storage")){
+			Drawable d;
+			d = m.getSnapshot();
 		
 			if (d!=null){
 				iv.setImageDrawable(d);
 			} else {
 				iv.setImageResource(R.drawable.file_icon);
 			}
+		} else iv.setImageResource(R.drawable.file_icon);
+		
+		
 			
 		
 		
@@ -78,13 +82,13 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
 	//Retrieve item from current list
 	@Override
 	public ModelFile getItem(int position) {
-		return mData.get(position);
+		return mCurrent.get(position);
 	}
 	
 	//Retrieve count from current list
 	@Override
 	public int getCount() {
-		return mData.size();
+		return mCurrent.size();
 	}
 
 	//Get filter
@@ -115,14 +119,28 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
             	//Temporal list
                 ArrayList<ModelFile> filt = new ArrayList<ModelFile>();
                 
-                //Check if every item from the original list has constaints
-                for (ModelFile m : mOriginal){
+                if ((constraint.equals("gcode"))||(constraint.equals("stl"))){
                 	
-                	if (m.getStorage().contains(constraint)){
-                		filt.add(m);
-                	}
-                	
+                	//Check if every item from the CURRENT list has the constraint
+                    for (ModelFile m : mCurrent){
+                    	
+                    	if (m.getName().contains(constraint)){
+                    		filt.add(m);
+                    	}
+                    	
+                    }
+                } else {
+                	 //Check if every item from the original list has the constraint
+                    for (ModelFile m : mOriginal){
+                    	
+                    	if (m.getStorage().contains(constraint)){
+                    		filt.add(m);
+                    	}
+                    	
+                    }
                 }
+                
+               
 
                 //New list is filtered list
                 result.count = filt.size();
@@ -145,7 +163,7 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
             
 			
 			//If there are results, update list
-			mData = (ArrayList<ModelFile>) results.values;
+			mCurrent = (ArrayList<ModelFile>) results.values;
 			notifyDataSetChanged();
 			
 		}

@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.util.Log;
@@ -64,6 +65,9 @@ public class OctoprintFiles {
 				     m.setPathGcode(object.getString("name"));
 				     //Add to storage file list
 				     p.updateFiles(m);
+				     
+				     //TODO NOPE!
+				     StorageController.addToList(m);
 				     
 				     Log.i("FILES","Adding " + object.getString("name"));
 				    } 

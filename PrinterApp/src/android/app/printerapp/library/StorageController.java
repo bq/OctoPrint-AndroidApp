@@ -1,10 +1,12 @@
 package android.app.printerapp.library;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import android.app.printerapp.model.ModelFile;
 import android.os.Environment;
+import android.util.Log;
 
 
 /**
@@ -19,7 +21,12 @@ public class StorageController {
 	
 	public StorageController(){
 		
-		retrieveFiles();
+		
+		//Retrieve normal files
+		retrieveFiles( getParentFolder());
+		
+		//Retrieve trash files
+		
 	
 	}
 	
@@ -27,52 +34,68 @@ public class StorageController {
 		return mFileList;
 	}
 	
-	
-	//Retrieve files from our system architecture.
-	public void retrieveFiles(){
-		
-						
-		File mainFolder = getParentFolder();
-		File trashFolder = new File(Environment.getExternalStorageDirectory() + "/PrintManager");
+	public void retrieveFiles(File path){
 		
 		/**
 		 * CHANGED FILE LOGIC, NOW RETRIEVES FOLDERS INSTEAD OF FILES, AND PARSES
 		 * INDIVIDUAL ELEMENTS LATER ON.
 		 */
-		File[] files = mainFolder.listFiles();
+		File[] files = path.listFiles();
 		for (File file : files){
+			
+			ModelFile m = null;
+			
 			if (file.isDirectory()){	
 				
-				ModelFile m = new ModelFile(file.getName(), "Internal storage");
+				Log.i("OUT","Is directory: " + file.getAbsolutePath());
 				
-				//TODO: Move this to the ModelFile code
-				m.setPathStl(retrieveFile(m.getName(), "_stl"));	
-				m.setPathGcode(retrieveFile(m.getName(), "_gcode"));	
-				m.setSnapshot(getParentFolder() + "/" + m.getName() + "/" + m.getName() + ".png");
-				mFileList.add(m);
+				FilenameFilter f = new FilenameFilter() {
+					
+					@Override
+					public boolean accept(File dir, String filename) {
+						
+						return filename.endsWith("jpg");
+					}
+				};
 				
-			}
-		}
-		
-		//TODO: TEST trash storage
-		
-		File[] trashFiles = trashFolder.listFiles();
-		for (File file : trashFiles){
-			if (!file.isDirectory()){
-				ModelFile m = new ModelFile(file.getName(), "Trash storage");
+				if (file.list(f).length > 0){
+					
+					Log.i("OUT","It's also a project " + file.getAbsolutePath());
+					
+					m = new ModelFile(file.getName(), "Internal storage");
+					
+					//TODO: Move this to the ModelFile code
+					m.setPathStl(retrieveFile(file.getAbsolutePath(), "_stl"));	
+					m.setPathGcode(retrieveFile(file.getAbsolutePath(), "_gcode"));	
+					m.setSnapshot(file.getAbsolutePath() + "/" + m.getName() + ".jpg");
+					
+				} else retrieveFiles(new File(file.getAbsolutePath()));
+				
+				
+				
+			} else {
+				
+				
+				m = new ModelFile(file.getName(), "Trash storage");
+				
 				m.setPathStl(file.getAbsolutePath());	
 				m.setPathGcode(file.getAbsolutePath());	
-				mFileList.add(m);
+				
+			}
+			
+			if (m!=null) {
+				Log.i("OUT","Adding: " + m.getName());
+				addToList(m);
 			}
 		}
-								
 	}
 	
+		
 	//Retrieve main folder or create if doesn't exist
 	//TODO: Changed main folder to FILES folder.
 	public static File getParentFolder(){
 		String parentFolder = Environment.getExternalStorageDirectory().toString();
-		File mainFolder = new File(parentFolder + "/PrintManager/Files");
+		File mainFolder = new File(parentFolder + "/PrintManager");
 		mainFolder.mkdirs();
 		File temp_file = new File(mainFolder.toString());
 
@@ -86,7 +109,8 @@ public class StorageController {
 		String result = null;
 		
 		try {
-			File folder = new File(getParentFolder() + "/" + name + "/" + type + "/");
+			File folder = new File(name + "/" + type + "/");
+			Log.i("OUT","It's gonna crash searching for " + folder.getAbsolutePath());
 			String file = folder.listFiles()[0].getName();
 			
 			result = folder + "/" + file; 

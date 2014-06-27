@@ -1,11 +1,14 @@
 package android.app.printerapp.library;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
+import android.app.AlertDialog;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
-import android.app.printerapp.model.ModelPrinter;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +16,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
@@ -34,7 +39,7 @@ public class LibraryFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+				
 		//Reference to View
 		View rootView = null;
 				
@@ -70,6 +75,12 @@ public class LibraryFragment extends Fragment {
 			//Set tab host for the view
 			setTabHost(rootView);
 			
+			mAdapter.sort(new Comparator<ModelFile>() {
+			    public int compare(ModelFile arg0, ModelFile arg1) {
+			        return arg0.getStorage().compareTo(arg1.getStorage());
+			    }
+			});
+			
 		
 		}
 		return rootView;
@@ -87,11 +98,12 @@ public class LibraryFragment extends Fragment {
 	   
 	   switch (item.getItemId()) {
 	   
-	   case R.id.library_search: //Add a new printer;
+	   case R.id.library_search: 
+		   optionSearchLibrary();
 			return true;
 			
-       	case R.id.library_filter: //Filter grid / list
-
+       	case R.id.library_filter: 
+       		optionFilterLibrary();
             return true;
               
           
@@ -136,14 +148,14 @@ public class LibraryFragment extends Fragment {
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
-		        
-		    	switch (tabs.getCurrentTab()) {
+
+		    	switch (tabs.getCurrentTab()) {				
 				case 0:
 						mAdapter.getFilter().filter(null);
 					break;
 				case 1:
 						mAdapter.getFilter().filter("Witbox");
-					break;
+					break; 
 				case 2:
 						mAdapter.getFilter().filter("sd");
 					break;
@@ -157,16 +169,83 @@ public class LibraryFragment extends Fragment {
 		});
 		
 	}
+		
 	
+	//Retrieve all files from the system
+	//TODO How to handle printer files?
 	public void retrieveAllFiles(){
 		
 		mCurrentFileList = StorageController.getFileList();
 		
-		for (ModelPrinter p : DevicesListController.getList()){
+				
+	}
+	
+	//Filter elements in the current tab from the menu option
+	//TODO WIP still not functional
+	public void optionFilterLibrary(){
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle("Filter");
+		
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflater.inflate(R.layout.menu_filter_library_dialog, null, false);
+		
+		final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_library);
+		
+		adb.setView(v);
+		
+		adb.setPositiveButton("Filter",  new OnClickListener() {
 			
-			mCurrentFileList.addAll(p.getFiles());
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+								
+				switch (rg.getCheckedRadioButtonId()){
+				
+				case R.id.lb_radio0:
+					
+					mAdapter.getFilter().filter(null);
+					
+					break;
+					
+				case R.id.lb_radio1:
+					
+					mAdapter.getFilter().filter("gcode");
+					
+					break;
+					
+				case R.id.lb_radio2:
+					
+					mAdapter.getFilter().filter("stl");
+					
+					break;
+				
+				}
+				
+			}
+		});
+		adb.setNegativeButton("Cancel", null);
+		
+		adb.show();
+	}
+	
+	public void optionSearchLibrary(){
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle("Search keyword");
+		
+		EditText et = new EditText(getActivity());
+		adb.setView(et);
+		
+		adb.setPositiveButton("Search", new OnClickListener() {
 			
-		}
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+								
+			}
+		});
+		
+		adb.setNegativeButton("Cancel", null);
+		adb.show();
 		
 	}
 
