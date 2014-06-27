@@ -17,19 +17,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:checked="true"
-            android:text="Show everything" />
+            android:text="@string/library_filter_dialog_show" />
 
         <RadioButton
             android:id="@+id/lb_radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show GCODE files" />
+            android:text="@string/library_filter_dialog_gcode" />
 
         <RadioButton
             android:id="@+id/lb_radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show STL files" />
+            android:text="@string/library_filter_dialog_stl" />
         
     </RadioGroup>
 

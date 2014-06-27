@@ -17,25 +17,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:checked="true"
-            android:text="All" />
+            android:text="@string/devices_filter_dialog_all" />
 
         <RadioButton
             android:id="@+id/radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="'In progress' printers" />
+            android:text="@string/devices_filter_dialog_progress" />
 
         <RadioButton
             android:id="@+id/radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="'Inactive' printers" />
+            android:text="@string/devices_filter_dialog_inactive" />
         
         <RadioButton
             android:id="@+id/radio3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="As groups" />
+            android:text="@string/devices_filter_dialog_groups" />
     </RadioGroup>
 
 </LinearLayout>

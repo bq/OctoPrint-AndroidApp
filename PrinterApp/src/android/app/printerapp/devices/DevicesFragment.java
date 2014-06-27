@@ -47,6 +47,9 @@ public class DevicesFragment extends Fragment{
 	
 	//Empty constructor
 	public DevicesFragment(){}
+	public ActionMode mActionMode;
+	
+	public boolean isActionMode = false;
 	
 	
 	
@@ -111,13 +114,18 @@ public class DevicesFragment extends Fragment{
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 
-					 arg1.startActionMode(mActionModeCallback);
+					 if (!isActionMode){
+						 mActionMode = arg1.startActionMode(mActionModeCallback);
+						 isActionMode = true;
+						 
+					 }
+					 
 					 
 					 ModelPrinter m = DevicesListController.getList().get(arg2);
 					 					 
 					 if (m.getStatus().equals("Error")){
 						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-						 adb.setTitle("Error message");
+						 adb.setTitle(R.string.devices_error_dialog_title);
 						 adb.setMessage((DevicesListController.getList().get(arg2).getMessage()));
 						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
 						 adb.show();
@@ -236,6 +244,8 @@ public class DevicesFragment extends Fragment{
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
+		    	mActionMode.finish();
+		    	
 		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
 		    }
 		});
@@ -273,7 +283,11 @@ public class DevicesFragment extends Fragment{
 	public static void notifyAdapter(){
 		mListAdapter.notifyDataSetChanged();
 		mGridAdapter.notifyDataSetChanged();
+		
 	}
+	
+	
+
 	
 	/**
 	 * Callback for the  contextual menu as described @ Android Developers
@@ -315,21 +329,22 @@ public class DevicesFragment extends Fragment{
 	    // Called when the user exits the action mode
 	    @Override
 	    public void onDestroyActionMode(ActionMode mode) {
-	       //mActionMode = false;
+	       //mode.finish();
+	       isActionMode = false;
 	    }
 	};
 	
 	//Filter option for the device list
 	public void optionFilter(){
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		adb.setTitle("Show...");
+		adb.setTitle(R.string.devices_filter_dialog_title);
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
 		
 		adb.setView(v);
 		
-		adb.setPositiveButton("Filter", null);
-		adb.setNegativeButton("Cancel", null);
+		adb.setPositiveButton(R.string.filter, null);
+		adb.setNegativeButton(R.string.cancel, null);
 		
 		adb.show();
 		
@@ -340,7 +355,7 @@ public class DevicesFragment extends Fragment{
 	public void optionAdd(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		adb.setTitle("Detected printer(s)");
+		adb.setTitle(R.string.devices_add_dialog_title);
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.menu_add_dialog, null, false);
 		
@@ -355,8 +370,8 @@ public class DevicesFragment extends Fragment{
 		lv.setAdapter(adapter);
 		adb.setView(v);
 		
-		adb.setPositiveButton("Add", null);
-		adb.setNegativeButton("Cancel", null);
+		adb.setPositiveButton(R.string.add, null);
+		adb.setNegativeButton(R.string.cancel, null);
 		
 		adb.show();
 		
@@ -365,7 +380,7 @@ public class DevicesFragment extends Fragment{
 	public void setDialogAdapter(ModelPrinter m){
 		
 		 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		 adb.setTitle("Progress");
+		 adb.setTitle(R.string.devices_progress_dialog_title);
 		 adb.setIcon(getResources().getDrawable(R.drawable.printer_icon));
 		 
 		//Inflate the view

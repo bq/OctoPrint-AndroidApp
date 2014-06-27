@@ -24,7 +24,7 @@ public class ListContent {
 	public static Map<String, ListItem> ITEM_MAP = new HashMap<String, ListItem>();
 
 	static {
-		// Add 3 sample items.
+		
 		addItem(new ListItem("1", "Devices"));
 		addItem(new ListItem("2", "Print panel"));
 		addItem(new ListItem("3", "Models"));

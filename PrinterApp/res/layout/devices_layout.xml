@@ -50,7 +50,8 @@
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal"
+                    android:baselineAligned="false" >
                     
 
                     <ListView
@@ -83,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:gravity="center|top"
-        android:text="Quickprint"
+        android:text="@string/devices_quickprint"
         android:textSize="16sp" />
 
                     <HorizontalScrollView
@@ -93,14 +94,15 @@
 
                         <LinearLayout
                             android:id="@+id/linearlayout_storage"
-                            android:paddingTop="30px"
+                            android:paddingTop="30dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal"
+                             android:baselineAligned="false" >
 
                             <ListView
                                 android:id="@+id/listView1"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dip"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" >
                             </ListView>

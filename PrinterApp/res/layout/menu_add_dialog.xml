@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Select a printer to add it to your panel:" />
+        android:text="@string/devices_add_dialog_message" />
 
     <ListView
         android:id="@+id/add_dialog_list"
