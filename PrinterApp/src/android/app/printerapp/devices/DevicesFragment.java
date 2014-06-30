@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -67,8 +69,7 @@ public class DevicesFragment extends Fragment{
 		
 		
 		
-		super.onCreate(savedInstanceState);
-		
+		super.onCreate(savedInstanceState);		
 		//Retain instance to keep the Fragment from destroying itself
 		setRetainInstance(true);
 		
@@ -185,6 +186,22 @@ public class DevicesFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.menu_add: //Add a new printer
+		   
+		   
+		   
+		   Cursor c = DatabaseController.retrieveDeviceList();
+			
+			c.moveToFirst();
+			
+			while (!c.isAfterLast()){
+				
+				Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
+				
+				c.moveToNext();
+			}
+		   
+		   DatabaseController.closeDb();
+			
 		   optionAdd();
 			return true;
 			
@@ -348,7 +365,15 @@ public class DevicesFragment extends Fragment{
 		lv.setAdapter(adapter);
 		adb.setView(v);
 		
-		adb.setPositiveButton(R.string.add, null);
+		adb.setPositiveButton(R.string.add, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				
+				
+			}
+		});
 		adb.setNegativeButton(R.string.cancel, null);
 		
 		adb.show();
