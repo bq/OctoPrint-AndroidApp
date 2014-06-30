@@ -5,14 +5,14 @@
     android:orientation="vertical" >
 
     <RadioGroup
-        android:id="@+id/radioGroup1"
+        android:id="@+id/radioGroup_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="10dp" >
 
         <RadioButton
-            android:id="@+id/radio0"
+            android:id="@+id/dv_radio0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -20,19 +20,19 @@
             android:text="@string/devices_filter_dialog_all" />
 
         <RadioButton
-            android:id="@+id/radio1"
+            android:id="@+id/dv_radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/devices_filter_dialog_progress" />
 
         <RadioButton
-            android:id="@+id/radio2"
+            android:id="@+id/dv_radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/devices_filter_dialog_inactive" />
         
         <RadioButton
-            android:id="@+id/radio3"
+            android:id="@+id/dv_radio3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/devices_filter_dialog_groups" />

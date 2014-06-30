@@ -10,6 +10,8 @@ import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -26,6 +28,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
@@ -288,9 +291,37 @@ public class DevicesFragment extends Fragment{
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
 		
+		final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
+		
 		adb.setView(v);
 		
-		adb.setPositiveButton(R.string.filter, null);
+		adb.setPositiveButton(R.string.filter, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				switch(rg.getCheckedRadioButtonId()){
+				
+				
+				case R.id.dv_radio0:{
+					mGridAdapter.getFilter().filter(null);//Show all devices
+
+				}break;
+				case R.id.dv_radio1:{
+					mGridAdapter.getFilter().filter("Printing");//Active printers
+				}break;
+				case R.id.dv_radio2:{
+					mGridAdapter.getFilter().filter("Operational");	//Inactive printers
+				}break;
+				case R.id.dv_radio3:{
+					mGridAdapter.getFilter().filter(null);	//TODO Groups
+				}break;
+				
+				}
+				
+				
+			}
+		});
 		adb.setNegativeButton(R.string.cancel, null);
 		
 		adb.show();

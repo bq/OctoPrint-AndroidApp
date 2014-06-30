@@ -17,7 +17,7 @@
     <string name="devices_quickprint">Quickprint</string>
     <string name="devices_add_dialog_title">Detected printer(s)</string>
     <string name="devices_add_dialog_message">Select a printer to add it to your panel</string>
-    <string name="devices_filter_dialog_title">Show#8230</string>
+    <string name="devices_filter_dialog_title">Show</string>
     <string name="devices_progress_dialog_title">Progress</string>
     <string name="devices_tabhost_tab_map">Map</string>
     <string name="devices_tabhost_tab_list">List</string>
