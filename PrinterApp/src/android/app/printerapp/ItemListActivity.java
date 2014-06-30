@@ -70,7 +70,7 @@ public class ItemListActivity extends FragmentActivity implements
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
 		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
-		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag("Library");
+		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag("Viewer");
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class ItemListActivity extends FragmentActivity implements
 			//Switch between list ids
 			
 			 if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
-							
+			ActionModeHandler.modeFinish();			
 			switch (Integer.valueOf(id)){
 			
 				case 1:{
@@ -172,5 +172,5 @@ public class ItemListActivity extends FragmentActivity implements
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
 			startActivity(detailIntent);
 		}
-	}
+	}	
 }

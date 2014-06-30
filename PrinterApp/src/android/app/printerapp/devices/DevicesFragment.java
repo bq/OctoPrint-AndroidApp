@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
@@ -13,11 +14,9 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -47,10 +46,7 @@ public class DevicesFragment extends Fragment{
 	
 	//Empty constructor
 	public DevicesFragment(){}
-	public ActionMode mActionMode;
-	
-	public boolean isActionMode = false;
-	
+
 	
 	
 	@Override
@@ -114,11 +110,7 @@ public class DevicesFragment extends Fragment{
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 
-					 if (!isActionMode){
-						 mActionMode = arg1.startActionMode(mActionModeCallback);
-						 isActionMode = true;
-						 
-					 }
+					ActionModeHandler.modeStart(arg1);
 					 
 					 
 					 ModelPrinter m = DevicesListController.getList().get(arg2);
@@ -244,7 +236,8 @@ public class DevicesFragment extends Fragment{
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
-		    	mActionMode.finish();
+		    	
+		    	ActionModeHandler.modeFinish();
 		    	
 		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
 		    }
@@ -287,52 +280,6 @@ public class DevicesFragment extends Fragment{
 	}
 	
 	
-
-	
-	/**
-	 * Callback for the  contextual menu as described @ Android Developers
-	 */
-	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-		
-	    // Called when the action mode is created; startActionMode() was called
-	    @Override
-	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-	        // Inflate a menu resource providing context menu items
-	        MenuInflater inflater = mode.getMenuInflater();
-	        inflater.inflate(R.menu.devices_cab_menu, menu);
-	        return true;
-	    }
-
-	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
-	    // may be called multiple times if the mode is invalidated.
-	    @Override
-	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-	        return false; // Return false if nothing is done
-	    }
-
-	    // Called when the user selects a contextual menu item
-	    @Override
-	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-	        switch (item.getItemId()) {
-	            case R.id.menu_cab_delete:
-	                mode.finish(); // Action picked, so close the CAB
-	                return true;
-	                
-	            case R.id.menu_cab_settings:
-	            	mode.finish(); // Action picked, so close the CAB
-	            	return true;
-	            default:
-	                return false;
-	        }
-	    }
-
-	    // Called when the user exits the action mode
-	    @Override
-	    public void onDestroyActionMode(ActionMode mode) {
-	       //mode.finish();
-	       isActionMode = false;
-	    }
-	};
 	
 	//Filter option for the device list
 	public void optionFilter(){
