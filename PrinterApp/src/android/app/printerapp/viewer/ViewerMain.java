@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -57,6 +59,10 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	private String mLastStlOpened = "";
 	private String mLastGcodeOpened = "";
 	
+	
+	//Empty constructor
+	public ViewerMain(){}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,6 +81,9 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		
 		//If is not new
 		if (savedInstanceState==null){
+			
+			//Show custom option menu
+			setHasOptionsMenu(true);
 			
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.viewer_main,
@@ -214,15 +223,73 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		
 			
 		}
-
-		
-
-		
 		
 		return rootView;
 		
 		
 	}
+	
+	
+	/*******************************************************************
+	 * 
+	 * 	MENU OPTIONS
+	 * 
+	 *******************************************************************/
+	
+	
+	//Create option menu and inflate viewer menu
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.viewer_menu, menu);
+	}
+	
+   @Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+	   
+	   switch (item.getItemId()) {
+	   
+	   case R.id.viewer_open: 
+		   
+		   
+		   //Open file to load
+		   
+		   //TODO test, encapsulate code into function
+		   
+		   FileBrowser fileListDialog = new FileBrowser(getActivity(), false, "Choose file...", ".stl", ".gcode");
+			
+			fileListDialog.setOnFileListDialogListener(ViewerMain.this);
+
+			SharedPreferences config = getActivity().getSharedPreferences("PathSetting", Activity.MODE_PRIVATE);
+			fileListDialog.show(config.getString("lastPath", Environment.getExternalStorageDirectory().getPath() + "/PrintManager"));
+			
+			return true;
+			
+       	case R.id.viewer_save: 
+       		//Save current file
+            return true;
+            
+    	case R.id.viewer_notes: 
+    		//Add/View notes
+            return true;
+            
+    	case R.id.viewer_autofit: 
+    		//Autofit
+            return true;
+              
+    	case R.id.viewer_clean: 
+    		//Clean panel
+            return true;
+          
+       default:
+           return super.onOptionsItemSelected(item);
+	   }
+	}
+	
+	/*****************************************************************************/
+   
+   
+   
 	
 	private void changeViewFrom (int state, String type) {
 		if (mFile!= null) {

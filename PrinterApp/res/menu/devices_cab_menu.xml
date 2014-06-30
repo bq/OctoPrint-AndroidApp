@@ -5,13 +5,13 @@
         android:id="@+id/menu_cab_delete"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Add new printer"/>
+        android:title="@string/devices_cab_menu_delete"/>
       
     <item
         android:id="@+id/menu_cab_settings"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_manage"
-        android:title="Filter devices"/>
+        android:title="@string/devices_cab_menu_settings" />
  
   
 </menu>

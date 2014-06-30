@@ -9,38 +9,33 @@
         android:id="@+id/pd_tv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Piggy Bank.gcode" />
+        android:layout_margin="5dp" />
 
     <ProgressBar
         android:id="@+id/pd_pb"
         style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="196dp"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_weight="0.91"
-        android:progress="72" />
+        android:layout_weight="0.91" />
 
     <TextView
         android:id="@+id/pd_tv2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="72%" />
+        android:layout_margin="5dp" />
 
     <TextView
         android:id="@+id/pd_tv3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Faltan 1d 31h aprox" />
+        android:layout_margin="5dp" />
 
     <TextView
         android:id="@+id/pd_tv4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="230º"
         android:textColor="#008000" />
 
 </LinearLayout>

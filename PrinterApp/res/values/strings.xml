@@ -4,6 +4,56 @@
     <string name="app_name">PrinterApp</string>
     <string name="title_item_detail">Item Detail</string>
     
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="filter">Filter</string>
+    <string name="search">Search</string>
+    
+    <string name="fragment_devices">Devices</string>
+    <string name="fragment_print">Print panel</string>
+    <string name="fragment_models">Models</string>
+    <string name="fragment_history">History</string>
+    
+    <string name="devices_quickprint">Quickprint</string>
+    <string name="devices_add_dialog_title">Detected printer(s)</string>
+    <string name="devices_add_dialog_message">Select a printer to add it to your panel</string>
+    <string name="devices_filter_dialog_title">Show#8230</string>
+    <string name="devices_progress_dialog_title">Progress</string>
+    <string name="devices_tabhost_tab_map">Map</string>
+    <string name="devices_tabhost_tab_list">List</string>
+    <string name="devices_error_dialog_title">Error message</string>
+    
+    <string name="devices_menu_add">Delete printer</string>
+    <string name="devices_menu_filter">Filter devices</string>
+    <string name="devices_cab_menu_delete">Delete printer</string>
+    <string name="devices_cab_menu_settings">Printer settings</string>
+    
+    <string name="devices_filter_dialog_all">All</string>
+    <string name="devices_filter_dialog_progress">\'In progress\' printers</string>
+    <string name="devices_filter_dialog_inactive">\'Inactive\' printers</string>
+    <string name="devices_filter_dialog_groups">As groups</string>
+    
+    
+    <string name="library_search_dialog_title">Search keyword</string>
+    <string name="library_filter_dialog_show">Show everything</string>
+    <string name="library_filter_dialog_gcode">Show GCODE files</string>
+    <string name="library_filter_dialog_stl">Show STL files</string>
+    
+    <string name="library_menu_search">Search model</string>
+    <string name="library_menu_filter">Filter models</string>
+    <string name="library_menu_list">View as list</string>
+    <string name="library_menu_add">Add model</string>
+    <string name="library_menu_folder">Create new folder</string>
+    
+    <string name="viewer_menu_open">Open file</string>
+    <string name="viewer_menu_save">Save</string>
+    <string name="viewer_menu_notes">Notes</string>
+    <string name="viewer_menu_autofit">Autofit</string>
+    <string name="viewer_menu_clean">Clean panel</string>
+    
+    
+    
+    
     <string name="choose_file">Choose File</string> 
 	<string name="open">Open</string>  
 	<string name="close_browser">Close browser</string>  

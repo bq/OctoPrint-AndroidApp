@@ -185,7 +185,7 @@ public class LibraryFragment extends Fragment {
 	public void optionFilterLibrary(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		adb.setTitle("Filter");
+		adb.setTitle(R.string.filter);
 		
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.menu_filter_library_dialog, null, false);
@@ -194,7 +194,7 @@ public class LibraryFragment extends Fragment {
 		
 		adb.setView(v);
 		
-		adb.setPositiveButton("Filter",  new OnClickListener() {
+		adb.setPositiveButton(R.string.filter,  new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -223,7 +223,7 @@ public class LibraryFragment extends Fragment {
 				
 			}
 		});
-		adb.setNegativeButton("Cancel", null);
+		adb.setNegativeButton(R.string.cancel, null);
 		
 		adb.show();
 	}
@@ -231,12 +231,12 @@ public class LibraryFragment extends Fragment {
 	public void optionSearchLibrary(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		adb.setTitle("Search keyword");
+		adb.setTitle(R.string.library_search_dialog_title);
 		
 		EditText et = new EditText(getActivity());
 		adb.setView(et);
 		
-		adb.setPositiveButton("Search", new OnClickListener() {
+		adb.setPositiveButton(R.string.search, new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -244,7 +244,7 @@ public class LibraryFragment extends Fragment {
 			}
 		});
 		
-		adb.setNegativeButton("Cancel", null);
+		adb.setNegativeButton(R.string.cancel, null);
 		adb.show();
 		
 	}

@@ -4,13 +4,13 @@
         android:id="@+id/menu_add"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="Add new printer"/>
+        android:title="@string/devices_menu_add"/>
       
     <item
         android:id="@+id/menu_filter"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_labels"
-        android:title="Filter devices"/>
+        android:title="@string/devices_menu_filter"/>
  
   
 </menu>

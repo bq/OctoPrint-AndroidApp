@@ -32,24 +32,21 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:text="File" />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/list_column_3"
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:text="Status" />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/list_column_4"
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:text="User" />
+        android:gravity="center_vertical" />
     
     <LinearLayout
         android:id="@+id/list_column_5"

@@ -77,15 +77,16 @@ public class DevicesQuickprint {
 			
 			ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 			
-			Drawable d;
-				d = Drawable.createFromPath(StorageController.getParentFolder() + "/Files/" + m.getName() + "/" + m.getName() + ".jpg");
+			if (m.getStorage().equals("Internal storage")){
+				Drawable d;
+				d = m.getSnapshot();
 			
 				if (d!=null){
 					iv.setImageDrawable(d);
 				} else {
-					//d = mContext.getResources().getDrawable(R.drawable.file_icon);
 					iv.setImageResource(R.drawable.file_icon);
 				}
+			} else iv.setImageResource(R.drawable.file_icon);
 				
 			 	
 			/*
