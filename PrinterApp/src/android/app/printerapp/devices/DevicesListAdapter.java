@@ -106,5 +106,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		return String.valueOf((int)value);
 	}
+	
+	
 
 }
