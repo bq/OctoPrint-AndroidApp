@@ -27,23 +27,23 @@ import android.util.Log;
 public class JmdnsServiceListener implements ServiceListener{
 	
 	//Allows this application to receive Multicast packets, can cause a noticable battery drain.
-		private WifiManager.MulticastLock mMulticastLock;
+		private static WifiManager.MulticastLock mMulticastLock;
 				
 		//New thread to handle both listeners.
 		private Handler mHandler;
 			
 		//JmDNS manager which will create both listeners
-		private JmDNS mJmdns = null;
+		private static JmDNS mJmdns = null;
 		
 		//Reference to the fragment controller
-		private DevicesFragment mContext;
+		private DiscoveryServiceOption mContext;
 		
 		/*****************
 		 * Main constructor
 		 * @param controller
 		 *****************/
 		
-		public JmdnsServiceListener(DevicesFragment context){
+		public JmdnsServiceListener(DiscoveryServiceOption context){
 			
 			mContext = context;
 						
@@ -56,6 +56,9 @@ public class JmdnsServiceListener implements ServiceListener{
 	                setUp();
 	            }
 	        }, 1000);
+			
+			
+	
 		}
 		
 		/**
@@ -65,7 +68,7 @@ public class JmdnsServiceListener implements ServiceListener{
 		private void setUp() {
 			
 			//We need to get our device IP address to bind it when creating JmDNS since we want to address it to a specific network interface
-	        WifiManager wifi = (WifiManager) mContext.getActivity().getSystemService(Context.WIFI_SERVICE);
+	        WifiManager wifi = (WifiManager) mContext.getContext().getSystemService(Context.WIFI_SERVICE);
 	        final InetAddress deviceIpAddress = getDeviceIpAddress(wifi);
 	        
 	        //Get multicast lock because we need to listen to multicast packages
@@ -77,7 +80,6 @@ public class JmdnsServiceListener implements ServiceListener{
 
 	        try {	
 				mJmdns = JmDNS.create(deviceIpAddress, null); //Creating an instance of JmDNS			
-				
 				//Search for an specific service type
 	            mJmdns.addServiceListener("_ipp3._tcp.local.", this);
 	            
@@ -111,9 +113,12 @@ public class JmdnsServiceListener implements ServiceListener{
 			//Creates a service with info
 			 Log.i("Model","Service resolved: " + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
-			 mContext.listHandler(new ModelPrinter(service));
-		
+			 //mContext.listHandler(new ModelPrinter(service));
+			 mContext.addToServiceList(service);
+			 
 		}
+		
+	
 		
 		//This method was obtained externally, basically it gets our IP Address, or return Android localhost by default.
 		public  static InetAddress getDeviceIpAddress(WifiManager wifi) {
@@ -134,6 +139,20 @@ public class JmdnsServiceListener implements ServiceListener{
 			      Log.i("Controller", String.format("getDeviceIpAddress Error: %s", ex.getMessage()));
 			   }
 			   return result;
-			}
-
-}
+		}
+		
+		
+		
+		
+		public static void stopListening(){
+			
+			mJmdns.unregisterAllServices();
+			mMulticastLock.release();
+			
+			Log.i("OUT","STAHP");
+			
+			
+			
+		}
+		
+	}

@@ -18,7 +18,10 @@ public class DatabaseController {
 	static SQLiteDatabase mDb;
 	
 	public DatabaseController(Context context){
+		
+		//TODO Database deletion for testing
 		context.deleteDatabase("Devices.db");
+		
 		mDbHelper = new DatabaseHelper(context);
 	
 	}

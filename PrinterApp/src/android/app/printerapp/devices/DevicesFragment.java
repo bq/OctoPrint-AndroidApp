@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.DiscoveryServiceOption;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -167,7 +169,7 @@ public class DevicesFragment extends Fragment{
 			new DevicesQuickprint(ll,getActivity());
 			
 			//Custom service listener
-			new JmdnsServiceListener(this);
+			//new JmdnsServiceListener(this);
 		
 		}
 		return rootView;
@@ -349,37 +351,10 @@ public class DevicesFragment extends Fragment{
 	//TODO implement the discovery logic here
 	public void optionAdd(){
 		
-		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		adb.setTitle(R.string.devices_add_dialog_title);
-		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.menu_add_dialog, null, false);
-		
-		ListView lv = (ListView) v.findViewById(R.id.add_dialog_list);
-		
-		ArrayList<String> list = new ArrayList<String>();
-		for (ModelPrinter m : DevicesListController.getList()){
-			list.add(m.getName());
-		}
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,list);
-		lv.setAdapter(adapter);
-		adb.setView(v);
-		
-		adb.setPositiveButton(R.string.add, new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				
-				
-				
-			}
-		});
-		adb.setNegativeButton(R.string.cancel, null);
-		
-		adb.show();
+		new DiscoveryServiceOption(getActivity());
 		
 	}
-	
+
 	public void setDialogAdapter(ModelPrinter m){
 		
 		 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
