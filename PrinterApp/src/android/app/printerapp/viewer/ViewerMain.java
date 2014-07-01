@@ -92,6 +92,8 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			//mPathFile = getActivity().getIntent().getExtras().getString("filename");
 					
 			mSeekBar = (SeekBar) rootView.findViewById (R.id.barLayer);		
+			mSeekBar.setVisibility(View.INVISIBLE);
+			
 			mLayout = (FrameLayout) rootView.findViewById (R.id.frameLayout);
 						
 			if (mPathFile!= null) openFile (mPathFile);
@@ -423,6 +425,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		return null;
 	}
 	
+	/*
 	private boolean doSnapshot (String path) {
 		boolean doSnapshot;
 		File png = new File (path);
@@ -434,7 +437,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	
 	
 	
-	/*public void onPause() {
+	public void onPause() {
         super.onPause();
         mSurface.onPause();
 	 }

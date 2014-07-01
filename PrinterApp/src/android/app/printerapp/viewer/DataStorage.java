@@ -28,10 +28,6 @@ public class DataStorage {
 	private float mMinZ;
 	private float mMaxZ;
 	
-	private float mCenterMinY;
-	private float mCenterMinX;
-
-	
 	private String mPath;
 	private String mPathSnapshot;
 
@@ -86,12 +82,17 @@ public class DataStorage {
 						
 		for (int i = 0; i < mVertexList.size(); i=i+3) {		
 			mVertexArray[i] = mVertexList.get(i)   - distX;
-			if (mVertexArray[i]<mCenterMinX) mCenterMinX = mVertexArray[i];
-
 			mVertexArray[i+1] = mVertexList.get(i+1) - distY;
-			if (mVertexArray[i+1]<mCenterMinY) mCenterMinY = mVertexArray[i+1];
 			mVertexArray[i+2] = mVertexList.get(i+2) - distZ;		
-		}					
+		}	
+		
+		//Adjust max, min
+		mMinX = mMinX - distX;
+		mMaxX = mMaxX - distX;
+		mMinY = mMinY - distY;
+		mMaxY = mMaxY - distY;
+		mMinZ = mMinZ - distZ;
+		mMaxZ = mMaxZ - distZ;
 	}
 	
 	public void fillNormalArray() {
@@ -270,15 +271,6 @@ public class DataStorage {
 	
 	public float getMaxZ () {
 		return mMaxZ;
-	}
-	
-	
-	public float getCenterMinX () {
-		return mCenterMinX;
-	}
-	
-	public float getCenterMinY () {
-		return mCenterMinY;
 	}
 	
 	public void setPathFile (String path) {

@@ -1,5 +1,8 @@
 package android.app.printerapp.viewer;
 
+import static android.opengl.Matrix.invertM;
+import static android.opengl.Matrix.multiplyMV;
+
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -14,6 +17,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
+
+import android.app.printerapp.viewer.Geometry.*;
 
 
 public class ViewerRenderer implements GLSurfaceView.Renderer {
@@ -85,6 +90,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	private final float[] mRotationMatrix = new float[16];
 	private final float[] mAccumulatedRotationMatrix = new float[16];
 	private final float[] mTemporaryMatrix = new float [16];
+    private final float[] invertedViewProjectionMatrix = new float[16];
 		
 	private final float[] mLightVector = new float [4];
 	float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
@@ -92,6 +98,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	private boolean mSnapShot = false;
 	
 	private boolean mIsStl;
+	
+	//Variables Touch events
+	private boolean objectPressed = false;
 
 	public ViewerRenderer (DataStorage data, Context context, int state, boolean doSnapshot, boolean stl) {	
 		this.mData = data;
@@ -141,7 +150,74 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public void setXray (boolean xray) {
 		if (mStlObject!= null) mStlObject.setXray(xray);
 	}
+	
+	public boolean touchPoint (float x, float y) {
+		Ray ray = convertNormalized2DPointToRay(x, y);
+		 	 		 
+        Box objectBox = new Box (mData.getMinX(), mData.getMaxX(), mData.getMinY(), mData.getMaxY(), mData.getMinZ(), mData.getMaxZ());
 
+        // If the ray intersects (if the user touched a part of the screen that
+        // intersects the stl object's bounding sphere), then set objectPressed =
+        // true.
+        objectPressed = Geometry.intersects(objectBox, ray);
+        
+        if (objectPressed) mStlObject.setColor(StlObject.colorSelectedObject);
+        else mStlObject.setColor(StlObject.colorNormal);
+        
+        Log.i("VIEWER", " OBJECT PRESSED " + objectPressed);
+        
+        return objectPressed;
+	}
+	
+	 private Ray convertNormalized2DPointToRay(float normalizedX, float normalizedY) {
+		 
+	        // We'll convert these normalized device coordinates into world-space
+	        // coordinates. We'll pick a point on the near and far planes, and draw a
+	        // line between them. To do this transform, we need to first multiply by
+	        // the inverse matrix, and then we need to undo the perspective divide.
+	        final float[] nearPointNdc = {normalizedX, normalizedY, -1, 1};
+	        final float[] farPointNdc =  {normalizedX, normalizedY,  1, 1};
+	        
+	        final float[] nearPointWorld = new float[4];
+	        final float[] farPointWorld = new float[4];
+	        
+	        multiplyMV(
+	            nearPointWorld, 0, invertedViewProjectionMatrix, 0, nearPointNdc, 0);
+	        multiplyMV(
+	            farPointWorld, 0, invertedViewProjectionMatrix, 0, farPointNdc, 0);
+
+	        // Why are we dividing by W? We multiplied our vector by an inverse
+	        // matrix, so the W value that we end up is actually the *inverse* of
+	        // what the projection matrix would create. By dividing all 3 components
+	        // by W, we effectively undo the hardware perspective divide.
+	        divideByW(nearPointWorld);
+	        divideByW(farPointWorld);
+
+	        // We don't care about the W value anymore, because our points are now
+	        // in world coordinates.
+	        Point nearPointRay = 
+	            new Point(nearPointWorld[0], nearPointWorld[1], nearPointWorld[2]);
+				
+	        Point farPointRay = 
+	            new Point(farPointWorld[0], farPointWorld[1], farPointWorld[2]);
+
+	        return new Ray(nearPointRay,  Geometry.vectorBetween(nearPointRay, farPointRay));
+	 }    
+	 
+	  private void divideByW(float[] vector) {
+		  vector[0] /= vector[3];
+	      vector[1] /= vector[3];
+	      vector[2] /= vector[3];
+	  }
+	  
+	  public float getWidthScreen () {
+		  return mWidth;
+	  }
+	  
+	  public float getHeightScreen () {
+		  return mHeight;
+	  }
+	  
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		// Set the background frame color
@@ -201,8 +277,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	        else if (dh>dl) mCameraZ = OFFSET_HEIGHT*h;
 	        else mCameraZ = OFFSET_BIG_HEIGHT*h;
 	        
-	        dl = dl + Math.abs(mData.getCenterMinY());
-	        dw = dw + Math.abs(mData.getCenterMinX());
+	        dl = dl + Math.abs(mData.getMinY());
+	        dw = dw + Math.abs(mData.getMinX());
 	        
 	        if (dw>dh && dw>dl) mCameraY = - dw;
 	        else if (dh>dl) mCameraY = -dh;
@@ -265,6 +341,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         // for the matrix multiplication product to be correct.
         Matrix.multiplyMM(mvp, 0,mMVPMatrix, 0, mAccumulatedRotationMatrix, 0);
         System.arraycopy(mTemporaryMatrix, 0, mMVPMatrix, 0, 16);
+        
+        invertM(invertedViewProjectionMatrix, 0, mvp, 0);
 
         //Set ModelViewMatrix
         Matrix.multiplyMM(mv, 0, mViewMatrix, 0, mAccumulatedRotationMatrix, 0);

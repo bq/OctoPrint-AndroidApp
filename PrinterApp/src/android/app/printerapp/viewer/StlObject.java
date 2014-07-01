@@ -64,9 +64,12 @@ public class StlObject {
 
 	private final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 	 
- 
-	float color[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
-		
+	float mColor [];
+	
+	static float colorNormal[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
+	
+	static float colorSelectedObject[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	
 	private final DataStorage mData;
 	
 	float [] mVertexArray;
@@ -87,8 +90,9 @@ public class StlObject {
 
 		vertexCount = mVertexArray.length/COORDS_PER_VERTEX;
 		
-		configStlObject(state);
-				
+		configStlObject(state);	
+		setColor (colorNormal);
+		
 		//Vertex buffer
 		ByteBuffer vbb = ByteBuffer.allocateDirect(mVertexArray.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
@@ -140,6 +144,10 @@ public class StlObject {
 		mXray = xray;
 	}
 	
+	public void setColor (float[] c) {
+		mColor = c;
+	}
+	
 	/**
 	 * Draw STL
 	 * ----------------------------------
@@ -169,7 +177,7 @@ public class StlObject {
         ViewerRenderer.checkGlError("glGetUniformLocation");
 
 	    // Set color for drawing the facet
-	    GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+	    GLES20.glUniform4fv(mColorHandle, 1, mColor, 0);
         ViewerRenderer.checkGlError("glUniform4fv");
         
         mNormalHandle = GLES20.glGetAttribLocation(mProgram, "a_Normal");
