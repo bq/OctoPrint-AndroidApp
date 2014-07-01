@@ -2,6 +2,7 @@ package android.app.printerapp;
 
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.viewer.ViewerMain;
@@ -65,7 +66,7 @@ public class ItemListActivity extends FragmentActivity implements
 		new StorageController();
 		new DevicesListController();
 		new ViewerMain();
-		
+		new DatabaseController(this);
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
