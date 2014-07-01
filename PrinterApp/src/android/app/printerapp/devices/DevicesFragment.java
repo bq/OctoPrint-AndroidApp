@@ -1,14 +1,11 @@
 package android.app.printerapp.devices;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.devices.discovery.DiscoveryServiceOption;
-import android.app.printerapp.devices.discovery.JmdnsServiceListener;
+import android.app.printerapp.devices.discovery.DiscoveryOptionController;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
@@ -19,7 +16,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -170,6 +165,8 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			//new JmdnsServiceListener(this);
+			
+			loadList();
 		
 		}
 		return rootView;
@@ -188,26 +185,12 @@ public class DevicesFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.menu_add: //Add a new printer
-		   
-		   
-		   
-		   Cursor c = DatabaseController.retrieveDeviceList();
-			
-			c.moveToFirst();
-			
-			while (!c.isAfterLast()){
-				
-				Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
-				
-				c.moveToNext();
-			}
-		   
-		   DatabaseController.closeDb();
-			
+		  			
 		   optionAdd();
 			return true;
 			
        	case R.id.menu_filter: //Filter grid / list
+       		
        		optionFilter();
             return true;
               
@@ -267,32 +250,32 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
-	/**
-	 * LIST HANDLER
-	 * TODO: Eventually this will add elements to a Database
-	 */
-	
-	public void listHandler(final ModelPrinter m){
+	public static void addElement(ModelPrinter m){
 		
-		getActivity().runOnUiThread(new Runnable() {
+		DevicesListController.addToList(m);
+		m.startUpdate();
+		notifyAdapter();
+	}
+		
+	public void loadList(){
 			
-			@Override
-			public void run() {
-				
-				DevicesListController.addToList(m);
-				
-				/*************************************************************
-				 * VIEW HANDLER
-				 *************************************************************/
-
-				mGridAdapter.notifyDataSetChanged();
-				//mLayoutAdapter.addToLayout(m);
-				mListAdapter.notifyDataSetChanged();
-				
-			}
-		});
-
+		Cursor c = DatabaseController.retrieveDeviceList();
 		
+		c.moveToFirst();
+		
+		while (!c.isAfterLast()){
+			
+			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
+			
+			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) );
+			
+			addElement(m);
+			
+			c.moveToNext();
+		}
+	   
+	   DatabaseController.closeDb();
+
 	}
 	
 	public static void notifyAdapter(){
@@ -351,7 +334,7 @@ public class DevicesFragment extends Fragment{
 	//TODO implement the discovery logic here
 	public void optionAdd(){
 		
-		new DiscoveryServiceOption(getActivity());
+		new DiscoveryOptionController(getActivity());
 		
 	}
 

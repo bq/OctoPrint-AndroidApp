@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ import android.widget.TextView;
  * @author alberto-baeza
  *
  */
-public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter>{
+public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Filterable{
 	
 	//Original list and current list to be filtered
 	private ArrayList<ModelPrinter> mCurrent;

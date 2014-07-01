@@ -9,7 +9,6 @@ import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
 import javax.jmdns.ServiceListener;
 
-import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
@@ -36,14 +35,14 @@ public class JmdnsServiceListener implements ServiceListener{
 		private static JmDNS mJmdns = null;
 		
 		//Reference to the fragment controller
-		private DiscoveryServiceOption mContext;
+		private DiscoveryOptionController mContext;
 		
 		/*****************
 		 * Main constructor
 		 * @param controller
 		 *****************/
 		
-		public JmdnsServiceListener(DiscoveryServiceOption context){
+		public JmdnsServiceListener(DiscoveryOptionController context){
 			
 			mContext = context;
 						
@@ -114,7 +113,7 @@ public class JmdnsServiceListener implements ServiceListener{
 			 Log.i("Model","Service resolved: " + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 			 //mContext.listHandler(new ModelPrinter(service));
-			 mContext.addToServiceList(service);
+			 mContext.addToServiceList(new ModelPrinter(service.getName(),service.getInetAddresses()[0].toString()));
 			 
 		}
 		

@@ -2,8 +2,6 @@ package android.app.printerapp.model;
 
 import java.util.ArrayList;
 
-import javax.jmdns.ServiceInfo;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,15 +22,13 @@ public class ModelPrinter {
 	//Pending job
 	private ModelJob mJob;
 	
-	public ModelPrinter(ServiceInfo info){
+	public ModelPrinter(String name, String address){
 		
-		mName = info.getName();
-		mAddress = info.getInetAddresses()[0].toString();
+		mName = name;
+		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<ModelFile>();
-		
-		//Initialize web socket connection
-		OctoprintConnection.getSettings(this);		
+			
 	}
 	
 	/*********
@@ -97,5 +93,10 @@ public class ModelPrinter {
 	
 	public void updateFiles(ModelFile m){
 		mFileList.add(m);
+	}
+	
+	public void startUpdate(){
+		//Initialize web socket connection
+		OctoprintConnection.getSettings(this);
 	}
 }
