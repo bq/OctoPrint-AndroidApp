@@ -1,17 +1,17 @@
 package android.app.printerapp.devices;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.discovery.JmdnsServiceListener;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.DiscoveryOptionController;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -67,8 +66,7 @@ public class DevicesFragment extends Fragment{
 		
 		
 		
-		super.onCreate(savedInstanceState);
-		
+		super.onCreate(savedInstanceState);		
 		//Retain instance to keep the Fragment from destroying itself
 		setRetainInstance(true);
 		
@@ -166,7 +164,9 @@ public class DevicesFragment extends Fragment{
 			new DevicesQuickprint(ll,getActivity());
 			
 			//Custom service listener
-			new JmdnsServiceListener(this);
+			//new JmdnsServiceListener(this);
+			
+			loadList();
 		
 		}
 		return rootView;
@@ -185,10 +185,12 @@ public class DevicesFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.menu_add: //Add a new printer
+		  			
 		   optionAdd();
 			return true;
 			
        	case R.id.menu_filter: //Filter grid / list
+       		
        		optionFilter();
             return true;
               
@@ -248,32 +250,32 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
-	/**
-	 * LIST HANDLER
-	 * TODO: Eventually this will add elements to a Database
-	 */
-	
-	public void listHandler(final ModelPrinter m){
+	public static void addElement(ModelPrinter m){
 		
-		getActivity().runOnUiThread(new Runnable() {
+		DevicesListController.addToList(m);
+		m.startUpdate();
+		notifyAdapter();
+	}
+		
+	public void loadList(){
 			
-			@Override
-			public void run() {
-				
-				DevicesListController.addToList(m);
-				
-				/*************************************************************
-				 * VIEW HANDLER
-				 *************************************************************/
-
-				mGridAdapter.notifyDataSetChanged();
-				//mLayoutAdapter.addToLayout(m);
-				mListAdapter.notifyDataSetChanged();
-				
-			}
-		});
-
+		Cursor c = DatabaseController.retrieveDeviceList();
 		
+		c.moveToFirst();
+		
+		while (!c.isAfterLast()){
+			
+			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
+			
+			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) );
+			
+			addElement(m);
+			
+			c.moveToNext();
+		}
+	   
+	   DatabaseController.closeDb();
+
 	}
 	
 	public static void notifyAdapter(){
@@ -332,29 +334,10 @@ public class DevicesFragment extends Fragment{
 	//TODO implement the discovery logic here
 	public void optionAdd(){
 		
-		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		adb.setTitle(R.string.devices_add_dialog_title);
-		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.menu_add_dialog, null, false);
-		
-		ListView lv = (ListView) v.findViewById(R.id.add_dialog_list);
-		
-		ArrayList<String> list = new ArrayList<String>();
-		for (ModelPrinter m : DevicesListController.getList()){
-			list.add(m.getName());
-		}
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,list);
-		lv.setAdapter(adapter);
-		adb.setView(v);
-		
-		adb.setPositiveButton(R.string.add, null);
-		adb.setNegativeButton(R.string.cancel, null);
-		
-		adb.show();
+		new DiscoveryOptionController(getActivity());
 		
 	}
-	
+
 	public void setDialogAdapter(ModelPrinter m){
 		
 		 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
