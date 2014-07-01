@@ -7,12 +7,49 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 public class ViewerSurfaceView extends GLSurfaceView{
+	//View Modes
 	public static final int NORMAL = 0;
 	public static final int XRAY = 1;
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
 	
 	ViewerRenderer mRenderer;
+	
+	//Touch
+	private final float TOUCH_SCALE_FACTOR_ROTATION = 90.0f / 320;  //180.0f / 320;
+	private float mPreviousX;
+	private float mPreviousY;
+	
+   // zoom rate (larger > 1.0f > smaller)
+	private float pinchScale = 1.0f;
+
+	private PointF pinchStartPoint = new PointF();
+	private float pinchStartY = 0.0f;
+	private float pinchStartZ = 0.0f;
+	private float pinchStartDistance = 0.0f;
+
+	// for touch event handling
+	private static final int TOUCH_NONE = 0;
+	private static final int TOUCH_DRAG = 1;
+	private static final int TOUCH_ZOOM = 2;
+	private static final int TOUCH_LONG_PRESS = 3;
+	private int touchMode = TOUCH_NONE;
+	
+	private static final int MIN_CLICK_DURATION = 1000;
+	private long mStartClickTime;
+	private boolean mLongClickActive = false;
+	
+	//for buttons pressed
+	public static final int ROTATION_MODE =0;
+	public static final int TRANSLATION_MODE = 1;
+	public static final int LIGHT_MODE = 2;
+	
+	private int mMovementMode = 0;
+	
+	//Edition mode
+	private boolean mEdition = false;
+
+
 	
 	public ViewerSurfaceView(Context context) {
 	    super(context);
@@ -32,7 +69,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-       
 	}
 	
 	public void configViewMode (int state) {
@@ -87,44 +123,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setXray(xray);
 	}
 	
-	
-	/**
-	 * FUNCIONES PARA MOVIMIENTO Y ROTAR OBJETO
-	 * --------------------------------------------------
-	 */
-	
-	private final float TOUCH_SCALE_FACTOR_ROTATION = 90.0f / 320;  //180.0f / 320;
-	private float mPreviousX;
-	private float mPreviousY;
-	
-   // zoom rate (larger > 1.0f > smaller)
-	private float pinchScale = 1.0f;
-
-	private PointF pinchStartPoint = new PointF();
-	private float pinchStartY = 0.0f;
-	private float pinchStartZ = 0.0f;
-	private float pinchStartDistance = 0.0f;
-
-	// for touch event handling
-	private static final int TOUCH_NONE = 0;
-	private static final int TOUCH_DRAG = 1;
-	private static final int TOUCH_ZOOM = 2;
-	private int touchMode = TOUCH_NONE;
-	
-	public float[] final_matrix_R = new float[16];
-	
-	//for buttons pressed
-	public static final int ROTATION_MODE =0;
-	public static final int TRANSLATION_MODE = 1;
-	public static final int LIGHT_MODE = 2;
-
-	private int mMovementMode = 0;
-
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX();
         float y = event.getY();
+        
+        float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
+		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
+		
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -141,16 +147,29 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 				break;
 				
-			case MotionEvent.ACTION_DOWN:	
+			case MotionEvent.ACTION_DOWN:				
+				if (mEdition) 
+					if (!mRenderer.touchPoint(normalizedX, normalizedY)) {
+						mEdition= false;	
+						requestRender();
+					}
+								
+				
 				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();
 					mPreviousY = event.getY();
 				}
-
+								
+				mStartClickTime = event.getEventTime();
+				mLongClickActive = true;
+				
 				break;
 			
-			case MotionEvent.ACTION_MOVE:			
+			case MotionEvent.ACTION_MOVE:				
+					long clickDuration = event.getEventTime() - mStartClickTime;
+					if (clickDuration >= MIN_CLICK_DURATION && mLongClickActive) touchMode = TOUCH_LONG_PRESS;
+					
 					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0) {
 						// on pinch
 						PointF pt = new PointF();
@@ -169,6 +188,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					}else if (touchMode == TOUCH_DRAG) {
 						float dx = x - mPreviousX;
 				        float dy = y - mPreviousY;
+				        
 				        
 				        mPreviousX = x;
 					    mPreviousY = y;
@@ -191,12 +211,16 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			                } else {
 			                	dx = 1;
 			                }
-
 							doLight (dx, dy);
 							break;
 						}
 						
-					}
+					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition && mLongClickActive) {
+						mLongClickActive = false;
+						normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
+						normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
+						if (mRenderer.touchPoint(normalizedX, normalizedY)) mEdition = true;		
+					} 
 					
 					requestRender();
 								    
@@ -209,7 +233,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchScale = 1.0f;
 					pinchStartPoint.x = 0.0f;
 					pinchStartPoint.y = 0.0f;
-
 				}
 				touchMode = TOUCH_NONE;
 				break;				

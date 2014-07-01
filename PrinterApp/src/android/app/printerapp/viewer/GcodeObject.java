@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -63,7 +62,6 @@ public class GcodeObject {
 	
 		
 	private final DataStorage mData;
-	private final Context mContext;
 	
 	private float [] mVertexArray;
 	private int [] mLayerArray;
@@ -79,7 +77,6 @@ public class GcodeObject {
 	private boolean mXray;
 
 	public GcodeObject(DataStorage data, Context context) {	
-		this.mContext = context;
 		this.mData = data;
 		this.mLayer = data.getActualLayer();
 		
