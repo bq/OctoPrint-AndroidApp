@@ -146,10 +146,7 @@ public class JmdnsServiceListener implements ServiceListener{
 		public static void stopListening(){
 			
 			mJmdns.unregisterAllServices();
-			mMulticastLock.release();
-			
-			Log.i("OUT","STAHP");
-			
+			mMulticastLock.release();			
 			
 			
 		}

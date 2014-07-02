@@ -60,17 +60,24 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			//v = convertView;
 		}
 		
+		
+		
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		tag.setText(m.getName());
 				
 		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
+		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
 		
 		
 		String status = m.getStatus();
 		
 		if (status!=null){
+			
+			if (status.equals("Offline")){
+				icon.setImageResource(R.drawable.witbox_offline_icon);	
+			} else icon.setImageResource(R.drawable.witbox_icon);	
 			
 			if (status.equals("Operational")){
 				iv.setImageResource(R.drawable.tick_icon_small);

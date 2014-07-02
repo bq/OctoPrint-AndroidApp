@@ -2,7 +2,10 @@ package android.app.printerapp.devices;
 
 import java.util.ArrayList;
 
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
+import android.database.Cursor;
+import android.util.Log;
 
 
 /**
@@ -18,6 +21,7 @@ public class DevicesListController {
 	public DevicesListController(){
 		
 		mList = new ArrayList<ModelPrinter>();
+		loadList();
 		
 	}
 	
@@ -31,6 +35,27 @@ public class DevicesListController {
 	public static ArrayList<ModelPrinter> getList(){
 		
 		return mList;
+	}
+	
+	public void loadList(){
+		
+		Cursor c = DatabaseController.retrieveDeviceList();
+		
+		c.moveToFirst();
+		
+		while (!c.isAfterLast()){
+			
+			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
+			
+			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) );
+			
+			addToList(m);
+			
+			c.moveToNext();
+		}
+	   
+	   DatabaseController.closeDb();
+
 	}
 	
 }

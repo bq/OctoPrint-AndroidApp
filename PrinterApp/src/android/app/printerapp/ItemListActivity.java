@@ -5,6 +5,7 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
+import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMain;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class ItemListActivity extends FragmentActivity implements
 	private DevicesFragment mDevicesFragment;
 	private LibraryFragment mLibraryFragment;
 	private ViewerMain mViewerFragment;
+	private SettingsFragment mSettingsFragment;
 	
 	private Fragment mCurrent;
 
@@ -64,14 +66,16 @@ public class ItemListActivity extends FragmentActivity implements
 		
 		//TODO List controllers
 		new StorageController();
-		new DevicesListController();
-		new ViewerMain();
+		//new ViewerMain();
 		new DatabaseController(this);
+		new DevicesListController();
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
 		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
 		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag("Viewer");
+		mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag("Settings");
+		
 	}
 
 	/**
@@ -159,6 +163,25 @@ public class ItemListActivity extends FragmentActivity implements
 						 Log.i("OUT","Libray Fragment exists");
 					 }
 				} break;
+				
+				case 5:{
+					//Check if we already created the Fragment to avoid having multiple instances
+					 if (getSupportFragmentManager().findFragmentByTag("Settings")==null){
+						 mSettingsFragment = new SettingsFragment();
+						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mSettingsFragment, "Settings").commit();
+							
+						 //Replace the fragment with the desired tag for future checks
+							/*getSupportFragmentManager().beginTransaction()
+									.replace(R.id.item_detail_container, fragment, "Library").commit();*/
+						
+						
+						 mCurrent = mSettingsFragment;
+						
+					 } else {
+						 
+						 mCurrent = mSettingsFragment;
+					 }
+				}break;
 					
 			
 			}
