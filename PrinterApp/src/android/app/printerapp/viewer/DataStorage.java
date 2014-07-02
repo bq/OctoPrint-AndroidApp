@@ -92,7 +92,7 @@ public class DataStorage {
 		mMinY = mMinY - distY;
 		mMaxY = mMaxY - distY;
 		mMinZ = mMinZ - distZ;
-		mMaxZ = mMaxZ - distZ;
+		mMaxZ = mMaxZ - distZ;		
 	}
 	
 	public void fillNormalArray() {

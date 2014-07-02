@@ -37,7 +37,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	private static final int MIN_CLICK_DURATION = 1000;
 	private long mStartClickTime;
-	private boolean mLongClickActive = false;
 	
 	//for buttons pressed
 	public static final int ROTATION_MODE =0;
@@ -130,7 +129,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         
         float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
-		
+				
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -147,7 +146,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 				break;
 				
-			case MotionEvent.ACTION_DOWN:				
+			case MotionEvent.ACTION_DOWN:
 				if (mEdition) 
 					if (!mRenderer.touchPoint(normalizedX, normalizedY)) {
 						mEdition= false;	
@@ -162,13 +161,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 								
 				mStartClickTime = event.getEventTime();
-				mLongClickActive = true;
 				
 				break;
 			
-			case MotionEvent.ACTION_MOVE:				
-					long clickDuration = event.getEventTime() - mStartClickTime;
-					if (clickDuration >= MIN_CLICK_DURATION && mLongClickActive) touchMode = TOUCH_LONG_PRESS;
+			case MotionEvent.ACTION_MOVE:	
+					float dx = x - mPreviousX;
+					float dy = y - mPreviousY;
+					
+					long clickDuration = event.getEventTime() - mStartClickTime;				
+					if (clickDuration >= MIN_CLICK_DURATION && !mEdition && dx==0 && dy==0) touchMode = TOUCH_LONG_PRESS;
 					
 					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0) {
 						// on pinch
@@ -185,45 +186,20 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						requestRender();
 
 						
-					}else if (touchMode == TOUCH_DRAG) {
-						float dx = x - mPreviousX;
-				        float dy = y - mPreviousY;
-				        
-				        
+					}else if (touchMode == TOUCH_DRAG) {				        
 				        mPreviousX = x;
 					    mPreviousY = y;
-						switch (mMovementMode) {
-						case ROTATION_MODE:
-							doRotation (dx,dy);
-							break;
-						case TRANSLATION_MODE:
-							doTranslation (dx,dy);
-							break;
-						case LIGHT_MODE:
-			                if (y < getHeight() * 3/4) {
-			                    dy = 1;
-			                } else {
-			                	dy = -1;
-			                }
-
-			                if (x < getWidth() / 2) {
-			                	dx = -1;
-			                } else {
-			                	dx = 1;
-			                }
-							doLight (dx, dy);
-							break;
-						}
-						
-					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition && mLongClickActive) {
-						mLongClickActive = false;
+					    					    
+					    if (mEdition) mRenderer.dragObject (normalizedX, normalizedY);
+					    else dragAccordingToMode (x,y,dx,dy);
+		
+					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition) {
 						normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 						normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
 						if (mRenderer.touchPoint(normalizedX, normalizedY)) mEdition = true;		
 					} 
 					
-					requestRender();
-								    
+					requestRender();								    
 	                break;
 			
 			// end pinch
@@ -238,6 +214,32 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				break;				
 		}
 		return true;
+	}
+	
+	private void dragAccordingToMode (float x, float y, float dx, float dy) {
+		switch (mMovementMode) {
+		case ROTATION_MODE:
+			doRotation (dx,dy);
+			break;
+		case TRANSLATION_MODE:
+			doTranslation (dx,dy);
+			break;
+		case LIGHT_MODE:
+            if (y < getHeight() * 3/4) {
+                dy = 1;
+            } else {
+            	dy = -1;
+            }
+
+            if (x < getWidth() / 2) {
+            	dx = -1;
+            } else {
+            	dx = 1;
+            }
+			doLight (dx, dy);
+			break;
+		}
+		
 	}
 	
 	private void doRotation (float dx, float dy) {              

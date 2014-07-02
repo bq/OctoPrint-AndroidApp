@@ -1,8 +1,5 @@
 package android.app.printerapp.viewer;
 
-import static android.opengl.Matrix.invertM;
-import static android.opengl.Matrix.multiplyMV;
-
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -17,7 +14,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
-
 import android.app.printerapp.viewer.Geometry.*;
 
 
@@ -84,7 +80,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public float[] final_matrix_S_Render = new float[16];
 	public float[] final_matrix_T_Render = new float[16];
 	
-	private final float[] mMVPMatrix = new float[16]; //Model View Projection Matrix
+	private final float[] mVPMatrix = new float[16]; //Model View Projection Matrix
 	private final float[] mProjectionMatrix = new float[16];
 	private final float[] mViewMatrix = new float[16];
 	private final float[] mRotationMatrix = new float[16];
@@ -101,6 +97,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	
 	//Variables Touch events
 	private boolean objectPressed = false;
+	
+	float mMoveX;
+	float mMoveY;
+	float mMoveZ;
 
 	public ViewerRenderer (DataStorage data, Context context, int state, boolean doSnapshot, boolean stl) {	
 		this.mData = data;
@@ -157,17 +157,34 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         Box objectBox = new Box (mData.getMinX(), mData.getMaxX(), mData.getMinY(), mData.getMaxY(), mData.getMinZ(), mData.getMaxZ());
 
         // If the ray intersects (if the user touched a part of the screen that
-        // intersects the stl object's bounding sphere), then set objectPressed =
+        // intersects the stl object's bounding box), then set objectPressed =
         // true.
         objectPressed = Geometry.intersects(objectBox, ray);
         
         if (objectPressed) mStlObject.setColor(StlObject.colorSelectedObject);
         else mStlObject.setColor(StlObject.colorNormal);
-        
-        Log.i("VIEWER", " OBJECT PRESSED " + objectPressed);
-        
+                
         return objectPressed;
 	}
+	
+	public void dragObject (float x, float y) {
+		Ray ray = convertNormalized2DPointToRay(x, y);
+
+		Point touched = Geometry.intersectionPointWitboxPlate(ray);
+        mMoveX = touched.x ;
+        mMoveY = touched.y;
+        mMoveZ = touched.z;
+                
+        refreshObjectCoordinates (mMoveX, mMoveY);       
+    }
+	
+	private void refreshObjectCoordinates (float x, float y) {		
+		mData.setMaxX(x + mData.getLong()/2);
+		mData.setMaxY(y + mData.getWidth()/2);
+		mData.setMinX(x - mData.getLong()/2);
+		mData.setMinY(y - mData.getWidth()/2);
+	}
+	
 	
 	 private Ray convertNormalized2DPointToRay(float normalizedX, float normalizedY) {
 		 
@@ -181,9 +198,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	        final float[] nearPointWorld = new float[4];
 	        final float[] farPointWorld = new float[4];
 	        
-	        multiplyMV(
+	        Matrix.multiplyMV(
 	            nearPointWorld, 0, invertedViewProjectionMatrix, 0, nearPointNdc, 0);
-	        multiplyMV(
+	        Matrix.multiplyMV(
 	            farPointWorld, 0, invertedViewProjectionMatrix, 0, farPointNdc, 0);
 
 	        // Why are we dividing by W? We multiplied our vector by an inverse
@@ -297,8 +314,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
                 
-		float[] mvp = new float[16];
+		float[] vp = new float[16];
 		float[] mv = new float[16];
+		float[] mvp = new float[16];
+		
+		float[] model = new float [16];
 		
 		float[] lightPosInEyeSpace = new float[4];
 				
@@ -309,9 +329,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ, mCenterX, mCenterY, mCenterZ, 0f, 0.0f, 1.0f);
-
+        
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.multiplyMM(mVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
                         
         //Set Identity
         Matrix.setIdentityM(mRotationMatrix, 0);
@@ -339,10 +359,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(mvp, 0,mMVPMatrix, 0, mAccumulatedRotationMatrix, 0);
-        System.arraycopy(mTemporaryMatrix, 0, mMVPMatrix, 0, 16);
+        Matrix.multiplyMM(vp, 0,mVPMatrix, 0, mAccumulatedRotationMatrix, 0);
+            
+        System.arraycopy(mTemporaryMatrix, 0, mVPMatrix, 0, 16);
         
-        invertM(invertedViewProjectionMatrix, 0, mvp, 0);
+        Matrix.invertM(invertedViewProjectionMatrix, 0, vp, 0);
 
         //Set ModelViewMatrix
         Matrix.multiplyMM(mv, 0, mViewMatrix, 0, mAccumulatedRotationMatrix, 0);
@@ -350,18 +371,21 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         //Set Light direction     
         Matrix.multiplyMV(lightPosInEyeSpace, 0, mv, 0, mLightVector, 0);   
         
-        
+        Matrix.setIdentityM(model, 0);
+        Matrix.translateM(model, 0, mMoveX, mMoveY, mMoveZ);  
+        Matrix.multiplyMM(mvp, 0, vp, 0, model, 0);
+                   
         if (mIsStl) mStlObject.draw(mvp, mv, lightPosInEyeSpace);
-        else mGcodeObject.draw(mvp);
+        else mGcodeObject.draw(vp);
         
         if (mSnapShot) {
-        	mInfinitePlane.draw(mvp, mv);
+        	mInfinitePlane.draw(vp, mv);
         	takeScreenShot(unused);
         } else {
-        	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mvp, mv);      
-        	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mvp);
-        	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mvp);
-        	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mvp);
+        	if (mShowDownWitboxFace) mWitboxFaceDown.draw(vp, mv);      
+        	if (mShowBackWitboxFace) mWitboxFaceBack.draw(vp);
+        	if (mShowRightWitboxFace) mWitboxFaceRight.draw(vp);
+        	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(vp);
         }
 	}
 	
