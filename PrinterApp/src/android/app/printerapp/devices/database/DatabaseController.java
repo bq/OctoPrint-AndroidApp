@@ -33,7 +33,8 @@ public class DatabaseController {
 		
 		// Gets the data repository in write mode
 		mDb = mDbHelper.getWritableDatabase();
-
+		
+		Log.i("OUT","Adding: " + name);
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
 		values.put(FeedEntry.DEVICES_NAME, name);

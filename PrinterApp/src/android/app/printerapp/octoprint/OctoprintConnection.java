@@ -3,7 +3,7 @@ package android.app.printerapp.octoprint;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.model.ModelPrinter;
 import android.util.Log;
 
@@ -66,7 +66,7 @@ public class OctoprintConnection {
 						//Update job with current status
 						p.updatePrinter(response);
 						
-						DevicesFragment.notifyAdapter();
+						ItemListActivity.notifyAdapters();
 						
 					} catch (JSONException e) {
 						Log.i("CONNECTION","Invalid JSON");

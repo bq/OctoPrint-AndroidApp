@@ -77,6 +77,8 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			
 			if (status.equals("Offline")){
 				icon.setImageResource(R.drawable.witbox_offline_icon);	
+			} else if (status.equals("New")){
+				icon.setImageResource(R.drawable.witbox_offline_icon_ghost);
 			} else icon.setImageResource(R.drawable.witbox_icon);	
 			
 			if (status.equals("Operational")){

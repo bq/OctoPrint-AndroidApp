@@ -99,4 +99,8 @@ public class ModelPrinter {
 		//Initialize web socket connection
 		OctoprintConnection.getSettings(this);
 	}
+	
+	public void setNotLinked(){	
+		mStatus = "New";
+	}
 }

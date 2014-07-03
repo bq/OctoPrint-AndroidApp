@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
@@ -84,7 +83,7 @@ public class DiscoveryOptionController {
 						DatabaseController.writeDb(mServiceList.get(i).getName(), mServiceList.get(i).getAddress());	
 						
 						//Add them to the list separately
-						DevicesFragment.addElement(new ModelPrinter(mServiceList.get(i).getName(), mServiceList.get(i).getAddress()));
+						//DevicesFragment.addElement(new ModelPrinter(mServiceList.get(i).getName(), mServiceList.get(i).getAddress()));
 						
 					}
 				}
@@ -117,7 +116,7 @@ public class DiscoveryOptionController {
 	public void startListening(){
 		checkedItems.clear();
 		mServiceList.clear();
-		new JmdnsServiceListener(this);
+		//new JmdnsServiceListener(this);
 		
 	}
 	

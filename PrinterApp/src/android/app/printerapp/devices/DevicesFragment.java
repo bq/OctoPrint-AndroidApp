@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.discovery.DiscoveryOptionController;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
@@ -39,8 +40,8 @@ public class DevicesFragment extends Fragment{
 	
 	
 	//Controllers and adapters
-	private static DevicesGridAdapter mGridAdapter;
-	private static DevicesListAdapter mListAdapter;
+	private DevicesGridAdapter mGridAdapter;
+	private DevicesListAdapter mListAdapter;
 	
 	//private DevicesLayoutAdapter mLayoutAdapter;
 	
@@ -125,6 +126,10 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus().equals("Printing")){
 						setDialogAdapter(m);
 					 }
+					 
+					 if (m.getStatus().equals("New")){
+						 codeDialog(m);
+					 }
 					
 				}
 			});
@@ -162,7 +167,7 @@ public class DevicesFragment extends Fragment{
 			new DevicesQuickprint(ll,getActivity());
 			
 			//Custom service listener
-			//new JmdnsServiceListener(this);
+			new JmdnsServiceListener(this);
 		
 		}
 		return rootView;
@@ -246,18 +251,30 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
-	public static void addElement(ModelPrinter m){
+	public void addElement(final ModelPrinter m){
 		
-		DevicesListController.addToList(m);
-		m.startUpdate();
-		notifyAdapter();
+		getActivity().runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (!DatabaseController.checkExisting(m)){
+					DevicesListController.addToList(m);
+					m.setNotLinked();
+					notifyAdapter();
+				} else Log.i("DEVICES","Already exists primo");
+				
+			}
+		});
+		
 	}
 		
 	
 	
-	public static void notifyAdapter(){
+	public void notifyAdapter(){
 		mListAdapter.notifyDataSetChanged();
 		mGridAdapter.notifyDataSetChanged();
+		
+		Log.i("DEVICES","I was notified senpai!");
 		
 	}
 	
@@ -311,7 +328,7 @@ public class DevicesFragment extends Fragment{
 	//TODO implement the discovery logic here
 	public void optionAdd(){
 		
-		new DiscoveryOptionController(getActivity());
+		//new DiscoveryOptionController(getActivity());
 		
 	}
 
@@ -347,6 +364,36 @@ public class DevicesFragment extends Fragment{
 		adb.setView(v);
 		
 		adb.show();
+	}
+	
+	public void codeDialog(final ModelPrinter m){
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle(R.string.devices_setup_title);
+		
+		//Inflate the view
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflater.inflate(R.layout.setup_dialog, null, false);
+		
+		//EditText et = (EditText) v.findViewById(R.id.et_setup);
+
+		adb.setPositiveButton(R.string.add, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+				
+				m.startUpdate();
+				DatabaseController.writeDb(m.getName(), m.getAddress());	
+			}
+		});
+		
+		adb.setNegativeButton(R.string.cancel, null);
+		
+		adb.setView(v);
+		
+		adb.show();
+		
 	}
 	
 	

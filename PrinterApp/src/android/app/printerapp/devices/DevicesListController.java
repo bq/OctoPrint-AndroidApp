@@ -37,6 +37,7 @@ public class DevicesListController {
 		return mList;
 	}
 	
+	//Load device list from the Database
 	public void loadList(){
 		
 		Cursor c = DatabaseController.retrieveDeviceList();
@@ -50,6 +51,7 @@ public class DevicesListController {
 			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) );
 			
 			addToList(m);
+			m.startUpdate();
 			
 			c.moveToNext();
 		}
