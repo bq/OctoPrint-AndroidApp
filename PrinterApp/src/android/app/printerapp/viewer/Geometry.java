@@ -40,6 +40,12 @@ public class Geometry {
 	         this.y = y;
 	         this.z = z;
 	     }
+	     
+	     public boolean equals (Vector v) {
+	    	 if (v.x == this.x && v.y == this.y && v.z == this.z) return true;
+	    	 
+	    	 return false;
+	     }
 	 }
 	 
 	 public static class Ray {

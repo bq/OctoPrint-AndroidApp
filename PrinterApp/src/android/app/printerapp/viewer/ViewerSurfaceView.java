@@ -1,9 +1,11 @@
 package android.app.printerapp.viewer;
 
+import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class ViewerSurfaceView extends GLSurfaceView{
@@ -38,18 +40,27 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private static final int MIN_CLICK_DURATION = 1000;
 	private long mStartClickTime;
 	
-	//for buttons pressed
+	//Viewer modes
 	public static final int ROTATION_MODE =0;
 	public static final int TRANSLATION_MODE = 1;
 	public static final int LIGHT_MODE = 2;
 	
-	private int mMovementMode = 0;
+	private int mMovementMode;
 	
 	//Edition mode
 	private boolean mEdition = false;
-
-
+	private int mEditionMode;
 	
+	//Edition modes
+	public static final int TRANSLATION_EDITION_MODE = 0;
+	public static final int ROTATION_EDITION_MODE =1;
+
+
+	public static final int ROTATE_X = 0;
+	public static final int ROTATE_Y = 1;
+	public static final int ROTATE_Z = 2;
+
+
 	public ViewerSurfaceView(Context context) {
 	    super(context);
 	}
@@ -65,6 +76,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
       
 		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
 		setRenderer(mRenderer);
+		
+		mEditionMode = ROTATION_EDITION_MODE;
 		
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
@@ -120,6 +133,20 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	public void setXray (boolean xray) {
 		mRenderer.setXray(xray);
+	}
+	
+	public void setRotationVector (int mode) {
+		switch (mode) {
+		case ROTATE_X:
+			mRenderer.setRotationVector(new Vector (0,0,1));
+			break;
+		case ROTATE_Y:
+			mRenderer.setRotationVector(new Vector (1,0,0));
+			break;
+		case ROTATE_Z:
+			mRenderer.setRotationVector(new Vector (0,1,0));
+			break;
+		}
 	}
 	
 	@Override
@@ -190,7 +217,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				        mPreviousX = x;
 					    mPreviousY = y;
 					    					    
-					    if (mEdition) mRenderer.dragObject (normalizedX, normalizedY);
+					    if (mEdition) editionDrag (normalizedX, normalizedY, dx);
 					    else dragAccordingToMode (x,y,dx,dy);
 		
 					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition) {
@@ -214,6 +241,18 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				break;				
 		}
 		return true;
+	}
+	
+	private void editionDrag (float x, float y, float dx) {			
+		switch (mEditionMode) {
+		case ROTATION_EDITION_MODE:
+			mRenderer.setAngleRotationObject(dx*TOUCH_SCALE_FACTOR_ROTATION);
+			break;
+		case TRANSLATION_EDITION_MODE:
+			mRenderer.dragObject(x, y);
+			break;
+			
+		}
 	}
 	
 	private void dragAccordingToMode (float x, float y, float dx, float dy) {

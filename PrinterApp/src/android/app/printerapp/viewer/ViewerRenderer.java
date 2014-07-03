@@ -84,10 +84,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	private final float[] mProjectionMatrix = new float[16];
 	private final float[] mViewMatrix = new float[16];
 	private final float[] mRotationMatrix = new float[16];
-	private final float[] mAccumulatedRotationMatrix = new float[16];
+	private final float[] mAccumulatedRotationMatrix = new float[16];	
 	private final float[] mTemporaryMatrix = new float [16];
     private final float[] invertedViewProjectionMatrix = new float[16];
-		
+    
+    //Object
+	private final float[] mAccumulatedRotationObjectMatrix = new float[16];
+	private final float[] mTemporaryObjectMatrix = new float [16];
+	
 	private final float[] mLightVector = new float [4];
 	float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
 			
@@ -98,9 +102,15 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	//Variables Touch events
 	private boolean objectPressed = false;
 	
-	float mMoveX;
-	float mMoveY;
-	float mMoveZ;
+	//Variables for object edition
+	float mMoveX=0;
+	float mMoveY=0;
+	float mMoveZ=0;
+		
+	private Vector mVector = new Vector (0,0,1); //default
+	private float mRotateAngle=0;
+	private Point mLastCenter = new Point (0,0,0);
+	
 
 	public ViewerRenderer (DataStorage data, Context context, int state, boolean doSnapshot, boolean stl) {	
 		this.mData = data;
@@ -151,6 +161,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		if (mStlObject!= null) mStlObject.setXray(xray);
 	}
 	
+	public void setRotationVector (Vector vector) {
+		mVector = vector;
+	}
+	
 	public boolean touchPoint (float x, float y) {
 		Ray ray = convertNormalized2DPointToRay(x, y);
 		 	 		 
@@ -178,11 +192,50 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         refreshObjectCoordinates (mMoveX, mMoveY);       
     }
 	
-	private void refreshObjectCoordinates (float x, float y) {		
-		mData.setMaxX(x + mData.getLong()/2);
-		mData.setMaxY(y + mData.getWidth()/2);
-		mData.setMinX(x - mData.getLong()/2);
-		mData.setMinY(y - mData.getWidth()/2);
+	public void setAngleRotationObject (float angle) {
+		mRotateAngle = angle;
+		
+		refreshObjectCoordinates (angle);
+	}
+	
+	private void refreshObjectCoordinates (float x, float y) {
+		float dx = x-mLastCenter.x;
+		float dy = y-mLastCenter.y;
+
+		mData.setMaxX(mData.getMaxX() + dx);
+		mData.setMaxY(mData.getMaxY() + dy);
+		mData.setMinX(mData.getMinX() + dx);
+		mData.setMinY(mData.getMinY() + dy);
+
+		mLastCenter = new Point (x,y,0);
+	}
+	
+	private void refreshObjectCoordinates (float angle) {				
+		if (mVector.equals(new Vector (0,0,1))) {	
+			mData.setMaxX((float) ((mData.getMaxX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
+			mData.setMaxY((float) ((mData.getMaxY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);
+			
+
+			mData.setMinX((float) ((mData.getMinX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
+			mData.setMinY((float) ((mData.getMinY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);
+									
+		} else if (mVector.equals(new Vector (0,1,0))) {
+			mData.setMaxX((float) ((mData.getMaxX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
+			mData.setMaxZ((float) ((mData.getMaxZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
+			
+
+			mData.setMinX((float) ((mData.getMinX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
+			mData.setMinZ((float) ((mData.getMinZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
+			
+		} else if (mVector.equals(new Vector (1,0,0))) {
+			mData.setMaxZ((float) ((mData.getMaxZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
+			mData.setMaxY((float) ((mData.getMaxY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);
+			
+
+			mData.setMinZ((float) ((mData.getMinZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
+			mData.setMinY((float) ((mData.getMinY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);			
+		}
+
 	}
 	
 	
@@ -244,6 +297,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		
 		Matrix.setIdentityM(mAccumulatedRotationMatrix, 0);
+		Matrix.setIdentityM(mAccumulatedRotationObjectMatrix, 0);
+
 		
 		mLightVector[0] = LIGHT_X;
 		mLightVector[1] = LIGHT_Y;
@@ -319,6 +374,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		float[] mvp = new float[16];
 		
 		float[] model = new float [16];
+		float[] temporary = new float[16];
 		
 		float[] lightPosInEyeSpace = new float[4];
 				
@@ -359,9 +415,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(vp, 0,mVPMatrix, 0, mAccumulatedRotationMatrix, 0);
-            
-        System.arraycopy(mTemporaryMatrix, 0, mVPMatrix, 0, 16);
+        Matrix.multiplyMM(vp, 0,mVPMatrix, 0, mAccumulatedRotationMatrix, 0);         
         
         Matrix.invertM(invertedViewProjectionMatrix, 0, vp, 0);
 
@@ -369,12 +423,22 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mv, 0, mViewMatrix, 0, mAccumulatedRotationMatrix, 0);
         
         //Set Light direction     
-        Matrix.multiplyMV(lightPosInEyeSpace, 0, mv, 0, mLightVector, 0);   
+        Matrix.multiplyMV(lightPosInEyeSpace, 0, mv, 0, mLightVector, 0);                                               
         
         Matrix.setIdentityM(model, 0);
         Matrix.translateM(model, 0, mMoveX, mMoveY, mMoveZ);  
-        Matrix.multiplyMM(mvp, 0, vp, 0, model, 0);
-                   
+        
+        //Object rotation  
+        Matrix.rotateM(mAccumulatedRotationObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
+               
+        //Reset angle, we store the rotation in the matrix
+        mRotateAngle=0;
+        
+        //Multiply the model by the accumulated rotation
+        Matrix.multiplyMM(temporary, 0, model, 0, mAccumulatedRotationObjectMatrix, 0);
+             
+        Matrix.multiplyMM(mvp, 0,vp, 0, temporary, 0);           
+                                                                                                                                                             
         if (mIsStl) mStlObject.draw(mvp, mv, lightPosInEyeSpace);
         else mGcodeObject.draw(vp);
         

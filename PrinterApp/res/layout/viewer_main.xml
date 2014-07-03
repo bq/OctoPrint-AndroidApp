@@ -36,6 +36,34 @@
         android:layout_above="@+id/down"
         android:layout_toRightOf="@+id/down"
         android:text="Right" />
+    
+    <RadioGroup
+        android:id="@+id/radio_group_rotation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/radioGroupMovement"
+        android:layout_alignParentRight="true"
+        android:visibility="visible" >
+
+         <RadioButton
+            android:id="@+id/rotation_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Rotation X" />
+         
+        <RadioButton
+            android:id="@+id/rotation_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rotation Y" />
+
+        <RadioButton
+            android:id="@+id/rotation_z"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rotation Z" />
+    </RadioGroup>
 
     <RadioGroup
         android:id="@+id/radioGroupMovement"
@@ -47,14 +75,13 @@
 
          <RadioButton
             android:id="@+id/lightRotation"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:text="Light" />
          
         <RadioButton
             android:id="@+id/radioRotation"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="Rotation" />

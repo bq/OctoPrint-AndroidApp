@@ -191,7 +191,8 @@ public class WitboxPlate {
   		mNormalBuffer = nbb.asFloatBuffer();
   		mNormalBuffer.put(mNormalData);
   		mNormalBuffer.position(0);
-
+  		
+        mTextureDataHandle = loadTexture (mContext, R.drawable.texture);
 
         // prepare shaders and OpenGL program
         int vertexShader = ViewerRenderer.loadShader(
@@ -254,8 +255,6 @@ public class WitboxPlate {
 	   
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		
-        mTextureDataHandle = loadTexture (mContext, R.drawable.texture);
-
 		
 	    mTextureCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_TexCoordinate");
         ViewerRenderer.checkGlError("glGetAttribLocation Texture Coord Handle");

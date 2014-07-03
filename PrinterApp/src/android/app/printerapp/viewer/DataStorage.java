@@ -3,6 +3,8 @@ package android.app.printerapp.viewer;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.printerapp.viewer.Geometry.Point;
+
 public class DataStorage {
 		
 	private List<Float> mVertexList = new ArrayList<Float>();
@@ -21,6 +23,7 @@ public class DataStorage {
 	private int mMaxLayer;
 	private int mActualLayer;
 	
+	private Point mCenter = new Point (0,0,0);
 	private float mMinX;
 	private float mMaxX;
 	private float mMinY;
