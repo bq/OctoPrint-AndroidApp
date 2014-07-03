@@ -10,6 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * This is the adapter for the printer list on the settings fragment
+ * It's going to hold the same device list as the Devices fragment
+ * @author alberto-baeza
+ *
+ */
 public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
 	public SettingsListAdapter(Context context, int resource,

@@ -53,6 +53,7 @@
     
     <string name="settings_network">Default network</string>
     <string name="settings_printers">Linked Witbox/Witclon connections</string>
+    <string name="settings_add_title">Discover printer(s)</string>
     
     
     

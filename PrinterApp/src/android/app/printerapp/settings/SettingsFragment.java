@@ -2,6 +2,9 @@ package android.app.printerapp.settings;
 
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TextView;
 
 public class SettingsFragment extends Fragment{
 	
@@ -51,7 +56,7 @@ public class SettingsFragment extends Fragment{
 			
 			/*********************************************************/
 			
-			
+			getNetworkSsid(rootView);
 			
 			mAdapter = new SettingsListAdapter(getActivity(), R.layout.settings_row, DevicesListController.getList());
 			ListView l = (ListView) rootView.findViewById(R.id.lv_settings);
@@ -74,7 +79,6 @@ public class SettingsFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.settings_menu_add: //Add a new printer
-		  
 		   return true;
     
        default:
@@ -92,7 +96,7 @@ public class SettingsFragment extends Fragment{
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Connection");
-		spec.setIndicator("Connection");
+		spec.setIndicator("Connection and Network");
 		spec.setContent(R.id.tab1);
 		tabs.addTab(spec);
 		 
@@ -119,5 +123,30 @@ public class SettingsFragment extends Fragment{
 		});
 		
 	}
+	
+	//Return network without quotes
+	public void getNetworkSsid(View v){
+		 
+		WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();   		
+		
+		TextView tv = (TextView) v.findViewById(R.id.tv_network);
+		tv.setText(wifiInfo.getSSID().replace("\"", ""));
+		
+		ImageView iv = (ImageView) v.findViewById(R.id.imageView_signal);
+		
+		int signal = wifiInfo.getRssi();
+		
+		if ((signal <= 0) && (signal > -40)){
+			iv.setImageResource(R.drawable.stat_sys_wifi_signal_4);
+		} else if ((signal <= -40) && (signal > -60)){
+			iv.setImageResource(R.drawable.stat_sys_wifi_signal_3);
+		} else if ((signal <= -60) && (signal > -70)){
+			iv.setImageResource(R.drawable.stat_sys_wifi_signal_2);
+		} else if ((signal <= -70) && (signal > -80)){
+			iv.setImageResource(R.drawable.stat_sys_wifi_signal_1);
+		} else iv.setImageResource(R.drawable.stat_sys_wifi_signal_0);
 
+	}
+	
 }

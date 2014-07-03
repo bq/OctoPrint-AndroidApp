@@ -43,12 +43,12 @@
 					        android:layout_height="wrap_content"
 					        android:gravity="center"
 					        android:padding="8dp"
-					        android:text="Default network"
+					        android:text="@string/settings_network"
 					        android:textAllCaps="true"
 					        android:textAppearance="?android:attr/textAppearanceLarge"
 					        android:textColor="#FFF"
 					        android:textStyle="bold"
-					        android:background="#999999"
+					        android:background="@android:color/holo_blue_light"
 					        android:visibility="visible" />
 
                          <LinearLayout
@@ -57,20 +57,23 @@
                              android:orientation="horizontal" >
 
                              <TextView
-                                 android:id="@+id/text"
-                                 android:layout_width="fill_parent"
+                                 android:id="@+id/tv_network"
+                                 android:layout_width="match_parent"
                                  android:layout_height="wrap_content"
                                  android:layout_margin="20dp"
                                  android:gravity="center_vertical"
                                  android:padding="5dp"
-                                 android:text="@string/settings_network"
+                                 android:layout_weight="0.2"
                                  android:textAppearance="?android:attr/textAppearanceLarge"
                                  android:textColor="#FF000000" />
 
                              <ImageView
-                                 android:id="@+id/imageView1"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content" />
+                                 android:id="@+id/imageView_signal"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="wrap_content"
+                                 android:layout_gravity="center_vertical"
+                                 android:layout_weight="0.8"
+                                 android:src="@drawable/stat_sys_wifi_signal_4" />
 
                          </LinearLayout>
                          
@@ -85,7 +88,7 @@
 					        android:textAppearance="?android:attr/textAppearanceLarge"
 					        android:textColor="#FFF"
 					        android:textStyle="bold"
-					        android:background="#999999"
+					        android:background="@android:color/holo_blue_light"
 					        android:visibility="visible" />
 
                         <ListView
