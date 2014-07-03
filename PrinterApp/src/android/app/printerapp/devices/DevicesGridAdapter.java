@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.printerapp.R;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.util.Log;
@@ -71,38 +72,57 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
 		
 		
-		String status = m.getStatus();
+		int status = m.getStatus();
 		
-		if (status!=null){
-			
-			if (status.equals("Offline")){
+		//Witbox icon
+		switch(status){
+		
+			case StateUtils.STATE_NONE:{
 				icon.setImageResource(R.drawable.witbox_offline_icon);	
-			} else icon.setImageResource(R.drawable.witbox_icon);	
+			}break;
 			
-			if (status.equals("Operational")){
+			case StateUtils.STATE_NEW:{
+				icon.setImageResource(R.drawable.witbox_offline_icon_ghost);
+			}break;
+			
+			default:{
+				icon.setImageResource(R.drawable.witbox_icon);	
+			}break;
+		
+		}
+		
+		//Status icon
+		switch (status){
+		
+			case StateUtils.STATE_OPERATIONAL:{
 				iv.setImageResource(R.drawable.tick_icon_small);
 				iv.setVisibility(View.VISIBLE);
 				pb.setVisibility(View.GONE);
-			} else if (status.equals("Printing")){
+			} break;
+			
+			case StateUtils.STATE_PRINTING:{
 				iv.setVisibility(View.VISIBLE);
 				pb.setVisibility(View.VISIBLE);
 				Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
 				pb.setProgress(n.intValue());
 				
 				iv.setImageResource(R.drawable.printer_icon);
-			} else if (status.equals("Error")){
+			}break;
+			
+			case StateUtils.STATE_ERROR:{
 				iv.setImageResource(R.drawable.warning_icon);
 				iv.setVisibility(View.VISIBLE);
 				pb.setVisibility(View.GONE);
-			} else{
+			}break;
+			
+			default:{
 				iv.setVisibility(View.GONE);
 				pb.setVisibility(View.GONE);
 				Log.i("OUT","INVISIBLE!");
 			}
-		} else Log.i("OUT","NULL STATUS");
-		
-		
-		
+			
+		}
+
 		return v;
 	}
 	
@@ -147,14 +167,30 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 	                ArrayList<ModelPrinter> filt = new ArrayList<ModelPrinter>();
 	                
 	             
-                	 //Check if every item from the original list has the constraint
-                    for (ModelPrinter m : mOriginal){
-                    	
-                    	if (m.getStatus().contains(constraint)){
-                    		filt.add(m);
-                    	}
-                    	
-                    }
+	                //TODO Should change filter logic to avoid redundancy
+	                if (!constraint.equals("New")){
+	                	 //Check if every item from the original list has the constraint
+	                    for (ModelPrinter m : mOriginal){
+	                    	
+	                    	if (m.getMessage().contains(constraint)){
+	                    		filt.add(m);
+	                    	}
+	                    	
+	                    }
+	                } else {
+	                	
+	                	//Check if every item from the original list has the constraint
+	                    for (ModelPrinter m : mOriginal){
+	                    	
+	                    	if (!m.getMessage().contains(constraint)){
+	                    		filt.add(m);
+	                    	}
+	                	
+	                    }
+	                }
+	                
+	                
+                	
                 	                //New list is filtered list
 	                result.count = filt.size();
 	                result.values = filt;

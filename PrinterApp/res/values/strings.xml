@@ -22,6 +22,8 @@
     <string name="devices_tabhost_tab_map">Map</string>
     <string name="devices_tabhost_tab_list">List</string>
     <string name="devices_error_dialog_title">Error message</string>
+    <string name="devices_setup_title">Set up printer </string>
+    <string name="devices_setup_message">Insert printer code or scan the QR located in the back of your device</string>
     
     <string name="devices_menu_add">Delete printer</string>
     <string name="devices_menu_filter">Filter devices</string>
@@ -32,6 +34,7 @@
     <string name="devices_filter_dialog_progress">\'In progress\' printers</string>
     <string name="devices_filter_dialog_inactive">\'Inactive\' printers</string>
     <string name="devices_filter_dialog_groups">As groups</string>
+    <string name="devices_filter_dialog_linked">Only linked printers</string>
     
     
     <string name="library_search_dialog_title">Search keyword</string>

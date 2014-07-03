@@ -1,5 +1,7 @@
 package android.app.printerapp;
 
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.model.ModelPrinter;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,15 +17,17 @@ public class ActionModeHandler {
 	
 	private static boolean status = false;
 	private static ActionMode mActionMode;
+	private static ModelPrinter mCurrentModel;
 	
 	
 	//Start action mode with the desired callback
 	//TODO only one right now
-	public static void modeStart(View v){
+	public static void modeStart(View v, ModelPrinter m){
 		
 		if (!status){
 			mActionMode = v.startActionMode(mActionModeCallback);
 			status = true;
+			mCurrentModel = m ;
 		}
 		
 		
@@ -66,7 +70,8 @@ public class ActionModeHandler {
 	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 	        switch (item.getItemId()) {
 	            case R.id.menu_cab_delete:
-	                mode.finish(); // Action picked, so close the CAB
+	                DatabaseController.deleteFromDb(mCurrentModel.getName(), mCurrentModel.getAddress());
+	                mode.finish();
 	                return true;
 	                
 	            case R.id.menu_cab_settings:

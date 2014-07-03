@@ -37,7 +37,7 @@ public class ItemListActivity extends FragmentActivity implements
 	 */
 	private boolean mTwoPane;
 	
-	private DevicesFragment mDevicesFragment;
+	private static DevicesFragment mDevicesFragment;
 	private LibraryFragment mLibraryFragment;
 	private ViewerMain mViewerFragment;
 	private SettingsFragment mSettingsFragment;
@@ -197,4 +197,8 @@ public class ItemListActivity extends FragmentActivity implements
 			startActivity(detailIntent);
 		}
 	}	
+	
+	public static void notifyAdapters(){
+		if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
+	}
 }

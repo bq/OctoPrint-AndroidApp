@@ -9,6 +9,7 @@ import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
 import javax.jmdns.ServiceListener;
 
+import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
@@ -35,14 +36,14 @@ public class JmdnsServiceListener implements ServiceListener{
 		private static JmDNS mJmdns = null;
 		
 		//Reference to the fragment controller
-		private DiscoveryOptionController mContext;
+		private DevicesFragment mContext;
 		
 		/*****************
 		 * Main constructor
 		 * @param controller
 		 *****************/
 		
-		public JmdnsServiceListener(DiscoveryOptionController context){
+		public JmdnsServiceListener(DevicesFragment context){
 			
 			mContext = context;
 						
@@ -67,7 +68,7 @@ public class JmdnsServiceListener implements ServiceListener{
 		private void setUp() {
 			
 			//We need to get our device IP address to bind it when creating JmDNS since we want to address it to a specific network interface
-	        WifiManager wifi = (WifiManager) mContext.getContext().getSystemService(Context.WIFI_SERVICE);
+	        WifiManager wifi = (WifiManager) mContext.getActivity().getSystemService(Context.WIFI_SERVICE);
 	        final InetAddress deviceIpAddress = getDeviceIpAddress(wifi);
 	        
 	        //Get multicast lock because we need to listen to multicast packages
@@ -113,7 +114,7 @@ public class JmdnsServiceListener implements ServiceListener{
 			 Log.i("Model","Service resolved: " + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 			 //mContext.listHandler(new ModelPrinter(service));
-			 mContext.addToServiceList(new ModelPrinter(service.getName(),service.getInetAddresses()[0].toString()));
+			 mContext.addElement(new ModelPrinter(service.getName(),service.getInetAddresses()[0].toString()));
 			 
 		}
 		

@@ -18,6 +18,12 @@
             android:layout_gravity="center_vertical"
             android:checked="true"
             android:text="@string/devices_filter_dialog_all" />
+        
+        <RadioButton
+            android:id="@+id/dv_radio4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/devices_filter_dialog_linked" />
 
         <RadioButton
             android:id="@+id/dv_radio1"

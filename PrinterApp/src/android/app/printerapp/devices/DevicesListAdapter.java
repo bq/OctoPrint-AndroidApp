@@ -3,6 +3,7 @@ package android.app.printerapp.devices;
 import java.util.List;
 
 import android.app.printerapp.R;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
@@ -78,13 +79,11 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 			file.setText(job.getFilename());
 			
 			TextView status = (TextView) v.findViewById(R.id.list_column_3);	
-			
-			String state = m.getStatus();
-			
-			if (state.equals("Printing")){
+
+			if (m.getStatus()==StateUtils.STATE_PRINTING){
 				status.setText(getProgress(job.getProgress()) + "% (" + job.getPrintTimeLeft() + " left)");
 				
-			} else status.setText(state);
+			} else status.setText(m.getMessage());
 			
 		}catch (NullPointerException e){
 			Log.i("DEVICES", "No job");
