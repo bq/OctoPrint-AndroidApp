@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
@@ -109,13 +110,13 @@ public class DevicesFragment extends Fragment{
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
+					
+					ModelPrinter m = DevicesListController.getList().get(arg2);
+					
+					ActionModeHandler.modeStart(arg1,m);
 
-					ActionModeHandler.modeStart(arg1);
-					 
-					 
-					 ModelPrinter m = DevicesListController.getList().get(arg2);
-					 					 
-					 if (m.getStatus().equals("Error")){
+									 					 
+					 if (m.getStatus()== StateUtils.STATE_ERROR){
 						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 						 adb.setTitle(R.string.devices_error_dialog_title);
 						 adb.setMessage((DevicesListController.getList().get(arg2).getMessage()));
@@ -123,11 +124,11 @@ public class DevicesFragment extends Fragment{
 						 adb.show();
 					 }
 					 
-					 if (m.getStatus().equals("Printing")){
+					 if (m.getStatus()== StateUtils.STATE_PRINTING){
 						setDialogAdapter(m);
 					 }
 					 
-					 if (m.getStatus().equals("New")){
+					 if (m.getStatus()==StateUtils.STATE_NEW){
 						 codeDialog(m);
 					 }
 					
@@ -311,6 +312,9 @@ public class DevicesFragment extends Fragment{
 				}break;
 				case R.id.dv_radio3:{
 					mGridAdapter.getFilter().filter(null);	//TODO Groups
+				}break;
+				case R.id.dv_radio4:{
+					mGridAdapter.getFilter().filter("New"); //Linked
 				}break;
 				
 				}

@@ -34,6 +34,7 @@
     <string name="devices_filter_dialog_progress">\'In progress\' printers</string>
     <string name="devices_filter_dialog_inactive">\'Inactive\' printers</string>
     <string name="devices_filter_dialog_groups">As groups</string>
+    <string name="devices_filter_dialog_linked">Only linked printers</string>
     
     
     <string name="library_search_dialog_title">Search keyword</string>

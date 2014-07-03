@@ -59,5 +59,5 @@ public class DevicesListController {
 	   DatabaseController.closeDb();
 
 	}
-	
+		
 }

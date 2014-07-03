@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.octoprint.OctoprintConnection;
 
 public class ModelPrinter {
@@ -13,7 +14,7 @@ public class ModelPrinter {
 	//Service info
 	private String mName;
 	private String mAddress;
-	private String mStatus = "Offline";
+	private int mStatus = StateUtils.STATE_NONE;
 	private String mMessage;
 	private String mTemperature;
 	
@@ -47,7 +48,7 @@ public class ModelPrinter {
 		return mAddress;
 	}
 	
-	public String getStatus(){
+	public int getStatus(){
 		return mStatus;
 	}
 	
@@ -74,11 +75,8 @@ public class ModelPrinter {
 		try {
 			state = status.getJSONObject("state");
 						
-			if (state.getJSONObject("flags").getBoolean("closedOrError")) {
-				mStatus = "Error";
-				mMessage = state.getString("stateString");
-			} else mStatus = state.getString("stateString");
-			if (mStatus.equals("Printing from SD")) mStatus = "Printing";
+			mStatus = state.getInt("state");
+			mMessage = state.getString("stateString");
 			mJob.updateJob(status);
 			
 			temperature = status.getJSONArray("temperatures");
@@ -101,6 +99,7 @@ public class ModelPrinter {
 	}
 	
 	public void setNotLinked(){	
-		mStatus = "New";
+		mStatus = StateUtils.STATE_NEW;
+		mMessage = "New";
 	}
 }

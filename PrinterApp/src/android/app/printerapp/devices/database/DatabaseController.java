@@ -18,13 +18,12 @@ public class DatabaseController {
 	
 	static DatabaseHelper mDbHelper;
 	static SQLiteDatabase mDb;
+	static Context mContext;
 	
 	public DatabaseController(Context context){
-		
-		//TODO Database deletion for testing
-		//context.deleteDatabase("Devices.db");
-		
-		mDbHelper = new DatabaseHelper(context);
+	
+		mContext = context;
+		mDbHelper = new DatabaseHelper(mContext);
 	
 	}
 	
@@ -43,6 +42,14 @@ public class DatabaseController {
 		mDb.insert(FeedEntry.TABLE_NAME, null, values);		
 		mDb.close();
 		
+	}
+	
+	public static void deleteFromDb(String name, String address){
+		
+		mDb = mDbHelper.getWritableDatabase();
+		
+		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry.DEVICES_NAME + " = '" + name + "'", null);
+		mDb.close();
 	}
 	
 	//Retrieve the cursor with the elements from the database
@@ -95,6 +102,11 @@ public class DatabaseController {
 		
 		return exists;
 		
+	}
+	
+	public static void deleteDB(){
+		//TODO Database deletion for testing
+		mContext.deleteDatabase("Devices.db");
 	}
 	
 
