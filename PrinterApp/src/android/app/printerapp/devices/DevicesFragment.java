@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ActionModeHandler;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.DiscoveryOptionController;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -165,8 +163,6 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			//new JmdnsServiceListener(this);
-			
-			loadList();
 		
 		}
 		return rootView;
@@ -257,26 +253,7 @@ public class DevicesFragment extends Fragment{
 		notifyAdapter();
 	}
 		
-	public void loadList(){
-			
-		Cursor c = DatabaseController.retrieveDeviceList();
-		
-		c.moveToFirst();
-		
-		while (!c.isAfterLast()){
-			
-			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
-			
-			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) );
-			
-			addElement(m);
-			
-			c.moveToNext();
-		}
-	   
-	   DatabaseController.closeDb();
-
-	}
+	
 	
 	public static void notifyAdapter(){
 		mListAdapter.notifyDataSetChanged();

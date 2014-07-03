@@ -29,6 +29,7 @@ public class ListContent {
 		addItem(new ListItem("2", "Print panel"));
 		addItem(new ListItem("3", "Models"));
 		addItem(new ListItem("4", "History"));
+		addItem(new ListItem("5", "Settings"));
 	}
 
 	private static void addItem(ListItem item) {

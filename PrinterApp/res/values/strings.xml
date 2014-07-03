@@ -51,6 +51,10 @@
     <string name="viewer_menu_autofit">Autofit</string>
     <string name="viewer_menu_clean">Clean panel</string>
     
+    <string name="settings_network">Default network</string>
+    <string name="settings_printers">Linked Witbox/Witclon connections</string>
+    <string name="settings_add_title">Discover printer(s)</string>
+    
     
     
     
