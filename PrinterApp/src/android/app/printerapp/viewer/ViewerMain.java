@@ -316,7 +316,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		
 	}
 	
-	private void openFile (String filePath) {
+	public void openFile (String filePath) {
 		mFile = new File(filePath);
 
 		//Open the file

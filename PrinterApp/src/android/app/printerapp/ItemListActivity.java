@@ -9,9 +9,9 @@ import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMain;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -39,7 +39,7 @@ public class ItemListActivity extends FragmentActivity implements
 	
 	private static DevicesFragment mDevicesFragment;
 	private LibraryFragment mLibraryFragment;
-	private ViewerMain mViewerFragment;
+	private static ViewerMain mViewerFragment;
 	private SettingsFragment mSettingsFragment;
 	
 	private Fragment mCurrent;
@@ -75,7 +75,6 @@ public class ItemListActivity extends FragmentActivity implements
 		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
 		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag("Viewer");
 		mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag("Settings");
-		
 	}
 
 	/**
@@ -84,6 +83,7 @@ public class ItemListActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onItemSelected(String id) {
+		
 		if (mTwoPane) {
 			
 			// In two-pane mode, show the detail view in this activity by
@@ -92,7 +92,7 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			//Switch between list ids
 			
-			 if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
+			if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
 			ActionModeHandler.modeFinish();			
 			switch (Integer.valueOf(id)){
 			
@@ -103,19 +103,10 @@ public class ItemListActivity extends FragmentActivity implements
 						 mDevicesFragment = new DevicesFragment();
 						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mDevicesFragment, "Devices").commit();
 							
-						 //Replace the fragment with the desired tag for future checks
-							/*getSupportFragmentManager().beginTransaction()
-									.replace(R.id.item_detail_container, fragment, "Devices").commit();*/
-						 
-						 
-						mCurrent = mDevicesFragment;
-					 } else {
-						 
-						  mCurrent = mDevicesFragment;
-						 	 
-						 Log.i("OUT","Devices Fragment exists");
-					 }
-					
+
+					 } 
+					 
+					 mCurrent = mDevicesFragment;
 					} break;
 					
 				case 2:{
@@ -125,20 +116,10 @@ public class ItemListActivity extends FragmentActivity implements
 						 mViewerFragment = new ViewerMain();
 						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mViewerFragment, "Viewer").commit();
 							
-						 //Replace the fragment with the desired tag for future checks
-							/*getSupportFragmentManager().beginTransaction()
-									.replace(R.id.item_detail_container, fragment, "Library").commit();*/
-						
-						
-						 mCurrent = mViewerFragment;
-						
-					 } else {
+					 } 
+
+					 mCurrent = mViewerFragment;
 						 
-						 mCurrent = mViewerFragment;
-						 
-						 
-						 Log.i("OUT","Viewer Fragment exists");
-					 }
 					
 				} break;
 				
@@ -147,21 +128,11 @@ public class ItemListActivity extends FragmentActivity implements
 					 if (getSupportFragmentManager().findFragmentByTag("Library")==null){
 						 mLibraryFragment = new LibraryFragment();
 						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mLibraryFragment, "Library").commit();
-							
-						 //Replace the fragment with the desired tag for future checks
-							/*getSupportFragmentManager().beginTransaction()
-									.replace(R.id.item_detail_container, fragment, "Library").commit();*/
-						
-						
-						 mCurrent = mLibraryFragment;
-						
-					 } else {
 						 
-						 mCurrent = mLibraryFragment;
+					 } 
 						 
-						 
-						 Log.i("OUT","Libray Fragment exists");
-					 }
+					mCurrent = mLibraryFragment;
+
 				} break;
 				
 				case 5:{
@@ -169,36 +140,47 @@ public class ItemListActivity extends FragmentActivity implements
 					 if (getSupportFragmentManager().findFragmentByTag("Settings")==null){
 						 mSettingsFragment = new SettingsFragment();
 						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mSettingsFragment, "Settings").commit();
-							
-						 //Replace the fragment with the desired tag for future checks
-							/*getSupportFragmentManager().beginTransaction()
-									.replace(R.id.item_detail_container, fragment, "Library").commit();*/
-						
-						
-						 mCurrent = mSettingsFragment;
-						
-					 } else {
-						 
-						 mCurrent = mSettingsFragment;
-					 }
-				}break;
-					
-			
+
+					 } 
+					 
+					mCurrent = mSettingsFragment;
+
+				}break;	
+				
 			}
 			
-			if (mCurrent!=null )getSupportFragmentManager().beginTransaction().show(mCurrent).commit();
+			if (mCurrent!=null ) getSupportFragmentManager().beginTransaction().show(mCurrent).commit();
 			
-			
-
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
 			startActivity(detailIntent);
+			
+
 		}
 	}	
 	
+	
 	public static void notifyAdapters(){
 		if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
+	}
+	
+	//Send a fragment change request to the parent
+	public static void requestOpenFile(final String path){
+		ItemListFragment.performClick(1);
+		
+		//Handler will avoid crash
+		Handler handler = new Handler();
+		handler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				mViewerFragment.openFile(path);
+					
+				}	
+			});
+
 	}
 }
