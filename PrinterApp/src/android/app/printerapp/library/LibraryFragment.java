@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import android.app.AlertDialog;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelFile;
 import android.content.Context;
@@ -16,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.RadioGroup;
@@ -63,6 +66,18 @@ public class LibraryFragment extends Fragment {
 			
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
+			g.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+						
+					ItemListActivity i = (ItemListActivity)getActivity();
+					i.requestOpenFile(mCurrentFileList.get(arg2).getStl());
+					//ItemListActivity.requestOpenFile(mCurrentFileList.get(arg2).getStl());
+					
+				}
+			});
 			g.setAdapter(mAdapter);
 			
 			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);

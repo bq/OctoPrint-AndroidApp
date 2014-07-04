@@ -24,17 +24,19 @@ public class ItemListFragment extends ListFragment {
 	 * activated item position. Only used on tablets.
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+	
+	private static ListView mListView;
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks.
 	 */
-	private Callbacks mCallbacks = sDummyCallbacks;
+	private static Callbacks mCallbacks;
 
 	/**
 	 * The current activated item position. Only used on tablets.
 	 */
-	private int mActivatedPosition = ListView.INVALID_POSITION;
+	private static int mActivatedPosition = ListView.INVALID_POSITION;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -73,6 +75,8 @@ public class ItemListFragment extends ListFragment {
 		setListAdapter(new ArrayAdapter<ListContent.ListItem>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, ListContent.ITEMS));
+		
+		
 	}
 
 	@Override
@@ -84,7 +88,12 @@ public class ItemListFragment extends ListFragment {
 				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
+			
+			
+			mCallbacks = sDummyCallbacks;
 		}
+		
+		mListView = getListView();
 	}
 
 	@Override
@@ -139,11 +148,23 @@ public class ItemListFragment extends ListFragment {
 						: ListView.CHOICE_MODE_NONE);
 	}
 
-	private void setActivatedPosition(int position) {
+	
+	//Custom method to perform an item selection from another Fragment.
+	public static void performClick(int position){
+		
+		//Perform an item selection calling the super
+		mCallbacks.onItemSelected(ListContent.ITEMS.get(position).id);
+		
+		//Highlight selected item
+		setActivatedPosition(position);
+	}
+	
+	private static void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
-			getListView().setItemChecked(mActivatedPosition, false);
+			mListView.setItemChecked(mActivatedPosition, false);
 		} else {
-			getListView().setItemChecked(position, true);
+			mListView.setItemChecked(position, true);
+
 		}
 
 		mActivatedPosition = position;
