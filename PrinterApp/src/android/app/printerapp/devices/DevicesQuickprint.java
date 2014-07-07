@@ -1,5 +1,6 @@
 package android.app.printerapp.devices;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -28,11 +29,8 @@ import android.widget.Toast;
  */
 public class DevicesQuickprint {
 	
-	//Test demo file 
-	//private static final String DEMO_FILE = "bq-keychain";
-	
 	//List to store every file
-	private ArrayList<ModelFile> mFileList = new ArrayList<ModelFile>();
+	private ArrayList<File> mFileList = new ArrayList<File>();
 	
 	//This will be the "custom" ListView
 	private LinearLayout mLayout;
@@ -67,73 +65,77 @@ public class DevicesQuickprint {
 		/*
 		 * Fill the Layout with the list views
 		 */
-		for (final ModelFile m : mFileList){
+		for (final File m : mFileList){
 			
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View v = inflater.inflate(R.layout.storage_main, null);
 			
-			TextView tv = (TextView) v.findViewById(R.id.storage_label);
-			tv.setText(m.getName());
+			if (!m.isDirectory()){
+				TextView tv = (TextView) v.findViewById(R.id.storage_label);
+				tv.setText(m.getName());
+				
+				ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
+				
+				if (((ModelFile)m).getStorage().equals("Internal storage")){
+					Drawable d;
+					d = ((ModelFile)m).getSnapshot();
+				
+					if (d!=null){
+						iv.setImageDrawable(d);
+					} else {
+						iv.setImageResource(R.drawable.file_icon);
+					}
+				} else iv.setImageResource(R.drawable.file_icon);
 			
-			ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 			
-			if (m.getStorage().equals("Internal storage")){
-				Drawable d;
-				d = m.getSnapshot();
 			
-				if (d!=null){
-					iv.setImageDrawable(d);
-				} else {
-					iv.setImageResource(R.drawable.file_icon);
-				}
-			} else iv.setImageResource(R.drawable.file_icon);
 				
 			 	
-			/*
-			 * On long click we start dragging the item, no need to make it invisible
-			 */
-			v.setOnLongClickListener(new OnLongClickListener() {
-				
-				@Override
-				public boolean onLongClick(View v) {
+				/*
+				 * On long click we start dragging the item, no need to make it invisible
+				 */
+				v.setOnLongClickListener(new OnLongClickListener() {
 					
-
-					String name = m.getGcodeList();
-					
-					
-					/**
-					 * Check if there's a real gcode, 
-					 */
-					if (name!=null){
+					@Override
+					public boolean onLongClick(View v) {
 						
-						ClipData data = null;
-						
-						if (m.getStorage().equals("Witbox")){
-							 data= ClipData.newPlainText("internal", name);
-						} else if (m.getStorage().equals("sd")){
-							data = ClipData.newPlainText("internalsd", m.getName());
-						}else if (name.substring(name.length() - 6, name.length()).equals(".gcode")){
-							data = ClipData.newPlainText("name", name);	
-						}
-						
-						DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-						v.startDrag(data, shadowBuilder, v, 0);
+	
+						String name = ((ModelFile)m).getGcodeList();
 						
 						
+						/**
+						 * Check if there's a real gcode, 
+						 */
+						if (name!=null){
+							
+							ClipData data = null;
+							
+							if (((ModelFile)m).getStorage().equals("Witbox")){
+								 data= ClipData.newPlainText("internal", name);
+							} else if (((ModelFile)m).getStorage().equals("sd")){
+								data = ClipData.newPlainText("internalsd", m.getName());
+							}else if (name.substring(name.length() - 6, name.length()).equals(".gcode")){
+								data = ClipData.newPlainText("name", name);	
+							}
+							
+							DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+							v.startDrag(data, shadowBuilder, v, 0);
+							
+							
+							
+						} else 	Toast.makeText(mContext, "No .gcode found", Toast.LENGTH_SHORT).show();
+	
 						
-					} else 	Toast.makeText(mContext, "No .gcode found", Toast.LENGTH_SHORT).show();
-
 					
-				
-					
-					return false;
-				}
-			});
-					
-			if (mLayout!=null){
-				mLayout.addView(v);
-			} else Log.i("out","NULL");
-			
+						
+						return false;
+					}
+				});
+						
+				if (mLayout!=null){
+					mLayout.addView(v);
+				} else Log.i("out","NULL");
+			}
 			
 		}
 		

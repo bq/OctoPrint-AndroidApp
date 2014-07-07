@@ -1,6 +1,6 @@
 package android.app.printerapp.library;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Comparator;
 
 import android.app.AlertDialog;
@@ -27,9 +27,7 @@ import android.widget.TabHost.OnTabChangeListener;
 
 public class LibraryFragment extends Fragment {
 	
-	StorageAdapter mAdapter;
-	
-	ArrayList<ModelFile> mCurrentFileList = new ArrayList<ModelFile>();
+	private StorageAdapter mAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,11 +57,9 @@ public class LibraryFragment extends Fragment {
 			/**
 			 * CUSTOM VIEW METHODS
 			 */
-			retrieveAllFiles();
 
 			
-			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, mCurrentFileList);
-			
+			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
 			g.setOnItemClickListener(new OnItemClickListener() {
@@ -72,10 +68,38 @@ public class LibraryFragment extends Fragment {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 						
-					ItemListActivity i = (ItemListActivity)getActivity();
-					i.requestOpenFile(mCurrentFileList.get(arg2).getStl());
-					//ItemListActivity.requestOpenFile(mCurrentFileList.get(arg2).getStl());
 					
+					//Logic for getting file type
+					File f = StorageController.getFileList().get(arg2);
+					
+					//If it's folder open it
+					if (f.isDirectory()){
+						
+						//If it's project folder, send stl
+						if (StorageController.isProject(f)){
+							
+							ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+							
+						} else  {							
+
+							StorageController.reloadFiles(f.getAbsolutePath());
+
+							//if it's not the parent folder, make a back folder
+							if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
+		
+								//TODO change folder names
+								StorageController.addToList(new File(f.getParentFile().toString()));
+							}
+							mAdapter.notifyDataSetChanged();
+							sortAdapter();
+						}							
+							
+						//If it's not a folder, just send the file
+					}else {
+						
+						ItemListActivity.requestOpenFile(f.getAbsolutePath());
+						
+					}					
 				}
 			});
 			g.setAdapter(mAdapter);
@@ -90,13 +114,8 @@ public class LibraryFragment extends Fragment {
 			//Set tab host for the view
 			setTabHost(rootView);
 			
-			mAdapter.sort(new Comparator<ModelFile>() {
-			    public int compare(ModelFile arg0, ModelFile arg1) {
-			        return arg0.getStorage().compareTo(arg1.getStorage());
-			    }
-			});
-			
-		
+			sortAdapter();
+
 		}
 		return rootView;
 	}
@@ -185,16 +204,7 @@ public class LibraryFragment extends Fragment {
 		
 	}
 		
-	
-	//Retrieve all files from the system
-	//TODO How to handle printer files?
-	public void retrieveAllFiles(){
 		
-		mCurrentFileList = StorageController.getFileList();
-		
-				
-	}
-	
 	//Filter elements in the current tab from the menu option
 	//TODO WIP still not functional
 	public void optionFilterLibrary(){
@@ -263,5 +273,17 @@ public class LibraryFragment extends Fragment {
 		adb.show();
 		
 	}
+	
+	public void sortAdapter(){
+		//Sort by absolute file (puts folders before files)
+		mAdapter.sort(new Comparator<File>() {
+			public int compare(File arg0, File arg1) {
+		        
+				return arg0.getAbsoluteFile().compareTo(arg1.getAbsoluteFile());
+		    }
+		});
+	}
+	
+	
 
 }
