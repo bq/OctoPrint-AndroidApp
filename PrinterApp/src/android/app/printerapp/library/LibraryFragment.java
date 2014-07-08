@@ -3,6 +3,7 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.util.Comparator;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -274,11 +276,41 @@ public class LibraryFragment extends Fragment {
 		
 	}
 	
+	//Random adapter with lots of comparisons
+	@SuppressLint("DefaultLocale")
 	public void sortAdapter(){
 		//Sort by absolute file (puts folders before files)
 		mAdapter.sort(new Comparator<File>() {
+						
 			public int compare(File arg0, File arg1) {
-		        
+				
+				//If it's the back button, always first
+				if (!arg0.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
+
+					return -1;
+				}
+				
+				//If both are directories, they may be also projects
+				if ((arg0.isDirectory())&&(arg1.isDirectory())){
+					
+					int i1 = (StorageController.isProject(arg0)) ? 1: 0;
+					int i2 = (StorageController.isProject(arg1)) ? 1: 0;
+					
+					int result = i1 - i2;
+					
+					//Result will throw true for Files always
+					if (result == 0){
+										
+						return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+						
+					} else	return result;
+					
+				}
+				
+				//If both are files, lowercase comparison
+				if ((arg0.isFile())&&(arg1.isFile()))return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+				
+				//Everything else
 				return arg0.getAbsoluteFile().compareTo(arg1.getAbsoluteFile());
 		    }
 		});

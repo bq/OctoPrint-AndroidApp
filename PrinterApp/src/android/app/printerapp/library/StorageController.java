@@ -24,9 +24,6 @@ public class StorageController {
 		
 		//Retrieve normal files
 		retrieveFiles( getParentFolder());
-		
-		//Retrieve trash files
-		
 	
 	}
 	
@@ -52,10 +49,6 @@ public class StorageController {
 					
 					ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
 					
-					//TODO: Move this to the ModelFile code
-					m.setPathStl(retrieveFile(file.getAbsolutePath(), "_stl"));	
-					m.setPathGcode(retrieveFile(file.getAbsolutePath(), "_gcode"));	
-					m.setSnapshot(file.getAbsolutePath() + "/" + m.getName() + ".jpg");
 					addToList(m);
 					
 				} else {
@@ -84,6 +77,22 @@ public class StorageController {
 		
 		mCurrentPath = path.toString();
 	}
+	
+	//TODO change this to database eventually
+	public static ArrayList<ModelFile> getFavorites(){
+		
+		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
+		File path = new File(getParentFolder() + "/Files");
+		File[] files = path.listFiles();
+		
+		for (File file : files){				
+			if (isProject(file))tempList.add(new ModelFile(file.getAbsolutePath(), "Internal storage"));
+		}
+				
+		return tempList;
+		
+	}
+	
 	
 		
 	//Retrieve main folder or create if doesn't exist

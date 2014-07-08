@@ -30,7 +30,7 @@ import android.widget.Toast;
 public class DevicesQuickprint {
 	
 	//List to store every file
-	private ArrayList<File> mFileList = new ArrayList<File>();
+	private ArrayList<ModelFile> mFileList = new ArrayList<ModelFile>();
 	
 	//This will be the "custom" ListView
 	private LinearLayout mLayout;
@@ -47,7 +47,7 @@ public class DevicesQuickprint {
 		mLayout = ll;
 		mContext = context;
 		
-		mFileList = StorageController.getFileList();
+		mFileList = StorageController.getFavorites();
 		displayFiles();
 	}
 	
@@ -65,20 +65,22 @@ public class DevicesQuickprint {
 		/*
 		 * Fill the Layout with the list views
 		 */
-		for (final File m : mFileList){
+		for (final ModelFile m : mFileList){
+			
+			Log.i("OUT","I'm " + m.getName());
 			
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View v = inflater.inflate(R.layout.storage_main, null);
 			
-			if (!m.isDirectory()){
+			if ((StorageController.isProject(m))){
 				TextView tv = (TextView) v.findViewById(R.id.storage_label);
 				tv.setText(m.getName());
 				
 				ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 				
-				if (((ModelFile)m).getStorage().equals("Internal storage")){
+				if (m.getStorage().equals("Internal storage")){
 					Drawable d;
-					d = ((ModelFile)m).getSnapshot();
+					d =m.getSnapshot();
 				
 					if (d!=null){
 						iv.setImageDrawable(d);
@@ -100,7 +102,7 @@ public class DevicesQuickprint {
 					public boolean onLongClick(View v) {
 						
 	
-						String name = ((ModelFile)m).getGcodeList();
+						String name = m.getGcodeList();
 						
 						
 						/**
@@ -110,9 +112,9 @@ public class DevicesQuickprint {
 							
 							ClipData data = null;
 							
-							if (((ModelFile)m).getStorage().equals("Witbox")){
+							if (m.getStorage().equals("Witbox")){
 								 data= ClipData.newPlainText("internal", name);
-							} else if (((ModelFile)m).getStorage().equals("sd")){
+							} else if (m.getStorage().equals("sd")){
 								data = ClipData.newPlainText("internalsd", m.getName());
 							}else if (name.substring(name.length() - 6, name.length()).equals(".gcode")){
 								data = ClipData.newPlainText("name", name);	

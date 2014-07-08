@@ -3,6 +3,7 @@ package android.app.printerapp.model;
 import java.io.File;
 
 import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -32,6 +33,12 @@ public class ModelFile extends File {
 		super(filename);
 
 		mStorage = storage;
+		
+
+		//TODO: Move this to the ModelFile code
+		setPathStl(StorageController.retrieveFile(filename, "_stl"));	
+		setPathGcode(StorageController.retrieveFile(filename, "_gcode"));	
+		setSnapshot(filename + "/" + getName() + ".jpg");
 		
 	}
 	

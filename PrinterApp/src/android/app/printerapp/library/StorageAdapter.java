@@ -76,19 +76,19 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 					iv.setImageResource(R.drawable.folder_icon);
 				}
 				
-			} else	
+			} else{	
 				
 				if (!m.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
 				
 					tv.setText("...");
 				
-				} else {
-					Log.i("OUT","B-But I exist");
-					iv.setImageResource(R.drawable.folder_empty);
-				}
+				} 
+					
 			
+				iv.setImageResource(R.drawable.folder_empty);
+			}
 			
-			
+
 			
 		} else {
 			iv.setImageResource(R.drawable.file_icon);
@@ -144,6 +144,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
                     for (File m : mCurrent){
                     	
                     	if (m.getName().contains(constraint)){
+                    		Log.i("OUT","Added a lel " + m.getName());
                     		filt.add(m);
                     	}
                     	
