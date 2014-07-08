@@ -40,7 +40,12 @@ public class Geometry {
 	         this.y = y;
 	         this.z = z;
 	     }
-
+	     
+	     public boolean equals (Vector v) {
+	    	 if (v.x == this.x && v.y == this.y && v.z == this.z) return true;
+	    	 
+	    	 return false;
+	     }
 	 }
 	 
 	 public static class Ray {
@@ -53,16 +58,6 @@ public class Geometry {
 	     }        
 	 }
 	    
-	 public static class Sphere {
-		 public final Point center;
-	     public final float radius;
-	     
-	     public Sphere(Point center, float radius) {
-	    	 this.center = center;
-	         this.radius = radius;
-	     }
-	 }
-	 
 	 public static boolean intersects(Box box, Ray ray) {
 		 int index = 0;
 		 float k;
@@ -113,6 +108,16 @@ public class Geometry {
 				 to.x - from.x, 
 				 to.y - from.y, 
 				 to.z - from.z);
+	 }
+	 
+	 public static Point intersectionPointWitboxPlate(Ray ray) {    
+		 //plane is z=0
+		 float k = (0-ray.point.z)/ray.vector.z;
+	 	 float x = ray.point.x + k*ray.vector.x;
+	 	 float y = ray.point.y + k*ray.vector.y;
+	 	 float z = 0;
+	 	 
+	 	 return new Point (x,y,z);
 	 }
 	  
 }

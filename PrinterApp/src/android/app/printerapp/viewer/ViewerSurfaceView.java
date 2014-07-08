@@ -1,9 +1,11 @@
 package android.app.printerapp.viewer;
 
+import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class ViewerSurfaceView extends GLSurfaceView{
@@ -37,20 +39,31 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	private static final int MIN_CLICK_DURATION = 1000;
 	private long mStartClickTime;
-	private boolean mLongClickActive = false;
 	
-	//for buttons pressed
+	//Viewer modes
 	public static final int ROTATION_MODE =0;
 	public static final int TRANSLATION_MODE = 1;
 	public static final int LIGHT_MODE = 2;
 	
-	private int mMovementMode = 0;
+	private int mMovementMode;
 	
 	//Edition mode
 	private boolean mEdition = false;
-
-
+	private int mEditionMode;
 	
+	//Edition modes
+	public static final int TRANSLATION_EDITION_MODE = 0;
+	public static final int ROTATION_EDITION_MODE =1;
+
+
+	public static final int ROTATE_X = 0;
+	public static final int ROTATE_Y = 1;
+	public static final int ROTATE_Z = 2;
+	
+	//Check if is an stl file
+	private boolean mIsStl;
+
+
 	public ViewerSurfaceView(Context context) {
 	    super(context);
 	}
@@ -66,6 +79,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
       
 		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
 		setRenderer(mRenderer);
+		
+		mEditionMode = ROTATION_EDITION_MODE;
+		this.mIsStl= stl;
 		
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
@@ -123,6 +139,22 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setXray(xray);
 	}
 	
+	public void setRotationVector (int mode) {
+		switch (mode) {
+		case ROTATE_X:
+			mRenderer.setRotationVector(new Vector (1,0,0));
+			break;
+		case ROTATE_Y:
+			mRenderer.setRotationVector(new Vector (0,1,0));
+			break;
+		case ROTATE_Z:
+			mRenderer.setRotationVector(new Vector (0,0,1));
+			break;
+		}
+		mRenderer.resetTotalAngle();
+	}
+	
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX();
@@ -130,7 +162,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         
         float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
-		
+				
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -147,7 +179,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 				break;
 				
-			case MotionEvent.ACTION_DOWN:				
+			case MotionEvent.ACTION_DOWN:
 				if (mEdition) 
 					if (!mRenderer.touchPoint(normalizedX, normalizedY)) {
 						mEdition= false;	
@@ -162,13 +194,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 								
 				mStartClickTime = event.getEventTime();
-				mLongClickActive = true;
 				
 				break;
 			
-			case MotionEvent.ACTION_MOVE:				
-					long clickDuration = event.getEventTime() - mStartClickTime;
-					if (clickDuration >= MIN_CLICK_DURATION && mLongClickActive) touchMode = TOUCH_LONG_PRESS;
+			case MotionEvent.ACTION_MOVE:	
+					float dx = x - mPreviousX;
+					float dy = y - mPreviousY;
+					
+					long clickDuration = event.getEventTime() - mStartClickTime;				
+					if (clickDuration >= MIN_CLICK_DURATION && !mEdition && mIsStl && dx==0 && dy==0) touchMode = TOUCH_LONG_PRESS;
 					
 					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0) {
 						// on pinch
@@ -185,45 +219,20 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						requestRender();
 
 						
-					}else if (touchMode == TOUCH_DRAG) {
-						float dx = x - mPreviousX;
-				        float dy = y - mPreviousY;
-				        
-				        
+					}else if (touchMode == TOUCH_DRAG) {				        
 				        mPreviousX = x;
 					    mPreviousY = y;
-						switch (mMovementMode) {
-						case ROTATION_MODE:
-							doRotation (dx,dy);
-							break;
-						case TRANSLATION_MODE:
-							doTranslation (dx,dy);
-							break;
-						case LIGHT_MODE:
-			                if (y < getHeight() * 3/4) {
-			                    dy = 1;
-			                } else {
-			                	dy = -1;
-			                }
-
-			                if (x < getWidth() / 2) {
-			                	dx = -1;
-			                } else {
-			                	dx = 1;
-			                }
-							doLight (dx, dy);
-							break;
-						}
-						
-					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition && mLongClickActive) {
-						mLongClickActive = false;
+					    					    
+					    if (mEdition) editionDrag (normalizedX, normalizedY, dx);
+					    else dragAccordingToMode (x,y,dx,dy);
+		
+					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition) {
 						normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 						normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
 						if (mRenderer.touchPoint(normalizedX, normalizedY)) mEdition = true;		
 					} 
 					
-					requestRender();
-								    
+					requestRender();								    
 	                break;
 			
 			// end pinch
@@ -234,10 +243,53 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartPoint.x = 0.0f;
 					pinchStartPoint.y = 0.0f;
 				}
+					
+				if (mEdition) {
+					mRenderer.refreshObjectCoordinates();
+					requestRender();
+				}
 				touchMode = TOUCH_NONE;
 				break;				
 		}
 		return true;
+	}
+	
+	private void editionDrag (float x, float y, float dx) {			
+		switch (mEditionMode) {
+		case ROTATION_EDITION_MODE:
+			mRenderer.setAngleRotationObject(dx*TOUCH_SCALE_FACTOR_ROTATION);
+			break;
+		case TRANSLATION_EDITION_MODE:
+			mRenderer.dragObject(x, y);
+			break;
+			
+		}
+	}
+	
+	private void dragAccordingToMode (float x, float y, float dx, float dy) {
+		switch (mMovementMode) {
+		case ROTATION_MODE:
+			doRotation (dx,dy);
+			break;
+		case TRANSLATION_MODE:
+			doTranslation (dx,dy);
+			break;
+		case LIGHT_MODE:
+            if (y < getHeight() * 3/4) {
+                dy = 1;
+            } else {
+            	dy = -1;
+            }
+
+            if (x < getWidth() / 2) {
+            	dx = -1;
+            } else {
+            	dx = 1;
+            }
+			doLight (dx, dy);
+			break;
+		}
+		
 	}
 	
 	private void doRotation (float dx, float dy) {              

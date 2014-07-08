@@ -3,8 +3,9 @@ package android.app.printerapp.viewer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataStorage {
-		
+import android.app.printerapp.viewer.Geometry.Point;
+
+public class DataStorage {		
 	private List<Float> mVertexList = new ArrayList<Float>();
 	private List<Float> mNormalList = new ArrayList<Float>();
 	private List<Integer> mLineLengthList = new ArrayList<Integer>();
@@ -21,6 +22,7 @@ public class DataStorage {
 	private int mMaxLayer;
 	private int mActualLayer;
 	
+	private Point mCenter = new Point (0,0,0);
 	private float mMinX;
 	private float mMaxX;
 	private float mMinY;
@@ -75,6 +77,15 @@ public class DataStorage {
 		centerSTL();
 	}
 	
+	public void initMaxMin () {
+		setMaxX(Float.MIN_VALUE);
+		setMaxY(Float.MIN_VALUE);
+		setMaxZ(Float.MIN_VALUE);
+		setMinX(Float.MAX_VALUE);
+		setMinY(Float.MAX_VALUE);
+		setMinZ(Float.MAX_VALUE);
+	}
+	
 	public void centerSTL(){	
 		float distX = mMinX + (mMaxX - mMinX)/2;
 		float distY = mMinY + (mMaxY - mMinY)/2;
@@ -92,7 +103,7 @@ public class DataStorage {
 		mMinY = mMinY - distY;
 		mMaxY = mMaxY - distY;
 		mMinZ = mMinZ - distZ;
-		mMaxZ = mMaxZ - distZ;
+		mMaxZ = mMaxZ - distZ;		
 	}
 	
 	public void fillNormalArray() {
@@ -122,6 +133,15 @@ public class DataStorage {
 	
 	public float[] getVertexArray () {
 		return mVertexArray;
+	}
+	
+	public void setVertexArray(float [] array, float offsetZ) {
+		for (int i= 0; i<array.length/3; i+=3) {
+			mVertexArray[i] = array[i];
+			mVertexArray[i+1] = array[i+1];
+			mVertexArray[i+2] = array[i+2] + offsetZ;
+
+		}
 	}
 	
 	public float[] getNormalArray() {

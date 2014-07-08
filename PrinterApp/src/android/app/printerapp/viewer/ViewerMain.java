@@ -38,6 +38,8 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		
 	//Buttons
 	private RadioGroup mGroupMovement;
+	private RadioGroup mGroupRotation;
+
 	private Button mBackWitboxFaces;
 	private Button mRightWitboxFaces;
 	private Button mLeftWitboxFaces;
@@ -99,6 +101,25 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			if (mPathFile!= null) openFile (mPathFile);
 					
 			//Buttons and seekBar
+			mGroupRotation = (RadioGroup) rootView.findViewById (R.id.radio_group_rotation);	
+			mGroupRotation.setOnCheckedChangeListener(new OnCheckedChangeListener () {
+				@Override
+				public void onCheckedChanged(RadioGroup group, int checkedId) {
+					switch (checkedId) {
+					case R.id.rotation_x:
+						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_X);
+						break;
+					case R.id.rotation_y:
+						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Y);
+						break;
+					case R.id.rotation_z:
+						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Z);
+						break;
+					}
+					
+				}			
+			});
+			
 			mGroupMovement = (RadioGroup) rootView.findViewById (R.id.radioGroupMovement);		
 			mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener () {
 				@Override
@@ -251,14 +272,12 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	   
 	   switch (item.getItemId()) {
 	   
-	   case R.id.viewer_open: 
-		   
-		   
+	   case R.id.viewer_open: 		   
 		   //Open file to load
 		   
 		   //TODO test, encapsulate code into function
 		   
-		   FileBrowser fileListDialog = new FileBrowser(getActivity(), false, "Choose file...", ".stl", ".gcode");
+		   	FileBrowser fileListDialog = new FileBrowser(getActivity(), false, "Choose file...", ".stl", ".gcode");
 			
 			fileListDialog.setOnFileListDialogListener(ViewerMain.this);
 
