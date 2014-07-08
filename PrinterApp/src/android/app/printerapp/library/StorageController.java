@@ -106,6 +106,24 @@ public class StorageController {
 		return temp_file;
 	}
 	
+	public static void createFolder(String name){
+			
+		File newFolder = new File(mCurrentPath + "/" + name);
+		
+		if (!newFolder.mkdir()){
+			
+			Log.i("OUT","Error!");
+			
+		} else {
+			
+			addToList(newFolder);
+			
+			Log.i("OUT","Success!");
+		}
+			
+		
+	}
+	
 	
 	//Retrieve certain element from file storage
 	public static String retrieveFile(String name, String type){

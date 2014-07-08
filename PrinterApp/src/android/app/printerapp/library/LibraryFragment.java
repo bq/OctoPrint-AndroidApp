@@ -13,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -141,6 +140,12 @@ public class LibraryFragment extends Fragment {
        	case R.id.library_filter: 
        		optionFilterLibrary();
             return true;
+            
+       	case R.id.library_create:
+       		
+       		optionCreateLibrary();
+       		
+       		return true;
               
           
        default:
@@ -268,6 +273,34 @@ public class LibraryFragment extends Fragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 								
+			}
+		});
+		
+		adb.setNegativeButton(R.string.cancel, null);
+		adb.show();
+		
+	}
+	
+	public void optionCreateLibrary(){
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle(R.string.library_create_dialog_title);
+		
+		final EditText et = new EditText(getActivity());
+		adb.setView(et);
+		et.setText("New");
+		
+		adb.setPositiveButton(R.string.create, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+						
+				
+				String name = et.getText().toString();
+				
+				if (name!=null) StorageController.createFolder(name);
+				mAdapter.notifyDataSetChanged();
+				
 			}
 		});
 		
