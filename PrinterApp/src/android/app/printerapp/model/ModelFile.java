@@ -1,6 +1,9 @@
 package android.app.printerapp.model;
 
+import java.io.File;
+
 import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -10,10 +13,9 @@ import android.util.Log;
  * @author alberto-baeza
  *
  */
-public class ModelFile {
-	
-	//Element name
-	private String mName;
+@SuppressWarnings("serial")
+public class ModelFile extends File {
+
 	
 	//Reference to its original stl
 	private String mPathStl;
@@ -27,21 +29,23 @@ public class ModelFile {
 	//Reference to image
 	private Drawable mSnapshot;
 	
-	public ModelFile (String filename, String storage){
-		
-		mName = filename;
+	public ModelFile(String filename, String storage){
+		super(filename);
+
 		mStorage = storage;
+		
+
+		//TODO: Move this to the ModelFile code
+		setPathStl(StorageController.retrieveFile(filename, "_stl"));	
+		setPathGcode(StorageController.retrieveFile(filename, "_gcode"));	
+		setSnapshot(filename + "/" + getName() + ".jpg");
 		
 	}
 	
 	/***************
 	 * GETS
 	 ***************/
-	
-	public String getName(){
-		return mName;
-	}
-	
+		
 	public String getStl(){
 		return mPathStl;
 	}

@@ -3,7 +3,6 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-
 import android.app.printerapp.model.ModelFile;
 import android.os.Environment;
 import android.util.Log;
@@ -17,24 +16,22 @@ import android.util.Log;
  */
 public class StorageController {
 	
-	static ArrayList<ModelFile> mFileList = new ArrayList<ModelFile>();
+	private static ArrayList<File> mFileList = new ArrayList<File>();
+	private static String mCurrentPath;
 	
 	public StorageController(){
 		
 		
 		//Retrieve normal files
 		retrieveFiles( getParentFolder());
-		
-		//Retrieve trash files
-		
 	
 	}
 	
-	public static ArrayList<ModelFile> getFileList(){
+	public static ArrayList<File> getFileList(){
 		return mFileList;
 	}
 	
-	public void retrieveFiles(File path){
+	public static void retrieveFiles(File path){
 		
 		/**
 		 * CHANGED FILE LOGIC, NOW RETRIEVES FOLDERS INSTEAD OF FILES, AND PARSES
@@ -43,52 +40,59 @@ public class StorageController {
 		File[] files = path.listFiles();
 		for (File file : files){
 			
-			ModelFile m = null;
-			
 			if (file.isDirectory()){	
 				
-				Log.i("OUT","Is directory: " + file.getAbsolutePath());
-				
-				FilenameFilter f = new FilenameFilter() {
+				if (isProject(file)){
 					
-					@Override
-					public boolean accept(File dir, String filename) {
-						
-						return filename.endsWith("jpg");
-					}
-				};
-				
-				if (file.list(f).length > 0){
 					
 					Log.i("OUT","It's also a project " + file.getAbsolutePath());
 					
-					m = new ModelFile(file.getName(), "Internal storage");
+					ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
 					
-					//TODO: Move this to the ModelFile code
-					m.setPathStl(retrieveFile(file.getAbsolutePath(), "_stl"));	
-					m.setPathGcode(retrieveFile(file.getAbsolutePath(), "_gcode"));	
-					m.setSnapshot(file.getAbsolutePath() + "/" + m.getName() + ".jpg");
+					addToList(m);
 					
-				} else retrieveFiles(new File(file.getAbsolutePath()));
+				} else {
+					
+					//File folder = new File(file.getAbsolutePath());
+					addToList(file);
+					
+					//Retrieve files for the folder
+					//retrieveFiles(new File(file.getAbsolutePath()));
+				}
 				
-				
-				
+				//TODO this will eventually go out
 			} else {
 				
 				
-				m = new ModelFile(file.getName(), "Trash storage");
+				//ModelFile m = new ModelFile(file.getName(), "Trash storage");
 				
-				m.setPathStl(file.getAbsolutePath());	
-				m.setPathGcode(file.getAbsolutePath());	
+				//m.setPathStl(file.getAbsolutePath());	
+				//m.setPathGcode(file.getAbsolutePath());	
+				addToList(file);
 				
 			}
-			
-			if (m!=null) {
-				Log.i("OUT","Adding: " + m.getName());
-				addToList(m);
-			}
+
 		}
+		
+		
+		mCurrentPath = path.toString();
 	}
+	
+	//TODO change this to database eventually
+	public static ArrayList<ModelFile> getFavorites(){
+		
+		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
+		File path = new File(getParentFolder() + "/Files");
+		File[] files = path.listFiles();
+		
+		for (File file : files){				
+			if (isProject(file))tempList.add(new ModelFile(file.getAbsolutePath(), "Internal storage"));
+		}
+				
+		return tempList;
+		
+	}
+	
 	
 		
 	//Retrieve main folder or create if doesn't exist
@@ -100,6 +104,24 @@ public class StorageController {
 		File temp_file = new File(mainFolder.toString());
 
 		return temp_file;
+	}
+	
+	public static void createFolder(String name){
+			
+		File newFolder = new File(mCurrentPath + "/" + name);
+		
+		if (!newFolder.mkdir()){
+			
+			Log.i("OUT","Error!");
+			
+		} else {
+			
+			addToList(newFolder);
+			
+			Log.i("OUT","Success!");
+		}
+			
+		
 	}
 	
 	
@@ -124,8 +146,32 @@ public class StorageController {
 		
 	}
 	
-	public static void addToList(ModelFile m ){
+	public static void reloadFiles(String path){
+		
+		mFileList.clear();
+		retrieveFiles(new File(path));
+	}
+	
+	public static boolean isProject(File file){
+		
+		FilenameFilter f = new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File dir, String filename) {
+				
+				return filename.endsWith("jpg");
+			}
+		};
+		
+		if (file.list(f).length > 0) return true;
+		else return false;
+	}
+	
+	public static void addToList(File m ){
 		mFileList.add(m);
 	}
 
+	public static String getCurrentPath(){
+		return mCurrentPath;
+	}
 }

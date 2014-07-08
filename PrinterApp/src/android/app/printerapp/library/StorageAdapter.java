@@ -1,5 +1,6 @@
 package android.app.printerapp.library;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.model.ModelFile;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,19 +24,19 @@ import android.widget.TextView;
  * @author alberto-baeza
  *
  */
-public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterable {
+public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 	
 	//Original list and current list to be filtered
-	private ArrayList<ModelFile> mCurrent;
-	private ArrayList<ModelFile> mOriginal;
+	private ArrayList<File> mCurrent;
+	private ArrayList<File> mOriginal;
 	
 	//Filter
 	private ListFilter mFilter;
 
-	public StorageAdapter(Context context, int resource, List<ModelFile> objects) {
+	public StorageAdapter(Context context, int resource, List<File> objects) {
 		super(context, resource, objects);
-		mOriginal = (ArrayList<ModelFile>) objects;
-		mCurrent = (ArrayList<ModelFile>) objects;
+		mOriginal = (ArrayList<File>) objects;
+		mCurrent = (ArrayList<File>) objects;
 		mFilter = new ListFilter();
 	}
 	
@@ -42,7 +44,7 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		View v = convertView;
-		ModelFile m = getItem(position);
+		File m = getItem(position);
 		
 		//View not yet created
 		if (v==null){
@@ -60,28 +62,45 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
-		if (m.getStorage().equals("Internal storage")){
-			Drawable d;
-			d = m.getSnapshot();
 		
-			if (d!=null){
-				iv.setImageDrawable(d);
-			} else {
-				iv.setImageResource(R.drawable.file_icon);
-			}
-		} else iv.setImageResource(R.drawable.file_icon);
-		
-		
+		if (m.isDirectory()){
 			
-		
-		
+			if (StorageController.isProject(m)){
+				
+				Drawable d;
+				d =((ModelFile)m).getSnapshot();
+			
+				if (d!=null){
+					iv.setImageDrawable(d);
+				} else {
+					iv.setImageResource(R.drawable.folder_icon);
+				}
+				
+			} else{	
+				
+				if (!m.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
+				
+					tv.setText("...");
+				
+				} 
+					
+			
+				iv.setImageResource(R.drawable.folder_empty);
+			}
+			
+
+			
+		} else {
+			iv.setImageResource(R.drawable.file_icon);
+		}
+	
 		return v;
 	}
 	
 
 	//Retrieve item from current list
 	@Override
-	public ModelFile getItem(int position) {
+	public File getItem(int position) {
 		return mCurrent.get(position);
 	}
 	
@@ -117,25 +136,34 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
             if(constraint != null && constraint.toString().length() > 0)
             {
             	//Temporal list
-                ArrayList<ModelFile> filt = new ArrayList<ModelFile>();
+                ArrayList<File> filt = new ArrayList<File>();
                 
                 if ((constraint.equals("gcode"))||(constraint.equals("stl"))){
                 	
                 	//Check if every item from the CURRENT list has the constraint
-                    for (ModelFile m : mCurrent){
+                    for (File m : mCurrent){
                     	
                     	if (m.getName().contains(constraint)){
+                    		Log.i("OUT","Added a lel " + m.getName());
                     		filt.add(m);
                     	}
                     	
                     }
                 } else {
                 	 //Check if every item from the original list has the constraint
-                    for (ModelFile m : mOriginal){
+                    for (File m : mOriginal){
                     	
-                    	if (m.getStorage().contains(constraint)){
-                    		filt.add(m);
+                    	if (m.isDirectory()){
+                    		
+                    		if (StorageController.isProject(m)){
+                    			if (((ModelFile)m).getStorage().contains(constraint)){
+                            		filt.add(m);
+                            	}
+                    		}
+                    		
                     	}
+                    	
+                    	
                     	
                     }
                 }
@@ -163,7 +191,7 @@ public class StorageAdapter extends ArrayAdapter<ModelFile> implements Filterabl
             
 			
 			//If there are results, update list
-			mCurrent = (ArrayList<ModelFile>) results.values;
+			mCurrent = (ArrayList<File>) results.values;
 			notifyDataSetChanged();
 			
 		}
