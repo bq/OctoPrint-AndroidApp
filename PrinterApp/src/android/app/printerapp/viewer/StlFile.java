@@ -40,12 +40,7 @@ public class StlFile implements Runnable{
 		this.mProgressDialog = prepareProgressDialog(context);
 		mData.setPathFile(mFile.getName().replace(".", "-"));
 		
-		mData.setMaxX(Float.MIN_VALUE);
-		mData.setMaxY(Float.MIN_VALUE);
-		mData.setMaxZ(Float.MIN_VALUE);
-		mData.setMinX(Float.MAX_VALUE);
-		mData.setMinY(Float.MAX_VALUE);
-		mData.setMinZ(Float.MAX_VALUE);
+		mData.initMaxMin();
 		
 		this.mThread = new Thread (this);	
 		mThread.start();

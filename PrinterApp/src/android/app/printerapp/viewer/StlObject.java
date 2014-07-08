@@ -34,7 +34,7 @@ public class StlObject {
 			// pointing in the same direction then it will get max illumination.
 			  + "   float diffuse = max(dot(modelViewNormal, lightVector), 0.1);       \n" 	  		  													  
 			// Attenuate the light based on distance.
-			  + "   diffuse = diffuse ;//* (1.0 / (1.0 + (0.25 * distance * distance)));  \n"
+			  + "   diffuse = diffuse;  											   \n"
 			// Multiply the color by the illumination level. It will be interpolated across the triangle.
 			  + "   v_Color = a_Color * diffuse;                                       \n" 	 
 			// gl_Position is a special variable used to store the final position.
@@ -69,6 +69,8 @@ public class StlObject {
 	static float colorNormal[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
 	
 	static float colorSelectedObject[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	
+	static float colorObjectOut[] = {1.0f, 1.0f, 1.0f, 1.0f};
 	
 	private final DataStorage mData;
 	

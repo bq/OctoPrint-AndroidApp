@@ -51,9 +51,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public static final int BACK=2;
 	public static final int LEFT=3;
 	
-	public static final float LIGHT_X=600;
-	public static final float LIGHT_Y=0;
-	public static final float LIGHT_Z=600;
+	public static final float LIGHT_X=1200;
+	public static final float LIGHT_Y=-1200;
+	public static final float LIGHT_Z=1200;
 	
 	public static final int NORMAL = 0;
 	public static final int XRAY = 1;
@@ -90,7 +90,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
     
     //Object
 	private final float[] mAccumulatedRotationObjectMatrix = new float[16];
-	private final float[] mTemporaryObjectMatrix = new float [16];
 	
 	private final float[] mLightVector = new float [4];
 	float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
@@ -106,9 +105,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	float mMoveX=0;
 	float mMoveY=0;
 	float mMoveZ=0;
+
+	float mAdjustZ = 0;
 		
-	private Vector mVector = new Vector (0,0,1); //default
+	private Vector mVector = new Vector (1,0,0); //default
 	private float mRotateAngle=0;
+	private float mTotalAngle=0;
 	private Point mLastCenter = new Point (0,0,0);
 	
 
@@ -185,62 +187,73 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		Ray ray = convertNormalized2DPointToRay(x, y);
 
 		Point touched = Geometry.intersectionPointWitboxPlate(ray);
-        mMoveX = touched.x ;
-        mMoveY = touched.y;
-        mMoveZ = touched.z;
-                
-        refreshObjectCoordinates (mMoveX, mMoveY);       
-    }
-	
-	public void setAngleRotationObject (float angle) {
-		mRotateAngle = angle;
+        
+        float dx = touched.x-mLastCenter.x;
+		float dy = touched.y-mLastCenter.y;
 		
-		refreshObjectCoordinates (angle);
-	}
-	
-	private void refreshObjectCoordinates (float x, float y) {
-		float dx = x-mLastCenter.x;
-		float dy = y-mLastCenter.y;
+		float maxX = mData.getMaxX() + dx;
+		float maxY = mData.getMaxY() + dy;
+		float minX = mData.getMinX() + dx;
+		float minY = mData.getMinY() + dy;
+		
+		//We change the colour if we are outside Witbox Plate
+		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
+			mStlObject.setColor(StlObject.colorObjectOut);
+		else mStlObject.setColor(StlObject.colorSelectedObject);
 
+		mMoveX = touched.x ;
+        mMoveY = touched.y;
+        
+		mLastCenter = new Point (mMoveX,mMoveY,0);
+		
 		mData.setMaxX(mData.getMaxX() + dx);
 		mData.setMaxY(mData.getMaxY() + dy);
 		mData.setMinX(mData.getMinX() + dx);
 		mData.setMinY(mData.getMinY() + dy);
-
-		mLastCenter = new Point (x,y,0);
+		
+    }
+	
+	public void setAngleRotationObject (float angle) {
+		mRotateAngle = angle;
+		mTotalAngle += angle;		
 	}
 	
-	private void refreshObjectCoordinates (float angle) {				
-		if (mVector.equals(new Vector (0,0,1))) {	
-			mData.setMaxX((float) ((mData.getMaxX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
-			mData.setMaxY((float) ((mData.getMaxY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);
+	public void resetTotalAngle() {
+		mTotalAngle = 0;
+	}
+	
+	public void refreshObjectCoordinates () {	
+		if (mTotalAngle!=0) {
+			mData.initMaxMin();
+			float [] coordinatesArray = mData.getVertexArray();
+			float x,y,z;
 			
-
-			mData.setMinX((float) ((mData.getMinX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
-			mData.setMinY((float) ((mData.getMinY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);
-									
-		} else if (mVector.equals(new Vector (0,1,0))) {
-			mData.setMaxX((float) ((mData.getMaxX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
-			mData.setMaxZ((float) ((mData.getMaxZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
+			float [] vector = new float [4];
+			float [] result = new float [4];
+						
 			
-
-			mData.setMinX((float) ((mData.getMinX()-mLastCenter.x)*Math.cos(Math.toRadians(angle))) + mLastCenter.x);
-			mData.setMinZ((float) ((mData.getMinZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
+			for (int i=0; i<coordinatesArray.length/3; i+=3) {
+				vector[0] = coordinatesArray[i];
+				vector[1] = coordinatesArray[i+1];
+				vector[2] = coordinatesArray[i+2];
+				
+				Matrix.multiplyMV(result, 0, mAccumulatedRotationObjectMatrix , 0, vector, 0);
+				
+				x = result [0];
+				y = result [1];
+				z = result [2];
+				
+				mData.adjustMaxMin(x, y, z);
+			}	
 			
-		} else if (mVector.equals(new Vector (1,0,0))) {
-			mData.setMaxZ((float) ((mData.getMaxZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
-			mData.setMaxY((float) ((mData.getMaxY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);
-			
-
-			mData.setMinZ((float) ((mData.getMinZ()-mLastCenter.z)*Math.cos(Math.toRadians(angle))) + mLastCenter.z);
-			mData.setMinY((float) ((mData.getMinY()-mLastCenter.y)*Math.cos(Math.toRadians(angle))) + mLastCenter.y);			
-		}
-
+			if (mData.getMinZ()<0) mAdjustZ = -mData.getMinZ();
+			mData.setMinZ(0);			
+			mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
+		}		
 	}
 	
 	
-	 private Ray convertNormalized2DPointToRay(float normalizedX, float normalizedY) {
-		 
+	 private Ray convertNormalized2DPointToRay(float normalizedX, float normalizedY) {		 
 	        // We'll convert these normalized device coordinates into world-space
 	        // coordinates. We'll pick a point on the near and far planes, and draw a
 	        // line between them. To do this transform, we need to first multiply by
@@ -321,7 +334,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceChanged(GL10 unused, int width, int height) {
 		mWidth = width;
 		mHeight = height;
-		
+				
 		// Adjust the viewport based on geometry changes,
         // such as screen rotation
         GLES20.glViewport(0, 0, width, height);
@@ -377,6 +390,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		float[] temporary = new float[16];
 		
 		float[] lightPosInEyeSpace = new float[4];
+		float[] lightPosInWorldSpace = new float[4];
 				
 	    GLES20.glEnable (GLES20.GL_BLEND);
 	 	
@@ -418,28 +432,26 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(vp, 0,mVPMatrix, 0, mAccumulatedRotationMatrix, 0);         
         
         Matrix.invertM(invertedViewProjectionMatrix, 0, vp, 0);
-
-        //Set ModelViewMatrix
-        Matrix.multiplyMM(mv, 0, mViewMatrix, 0, mAccumulatedRotationMatrix, 0);
-        
-        //Set Light direction     
-        Matrix.multiplyMV(lightPosInEyeSpace, 0, mv, 0, mLightVector, 0);                                               
-        
+      
         Matrix.setIdentityM(model, 0);
         Matrix.translateM(model, 0, mMoveX, mMoveY, mMoveZ);  
-        
+        Matrix.translateM(model, 0, 0, 0, mAdjustZ);
+
         //Object rotation  
         Matrix.rotateM(mAccumulatedRotationObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
-               
+                               
         //Reset angle, we store the rotation in the matrix
         mRotateAngle=0;
-        
+                
         //Multiply the model by the accumulated rotation
-        Matrix.multiplyMM(temporary, 0, model, 0, mAccumulatedRotationObjectMatrix, 0);
-             
-        Matrix.multiplyMM(mvp, 0,vp, 0, temporary, 0);           
-                                                                                                                                                             
-        if (mIsStl) mStlObject.draw(mvp, mv, lightPosInEyeSpace);
+        Matrix.multiplyMM(temporary, 0, model, 0, mAccumulatedRotationObjectMatrix, 0);            
+        Matrix.multiplyMM(mvp, 0,vp, 0, temporary, 0);   
+            
+        //Set Light direction  
+        Matrix.multiplyMV(lightPosInWorldSpace, 0, temporary, 0, mLightPosInModelSpace, 0);
+        Matrix.multiplyMV(lightPosInEyeSpace, 0, mViewMatrix, 0, lightPosInWorldSpace, 0);                                             
+                                                                                                                                                                  
+        if (mIsStl) mStlObject.draw(mvp, mvp, lightPosInEyeSpace);
         else mGcodeObject.draw(vp);
         
         if (mSnapShot) {
@@ -450,7 +462,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(vp);
         	if (mShowRightWitboxFace) mWitboxFaceRight.draw(vp);
         	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(vp);
-        }
+        }        
 	}
 	
 	private void takeScreenShot (GL10 unused) {	

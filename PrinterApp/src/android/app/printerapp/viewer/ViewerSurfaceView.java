@@ -59,6 +59,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int ROTATE_X = 0;
 	public static final int ROTATE_Y = 1;
 	public static final int ROTATE_Z = 2;
+	
+	//Check if is an stl file
+	private boolean mIsStl;
 
 
 	public ViewerSurfaceView(Context context) {
@@ -78,6 +81,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		setRenderer(mRenderer);
 		
 		mEditionMode = ROTATION_EDITION_MODE;
+		this.mIsStl= stl;
 		
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
@@ -138,16 +142,18 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:
-			mRenderer.setRotationVector(new Vector (0,0,1));
-			break;
-		case ROTATE_Y:
 			mRenderer.setRotationVector(new Vector (1,0,0));
 			break;
-		case ROTATE_Z:
+		case ROTATE_Y:
 			mRenderer.setRotationVector(new Vector (0,1,0));
 			break;
+		case ROTATE_Z:
+			mRenderer.setRotationVector(new Vector (0,0,1));
+			break;
 		}
+		mRenderer.resetTotalAngle();
 	}
+	
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -196,7 +202,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					float dy = y - mPreviousY;
 					
 					long clickDuration = event.getEventTime() - mStartClickTime;				
-					if (clickDuration >= MIN_CLICK_DURATION && !mEdition && dx==0 && dy==0) touchMode = TOUCH_LONG_PRESS;
+					if (clickDuration >= MIN_CLICK_DURATION && !mEdition && mIsStl && dx==0 && dy==0) touchMode = TOUCH_LONG_PRESS;
 					
 					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0) {
 						// on pinch
@@ -236,6 +242,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchScale = 1.0f;
 					pinchStartPoint.x = 0.0f;
 					pinchStartPoint.y = 0.0f;
+				}
+					
+				if (mEdition) {
+					mRenderer.refreshObjectCoordinates();
+					requestRender();
 				}
 				touchMode = TOUCH_NONE;
 				break;				

@@ -115,7 +115,8 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 					case R.id.rotation_z:
 						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Z);
 						break;
-					}		
+					}
+					
 				}			
 			});
 			
