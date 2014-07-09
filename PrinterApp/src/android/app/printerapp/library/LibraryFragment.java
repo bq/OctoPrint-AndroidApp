@@ -29,6 +29,7 @@ import android.widget.TabHost.OnTabChangeListener;
 public class LibraryFragment extends Fragment {
 	
 	private StorageAdapter mAdapter;
+	private String mCurrentFilter = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,8 +92,16 @@ public class LibraryFragment extends Fragment {
 								//TODO change folder names
 								StorageController.addToList(new File(f.getParentFile().toString()));
 							}
-							mAdapter.notifyDataSetChanged();
+							
+							//When changing directories we need to set a new filter with the original list
+							if (mCurrentFilter!=null) mAdapter.removeFilter();
+							
 							sortAdapter();
+							
+							//Apply the current filter to the folder
+							if (mCurrentFilter!=null) mAdapter.getFilter().filter(mCurrentFilter);
+							mAdapter.notifyDataSetChanged();
+							
 						}							
 							
 						//If it's not a folder, just send the file
@@ -192,7 +201,7 @@ public class LibraryFragment extends Fragment {
 
 		    	switch (tabs.getCurrentTab()) {				
 				case 0:
-						mAdapter.getFilter().filter(null);
+						mAdapter.removeFilter();
 					break;
 				case 1:
 						mAdapter.getFilter().filter("Witbox");
@@ -233,25 +242,38 @@ public class LibraryFragment extends Fragment {
 								
 				switch (rg.getCheckedRadioButtonId()){
 				
+				case R.id.lb_radio3:
+					
+					mCurrentFilter = null;
+					StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
+
+					break;
+				
 				case R.id.lb_radio0:
+					mCurrentFilter = null;
 					
-					mAdapter.getFilter().filter(null);
-					
+					StorageController.reloadFiles("all");
+
 					break;
 					
 				case R.id.lb_radio1:
-					
-					mAdapter.getFilter().filter("gcode");
+					mCurrentFilter = "gcode";
 					
 					break;
 					
 				case R.id.lb_radio2:
-					
-					mAdapter.getFilter().filter("stl");
+					mCurrentFilter = "stl";
 					
 					break;
 				
 				}
+				
+				if (mCurrentFilter!=null){
+					mAdapter.getFilter().filter(mCurrentFilter);
+					
+				} else mAdapter.removeFilter();
+				
+				sortAdapter();
 				
 			}
 		});
@@ -265,14 +287,16 @@ public class LibraryFragment extends Fragment {
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 		adb.setTitle(R.string.library_search_dialog_title);
 		
-		EditText et = new EditText(getActivity());
+		final EditText et = new EditText(getActivity());
 		adb.setView(et);
 		
 		adb.setPositiveButton(R.string.search, new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-								
+				mCurrentFilter = et.getText().toString();
+				mAdapter.getFilter().filter(mCurrentFilter);
+				
 			}
 		});
 		

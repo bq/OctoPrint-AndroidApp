@@ -21,9 +21,9 @@ public class StorageController {
 	
 	public StorageController(){
 		
-		
+		mFileList.clear();
 		//Retrieve normal files
-		retrieveFiles( getParentFolder());
+		retrieveFiles( getParentFolder(), false);
 	
 	}
 	
@@ -31,8 +31,8 @@ public class StorageController {
 		return mFileList;
 	}
 	
-	public static void retrieveFiles(File path){
-		
+	public static void retrieveFiles(File path, boolean recursive){
+			
 		/**
 		 * CHANGED FILE LOGIC, NOW RETRIEVES FOLDERS INSTEAD OF FILES, AND PARSES
 		 * INDIVIDUAL ELEMENTS LATER ON.
@@ -54,21 +54,24 @@ public class StorageController {
 				} else {
 					
 					//File folder = new File(file.getAbsolutePath());
-					addToList(file);
+					if (recursive) {
+						
+						//Retrieve files for the folder
+						retrieveFiles(new File(file.getAbsolutePath()),true);
+						
+					} else addToList(file);
 					
-					//Retrieve files for the folder
-					//retrieveFiles(new File(file.getAbsolutePath()));
+					
 				}
 				
 				//TODO this will eventually go out
 			} else {
 				
+				//Add only stl and gcode
+				if ((file.getName().contains(".gcode")) || (file.getName().contains(".stl"))){
+					addToList(file);
+				}
 				
-				//ModelFile m = new ModelFile(file.getName(), "Trash storage");
-				
-				//m.setPathStl(file.getAbsolutePath());	
-				//m.setPathGcode(file.getAbsolutePath());	
-				addToList(file);
 				
 			}
 
@@ -149,7 +152,12 @@ public class StorageController {
 	public static void reloadFiles(String path){
 		
 		mFileList.clear();
-		retrieveFiles(new File(path));
+		
+		if (path.equals("all")){
+			retrieveFiles(getParentFolder(), true);
+			mCurrentPath = getParentFolder().getAbsolutePath();
+		} else retrieveFiles(new File(path), false);
+		
 	}
 	
 	public static boolean isProject(File file){
