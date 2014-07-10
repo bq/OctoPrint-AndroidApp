@@ -1,12 +1,12 @@
 package android.app.printerapp.octoprint;
 
+import java.io.File;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.printerapp.library.StorageController;
-import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.util.Log;
 
@@ -52,22 +52,25 @@ public class OctoprintFiles {
 				     JSONObject object = json.getJSONObject(i);
 				     
 				     
-				     ModelFile m;
+				     File m;
 				     
 				     //If it has an origin we need to set it for the printer
 				     if (object.has("origin")){
-				    	 //Set the storage to Witbox
-				    	 m = new ModelFile(object.getString("name"), "sd");
+				    	 
+				    	//Set the storage to sd
+				    	 m = new File("sd/" +object.getString("name"));
 				     }
 				     else   {
-				    	 m = new ModelFile(object.getString("name"), "Witbox");
+				    	 
+				    	//Set the storage to Witbox
+				    	 m = new File("witbox/" +object.getString("name"));
+					     
 				     }
-				     m.setPathGcode(object.getString("name"));
+				     
 				     //Add to storage file list
 				     p.updateFiles(m);
-				     
 				     //TODO NOPE!
-				     StorageController.addToList(m);
+				     //StorageController.addToList(m);
 				     
 				     Log.i("FILES","Adding " + object.getString("name"));
 				    } 

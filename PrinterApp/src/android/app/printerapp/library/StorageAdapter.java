@@ -63,7 +63,6 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
-		
 		if (m.isDirectory()){
 			
 			if (StorageController.isProject(m)){
@@ -79,12 +78,14 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 				
 			} else{	
 				
-				if (!m.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
+				if (m.getAbsolutePath().equals(StorageController.getCurrentPath().getParentFile().getAbsolutePath())) {
 				
 					tv.setText("[parent folder]");
 					iv.setImageResource(R.drawable.arrow_back);
 				
-				} else iv.setImageResource(R.drawable.folder_empty);
+				} else {
+					iv.setImageResource(R.drawable.folder_empty);
+				}
 					
 			
 				

@@ -1,5 +1,6 @@
 package android.app.printerapp.model;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -18,7 +19,7 @@ public class ModelPrinter {
 	private String mMessage;
 	private String mTemperature;
 	
-	private ArrayList<ModelFile> mFileList;
+	private ArrayList<File> mFileList;
 	
 	//Pending job
 	private ModelJob mJob;
@@ -28,7 +29,7 @@ public class ModelPrinter {
 		mName = name;
 		mAddress = address;
 		mJob = new ModelJob();
-		mFileList = new ArrayList<ModelFile>();
+		mFileList = new ArrayList<File>();
 			
 	}
 	
@@ -60,7 +61,7 @@ public class ModelPrinter {
 		return mTemperature;
 	}
 	
-	public ArrayList<ModelFile> getFiles(){
+	public ArrayList<File> getFiles(){
 		return mFileList;
 	}
 	
@@ -89,7 +90,7 @@ public class ModelPrinter {
 		}
 	}
 	
-	public void updateFiles(ModelFile m){
+	public void updateFiles(File m){
 		mFileList.add(m);
 	}
 	

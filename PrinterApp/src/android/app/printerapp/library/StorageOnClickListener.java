@@ -55,7 +55,6 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				
 				final File[] files = (new File(path)).getParentFile().listFiles();
 				
-				
 				//Create a string-only array for the adapter
 				if (files!=null){
 					String[] names = new String[files.length];
@@ -127,6 +126,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				
 				
 				mContext.sortAdapter();
+				
 				
 			}							
 				

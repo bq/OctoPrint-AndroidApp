@@ -24,6 +24,11 @@ import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
+/**
+ * Fragment to show the library with files on the system/remote
+ * @author alberto-baeza
+ *
+ */
 public class LibraryFragment extends Fragment {
 	
 	private StorageAdapter mAdapter;
@@ -57,6 +62,9 @@ public class LibraryFragment extends Fragment {
 			/**
 			 * CUSTOM VIEW METHODS
 			 */
+			
+			//References to adapters
+			//TODO maybe share a gridview
 
 			
 			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
@@ -74,6 +82,9 @@ public class LibraryFragment extends Fragment {
 			
 			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
 			gu.setAdapter(mAdapter);
+			
+			GridView gf = (GridView) rootView.findViewById(R.id.grid_storage_favorites);
+			gf.setAdapter(mAdapter);
 			
 			
 			//Set tab host for the view
@@ -163,19 +174,24 @@ public class LibraryFragment extends Fragment {
 
 		    	switch (tabs.getCurrentTab()) {				
 				case 0:
-						mAdapter.removeFilter();
+						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
 					break;
 				case 1:
-						mAdapter.getFilter().filter("Witbox");
+						StorageController.reloadFiles("witbox");
 					break; 
 				case 2:
-						mAdapter.getFilter().filter("sd");
+						StorageController.reloadFiles("sd");
+					break;
+					
+				case 3:		
+						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath() + "/Files");
 					break;
 
 				default:
 					break;
 				}
 		    	
+		    	sortAdapter();
 		    	
 		    }
 		});
@@ -184,9 +200,9 @@ public class LibraryFragment extends Fragment {
 		
 		
 	//Filter elements in the current tab from the menu option
-	//TODO WIP still not functional
 	public void optionFilterLibrary(){
 		
+		//Dialog to filter
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 		adb.setTitle(R.string.filter);
 		
@@ -204,7 +220,7 @@ public class LibraryFragment extends Fragment {
 								
 				switch (rg.getCheckedRadioButtonId()){
 				
-				case R.id.lb_radio3:
+				case R.id.lb_radio3: //remove all filters and reload the whole list
 					
 					mCurrentFilter = null;
 					StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
@@ -212,24 +228,25 @@ public class LibraryFragment extends Fragment {
 					break;
 				
 				case R.id.lb_radio0:
-					mCurrentFilter = null;
+					mCurrentFilter = null; //Show all elements with recursive search
 					
 					StorageController.reloadFiles("all");
 
 					break;
 					
-				case R.id.lb_radio1:
+				case R.id.lb_radio1: //Show gcodes only
 					mCurrentFilter = "gcode";
 					
 					break;
 					
-				case R.id.lb_radio2:
+				case R.id.lb_radio2: //Show stl only
 					mCurrentFilter = "stl";
 					
 					break;
 				
 				}
 				
+				//Apply current filter
 				if (mCurrentFilter!=null){
 					mAdapter.getFilter().filter(mCurrentFilter);
 					
@@ -268,6 +285,7 @@ public class LibraryFragment extends Fragment {
 		
 	}
 	
+	//Add a new project using the viewer file browser
 	public void optionAddLibrary(){
 		
 		//TODO fix filebrowser parameters
@@ -320,14 +338,17 @@ public class LibraryFragment extends Fragment {
 	//Random adapter with lots of comparisons
 	@SuppressLint("DefaultLocale")
 	public void sortAdapter(){
+		
+		
+		if (mCurrentFilter!=null) mAdapter.removeFilter();
+		
 		//Sort by absolute file (puts folders before files)
 		mAdapter.sort(new Comparator<File>() {
 						
 			public int compare(File arg0, File arg1) {
 				
 				//If it's the back button, always first
-				if (!arg0.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
-
+				if (arg0.getAbsolutePath().equals(StorageController.getCurrentPath().getParentFile().getAbsolutePath())) {
 					return -1;
 				}
 				
@@ -350,13 +371,19 @@ public class LibraryFragment extends Fragment {
 				
 				//If both are files, lowercase comparison
 				if ((arg0.isFile())&&(arg1.isFile()))return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-				
 				//Everything else
 				return arg0.getAbsoluteFile().compareTo(arg1.getAbsoluteFile());
 		    }
 		});
+		
+		//Apply the current filter to the folder
+		if (mCurrentFilter!=null) mAdapter.getFilter().filter(mCurrentFilter);
+		mAdapter.notifyDataSetChanged();
 	}
 	
-	
+	public void notifyAdapter(){
+		
+		mAdapter.notifyDataSetChanged();
+	}
 
 }
