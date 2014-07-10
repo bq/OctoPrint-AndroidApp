@@ -93,7 +93,12 @@ public class StlObject {
 		vertexCount = mVertexArray.length/COORDS_PER_VERTEX;
 		
 		configStlObject(state);	
-		setColor (colorNormal);
+		
+		//Set colour
+		if (mData.getMaxX()>WitboxFaces.WITBOX_LONG || mData.getMinX() < -WitboxFaces.WITBOX_LONG || mData.getMaxY()>WitboxFaces.WITBOX_WITDH 
+			|| mData.getMinY()<-WitboxFaces.WITBOX_WITDH || mData.getMaxZ()>WitboxFaces.WITBOX_HEIGHT || mData.getMinZ()<0) setColor (colorObjectOut);
+		else setColor (colorNormal);
+
 		
 		//Vertex buffer
 		ByteBuffer vbb = ByteBuffer.allocateDirect(mVertexArray.length * 4);
@@ -149,6 +154,7 @@ public class StlObject {
 	public void setColor (float[] c) {
 		mColor = c;
 	}
+	
 	
 	/**
 	 * Draw STL

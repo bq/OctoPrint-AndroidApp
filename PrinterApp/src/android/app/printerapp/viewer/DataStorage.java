@@ -3,8 +3,6 @@ package android.app.printerapp.viewer;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.printerapp.viewer.Geometry.Point;
-
 public class DataStorage {		
 	private List<Float> mVertexList = new ArrayList<Float>();
 	private List<Float> mNormalList = new ArrayList<Float>();
@@ -22,7 +20,6 @@ public class DataStorage {
 	private int mMaxLayer;
 	private int mActualLayer;
 	
-	private Point mCenter = new Point (0,0,0);
 	private float mMinX;
 	private float mMaxX;
 	private float mMinY;
@@ -78,12 +75,12 @@ public class DataStorage {
 	}
 	
 	public void initMaxMin () {
-		setMaxX(Float.MIN_VALUE);
-		setMaxY(Float.MIN_VALUE);
-		setMaxZ(Float.MIN_VALUE);
+		setMaxX(-Float.MAX_VALUE);
+		setMaxY(-Float.MAX_VALUE);
+		setMaxZ(-Float.MAX_VALUE);
 		setMinX(Float.MAX_VALUE);
 		setMinY(Float.MAX_VALUE);
-		setMinZ(Float.MAX_VALUE);
+		setMinZ(Float.MAX_VALUE);		
 	}
 	
 	public void centerSTL(){	
@@ -133,15 +130,6 @@ public class DataStorage {
 	
 	public float[] getVertexArray () {
 		return mVertexArray;
-	}
-	
-	public void setVertexArray(float [] array, float offsetZ) {
-		for (int i= 0; i<array.length/3; i+=3) {
-			mVertexArray[i] = array[i];
-			mVertexArray[i+1] = array[i+1];
-			mVertexArray[i+2] = array[i+2] + offsetZ;
-
-		}
 	}
 	
 	public float[] getNormalArray() {
@@ -223,7 +211,7 @@ public class DataStorage {
 		return mMaxX-mMinX;
 	}
 	
-	public void adjustMaxMin(float x, float y, float z) {
+	public void adjustMaxMin(float x, float y, float z) { 
 		if (x > mMaxX) {
 			mMaxX = x;
 		}

@@ -105,6 +105,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	float mMoveX=0;
 	float mMoveY=0;
 	float mMoveZ=0;
+	
+	float mDx;
+	float mDy;
+	float mDz;
 
 	float mAdjustZ = 0;
 		
@@ -112,6 +116,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	private float mRotateAngle=0;
 	private float mTotalAngle=0;
 	private Point mLastCenter = new Point (0,0,0);
+	
+	private final int INSIDE_NOT_TOUCHED = 0;
+	private final int OUT = 1;
+	private final int INSIDE_TOUCHED = 2;
+	
+	private int mStateObject;
 	
 
 	public ViewerRenderer (DataStorage data, Context context, int state, boolean doSnapshot, boolean stl) {	
@@ -177,8 +187,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         // true.
         objectPressed = Geometry.intersects(objectBox, ray);
         
-        if (objectPressed) mStlObject.setColor(StlObject.colorSelectedObject);
-        else mStlObject.setColor(StlObject.colorNormal);
+        if (objectPressed && mStateObject == INSIDE_NOT_TOUCHED) mStateObject = INSIDE_TOUCHED;
+        else if (!objectPressed && mStateObject == INSIDE_TOUCHED) mStateObject = INSIDE_NOT_TOUCHED;
                 
         return objectPressed;
 	}
@@ -187,30 +197,32 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		Ray ray = convertNormalized2DPointToRay(x, y);
 
 		Point touched = Geometry.intersectionPointWitboxPlate(ray);
+		
+		mMoveX = touched.x ;
+        mMoveY = touched.y;
         
-        float dx = touched.x-mLastCenter.x;
-		float dy = touched.y-mLastCenter.y;
+        float dx = mMoveX-mLastCenter.x;
+		float dy = mMoveY-mLastCenter.y;
+				
+		mDx += dx;
+		mDy += dy;
 		
 		float maxX = mData.getMaxX() + dx;
 		float maxY = mData.getMaxY() + dy;
 		float minX = mData.getMinX() + dx;
 		float minY = mData.getMinY() + dy;
 		
-		//We change the colour if we are outside Witbox Plate
-		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
-			mStlObject.setColor(StlObject.colorObjectOut);
-		else mStlObject.setColor(StlObject.colorSelectedObject);
-
-		mMoveX = touched.x ;
-        mMoveY = touched.y;
-        
-		mLastCenter = new Point (mMoveX,mMoveY,0);
+		mLastCenter = new Point (mMoveX,mMoveY,mLastCenter.z);
 		
 		mData.setMaxX(mData.getMaxX() + dx);
 		mData.setMaxY(mData.getMaxY() + dy);
 		mData.setMinX(mData.getMinX() + dx);
 		mData.setMinY(mData.getMinY() + dy);
 		
+		//We change the colour if we are outside Witbox Plate
+		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
+			mStateObject = OUT;
+		else mStateObject = INSIDE_TOUCHED;
     }
 	
 	public void setAngleRotationObject (float angle) {
@@ -222,7 +234,19 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		mTotalAngle = 0;
 	}
 	
-	public void refreshObjectCoordinates () {	
+	public void refreshTranslatedObjectCoordinates () {		
+		float [] coordinatesArray = mData.getVertexArray();
+		
+		for (int i=0; i<coordinatesArray.length/3; i+=3) {
+			coordinatesArray[i] = coordinatesArray[i] + mDx;
+			coordinatesArray[i+1] = coordinatesArray[i+1] + mDy;			
+		}
+		
+		mDx = 0;
+		mDy = 0;
+	}
+	
+	public void refreshRotatedObjectCoordinates () {	
 		if (mTotalAngle!=0) {
 			mData.initMaxMin();
 			float [] coordinatesArray = mData.getVertexArray();
@@ -233,22 +257,34 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 						
 			
 			for (int i=0; i<coordinatesArray.length/3; i+=3) {
-				vector[0] = coordinatesArray[i];
-				vector[1] = coordinatesArray[i+1];
+				vector[0] = coordinatesArray[i]-mLastCenter.x;
+				vector[1] = coordinatesArray[i+1]-mLastCenter.y;
 				vector[2] = coordinatesArray[i+2];
 				
 				Matrix.multiplyMV(result, 0, mAccumulatedRotationObjectMatrix , 0, vector, 0);
 				
-				x = result [0];
-				y = result [1];
+				x = result [0]+mLastCenter.x;
+				y = result [1]+mLastCenter.y;
 				z = result [2];
-				
+								
 				mData.adjustMaxMin(x, y, z);
-			}	
-			
+			}		
+
 			if (mData.getMinZ()<0) mAdjustZ = -mData.getMinZ();
+
 			mData.setMinZ(0);			
 			mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
+			
+			float maxX = mData.getMaxX();
+			float minX = mData.getMinX();
+			float minY = mData.getMaxY();
+			float maxY = mData.getMinY();
+			float maxZ = mData.getMinZ();
+		
+			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
+					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
+			else mStateObject = INSIDE_TOUCHED;
+									
 		}		
 	}
 	
@@ -299,6 +335,20 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	  
 	  public float getHeightScreen () {
 		  return mHeight;
+	  }
+	  
+	  private void setColor () {
+		  switch (mStateObject) {
+		  case INSIDE_NOT_TOUCHED:
+			  mStlObject.setColor(StlObject.colorNormal);
+			  break;
+		  case INSIDE_TOUCHED:
+			  mStlObject.setColor(StlObject.colorSelectedObject);
+			  break;
+		  case OUT: 
+			  mStlObject.setColor(StlObject.colorObjectOut);
+			  break;
+		  }
 	  }
 	  
 	@Override
@@ -381,6 +431,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 unused) {
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        
+        if (mIsStl) setColor();
                 
 		float[] vp = new float[16];
 		float[] mv = new float[16];
