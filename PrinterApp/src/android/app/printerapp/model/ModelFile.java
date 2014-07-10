@@ -50,6 +50,7 @@ public class ModelFile extends File {
 		return mPathStl;
 	}
 	
+	//TODO Multiple gcodes!
 	public String getGcodeList(){
 		return mPathGcode;
 	}

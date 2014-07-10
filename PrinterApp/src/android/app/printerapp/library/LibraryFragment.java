@@ -5,9 +5,9 @@ import java.util.Comparator;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.model.ModelFile;
+import android.app.printerapp.viewer.FileBrowser;
+import android.app.printerapp.viewer.FileBrowser.OnFileListDialogListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -18,8 +18,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.RadioGroup;
@@ -64,54 +62,11 @@ public class LibraryFragment extends Fragment {
 			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
-			g.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-						
-					
-					//Logic for getting file type
-					File f = StorageController.getFileList().get(arg2);
-					
-					//If it's folder open it
-					if (f.isDirectory()){
-						
-						//If it's project folder, send stl
-						if (StorageController.isProject(f)){
-							
-							ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
-							
-						} else  {							
-
-							StorageController.reloadFiles(f.getAbsolutePath());
-
-							//if it's not the parent folder, make a back folder
-							if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
-		
-								//TODO change folder names
-								StorageController.addToList(new File(f.getParentFile().toString()));
-							}
-							
-							//When changing directories we need to set a new filter with the original list
-							if (mCurrentFilter!=null) mAdapter.removeFilter();
-							
-							sortAdapter();
-							
-							//Apply the current filter to the folder
-							if (mCurrentFilter!=null) mAdapter.getFilter().filter(mCurrentFilter);
-							mAdapter.notifyDataSetChanged();
-							
-						}							
-							
-						//If it's not a folder, just send the file
-					}else {
-						
-						ItemListActivity.requestOpenFile(f.getAbsolutePath());
-						
-					}					
-				}
-			});
+			
+			StorageOnClickListener clickListener = new StorageOnClickListener(this);
+			
+			g.setOnItemClickListener(clickListener);
+			g.setOnItemLongClickListener(clickListener);
 			g.setAdapter(mAdapter);
 			
 			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
@@ -149,6 +104,13 @@ public class LibraryFragment extends Fragment {
        	case R.id.library_filter: 
        		optionFilterLibrary();
             return true;
+            
+       	case R.id.library_add:
+       		
+       		
+       		optionAddLibrary();
+       		
+       		return true;
             
        	case R.id.library_create:
        		
@@ -282,6 +244,7 @@ public class LibraryFragment extends Fragment {
 		adb.show();
 	}
 	
+	//Search an item within the library applying a filter to the adapter
 	public void optionSearchLibrary(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
@@ -305,6 +268,27 @@ public class LibraryFragment extends Fragment {
 		
 	}
 	
+	public void optionAddLibrary(){
+		
+		//TODO fix filebrowser parameters
+		FileBrowser browser = new FileBrowser(getActivity(), false, "Mi titulo", ".stl", ".stl");
+
+		browser.setOnFileListDialogListener(new OnFileListDialogListener() {
+			
+			@Override
+			public void onClickFileList(File file) {
+				
+				StorageModelCreation.createFolderStructure(getActivity(),file);
+				
+			}
+		});
+		
+		browser.show(StorageController.getParentFolder().getAbsolutePath());
+		
+		
+	}
+	
+	//Create a single new folder via mkdir
 	public void optionCreateLibrary(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
