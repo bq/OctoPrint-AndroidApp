@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelFile;
 import android.content.Context;
@@ -62,7 +63,6 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
-		
 		if (m.isDirectory()){
 			
 			if (StorageController.isProject(m)){
@@ -78,14 +78,17 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 				
 			} else{	
 				
-				if (!m.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
+				if (m.getAbsolutePath().equals(StorageController.getCurrentPath().getParentFile().getAbsolutePath())) {
 				
-					tv.setText("...");
+					tv.setText("[parent folder]");
+					iv.setImageResource(R.drawable.arrow_back);
 				
-				} 
+				} else {
+					iv.setImageResource(R.drawable.folder_empty);
+				}
 					
 			
-				iv.setImageResource(R.drawable.folder_empty);
+				
 			}
 			
 
@@ -120,6 +123,13 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		return mFilter;
 	}
 	
+	public void removeFilter(){
+		
+		mCurrent = mOriginal;
+		notifyDataSetChanged();
+		
+	}
+	
 	/**
 	 * This class is the custom filter for the Library
 	 * @author alberto-baeza
@@ -127,6 +137,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 	 */
 	private class ListFilter extends Filter{
 
+		@SuppressLint("DefaultLocale")
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 			
@@ -138,18 +149,32 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
             	//Temporal list
                 ArrayList<File> filt = new ArrayList<File>();
                 
-                if ((constraint.equals("gcode"))||(constraint.equals("stl"))){
+               // if ((constraint.equals("gcode"))||(constraint.equals("stl"))){
                 	
                 	//Check if every item from the CURRENT list has the constraint
                     for (File m : mCurrent){
                     	
-                    	if (m.getName().contains(constraint)){
-                    		Log.i("OUT","Added a lel " + m.getName());
-                    		filt.add(m);
+                    	if (!m.isDirectory()) {
+                    		if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())){
+	                    		Log.i("OUT","Added a lel " + m.getName());
+	                    		filt.add(m);
+                    		}
+                    	} else {
+                    		
+                    		if (!StorageController.isProject(m)){
+                    			filt.add(m);
+                    		} else {
+                    			if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())){
+    	                    		Log.i("OUT","Added a lel " + m.getName());
+    	                    		filt.add(m);
+                        		}
+                    		}
+                    		
                     	}
+                    		
                     	
                     }
-                } else {
+               /* } else {
                 	 //Check if every item from the original list has the constraint
                     for (File m : mOriginal){
                     	
@@ -165,8 +190,8 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
                     	
                     	
                     	
-                    }
-                }
+                    }*/
+                //}
                 
                
 

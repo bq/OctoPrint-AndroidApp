@@ -65,10 +65,12 @@ public class ItemListActivity extends FragmentActivity implements
 		// TODO: If exposing deep links into your app, handle intents here.
 		
 		//TODO List controllers
-		new StorageController();
-		//new ViewerMain();
 		new DatabaseController(this);
 		new DevicesListController();
+		new StorageController();
+		//new ViewerMain();
+		
+		
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");

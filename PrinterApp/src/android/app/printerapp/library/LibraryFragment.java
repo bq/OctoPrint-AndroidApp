@@ -5,9 +5,9 @@ import java.util.Comparator;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.model.ModelFile;
+import android.app.printerapp.viewer.FileBrowser;
+import android.app.printerapp.viewer.FileBrowser.OnFileListDialogListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -18,17 +18,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
+/**
+ * Fragment to show the library with files on the system/remote
+ * @author alberto-baeza
+ *
+ */
 public class LibraryFragment extends Fragment {
 	
 	private StorageAdapter mAdapter;
+	private String mCurrentFilter = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,51 +62,19 @@ public class LibraryFragment extends Fragment {
 			/**
 			 * CUSTOM VIEW METHODS
 			 */
+			
+			//References to adapters
+			//TODO maybe share a gridview
 
 			
 			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
-			g.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-						
-					
-					//Logic for getting file type
-					File f = StorageController.getFileList().get(arg2);
-					
-					//If it's folder open it
-					if (f.isDirectory()){
-						
-						//If it's project folder, send stl
-						if (StorageController.isProject(f)){
-							
-							ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
-							
-						} else  {							
-
-							StorageController.reloadFiles(f.getAbsolutePath());
-
-							//if it's not the parent folder, make a back folder
-							if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
-		
-								//TODO change folder names
-								StorageController.addToList(new File(f.getParentFile().toString()));
-							}
-							mAdapter.notifyDataSetChanged();
-							sortAdapter();
-						}							
-							
-						//If it's not a folder, just send the file
-					}else {
-						
-						ItemListActivity.requestOpenFile(f.getAbsolutePath());
-						
-					}					
-				}
-			});
+			
+			StorageOnClickListener clickListener = new StorageOnClickListener(this);
+			
+			g.setOnItemClickListener(clickListener);
+			g.setOnItemLongClickListener(clickListener);
 			g.setAdapter(mAdapter);
 			
 			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
@@ -110,6 +82,9 @@ public class LibraryFragment extends Fragment {
 			
 			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
 			gu.setAdapter(mAdapter);
+			
+			GridView gf = (GridView) rootView.findViewById(R.id.grid_storage_favorites);
+			gf.setAdapter(mAdapter);
 			
 			
 			//Set tab host for the view
@@ -140,6 +115,13 @@ public class LibraryFragment extends Fragment {
        	case R.id.library_filter: 
        		optionFilterLibrary();
             return true;
+            
+       	case R.id.library_add:
+       		
+       		
+       		optionAddLibrary();
+       		
+       		return true;
             
        	case R.id.library_create:
        		
@@ -192,19 +174,24 @@ public class LibraryFragment extends Fragment {
 
 		    	switch (tabs.getCurrentTab()) {				
 				case 0:
-						mAdapter.getFilter().filter(null);
+						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
 					break;
 				case 1:
-						mAdapter.getFilter().filter("Witbox");
+						StorageController.reloadFiles("witbox");
 					break; 
 				case 2:
-						mAdapter.getFilter().filter("sd");
+						StorageController.reloadFiles("sd");
+					break;
+					
+				case 3:		
+						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath() + "/Files");
 					break;
 
 				default:
 					break;
 				}
 		    	
+		    	sortAdapter();
 		    	
 		    }
 		});
@@ -213,9 +200,9 @@ public class LibraryFragment extends Fragment {
 		
 		
 	//Filter elements in the current tab from the menu option
-	//TODO WIP still not functional
 	public void optionFilterLibrary(){
 		
+		//Dialog to filter
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 		adb.setTitle(R.string.filter);
 		
@@ -233,25 +220,39 @@ public class LibraryFragment extends Fragment {
 								
 				switch (rg.getCheckedRadioButtonId()){
 				
+				case R.id.lb_radio3: //remove all filters and reload the whole list
+					
+					mCurrentFilter = null;
+					StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
+
+					break;
+				
 				case R.id.lb_radio0:
+					mCurrentFilter = null; //Show all elements with recursive search
 					
-					mAdapter.getFilter().filter(null);
+					StorageController.reloadFiles("all");
+
+					break;
+					
+				case R.id.lb_radio1: //Show gcodes only
+					mCurrentFilter = "gcode";
 					
 					break;
 					
-				case R.id.lb_radio1:
-					
-					mAdapter.getFilter().filter("gcode");
-					
-					break;
-					
-				case R.id.lb_radio2:
-					
-					mAdapter.getFilter().filter("stl");
+				case R.id.lb_radio2: //Show stl only
+					mCurrentFilter = "stl";
 					
 					break;
 				
 				}
+				
+				//Apply current filter
+				if (mCurrentFilter!=null){
+					mAdapter.getFilter().filter(mCurrentFilter);
+					
+				} else mAdapter.removeFilter();
+				
+				sortAdapter();
 				
 			}
 		});
@@ -260,19 +261,22 @@ public class LibraryFragment extends Fragment {
 		adb.show();
 	}
 	
+	//Search an item within the library applying a filter to the adapter
 	public void optionSearchLibrary(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 		adb.setTitle(R.string.library_search_dialog_title);
 		
-		EditText et = new EditText(getActivity());
+		final EditText et = new EditText(getActivity());
 		adb.setView(et);
 		
 		adb.setPositiveButton(R.string.search, new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-								
+				mCurrentFilter = et.getText().toString();
+				mAdapter.getFilter().filter(mCurrentFilter);
+				
 			}
 		});
 		
@@ -281,6 +285,28 @@ public class LibraryFragment extends Fragment {
 		
 	}
 	
+	//Add a new project using the viewer file browser
+	public void optionAddLibrary(){
+		
+		//TODO fix filebrowser parameters
+		FileBrowser browser = new FileBrowser(getActivity(),"Mi titulo", ".stl", ".stl");
+
+		browser.setOnFileListDialogListener(new OnFileListDialogListener() {
+			
+			@Override
+			public void onClickFileList(File file) {
+				
+				StorageModelCreation.createFolderStructure(getActivity(),file);
+				
+			}
+		});
+		
+		browser.show(StorageController.getParentFolder().getAbsolutePath());
+		
+		
+	}
+	
+	//Create a single new folder via mkdir
 	public void optionCreateLibrary(){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
@@ -312,14 +338,17 @@ public class LibraryFragment extends Fragment {
 	//Random adapter with lots of comparisons
 	@SuppressLint("DefaultLocale")
 	public void sortAdapter(){
+		
+		
+		if (mCurrentFilter!=null) mAdapter.removeFilter();
+		
 		//Sort by absolute file (puts folders before files)
 		mAdapter.sort(new Comparator<File>() {
 						
 			public int compare(File arg0, File arg1) {
 				
 				//If it's the back button, always first
-				if (!arg0.getParentFile().getAbsolutePath().equals(StorageController.getCurrentPath())) {
-
+				if (arg0.getAbsolutePath().equals(StorageController.getCurrentPath().getParentFile().getAbsolutePath())) {
 					return -1;
 				}
 				
@@ -342,13 +371,19 @@ public class LibraryFragment extends Fragment {
 				
 				//If both are files, lowercase comparison
 				if ((arg0.isFile())&&(arg1.isFile()))return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-				
 				//Everything else
 				return arg0.getAbsoluteFile().compareTo(arg1.getAbsoluteFile());
 		    }
 		});
+		
+		//Apply the current filter to the folder
+		if (mCurrentFilter!=null) mAdapter.getFilter().filter(mCurrentFilter);
+		mAdapter.notifyDataSetChanged();
 	}
 	
-	
+	public void notifyAdapter(){
+		
+		mAdapter.notifyDataSetChanged();
+	}
 
 }

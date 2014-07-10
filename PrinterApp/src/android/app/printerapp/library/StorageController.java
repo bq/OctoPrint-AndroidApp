@@ -3,9 +3,11 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
+import android.app.printerapp.model.ModelPrinter;
 import android.os.Environment;
-import android.util.Log;
 
 
 /**
@@ -17,13 +19,13 @@ import android.util.Log;
 public class StorageController {
 	
 	private static ArrayList<File> mFileList = new ArrayList<File>();
-	private static String mCurrentPath;
+	private static File mCurrentPath;
 	
 	public StorageController(){
 		
-		
+		mFileList.clear();
 		//Retrieve normal files
-		retrieveFiles( getParentFolder());
+		retrieveFiles( getParentFolder(), false);
 	
 	}
 	
@@ -31,8 +33,14 @@ public class StorageController {
 		return mFileList;
 	}
 	
-	public static void retrieveFiles(File path){
-		
+	/**
+	 * Retrieve files from the provided path
+	 * If it's recursive, also search inside folders
+	 * @param path
+	 * @param recursive
+	 */
+	public static void retrieveFiles(File path, boolean recursive){
+			
 		/**
 		 * CHANGED FILE LOGIC, NOW RETRIEVES FOLDERS INSTEAD OF FILES, AND PARSES
 		 * INDIVIDUAL ELEMENTS LATER ON.
@@ -40,45 +48,70 @@ public class StorageController {
 		File[] files = path.listFiles();
 		for (File file : files){
 			
+			//If folder
 			if (file.isDirectory()){	
 				
+				//If project
 				if (isProject(file)){
 					
-					
-					Log.i("OUT","It's also a project " + file.getAbsolutePath());
-					
+					//Create new project
 					ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
 					
 					addToList(m);
 					
+				//Normal folder
 				} else {
 					
-					//File folder = new File(file.getAbsolutePath());
-					addToList(file);
+					if (recursive) {
+						
+						//Retrieve files for the folder
+						retrieveFiles(new File(file.getAbsolutePath()),true);
+						
+					} else addToList(file);
 					
-					//Retrieve files for the folder
-					//retrieveFiles(new File(file.getAbsolutePath()));
+					
 				}
 				
-				//TODO this will eventually go out
+			//TODO this will eventually go out
 			} else {
 				
+				//Add only stl and gcode
+				//TODO usb lists .gco
+				if ((file.getName().contains(".gcode")) || (file.getName().contains(".stl"))){
+					addToList(file);
+				}
 				
-				//ModelFile m = new ModelFile(file.getName(), "Trash storage");
-				
-				//m.setPathStl(file.getAbsolutePath());	
-				//m.setPathGcode(file.getAbsolutePath());	
-				addToList(file);
 				
 			}
 
 		}
 		
-		
-		mCurrentPath = path.toString();
+		//Set new current path
+		mCurrentPath = path;
 	}
 	
-	//TODO change this to database eventually
+	//Retrieve only files from the individul printers
+	//TODO filter by printer
+	public static void retrievePrinterFiles(String source){
+		
+		for (ModelPrinter p : DevicesListController.getList()){
+		
+			for (File f : p.getFiles()){
+				
+				if (source!=null){
+					
+					if (f.getParent().equals(source)) addToList(f);
+					
+				} else addToList(f);
+				
+				
+				
+			}
+			
+		}
+	}
+	
+	//TODO change this to database/folder eventually
 	public static ArrayList<ModelFile> getFavorites(){
 		
 		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
@@ -106,33 +139,31 @@ public class StorageController {
 		return temp_file;
 	}
 	
+	
+	//Create a new folder in the current path
+	//TODO add dialogs maybe
 	public static void createFolder(String name){
 			
 		File newFolder = new File(mCurrentPath + "/" + name);
 		
 		if (!newFolder.mkdir()){
 			
-			Log.i("OUT","Error!");
-			
 		} else {
 			
 			addToList(newFolder);
-			
-			Log.i("OUT","Success!");
 		}
 			
 		
 	}
 	
 	
-	//Retrieve certain element from file storage
+	//Retrieve a certain element from file storage
 	public static String retrieveFile(String name, String type){
 		
 		String result = null;
 		
 		try {
 			File folder = new File(name + "/" + type + "/");
-			Log.i("OUT","It's gonna crash searching for " + folder.getAbsolutePath());
 			String file = folder.listFiles()[0].getName();
 			
 			result = folder + "/" + file; 
@@ -146,12 +177,30 @@ public class StorageController {
 		
 	}
 	
+	//Reload the list with another path
 	public static void reloadFiles(String path){
 		
 		mFileList.clear();
-		retrieveFiles(new File(path));
+		
+		if (path.equals("all")){
+			retrieveFiles(getParentFolder(), true);
+			retrievePrinterFiles(null);
+			mCurrentPath = getParentFolder();
+		} else {
+			
+			if ((path.equals("witbox")) || (path.equals("sd"))){
+				
+				retrievePrinterFiles(path);
+				
+			} else retrieveFiles(new File(path), false);
+			
+			
+		}
+		
 	}
 	
+	//Check if a folder is also a project
+	//TODO return individual results according to the amount of elements found
 	public static boolean isProject(File file){
 		
 		FilenameFilter f = new FilenameFilter() {
@@ -171,7 +220,7 @@ public class StorageController {
 		mFileList.add(m);
 	}
 
-	public static String getCurrentPath(){
+	public static File getCurrentPath(){
 		return mCurrentPath;
 	}
 }
