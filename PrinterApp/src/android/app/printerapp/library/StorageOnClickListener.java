@@ -47,39 +47,45 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//We need the alertdialog instance to dismiss it
 			final AlertDialog ad = adb.create();
 			
+			String path = ((ModelFile)f).getGcodeList();
 				
-			//TODO
-			final File[] files = (new File(((ModelFile)f).getGcodeList())).getParentFile().listFiles();
-			
-			//Create a string-only array for the adapter
-			if (files!=null){
-				String[] names = new String[files.length];
+			//TODO add popup
+			if (path!=null) {
 				
-				for (int i = 0 ; i< files.length ; i++){
-					
-					names[i] = files[i].getName();
-					Log.i("OUT","Found " + files[i].getName());
-					
-				}
-					
-				adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(),
-						android.R.layout.simple_list_item_1,names), 
-						new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-						    File m = files[which];
-
-						    //Open desired file
-						    ItemListActivity.requestOpenFile(m.getAbsolutePath());
-						    
-						    ad.dismiss();
-						}
-					});
 				
+				final File[] files = (new File(path)).getParentFile().listFiles();
+				
+				
+				//Create a string-only array for the adapter
+				if (files!=null){
+					String[] names = new String[files.length];
 					
-			} else Log.i("OUT","Pero si soy null primo");
+					for (int i = 0 ; i< files.length ; i++){
+						
+						names[i] = files[i].getName();
+						Log.i("OUT","Found " + files[i].getName());
+						
+					}
+						
+					adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(),
+							android.R.layout.simple_list_item_1,names), 
+							new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+	
+							    File m = files[which];
+	
+							    //Open desired file
+							    ItemListActivity.requestOpenFile(m.getAbsolutePath());
+							    
+							    ad.dismiss();
+							}
+						});
+					
+						
+				} else Log.i("OUT","Pero si soy null primo");
+			}
 						
 			adb.show();
 			
@@ -103,7 +109,10 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's project folder, send stl
 			if (StorageController.isProject(f)){
 				
-				ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+				String path = ((ModelFile)f).getStl();
+				
+				//TODO add popup
+				if (path!=null)	ItemListActivity.requestOpenFile(path);
 				
 			} else  {							
 
