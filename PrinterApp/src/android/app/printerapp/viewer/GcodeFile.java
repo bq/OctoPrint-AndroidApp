@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.SeekBar;
 import android.app.printerapp.R;
 
 public class GcodeFile implements Runnable {
@@ -32,7 +31,6 @@ public class GcodeFile implements Runnable {
 	private int mLayer;
 	private int mType;
 
-	SeekBar mSeekBar;
 	private final ProgressDialog mProgressDialog;
 	private Thread mThread;
 	
@@ -40,11 +38,10 @@ public class GcodeFile implements Runnable {
 	private boolean mEnd = false;
 	private boolean mStart = false;
 	
-	public GcodeFile (Context context, File file, DataStorage data, SeekBar seekBar) {
+	public GcodeFile (Context context, File file, DataStorage data) {
 		this.mContext = context;
 		this.mFile = file;		
 		this.mData = data;
-		this.mSeekBar = seekBar;
 		this.mProgressDialog = prepareProgressDialog(context);
 		mData.setPathFile(mFile.getName().replace(".", "-"));
 		
@@ -133,8 +130,7 @@ public class GcodeFile implements Runnable {
     		mData.clearLayerList();
     		mData.clearTypeList();
     		
-    		mSeekBar.setMax(mMaxLayer);
-    		mSeekBar.setProgress(mMaxLayer);
+    		ViewerMain.initSeekBar(mMaxLayer);
     		
 			mData.enableDraw ();
 

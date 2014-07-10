@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -38,7 +40,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		
 	//Buttons
 	private RadioGroup mGroupMovement;
-	private RadioGroup mGroupRotation;
+	private static RadioGroup mGroupRotation;
 
 	private Button mBackWitboxFaces;
 	private Button mRightWitboxFaces;
@@ -47,9 +49,8 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	private Button mLayers;
 	private Button mXray;
 	private Button mTransparent;
-	private Button mLoadFile;
 	private Button mNormal;
-	private SeekBar mSeekBar;
+	private static SeekBar mSeekBar;
 	
 	private DataStorage mDataStl;
 	private DataStorage mDataGcode;
@@ -61,6 +62,14 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	private String mLastStlOpened = "";
 	private String mLastGcodeOpened = "";
 	
+	//Edition menu variables
+	private static LinearLayout mMenu;
+	private ImageButton mRotation;
+	
+	//TODO 
+	//private ImageButton mScale;
+	//private ImageButton mDelete;
+	//private ImageButton mMirror;	
 	
 	//Empty constructor
 	public ViewerMain(){}
@@ -101,24 +110,6 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			if (mPathFile!= null) openFile (mPathFile);
 					
 			//Buttons and seekBar
-			mGroupRotation = (RadioGroup) rootView.findViewById (R.id.radio_group_rotation);	
-			mGroupRotation.setOnCheckedChangeListener(new OnCheckedChangeListener () {
-				@Override
-				public void onCheckedChanged(RadioGroup group, int checkedId) {
-					switch (checkedId) {
-					case R.id.rotation_x:
-						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_X);
-						break;
-					case R.id.rotation_y:
-						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Y);
-						break;
-					case R.id.rotation_z:
-						mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Z);
-						break;
-					}
-					
-				}			
-			});
 			
 			mGroupMovement = (RadioGroup) rootView.findViewById (R.id.radioGroupMovement);		
 			mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener () {
@@ -210,20 +201,6 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 				} 
 			});
 			
-			mLoadFile = (Button) rootView.findViewById(R.id.load_file);		
-			mLoadFile.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					FileBrowser fileListDialog = new FileBrowser(getActivity(), false, "Choose file...", ".stl", ".gcode");
-					
-					fileListDialog.setOnFileListDialogListener(ViewerMain.this);
-
-					SharedPreferences config = getActivity().getSharedPreferences("PathSetting", Activity.MODE_PRIVATE);
-					fileListDialog.show(config.getString("lastPath", Environment.getExternalStorageDirectory().getPath() + "/PrintManager"));
-					
-				}
-			});	
 			
 			mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {       
 				
@@ -242,6 +219,8 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			    }       
 			}); 	
 			
+			initEditButtons (rootView);
+			
 			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);			
 		
 			
@@ -252,6 +231,44 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		
 	}
 	
+	/*******************************************************************
+	 * 
+	 * 	EDITION MENU 
+	 * 
+	 *******************************************************************/
+	public void initEditButtons (View rootView) {
+		mMenu = (LinearLayout) rootView.findViewById(R.id.edition_menu);
+		mMenu.setVisibility(View.INVISIBLE);
+		
+		mGroupRotation = (RadioGroup) rootView.findViewById (R.id.radio_group_rotation);	
+		mGroupRotation.setVisibility(View.INVISIBLE);
+		mGroupRotation.setOnCheckedChangeListener(new OnCheckedChangeListener () {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.rotation_x:
+					mSurface.setRotationVector (ViewerSurfaceView.ROTATE_X);
+					break;
+				case R.id.rotation_y:
+					mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Y);
+					break;
+				case R.id.rotation_z:
+					mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Z);
+					break;
+				}
+				
+			}			
+		});
+		
+		mRotation = (ImageButton) rootView.findViewById (R.id.rotate);		
+		mRotation.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
+			} 
+		});
+
+	}
 	
 	/*******************************************************************
 	 * 
@@ -277,7 +294,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		   
 		   //TODO test, encapsulate code into function
 		   
-		   	FileBrowser fileListDialog = new FileBrowser(getActivity(), false, "Choose file...", ".stl", ".gcode");
+		   	FileBrowser fileListDialog = new FileBrowser(getActivity(), "Choose file...", ".stl", ".gcode");
 			
 			fileListDialog.setOnFileListDialogListener(ViewerMain.this);
 
@@ -337,7 +354,6 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	
 	public void openFile (String filePath) {
 		mFile = new File(filePath);
-
 		//Open the file
 		if (filePath.endsWith(".stl") && !mLastStlOpened.equals(mFile.getName())) {
 			mDataStl = new DataStorage ();
@@ -345,7 +361,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			mLastStlOpened = mFile.getName();
 		} else if (filePath.endsWith(".gcode") && !mLastGcodeOpened.equals(mFile.getName())) {
 			mDataGcode = new DataStorage ();
-			new GcodeFile (getActivity(), mFile, mDataGcode, mSeekBar);	
+			new GcodeFile (getActivity(), mFile, mDataGcode);	
 			mLastGcodeOpened = mFile.getName();
 		}
 		
@@ -442,6 +458,17 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		}
 		
 		return null;
+	}
+	
+	public static void setEditionMenuVisibility (int visibility) {
+		mMenu.setVisibility(visibility);
+		mGroupRotation.setVisibility(visibility);
+
+	}
+	
+	public static void initSeekBar (int max) {
+		mSeekBar.setMax(max);
+		mSeekBar.setProgress(max);
 	}
 	
 	/*

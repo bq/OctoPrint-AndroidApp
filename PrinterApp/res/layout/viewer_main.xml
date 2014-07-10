@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -41,7 +42,7 @@
         android:id="@+id/radio_group_rotation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/radioGroupMovement"
+        android:layout_below="@+id/edition_menu"
         android:layout_alignParentRight="true"
         android:visibility="visible" >
 
@@ -147,13 +148,37 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/xray"
         android:text="Transparent" />
+     
+     <LinearLayout
+   	 	android:id="@+id/edition_menu"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentRight="true"
+    	android:orientation="vertical" >
     
-     <Button
-        android:id="@+id/load_file"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Load File" />
+	     <ImageButton
+	        android:id="@+id/rotate"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/rotate" />
+	     
+	      <ImageButton
+	        android:id="@+id/scale"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/scale" />
+	      
+	       <ImageButton
+	        android:id="@+id/mirror"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/mirror" />
+	       
+	        <ImageButton
+	        android:id="@+id/delete"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/delete" />
+	</LinearLayout>
 
 </RelativeLayout>

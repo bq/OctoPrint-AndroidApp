@@ -111,7 +111,7 @@ public class Geometry {
 	 }
 	 
 	 public static Point intersectionPointWitboxPlate(Ray ray) {    
-		 //plane is z=0
+		 //plane is z=centerZ
 		 float k = (0-ray.point.z)/ray.vector.z;
 	 	 float x = ray.point.x + k*ray.vector.x;
 	 	 float y = ray.point.y + k*ray.vector.y;

@@ -27,7 +27,6 @@ public class FileBrowser extends Activity implements View.OnClickListener, Dialo
 	private File[] mDialogFileList;
 	private int mSelectedIndex = -1;
 	private OnFileListDialogListener mListener;
-	private boolean mIsDirectorySelect = false;
 	private String mTitle;
 	private String mExtStl;
 	private String mExtGcode;
@@ -52,8 +51,7 @@ public class FileBrowser extends Activity implements View.OnClickListener, Dialo
 	 * @param mTitle
 	 * @param extFilter
 	 */
-	public FileBrowser(Context mContext, boolean mIsDirectorySelect, String mTitle, String mExtStl, String mExtGcode) {
-		this.mIsDirectorySelect = mIsDirectorySelect;
+	public FileBrowser(Context mContext, String mTitle, String mExtStl, String mExtGcode) {
 		this.mTitle = mTitle;
 		this.mExtStl = mExtStl;
 		this.mExtGcode = mExtGcode;
@@ -74,7 +72,7 @@ public class FileBrowser extends Activity implements View.OnClickListener, Dialo
 		} else {
 			File file = mDialogFileList[which];
 
-			if (file.isDirectory() && !mIsDirectorySelect) {
+			if (file.isDirectory()) {
 				// is a directory: display file list-up again.
 				show(file.getAbsolutePath());
 			} else {
@@ -107,7 +105,7 @@ public class FileBrowser extends Activity implements View.OnClickListener, Dialo
 
 					@Override
 					public int compare(File object1, File object2) {
-						return object1.getName().toLowerCase(Locale.US).compareTo(object2.getName().toLowerCase());
+						return object1.getName().toLowerCase(Locale.US).compareTo(object2.getName().toLowerCase(Locale.US));
 					}
 				});
 				for (File file : mDialogFileList) {
@@ -120,7 +118,7 @@ public class FileBrowser extends Activity implements View.OnClickListener, Dialo
 							name = file.getName() + File.separator;
 						}
 					} else {
-						if (file.getName().toLowerCase(Locale.US).endsWith(mExtStl.toLowerCase()) || file.getName().toLowerCase().endsWith(mExtGcode.toLowerCase())) {
+						if (file.getName().toLowerCase(Locale.US).endsWith(mExtStl.toLowerCase(Locale.US)) || file.getName().toLowerCase(Locale.US).endsWith(mExtGcode.toLowerCase(Locale.US))) {
 							name = file.getName();
 						}
 					}

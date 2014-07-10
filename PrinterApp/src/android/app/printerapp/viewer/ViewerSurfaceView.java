@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 public class ViewerSurfaceView extends GLSurfaceView{
 	//View Modes
@@ -80,7 +81,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
 		setRenderer(mRenderer);
 		
-		mEditionMode = ROTATION_EDITION_MODE;
+		mEditionMode = TRANSLATION_EDITION_MODE;
 		this.mIsStl= stl;
 		
 		// Render the view only when there is a change in the drawing data
@@ -139,6 +140,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setXray(xray);
 	}
 	
+	public void setEditionMode (int mode) {
+		mEditionMode = mode;
+	}
+	
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:
@@ -183,6 +188,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				if (mEdition) 
 					if (!mRenderer.touchPoint(normalizedX, normalizedY)) {
 						mEdition= false;	
+						ViewerMain.setEditionMenuVisibility(View.INVISIBLE);
+						mEditionMode = TRANSLATION_EDITION_MODE;
 						requestRender();
 					}
 								
@@ -229,7 +236,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition) {
 						normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 						normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
-						if (mRenderer.touchPoint(normalizedX, normalizedY)) mEdition = true;		
+						if (mRenderer.touchPoint(normalizedX, normalizedY)) {
+							ViewerMain.setEditionMenuVisibility(View.VISIBLE);
+							mEdition = true;		
+						}
 					} 
 					
 					requestRender();								    
@@ -244,10 +254,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartPoint.y = 0.0f;
 				}
 					
-				if (mEdition) {
-					mRenderer.refreshObjectCoordinates();
+				if (mEdition && mEditionMode==ROTATION_EDITION_MODE) {
+					mRenderer.refreshRotatedObjectCoordinates();
 					requestRender();
-				}
+				} else if (mEdition && mEditionMode == TRANSLATION_EDITION_MODE) mRenderer.refreshTranslatedObjectCoordinates();
+				
 				touchMode = TOUCH_NONE;
 				break;				
 		}
