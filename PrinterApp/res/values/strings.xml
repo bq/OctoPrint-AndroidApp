@@ -43,8 +43,11 @@
     <string name="library_filter_dialog_gcode">Show GCODE files</string>
     <string name="library_filter_dialog_stl">Show STL files</string>
     <string name="library_filter_dialog_remove">Remove filters</string>
-    
+        
     <string name="library_create_dialog_title">Name new folder</string>
+    <string name="library_select_printer_title">Select printer(s)</string>
+    <string name="library_option_dialog_title">Model options</string>
+    <string name="library_option_print">Print</string>
     
     <string name="library_menu_search">Search model</string>
     <string name="library_menu_filter">Filter models</string>
