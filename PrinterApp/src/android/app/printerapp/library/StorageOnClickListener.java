@@ -9,11 +9,14 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
@@ -83,7 +86,9 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 								    File m = files[which];
 		
 								    //Open desired file
-								    ItemListActivity.requestOpenFile(m.getAbsolutePath());
+								    //ItemListActivity.requestOpenFile(m.getAbsolutePath());
+								    
+								    showOptionDialog(m);
 								    
 								    ad.dismiss();
 								}
@@ -108,11 +113,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		
-		
-		
-		
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {		
 
 		//Logic for getting file type
 		File f = StorageController.getFileList().get(arg2);
@@ -148,15 +149,24 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's not a folder, just send the file
 		}else {
 			
-			ItemListActivity.requestOpenFile(f.getAbsolutePath());
+			
+			//TODO REDUNDANT
+			//Check if the gcode is empty, won't work if file is actually corrupted
+			if (f.getAbsoluteFile().length()>0){
+				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+			} else {
+				
+				Toast.makeText(mContext.getActivity(), "File is corrupted", Toast.LENGTH_SHORT).show();
+
+			}
 			
 		}					
 	}
 	
+	//Show dialog for handling files
 	private void showOptionDialog(final File f){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());	
-	//TODO title
 		adb.setTitle(R.string.library_option_dialog_title);
 		
 		final AlertDialog ad = adb.create();
@@ -169,14 +179,19 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				
 				switch (which){
 				
-				case 0:
+				case 0: //Print / Multiprint
 					
 					
 					ArrayList<ModelPrinter> tempList = DevicesListController.getList();
 					String[] nameList = new String[tempList.size()];
 					
+					//We'll check for checked items (heh) with a boolean array
+					//TODO use this same method with printer discovery
+					final boolean[] checkedItems = new boolean[nameList.length];
+					
 					int i = 0;
 					
+					//New array with names only for the adapter
 					for (ModelPrinter p : tempList){		
 						nameList[i] = p.getName();
 						i++;
@@ -186,7 +201,21 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					adb2.setTitle(R.string.library_select_printer_title);
 					
 					
-					adb2.setMultiChoiceItems(nameList, null, null);
+					
+					//Show list of available printers
+					//TODO Make a proper adapter
+					adb2.setMultiChoiceItems(nameList, null, new OnMultiChoiceClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+							
+							checkedItems[which]	= isChecked;
+							
+						}
+					});
+					
+					//final AlertDialog	ad2 = adb2.create();
+
 					
 					/*adb2.setAdapter(new ArrayAdapter<String>(mContext.getActivity(), 
 							android.R.layout.simple_list_item_multiple_choice, nameList), null);
@@ -195,6 +224,20 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+				
+							//SparseBooleanArray checked = ad2.getListView().getCheckedItemPositions();;
+							
+							//TODO Multiprint interaction
+							for (int i = 0; i<checkedItems.length ; i++){
+								
+								if (checkedItems[i]){
+									
+									ModelPrinter m = DevicesListController.getList().get(i);
+						    		OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
+
+								}
+																
+							}
 							
 							
 							
@@ -206,11 +249,52 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					adb2.show();
 					
 					break;
-				case 1:
+				case 1: //Edit
 					
 					//TODO Doesn't work when empty gcodes comeon
 					ad.dismiss();
-					ItemListActivity.requestOpenFile(f.getAbsolutePath());
+					
+					//Check if the gcode is empty, won't work if file is actually corrupted
+					if (f.getAbsoluteFile().length()>0){
+						ItemListActivity.requestOpenFile(f.getAbsolutePath());
+					} else {
+						
+						Toast.makeText(mContext.getActivity(), "File is corrupted", Toast.LENGTH_SHORT).show();
+
+					}
+					
+					
+					break;
+					
+					
+				case 2: //Move
+					
+					//TODO how?
+					
+					break;
+					
+				case 3: //Delete
+					
+					AlertDialog.Builder adb_delete = new AlertDialog.Builder(mContext.getActivity());
+					adb_delete.setTitle(R.string.library_delete_dialog_title);
+					adb_delete.setMessage(f.getName());
+					
+					adb_delete.setPositiveButton(R.string.delete, new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+
+							f.delete();
+							StorageController.getFileList().remove(f);
+							mContext.notifyAdapter();
+							
+						}
+					});
+					
+					adb_delete.setNegativeButton(R.string.cancel, null);
+					
+					adb_delete.show();
+					
 					break;
 				
 				}
