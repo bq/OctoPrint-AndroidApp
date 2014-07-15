@@ -9,6 +9,11 @@
     android:orientation="horizontal"
     android:showDividers="middle"
     tools:context=".ItemListActivity" >
+    
+           <SurfaceView
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:visibility="invisible" />
 
     <!--
     This layout is a two-pane layout for the Items

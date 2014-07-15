@@ -63,6 +63,21 @@
                         >
                     </ListView>
                 </LinearLayout>
+                
+                <LinearLayout
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" >
+
+                    <GridView
+                        android:id="@+id/devices_camera"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:numColumns="3"
+                        >
+                    </GridView>
+                </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>

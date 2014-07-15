@@ -157,6 +157,20 @@ public class DevicesFragment extends Fragment{
 			l.setAdapter(mListAdapter);
 			
 			
+			
+			/*************** VIDEO HANDLER ****************************/
+			
+			
+			for (ModelPrinter m : DevicesListController.getList()){
+				
+				m.setVideoStream(getActivity());
+				
+			}
+			
+			
+			GridView gv = (GridView) rootView.findViewById(R.id.devices_camera);
+			gv.setAdapter(new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList()));
+			
 			/*******************************************************************/
 			SlidingUpPanelLayout s = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
 			TextView t = (TextView) rootView.findViewById(R.id.drag_text);
@@ -235,6 +249,11 @@ public class DevicesFragment extends Fragment{
 		spec=tabs.newTabSpec("List");
 		spec.setIndicator("List");
 		spec.setContent(R.id.tab2);
+		tabs.addTab(spec);
+		
+		spec=tabs.newTabSpec("Videowall");
+		spec.setIndicator("Videowall");
+		spec.setContent(R.id.tab3);
 		tabs.addTab(spec);
 		
 		 

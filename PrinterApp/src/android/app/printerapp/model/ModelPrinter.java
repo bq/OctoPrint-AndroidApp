@@ -8,7 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.StateUtils;
+import android.app.printerapp.devices.camera.CameraHandler;
+import android.app.printerapp.devices.camera.MjpegView;
 import android.app.printerapp.octoprint.OctoprintConnection;
+import android.content.Context;
 
 public class ModelPrinter {
 	
@@ -16,13 +19,18 @@ public class ModelPrinter {
 	private String mName;
 	private String mAddress;
 	private int mStatus = StateUtils.STATE_NONE;
-	private String mMessage;
+	
+	//TODO hardcoded string
+	private String mMessage = "Offline";
 	private String mTemperature;
 	
 	private ArrayList<File> mFileList;
 	
 	//Pending job
 	private ModelJob mJob;
+	
+	//Camera
+	private CameraHandler mCam;
 	
 	public ModelPrinter(String name, String address){
 		
@@ -65,6 +73,10 @@ public class ModelPrinter {
 		return mFileList;
 	}
 	
+	public MjpegView getVideo(){
+		return mCam.getView();
+	}
+	
 	/**********
 	 *  Sets
 	 **********/
@@ -103,4 +115,9 @@ public class ModelPrinter {
 		mStatus = StateUtils.STATE_NEW;
 		mMessage = "New";
 	}
+	
+	//Set video stream from the camera
+		public void setVideoStream(Context context){
+			mCam = new CameraHandler(context,mAddress);
+		}
 }
