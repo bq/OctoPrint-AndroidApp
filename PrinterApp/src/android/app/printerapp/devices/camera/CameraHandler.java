@@ -54,7 +54,7 @@ public class CameraHandler {
 					
 					if (!isRunning){
 						new DoRead().execute(URL);
-						isRunning = true;
+						isRunning = true;						
 					}else mv.restartPlayback(context);
 					
 					

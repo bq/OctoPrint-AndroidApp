@@ -3,6 +3,7 @@ package android.app.printerapp.devices;
 import java.util.List;
 
 import android.app.printerapp.R;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.video_view, null, false);
 			
+			if (m.getStatus()!=StateUtils.STATE_NEW)
 			if (m.getVideo().getParent() == null)	{
 				//Create a new linear layout to store the view
 				LinearLayout ll = new LinearLayout(getContext());

@@ -116,6 +116,11 @@ public class ModelPrinter {
 		mMessage = "New";
 	}
 	
+	public void setLinked(){
+		mStatus = StateUtils.STATE_NONE;
+		mMessage = "";
+	}
+	
 	//Set video stream from the camera
 		public void setVideoStream(Context context){
 			mCam = new CameraHandler(context,mAddress);

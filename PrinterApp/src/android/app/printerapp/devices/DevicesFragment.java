@@ -159,14 +159,7 @@ public class DevicesFragment extends Fragment{
 			
 			
 			/*************** VIDEO HANDLER ****************************/
-			
-			
-			for (ModelPrinter m : DevicesListController.getList()){
-				
-				m.setVideoStream(getActivity());
-				
-			}
-			
+					
 			
 			GridView gv = (GridView) rootView.findViewById(R.id.devices_camera);
 			gv.setAdapter(new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList()));
@@ -264,7 +257,6 @@ public class DevicesFragment extends Fragment{
 		    public void onTabChanged(String tabId) {
 		    	
 		    	ActionModeHandler.modeFinish();
-		    	
 		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
 		    }
 		});
@@ -352,6 +344,11 @@ public class DevicesFragment extends Fragment{
 	public void optionAdd(){
 		
 		//new DiscoveryOptionController(getActivity());
+		for (ModelPrinter p : DevicesListController.getList()){
+			
+			p.getVideo().setZOrderOnTop(true);
+			
+		}
 		
 	}
 
@@ -405,9 +402,9 @@ public class DevicesFragment extends Fragment{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
-				
-				m.startUpdate();
+				//m.startUpdate();
 				DatabaseController.writeDb(m.getName(), m.getAddress());	
+				DevicesListController.loadList(getActivity());
 			}
 		});
 		

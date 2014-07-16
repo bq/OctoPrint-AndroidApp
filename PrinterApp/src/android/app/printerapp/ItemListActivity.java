@@ -66,7 +66,7 @@ public class ItemListActivity extends FragmentActivity implements
 		
 		//TODO List controllers
 		new DatabaseController(this);
-		new DevicesListController();
+		DevicesListController.loadList(this);
 		new StorageController();
 		//new ViewerMain();
 		
@@ -96,6 +96,7 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
 			ActionModeHandler.modeFinish();			
+						
 			switch (Integer.valueOf(id)){
 			
 				case 1:{

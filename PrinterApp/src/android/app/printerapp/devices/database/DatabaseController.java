@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.database;
 
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ContentValues;
@@ -50,6 +51,8 @@ public class DatabaseController {
 		
 		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry.DEVICES_NAME + " = '" + name + "'", null);
 		mDb.close();
+		
+		DevicesListController.loadList(mContext);
 	}
 	
 	//Retrieve the cursor with the elements from the database
