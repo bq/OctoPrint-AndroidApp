@@ -62,11 +62,10 @@ public class ItemListActivity extends FragmentActivity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
 
-		// TODO: If exposing deep links into your app, handle intents here.
 		
 		//TODO List controllers
 		new DatabaseController(this);
-		new DevicesListController();
+		DevicesListController.loadList(this);
 		new StorageController();
 		//new ViewerMain();
 		
@@ -96,6 +95,7 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
 			ActionModeHandler.modeFinish();			
+						
 			switch (Integer.valueOf(id)){
 			
 				case 1:{
@@ -103,11 +103,10 @@ public class ItemListActivity extends FragmentActivity implements
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Devices")==null){
 						 mDevicesFragment = new DevicesFragment();
-						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mDevicesFragment, "Devices").commit();
-							
+						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mDevicesFragment, "Devices").commit();	
 
-					 } 
-					 
+					 }  
+					  
 					 mCurrent = mDevicesFragment;
 					} break;
 					
@@ -119,6 +118,8 @@ public class ItemListActivity extends FragmentActivity implements
 						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mViewerFragment, "Viewer").commit();
 							
 					 } 
+					 
+					
 
 					 mCurrent = mViewerFragment;
 						 
@@ -148,6 +149,21 @@ public class ItemListActivity extends FragmentActivity implements
 					mCurrent = mSettingsFragment;
 
 				}break;	
+				
+			}
+			
+			//Set the visibility for the viewer if we're not on the Viewer
+			//TODO bugs with positioning after making it visible again
+			if (mViewerFragment!=null) {
+				
+				if (mCurrent!=mViewerFragment){
+					//Make the surface invisible
+					mViewerFragment.setSurfaceVisibility(0);
+				}
+				else {
+					 //Make the surface visible when we press
+					 mViewerFragment.setSurfaceVisibility(1);
+				}
 				
 			}
 			

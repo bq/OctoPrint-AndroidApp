@@ -2,8 +2,11 @@ package android.app.printerapp.devices;
 
 import java.util.ArrayList;
 
+import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
+import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -16,15 +19,8 @@ import android.util.Log;
 public class DevicesListController {
 	
 	//List for the printers found
-	private static ArrayList<ModelPrinter> mList;
-	
-	public DevicesListController(){
-		
-		mList = new ArrayList<ModelPrinter>();
-		loadList();
-		
-	}
-	
+	private static ArrayList<ModelPrinter> mList = new ArrayList<ModelPrinter>();
+			
 	//Add element to the list
 	public static void addToList(ModelPrinter m){
 		mList.add(m);
@@ -38,7 +34,9 @@ public class DevicesListController {
 	}
 	
 	//Load device list from the Database
-	public void loadList(){
+	public static void loadList(Context context){
+		
+		mList.clear();
 		
 		Cursor c = DatabaseController.retrieveDeviceList();
 		
@@ -52,11 +50,13 @@ public class DevicesListController {
 			
 			addToList(m);
 			m.startUpdate();
+			if (m.getStatus()!=StateUtils.STATE_NEW) m.setVideoStream(context);
 			
 			c.moveToNext();
 		}
 	   
 	   DatabaseController.closeDb();
+	   ItemListActivity.notifyAdapters();
 
 	}
 		

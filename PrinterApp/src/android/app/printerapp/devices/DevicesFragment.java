@@ -157,6 +157,13 @@ public class DevicesFragment extends Fragment{
 			l.setAdapter(mListAdapter);
 			
 			
+			
+			/*************** VIDEO HANDLER ****************************/
+					
+			
+			GridView gv = (GridView) rootView.findViewById(R.id.devices_camera);
+			gv.setAdapter(new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList()));
+			
 			/*******************************************************************/
 			SlidingUpPanelLayout s = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
 			TextView t = (TextView) rootView.findViewById(R.id.drag_text);
@@ -237,6 +244,11 @@ public class DevicesFragment extends Fragment{
 		spec.setContent(R.id.tab2);
 		tabs.addTab(spec);
 		
+		spec=tabs.newTabSpec("Videowall");
+		spec.setIndicator("Videowall");
+		spec.setContent(R.id.tab3);
+		tabs.addTab(spec);
+		
 		 
 		tabs.setCurrentTab(0);
 		
@@ -245,7 +257,6 @@ public class DevicesFragment extends Fragment{
 		    public void onTabChanged(String tabId) {
 		    	
 		    	ActionModeHandler.modeFinish();
-		    	
 		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
 		    }
 		});
@@ -333,6 +344,11 @@ public class DevicesFragment extends Fragment{
 	public void optionAdd(){
 		
 		//new DiscoveryOptionController(getActivity());
+		for (ModelPrinter p : DevicesListController.getList()){
+			
+			p.getVideo().setZOrderOnTop(true);
+			
+		}
 		
 	}
 
@@ -386,9 +402,9 @@ public class DevicesFragment extends Fragment{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
-				
-				m.startUpdate();
+				//m.startUpdate();
 				DatabaseController.writeDb(m.getName(), m.getAddress());	
+				DevicesListController.loadList(getActivity());
 			}
 		});
 		
