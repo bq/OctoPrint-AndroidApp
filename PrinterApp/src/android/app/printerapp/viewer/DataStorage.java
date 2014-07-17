@@ -230,7 +230,7 @@ public class DataStorage {
 		}
 		if (z < mMinZ) {
 			mMinZ = z;
-		}
+		}		
 	}
 	
 	public void setMinX (float x) {
@@ -280,7 +280,7 @@ public class DataStorage {
 	public float getMaxZ () {
 		return mMaxZ;
 	}
-	
+		
 	public void setPathFile (String path) {
 		mPath = path;
 	}
