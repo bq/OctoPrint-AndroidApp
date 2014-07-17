@@ -94,7 +94,7 @@ public class Geometry {
 			 //Check if (x,y,z) is a box point
 			 if (x>=box.coordBox[Box.LEFT] && x<=box.coordBox[Box.RIGHT] && 
 			     y>=box.coordBox[Box.FRONT] && y<=box.coordBox[Box.BEHIND] && 
-				 z>=box.coordBox[Box.DOWN] && z<=box.coordBox[Box.UP]) 			 
+				 z>=box.coordBox[Box.DOWN] && z<=box.coordBox[Box.UP]) 	
 				 	return true;
 			 
 			 index++;					 

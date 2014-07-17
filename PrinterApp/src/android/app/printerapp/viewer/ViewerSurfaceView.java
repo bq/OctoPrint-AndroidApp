@@ -30,17 +30,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private float pinchStartY = 0.0f;
 	private float pinchStartZ = 0.0f;
 	private float pinchStartDistance = 0.0f;
+	private float pinchStartFactor = 0.0f;
 
 	// for touch event handling
 	private static final int TOUCH_NONE = 0;
 	private static final int TOUCH_DRAG = 1;
 	private static final int TOUCH_ZOOM = 2;
-	private static final int TOUCH_LONG_PRESS = 3;
 	private int touchMode = TOUCH_NONE;
-	
-	private static final int MIN_CLICK_DURATION = 1000;
-	private long mStartClickTime;
-	
+		
 	//Viewer modes
 	public static final int ROTATION_MODE =0;
 	public static final int TRANSLATION_MODE = 1;
@@ -53,18 +50,16 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private int mEditionMode;
 	
 	//Edition modes
-	public static final int TRANSLATION_EDITION_MODE = 0;
-	public static final int ROTATION_EDITION_MODE =1;
+	public static final int NONE_EDITION_MODE = 0;
+	public static final int MOVE_EDITION_MODE = 1;
+	public static final int ROTATION_EDITION_MODE =2;
+	public static final int SCALED_EDITION_MODE = 3;
 
 
 	public static final int ROTATE_X = 0;
 	public static final int ROTATE_Y = 1;
 	public static final int ROTATE_Z = 2;
 	
-	//Check if is an stl file
-	private boolean mIsStl;
-
-
 	public ViewerSurfaceView(Context context) {
 	    super(context);
 	}
@@ -80,10 +75,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
       
 		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
 		setRenderer(mRenderer);
-		
-		mEditionMode = TRANSLATION_EDITION_MODE;
-		this.mIsStl= stl;
-		
+				
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
@@ -175,6 +167,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartDistance = getPinchDistance(event);
 					pinchStartY = mRenderer.getCameraPosY();
 					pinchStartZ = mRenderer.getCameraPosZ();
+					pinchStartFactor = mRenderer.getFactorScale();
 					if (pinchStartDistance > 50f) {
 						getPinchCenterPoint(event, pinchStartPoint);
 						mPreviousX = pinchStartPoint.x;
@@ -182,35 +175,23 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						touchMode = TOUCH_ZOOM;
 					}
 				}
-				break;
-				
+				break;				
 			case MotionEvent.ACTION_DOWN:
-				if (mEdition) 
-					if (!mRenderer.touchPoint(normalizedX, normalizedY)) {
-						mEdition= false;	
-						ViewerMain.setEditionMenuVisibility(View.INVISIBLE);
-						mEditionMode = TRANSLATION_EDITION_MODE;
-						requestRender();
-					}
-								
-				
 				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
+					if (!mEdition && mRenderer.touchPoint(normalizedX, normalizedY)) {
+						mEdition = true;
+						ViewerMain.setEditionMenuVisibility(View.VISIBLE);
+					}
+					
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();
 					mPreviousY = event.getY();
-				}
-								
-				mStartClickTime = event.getEventTime();
-				
-				break;
-			
+				}												
+				break;			
 			case MotionEvent.ACTION_MOVE:	
 					float dx = x - mPreviousX;
 					float dy = y - mPreviousY;
-					
-					long clickDuration = event.getEventTime() - mStartClickTime;				
-					if (clickDuration >= MIN_CLICK_DURATION && !mEdition && mIsStl && dx==0 && dy==0) touchMode = TOUCH_LONG_PRESS;
-					
+										
 					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0) {
 						// on pinch
 						PointF pt = new PointF();
@@ -220,60 +201,69 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mPreviousY = pt.y;
 										
 						pinchScale = getPinchDistance(event) / pinchStartDistance;
-						mRenderer.setCameraPosY(pinchStartY / pinchScale);
-						mRenderer.setCameraPosZ(pinchStartZ / pinchScale);
+						
+						Log.i("Viewer", " pinchscale " + pinchScale + " pinchStartFactor " + pinchStartFactor + " pinchStartFactor/pinchScale " + pinchStartFactor*pinchScale);
+								
+						if (mEdition && mEditionMode == SCALED_EDITION_MODE) mRenderer.scaleObject(pinchStartFactor*pinchScale);
+						else {
+							mRenderer.setCameraPosY(pinchStartY / pinchScale);
+							mRenderer.setCameraPosZ(pinchStartZ / pinchScale);						
+						}
 
 						requestRender();
 
 						
-					}else if (touchMode == TOUCH_DRAG) {				        
-				        mPreviousX = x;
+					}else if (touchMode == TOUCH_DRAG) {
+						mPreviousX = x;
 					    mPreviousY = y;
-					    					    
-					    if (mEdition) editionDrag (normalizedX, normalizedY, dx);
-					    else dragAccordingToMode (x,y,dx,dy);
-		
-					} else if (touchMode == TOUCH_LONG_PRESS && !mEdition) {
-						normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
-						normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
-						if (mRenderer.touchPoint(normalizedX, normalizedY)) {
-							ViewerMain.setEditionMenuVisibility(View.VISIBLE);
-							mEdition = true;		
-						}
+					    
+					    if (mEdition && (mEditionMode == MOVE_EDITION_MODE || mEditionMode == ROTATION_EDITION_MODE)) {
+				    		editionDrag (normalizedX, normalizedY, dx);
+					    } else {
+					    	dragAccordingToMode (x,y,dx,dy);
+					    }				    
 					} 
-					
+									
 					requestRender();								    
 	                break;
 			
 			// end pinch
 			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_POINTER_UP:
-				if (touchMode == TOUCH_ZOOM) {				
+			case MotionEvent.ACTION_POINTER_UP:				
+				if (touchMode == TOUCH_ZOOM) {
 					pinchScale = 1.0f;
 					pinchStartPoint.x = 0.0f;
 					pinchStartPoint.y = 0.0f;
 				}
-					
-				if (mEdition && mEditionMode==ROTATION_EDITION_MODE) {
-					mRenderer.refreshRotatedObjectCoordinates();
-					requestRender();
-				} else if (mEdition && mEditionMode == TRANSLATION_EDITION_MODE) mRenderer.refreshTranslatedObjectCoordinates();
 				
+				if(mEdition && mEditionMode==ROTATION_EDITION_MODE)	mRenderer.refreshRotatedObjectCoordinates();					
+													
+				requestRender();					
+
 				touchMode = TOUCH_NONE;
 				break;				
 		}
 		return true;
 	}
 	
+	public void exitEditionMode () {
+		mEdition = false;
+		mEditionMode = NONE_EDITION_MODE;
+		mRenderer.exitEditionMode();
+    	ViewerMain.setEditionMenuVisibility(View.INVISIBLE);
+    	
+    	requestRender();
+	}
+	
+	
 	private void editionDrag (float x, float y, float dx) {			
 		switch (mEditionMode) {
 		case ROTATION_EDITION_MODE:
 			mRenderer.setAngleRotationObject(dx*TOUCH_SCALE_FACTOR_ROTATION);
 			break;
-		case TRANSLATION_EDITION_MODE:
+		case MOVE_EDITION_MODE:
 			mRenderer.dragObject(x, y);
-			break;
-			
+			break;			
 		}
 	}
 	

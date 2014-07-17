@@ -155,6 +155,12 @@
     	android:layout_height="wrap_content"
     	android:layout_alignParentRight="true"
     	android:orientation="vertical" >
+        
+          <ImageButton
+	        android:id="@+id/move"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/move" />
     
 	     <ImageButton
 	        android:id="@+id/rotate"
@@ -179,6 +185,12 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:src="@drawable/delete" />
+	        
+	        <ImageButton
+	        android:id="@+id/exit"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/exit" />
 	</LinearLayout>
 
 </RelativeLayout>

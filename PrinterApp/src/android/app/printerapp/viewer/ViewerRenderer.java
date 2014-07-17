@@ -51,9 +51,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public static final int BACK=2;
 	public static final int LEFT=3;
 	
-	public static final float LIGHT_X=1200;
-	public static final float LIGHT_Y=-1200;
-	public static final float LIGHT_Z=1200;
+	public static final float LIGHT_X=2000;
+	public static final float LIGHT_Y=-2000;
+	public static final float LIGHT_Z=2000;
 	
 	public static final int NORMAL = 0;
 	public static final int XRAY = 1;
@@ -110,7 +110,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	float mDy;
 	float mDz;
 
-	float mAdjustZ = 0;
+	private float mAdjustZ = 0;
+	private float mScaleFactor=1.0f;
+	private float mLastScaleFactor = 1.0f;
 		
 	private Vector mVector = new Vector (1,0,0); //default
 	private float mRotateAngle=0;
@@ -177,6 +179,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		mVector = vector;
 	}
 	
+	public float getFactorScale () {
+		return mScaleFactor;
+	}
+	
 	public boolean touchPoint (float x, float y) {
 		Ray ray = convertNormalized2DPointToRay(x, y);
 		 	 		 
@@ -188,10 +194,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         objectPressed = Geometry.intersects(objectBox, ray);
         
         if (objectPressed && mStateObject == INSIDE_NOT_TOUCHED) mStateObject = INSIDE_TOUCHED;
-        else if (!objectPressed && mStateObject == INSIDE_TOUCHED) mStateObject = INSIDE_NOT_TOUCHED;
-                
+        
         return objectPressed;
 	}
+	
+	int count = 0;
 	
 	public void dragObject (float x, float y) {
 		Ray ray = convertNormalized2DPointToRay(x, y);
@@ -200,12 +207,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		
 		mMoveX = touched.x ;
         mMoveY = touched.y;
-        
+                
         float dx = mMoveX-mLastCenter.x;
 		float dy = mMoveY-mLastCenter.y;
-				
-		mDx += dx;
-		mDy += dy;
 		
 		float maxX = mData.getMaxX() + dx;
 		float maxY = mData.getMaxY() + dy;
@@ -223,7 +227,43 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
 			mStateObject = OUT;
 		else mStateObject = INSIDE_TOUCHED;
+		
     }
+	
+	public void scaleObject (float f) {
+		if (f>0.1 && f<10) {	
+			mScaleFactor = f;
+			
+			float maxX = mData.getMaxX()-mLastCenter.x;
+			float maxY = mData.getMaxY()-mLastCenter.y;
+			float maxZ = mData.getMaxZ();
+			float minX = mData.getMinX()-mLastCenter.x;
+			float minY = mData.getMinY()-mLastCenter.y;
+			float minZ = mData.getMinZ();
+			
+			maxX = (maxX+(mScaleFactor-mLastScaleFactor)*(maxX/mLastScaleFactor))+mLastCenter.x;
+			maxY = (maxY+(mScaleFactor-mLastScaleFactor)*(maxY/mLastScaleFactor))+mLastCenter.y;
+			maxZ = (maxZ+(mScaleFactor-mLastScaleFactor)*(maxZ/mLastScaleFactor))+mLastCenter.z;
+			
+			minX = (minX+(mScaleFactor-mLastScaleFactor)*(minX/mLastScaleFactor))+mLastCenter.x;
+			minY = (minY+(mScaleFactor-mLastScaleFactor)*(minY/mLastScaleFactor))+mLastCenter.y;
+			minZ = (minZ+(mScaleFactor-mLastScaleFactor)*(minZ/mLastScaleFactor))+mLastCenter.z;
+	
+			mData.setMaxX(maxX);
+			mData.setMaxY(maxY);
+			mData.setMaxZ(maxZ);
+			
+			mData.setMinX(minX);
+			mData.setMinY(minY);
+			mData.setMinZ(minZ);
+			
+			mLastScaleFactor = mScaleFactor;
+			
+			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
+					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
+			else mStateObject = INSIDE_TOUCHED;
+		}
+	}
 	
 	public void setAngleRotationObject (float angle) {
 		mRotateAngle = angle;
@@ -234,18 +274,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		mTotalAngle = 0;
 	}
 	
-	public void refreshTranslatedObjectCoordinates () {		
-		float [] coordinatesArray = mData.getVertexArray();
-		
-		for (int i=0; i<coordinatesArray.length/3; i+=3) {
-			coordinatesArray[i] = coordinatesArray[i] + mDx;
-			coordinatesArray[i+1] = coordinatesArray[i+1] + mDy;			
-		}
-		
-		mDx = 0;
-		mDy = 0;
-	}
-	
 	public void refreshRotatedObjectCoordinates () {	
 		if (mTotalAngle!=0) {
 			mData.initMaxMin();
@@ -254,38 +282,55 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 			
 			float [] vector = new float [4];
 			float [] result = new float [4];
+			float [] aux = new float [16];
 						
-			
 			for (int i=0; i<coordinatesArray.length/3; i+=3) {
-				vector[0] = coordinatesArray[i]-mLastCenter.x;
-				vector[1] = coordinatesArray[i+1]-mLastCenter.y;
+				vector[0] = coordinatesArray[i];
+				vector[1] = coordinatesArray[i+1];
 				vector[2] = coordinatesArray[i+2];
 				
-				Matrix.multiplyMV(result, 0, mAccumulatedRotationObjectMatrix , 0, vector, 0);
-				
-				x = result [0]+mLastCenter.x;
-				y = result [1]+mLastCenter.y;
-				z = result [2];
+				Matrix.setIdentityM(aux, 0);
+				Matrix.multiplyMM(aux, 0, mAccumulatedRotationObjectMatrix, 0, aux, 0);
+				Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
 								
+				x = result [0];
+				y = result [1];
+				z = result [2];
+						
 				mData.adjustMaxMin(x, y, z);
 			}		
-
-			if (mData.getMinZ()<0) mAdjustZ = -mData.getMinZ();
-
-			mData.setMinZ(0);			
-			mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
-			
+						
 			float maxX = mData.getMaxX();
 			float minX = mData.getMinX();
-			float minY = mData.getMaxY();
-			float maxY = mData.getMinY();
-			float maxZ = mData.getMinZ();
+			float minY = mData.getMinY();
+			float maxY = mData.getMaxY();
+			float maxZ = mData.getMaxZ();
+			float minZ = mData.getMinZ();
+			
+			//We have to introduce the rest of transformations.
+			maxX = maxX*mScaleFactor+mLastCenter.x;
+			maxY = maxY*mScaleFactor+mLastCenter.y;
+			maxZ = maxZ*mScaleFactor+mLastCenter.z;
+			
+			minX = minX*mScaleFactor+mLastCenter.x;
+			minY = minY*mScaleFactor+mLastCenter.y;
+			minZ = minZ*mScaleFactor+mLastCenter.z;	
+			
+			mData.setMaxX(maxX);
+			mData.setMaxY(maxY);
+			
+			mData.setMinX(minX);
+			mData.setMinY(minY);
 		
+			if (minZ!=0) mAdjustZ = -mData.getMinZ();
+
+			mData.setMinZ(mData.getMinZ()+mAdjustZ);			
+			mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
+			
 			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
 					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
-			else mStateObject = INSIDE_TOUCHED;
-									
-		}		
+			else mStateObject = INSIDE_TOUCHED;			
+		}	
 	}
 	
 	
@@ -335,6 +380,20 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	  
 	  public float getHeightScreen () {
 		  return mHeight;
+	  }
+	  
+	  public void exitEditionMode () {
+		  switch (mStateObject) {
+		  case INSIDE_NOT_TOUCHED:
+			  mStateObject = INSIDE_NOT_TOUCHED;
+			  break;
+		  case INSIDE_TOUCHED:
+			  mStateObject = INSIDE_NOT_TOUCHED;
+			  break;
+		  case OUT: 
+			  mStateObject = OUT;
+			  break;
+		  }
 	  }
 	  
 	  private void setColor () {
@@ -487,16 +546,19 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
       
         Matrix.setIdentityM(model, 0);
         Matrix.translateM(model, 0, mMoveX, mMoveY, mMoveZ);  
+        Matrix.scaleM(model, 0, mScaleFactor, mScaleFactor, mScaleFactor);
+        
         Matrix.translateM(model, 0, 0, 0, mAdjustZ);
 
         //Object rotation  
         Matrix.rotateM(mAccumulatedRotationObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
-                               
+
         //Reset angle, we store the rotation in the matrix
         mRotateAngle=0;
                 
         //Multiply the model by the accumulated rotation
-        Matrix.multiplyMM(temporary, 0, model, 0, mAccumulatedRotationObjectMatrix, 0);            
+        Matrix.multiplyMM(temporary, 0, model, 0, mAccumulatedRotationObjectMatrix, 0);     
+             
         Matrix.multiplyMM(mvp, 0,vp, 0, temporary, 0);   
             
         //Set Light direction  

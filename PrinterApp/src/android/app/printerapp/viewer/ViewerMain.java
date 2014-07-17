@@ -64,10 +64,13 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	
 	//Edition menu variables
 	private static LinearLayout mMenu;
+	private ImageButton mMove;
 	private ImageButton mRotation;
+	private ImageButton mScale;
+	private ImageButton mExit;
+
 	
 	//TODO 
-	//private ImageButton mScale;
 	//private ImageButton mDelete;
 	//private ImageButton mMirror;	
 	
@@ -260,6 +263,14 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			}			
 		});
 		
+		mMove = (ImageButton) rootView.findViewById (R.id.move);		
+		mMove.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
+			} 
+		});
+		
 		mRotation = (ImageButton) rootView.findViewById (R.id.rotate);		
 		mRotation.setOnClickListener(new OnClickListener () {
 			@Override
@@ -267,7 +278,22 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 				mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
 			} 
 		});
-
+		
+		mScale = (ImageButton) rootView.findViewById (R.id.scale);		
+		mScale.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
+			} 
+		});
+		
+		mExit = (ImageButton) rootView.findViewById (R.id.exit);		
+		mExit.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.exitEditionMode();
+			} 
+		});
 	}
 	
 	/*******************************************************************
