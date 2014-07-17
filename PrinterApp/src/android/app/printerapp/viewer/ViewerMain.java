@@ -392,6 +392,10 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			mSurface = new ViewerSurfaceView (getActivity(), mDataGcode, mState, mDoSnapshot, false);
 		}
 					
+		//TODO Changed 
+		//Set the surface Z priority to top
+		mSurface.setZOrderOnTop(true);
+		
 		//Add the view
 		mLayout.addView(mSurface);
 		
@@ -508,5 +512,26 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		mFile = new File (file.getPath());
 		
 		openFile (file.getPath());
+	}
+	
+	
+	/************************* SURFACE CONTROL ********************************/
+
+	
+	//This method will set the visibility of the surfaceview so it doesn't overlap
+	//with the video grid view
+	
+	//TODO Bug: When the view is visible again, the model moves slightly
+	public void setSurfaceVisibility(int i){
+		
+		if (mSurface!=null){
+			switch (i){
+			case 0: mSurface.setVisibility(View.GONE); break;
+			case 1: mSurface.setVisibility(View.VISIBLE); break;
+			}
+		}
+		
+		
+		
 	}
 }
