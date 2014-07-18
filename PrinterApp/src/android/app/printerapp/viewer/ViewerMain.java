@@ -2,8 +2,7 @@ package android.app.printerapp.viewer;
 
 import java.io.File;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -26,17 +25,16 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.app.printerapp.R;
 
 
-public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialogListener {	
-	private int mState;
+public class ViewerMain extends Fragment {	
+	private static int mState;
 	
 	private static final int GCODE_EXTENSION = 6;
 	private static final int STL_EXTENSION = 4;
 		
-	private String mPathFile;
-	private File mFile;
+	private static File mFile;
 
-	private ViewerSurfaceView mSurface;
-	private FrameLayout mLayout;
+	private static ViewerSurfaceView mSurface;
+	private static FrameLayout mLayout;
 		
 	//Buttons
 	private RadioGroup mGroupMovement;
@@ -52,15 +50,15 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	private Button mNormal;
 	private static SeekBar mSeekBar;
 	
-	private DataStorage mDataStl;
-	private DataStorage mDataGcode;
+	private static DataStorage mDataStl;
+	private static DataStorage mDataGcode;
 	
 	//TODO check
-	private boolean mDoSnapshot  = false;
+	private static boolean mDoSnapshot  = false;
 	
 	private File [] mFilesList;
-	private String mLastStlOpened = "";
-	private String mLastGcodeOpened = "";
+	private static String mLastStlOpened = "";
+	private static String mLastGcodeOpened = "";
 	
 	//Edition menu variables
 	private static LinearLayout mMenu;
@@ -68,6 +66,8 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	private ImageButton mRotation;
 	private ImageButton mScale;
 	private ImageButton mExit;
+	
+	static Context mContext;
 
 	
 	//TODO 
@@ -87,9 +87,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		
-		
+			Bundle savedInstanceState) {	
 		//Reference to View
 		View rootView = null;
 		
@@ -103,143 +101,135 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			rootView = inflater.inflate(R.layout.viewer_main,
 					container, false);
 			
-			//mPathFile = getActivity().getIntent().getExtras().getString("filename");
-					
-			mSeekBar = (SeekBar) rootView.findViewById (R.id.barLayer);		
-			mSeekBar.setVisibility(View.INVISIBLE);
-			
-			mLayout = (FrameLayout) rootView.findViewById (R.id.frameLayout);
-						
-			if (mPathFile!= null) openFile (mPathFile);
-					
-			//Buttons and seekBar
-			
-			mGroupMovement = (RadioGroup) rootView.findViewById (R.id.radioGroupMovement);		
-			mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener () {
-				@Override
-				public void onCheckedChanged(RadioGroup group, int checkedId) {
-					switch (checkedId) {
-					case R.id.radioRotation:
-						mSurface.setMovementMode(ViewerSurfaceView.ROTATION_MODE);
-						break;
-					case R.id.radioTranslation:
-						mSurface.setMovementMode(ViewerSurfaceView.TRANSLATION_MODE);
-						break;
-					case R.id.lightRotation:
-						mSurface.setMovementMode(ViewerSurfaceView.LIGHT_MODE);
-						break;
-					}		
-				}			
-			});
-
-			mBackWitboxFaces = (Button) rootView.findViewById(R.id.back);
-			mBackWitboxFaces.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					mSurface.showBackWitboxFace();
-				}
-				
-			});
-			
-			mRightWitboxFaces = (Button) rootView.findViewById(R.id.right);
-			mRightWitboxFaces.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					mSurface.showRightWitboxFace();
-				}
-				
-			});
-			
-			mLeftWitboxFaces = (Button) rootView.findViewById(R.id.left);
-			mLeftWitboxFaces.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					mSurface.showLeftWitboxFace();
-				}
-				
-			});
-			
-			mDownWitboxFaces = (Button) rootView.findViewById(R.id.down);
-			mDownWitboxFaces.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					mSurface.showDownWitboxFace();
-				}
-				
-			});
-			
-			mNormal = (Button) rootView.findViewById (R.id.normal);		
-			mNormal.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					int state = mState = ViewerSurfaceView.NORMAL;				
-					changeViewFrom (state, ".gcode");	
-				} 
-			});
-			
-			mXray = (Button)  rootView.findViewById (R.id.xray);
-			mXray.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					int state = ViewerSurfaceView.XRAY;
-					changeViewFrom (state, ".gcode");			
-				}			
-			});
-			
-			mTransparent = (Button)  rootView.findViewById (R.id.transparent);
-			mTransparent.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					int state = ViewerSurfaceView.TRANSPARENT;			
-					changeViewFrom (state,".gcode");					
-				}			
-			});		
-			
-			mLayers = (Button) rootView.findViewById (R.id.layers);		
-			mLayers.setOnClickListener(new OnClickListener () {
-				@Override
-				public void onClick(View v) {
-					int state = ViewerSurfaceView.LAYERS;			
-					changeViewFrom (state, ".stl");
-				} 
-			});
-			
-			
-			mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {       
-				
-			    @Override       
-			    public void onStopTrackingTouch(SeekBar seekBar) {      
-			    }       
-		
-			    @Override       
-			    public void onStartTrackingTouch(SeekBar seekBar) {     
-			    }       
-		
-			    @Override       
-			    public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) { 
-			    	mDataGcode.setActualLayer(progress);
-			    	mSurface.requestRender();
-			    }       
-			}); 	
-			
+			mContext = getActivity();
+											
+			initUIElements (rootView);
 			initEditButtons (rootView);
 			
-			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);			
-		
-			
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);						
 		}
 		
-		return rootView;
-		
+		return rootView;	
 		
 	}
 	
-	/*******************************************************************
-	 * 
-	 * 	EDITION MENU 
-	 * 
-	 *******************************************************************/
-	public void initEditButtons (View rootView) {
+	/************************* UI ELEMENTS ********************************/
+	
+	private void initUIElements (View rootView) {
+		mSeekBar = (SeekBar) rootView.findViewById (R.id.barLayer);		
+		mSeekBar.setVisibility(View.INVISIBLE);
+		
+		mLayout = (FrameLayout) rootView.findViewById (R.id.frameLayout);
+		mGroupMovement = (RadioGroup) rootView.findViewById (R.id.radioGroupMovement);		
+		mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener () {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.radioRotation:
+					mSurface.setMovementMode(ViewerSurfaceView.ROTATION_MODE);
+					break;
+				case R.id.radioTranslation:
+					mSurface.setMovementMode(ViewerSurfaceView.TRANSLATION_MODE);
+					break;
+				case R.id.lightRotation:
+					mSurface.setMovementMode(ViewerSurfaceView.LIGHT_MODE);
+					break;
+				}		
+			}			
+		});
+
+		mBackWitboxFaces = (Button) rootView.findViewById(R.id.back);
+		mBackWitboxFaces.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.showBackWitboxFace();
+			}
+			
+		});
+		
+		mRightWitboxFaces = (Button) rootView.findViewById(R.id.right);
+		mRightWitboxFaces.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.showRightWitboxFace();
+			}
+			
+		});
+		
+		mLeftWitboxFaces = (Button) rootView.findViewById(R.id.left);
+		mLeftWitboxFaces.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.showLeftWitboxFace();
+			}
+			
+		});
+		
+		mDownWitboxFaces = (Button) rootView.findViewById(R.id.down);
+		mDownWitboxFaces.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.showDownWitboxFace();
+			}
+			
+		});
+		
+		mNormal = (Button) rootView.findViewById (R.id.normal);		
+		mNormal.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				int state = mState = ViewerSurfaceView.NORMAL;				
+				changeViewFrom (state, ".gcode");	
+			} 
+		});
+		
+		mXray = (Button)  rootView.findViewById (R.id.xray);
+		mXray.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				int state = ViewerSurfaceView.XRAY;
+				changeViewFrom (state, ".gcode");			
+			}			
+		});
+		
+		mTransparent = (Button)  rootView.findViewById (R.id.transparent);
+		mTransparent.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				int state = ViewerSurfaceView.TRANSPARENT;			
+				changeViewFrom (state,".gcode");					
+			}			
+		});		
+		
+		mLayers = (Button) rootView.findViewById (R.id.layers);		
+		mLayers.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				int state = ViewerSurfaceView.LAYERS;			
+				changeViewFrom (state, ".stl");
+			} 
+		});
+		
+		
+		mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {       
+			
+		    @Override       
+		    public void onStopTrackingTouch(SeekBar seekBar) {      
+		    }       
+	
+		    @Override       
+		    public void onStartTrackingTouch(SeekBar seekBar) {     
+		    }       
+	
+		    @Override       
+		    public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) { 
+		    	mDataGcode.setActualLayer(progress);
+		    	mSurface.requestRender();
+		    }       
+		}); 	
+	}
+	
+	private void initEditButtons (View rootView) {
 		mMenu = (LinearLayout) rootView.findViewById(R.id.edition_menu);
 		mMenu.setVisibility(View.INVISIBLE);
 		
@@ -296,13 +286,19 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		});
 	}
 	
-	/*******************************************************************
-	 * 
-	 * 	MENU OPTIONS
-	 * 
-	 *******************************************************************/
+	public static void setEditionMenuVisibility (int visibility) {
+		mMenu.setVisibility(visibility);
+		mGroupRotation.setVisibility(visibility);
+
+	}
+	
+	public static void initSeekBar (int max) {
+		mSeekBar.setMax(max);
+		mSeekBar.setProgress(max);
+	}
 	
 	
+	/************************* OPTIONS MENU ********************************/	
 	//Create option menu and inflate viewer menu
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -316,17 +312,7 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	   switch (item.getItemId()) {
 	   
 	   case R.id.viewer_open: 		   
-		   //Open file to load
-		   
-		   //TODO test, encapsulate code into function
-		   
-		   	FileBrowser fileListDialog = new FileBrowser(getActivity(), "Choose file...", ".stl", ".gcode");
-			
-			fileListDialog.setOnFileListDialogListener(ViewerMain.this);
-
-			SharedPreferences config = getActivity().getSharedPreferences("PathSetting", Activity.MODE_PRIVATE);
-			fileListDialog.show(config.getString("lastPath", Environment.getExternalStorageDirectory().getPath() + "/PrintManager"));
-			
+		   	FileBrowser.openFileBrowser(getActivity(), FileBrowser.VIEWER, "Choose file...", ".stl", ".gcode");
 			return true;
 			
        	case R.id.viewer_save: 
@@ -350,12 +336,25 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	   }
 	}
 	
-	/*****************************************************************************/
    
+   /************************* FILE MANAGEMENT ********************************/
+   public static void openFile (String filePath) {
+		mFile = new File(filePath);
+		//Open the file
+		if (filePath.endsWith(".stl") && !mLastStlOpened.equals(mFile.getName())) {
+			mDataStl = new DataStorage ();
+			StlFile.openStlFile (mContext, mFile, mDataStl);
+			mLastStlOpened = mFile.getName();
+		} else if (filePath.endsWith(".gcode") && !mLastGcodeOpened.equals(mFile.getName())) {
+			mDataGcode = new DataStorage ();
+			GcodeFile.openGcodeFile(mContext, mFile, mDataGcode);	
+			mLastGcodeOpened = mFile.getName();
+		}
+		
+		drawAndSnapshot(filePath);
+	}
    
-   
-	
-	private void changeViewFrom (int state, String type) {
+   private void changeViewFrom (int state, String type) {
 		if (mFile!= null) {
 			mState = state;
 			
@@ -374,61 +373,10 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			} else 	mSurface.configViewMode(mState);		
 			
 										
-		} else Toast.makeText(getActivity(), "This view is not available. Open a file first", Toast.LENGTH_SHORT).show();	
-		
+		} else Toast.makeText(getActivity(), "This view is not available. Open a file first", Toast.LENGTH_SHORT).show();		
 	}
-	
-	public void openFile (String filePath) {
-		mFile = new File(filePath);
-		//Open the file
-		if (filePath.endsWith(".stl") && !mLastStlOpened.equals(mFile.getName())) {
-			mDataStl = new DataStorage ();
-			new StlFile (getActivity(), mFile, mDataStl);
-			mLastStlOpened = mFile.getName();
-		} else if (filePath.endsWith(".gcode") && !mLastGcodeOpened.equals(mFile.getName())) {
-			mDataGcode = new DataStorage ();
-			new GcodeFile (getActivity(), mFile, mDataGcode);	
-			mLastGcodeOpened = mFile.getName();
-		}
-		
-		drawAndSnapshot(filePath);
-	}
-	
-	
-	
-	private void drawAndSnapshot (String filePath) {	
-		String pathSnapshot;
-		mLayout.removeAllViews();
-
-		if (filePath.endsWith(".stl")) {
-			mSeekBar.setVisibility(View.INVISIBLE);
-			
-			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataStl.getPathFile() + ".jpeg";
-			mDataStl.setPathSnapshot(pathSnapshot);
-			//mDoSnapshot = doSnapshot (pathSnapshot);
-
-			mSurface = new ViewerSurfaceView (getActivity(), mDataStl, mState, mDoSnapshot, true);
-
-		} else if (filePath.endsWith(".gcode")) {
-			mSeekBar.setVisibility(View.VISIBLE);
-			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataGcode.getPathFile() + ".jpeg";
-			mDataGcode.setPathSnapshot(pathSnapshot);
-			//mDoSnapshot = doSnapshot (pathSnapshot);
-
-			mSurface = new ViewerSurfaceView (getActivity(), mDataGcode, mState, mDoSnapshot, false);
-		}
-					
-		//TODO Changed 
-		//Set the surface Z priority to top
-		mSurface.setZOrderOnTop(true);
-		
-		//Add the view
-		mLayout.addView(mSurface);
-		
-		if (mDoSnapshot) mLayout.setVisibility(View.INVISIBLE);		
-	}
-	
-	private void fillFilesList() {
+   
+   private void fillFilesList() {
 		if (mFilesList == null) {
 			String d = Environment.getExternalStorageDirectory().getPath() + "/PrintManager";
 			File dir = new File (d);
@@ -490,17 +438,38 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 		return null;
 	}
 	
-	public static void setEditionMenuVisibility (int visibility) {
-		mMenu.setVisibility(visibility);
-		mGroupRotation.setVisibility(visibility);
+	private static void drawAndSnapshot (String filePath) {	
+		String pathSnapshot;
+		mLayout.removeAllViews();
 
+		if (filePath.endsWith(".stl")) {
+			mSeekBar.setVisibility(View.INVISIBLE);
+			
+			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataStl.getPathFile() + ".jpeg";
+			mDataStl.setPathSnapshot(pathSnapshot);
+			//mDoSnapshot = doSnapshot (pathSnapshot);
+
+			mSurface = new ViewerSurfaceView (mContext, mDataStl, mState, mDoSnapshot, true);
+
+		} else if (filePath.endsWith(".gcode")) {
+			mSeekBar.setVisibility(View.VISIBLE);
+			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataGcode.getPathFile() + ".jpeg";
+			mDataGcode.setPathSnapshot(pathSnapshot);
+			//mDoSnapshot = doSnapshot (pathSnapshot);
+
+			mSurface = new ViewerSurfaceView (mContext, mDataGcode, mState, mDoSnapshot, false);
+		}
+					
+		//TODO Changed 
+		//Set the surface Z priority to top
+		mSurface.setZOrderOnTop(true);
+		
+		//Add the view
+		mLayout.addView(mSurface);
+		
+		if (mDoSnapshot) mLayout.setVisibility(View.INVISIBLE);		
 	}
-	
-	public static void initSeekBar (int max) {
-		mSeekBar.setMax(max);
-		mSeekBar.setProgress(max);
-	}
-	
+		
 	/*
 	private boolean doSnapshot (String path) {
 		boolean doSnapshot;
@@ -512,38 +481,9 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 	}
 	
 	
-	
-	public void onPause() {
-        super.onPause();
-        mSurface.onPause();
-	 }
-
-	 @Override
-	public void onResume() {
-		 super.onResume();
-		 mSurface.onResume();
-	 }*/
-
-	@Override
-	public void onClickFileList(File file) {
-		if (file == null) {
-			return;
-		}
-
-		SharedPreferences config = getActivity().getSharedPreferences("PathSetting", Activity.MODE_PRIVATE);
-		SharedPreferences.Editor configEditor = config.edit();
-		configEditor.putString("lastPath", file.getParent());
-		configEditor.commit();
-		
-		mFile = new File (file.getPath());
-		
-		openFile (file.getPath());
-	}
-	
+*/	
 	
 	/************************* SURFACE CONTROL ********************************/
-
-	
 	//This method will set the visibility of the surfaceview so it doesn't overlap
 	//with the video grid view
 	
@@ -555,9 +495,6 @@ public class ViewerMain extends Fragment implements FileBrowser.OnFileListDialog
 			case 0: mSurface.setVisibility(View.GONE); break;
 			case 1: mSurface.setVisibility(View.VISIBLE); break;
 			}
-		}
-		
-		
-		
+		}		
 	}
 }

@@ -86,8 +86,17 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	private final float[] mRotationMatrix = new float[16];
 	private final float[] mAccumulatedRotationMatrix = new float[16];	
 	private final float[] mTemporaryMatrix = new float [16];
-    private final float[] invertedViewProjectionMatrix = new float[16];
+    private final static float[] invertedViewProjectionMatrix = new float[16];
     
+    float[] mVPFinalMatrix = new float[16];
+	float[] mMVMatrix = new float[16];
+	float[] mMVPMatrix = new float[16];	
+	float[] mObjectModel = new float [16];
+	float[] mTemporaryModel = new float[16];
+	float[] mLightPosInEyeSpace = new float[4];
+	float[] mLightPosInWorldSpace = new float[4];
+	
+	
     //Object
 	private final float[] mAccumulatedRotationObjectMatrix = new float[16];
 	
@@ -334,7 +343,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	}
 	
 	
-	 private Ray convertNormalized2DPointToRay(float normalizedX, float normalizedY) {		 
+	 private static Ray convertNormalized2DPointToRay(float normalizedX, float normalizedY) {		 
 	        // We'll convert these normalized device coordinates into world-space
 	        // coordinates. We'll pick a point on the near and far planes, and draw a
 	        // line between them. To do this transform, we need to first multiply by
@@ -345,10 +354,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	        final float[] nearPointWorld = new float[4];
 	        final float[] farPointWorld = new float[4];
 	        
-	        Matrix.multiplyMV(
-	            nearPointWorld, 0, invertedViewProjectionMatrix, 0, nearPointNdc, 0);
-	        Matrix.multiplyMV(
-	            farPointWorld, 0, invertedViewProjectionMatrix, 0, farPointNdc, 0);
+	        
+	        Matrix.multiplyMV(nearPointWorld, 0, invertedViewProjectionMatrix, 0, nearPointNdc, 0);
+	        Matrix.multiplyMV(farPointWorld, 0, invertedViewProjectionMatrix, 0, farPointNdc, 0);
 
 	        // Why are we dividing by W? We multiplied our vector by an inverse
 	        // matrix, so the W value that we end up is actually the *inverse* of
@@ -359,16 +367,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 
 	        // We don't care about the W value anymore, because our points are now
 	        // in world coordinates.
-	        Point nearPointRay = 
-	            new Point(nearPointWorld[0], nearPointWorld[1], nearPointWorld[2]);
+	        Point nearPointRay = new Point(nearPointWorld[0], nearPointWorld[1], nearPointWorld[2]);
 				
-	        Point farPointRay = 
-	            new Point(farPointWorld[0], farPointWorld[1], farPointWorld[2]);
+	        Point farPointRay = new Point(farPointWorld[0], farPointWorld[1], farPointWorld[2]);
 
 	        return new Ray(nearPointRay,  Geometry.vectorBetween(nearPointRay, farPointRay));
 	 }    
 	 
-	  private void divideByW(float[] vector) {
+	  private static void divideByW(float[] vector) {
 		  vector[0] /= vector[3];
 	      vector[1] /= vector[3];
 	      vector[2] /= vector[3];
@@ -493,15 +499,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         
         if (mIsStl) setColor();
                 
-		float[] vp = new float[16];
-		float[] mv = new float[16];
-		float[] mvp = new float[16];
 		
-		float[] model = new float [16];
-		float[] temporary = new float[16];
-		
-		float[] lightPosInEyeSpace = new float[4];
-		float[] lightPosInWorldSpace = new float[4];
 				
 	    GLES20.glEnable (GLES20.GL_BLEND);
 	 	
@@ -540,15 +538,15 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(vp, 0,mVPMatrix, 0, mAccumulatedRotationMatrix, 0);         
+        Matrix.multiplyMM(mVPFinalMatrix, 0,mVPMatrix, 0, mAccumulatedRotationMatrix, 0);         
         
-        Matrix.invertM(invertedViewProjectionMatrix, 0, vp, 0);
+        Matrix.invertM(invertedViewProjectionMatrix, 0, mVPFinalMatrix, 0);
       
-        Matrix.setIdentityM(model, 0);
-        Matrix.translateM(model, 0, mMoveX, mMoveY, mMoveZ);  
-        Matrix.scaleM(model, 0, mScaleFactor, mScaleFactor, mScaleFactor);
+        Matrix.setIdentityM(mObjectModel, 0);
+        Matrix.translateM(mObjectModel, 0, mMoveX, mMoveY, mMoveZ);  
+        Matrix.scaleM(mObjectModel, 0, mScaleFactor, mScaleFactor, mScaleFactor);
         
-        Matrix.translateM(model, 0, 0, 0, mAdjustZ);
+        Matrix.translateM(mObjectModel, 0, 0, 0, mAdjustZ);
 
         //Object rotation  
         Matrix.rotateM(mAccumulatedRotationObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
@@ -557,25 +555,25 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         mRotateAngle=0;
                 
         //Multiply the model by the accumulated rotation
-        Matrix.multiplyMM(temporary, 0, model, 0, mAccumulatedRotationObjectMatrix, 0);     
+        Matrix.multiplyMM(mTemporaryModel, 0, mObjectModel, 0, mAccumulatedRotationObjectMatrix, 0);     
              
-        Matrix.multiplyMM(mvp, 0,vp, 0, temporary, 0);   
+        Matrix.multiplyMM(mMVPMatrix, 0,mVPFinalMatrix, 0, mTemporaryModel, 0);   
             
         //Set Light direction  
-        Matrix.multiplyMV(lightPosInWorldSpace, 0, temporary, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(lightPosInEyeSpace, 0, mViewMatrix, 0, lightPosInWorldSpace, 0);                                             
+        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mTemporaryModel, 0, mLightPosInModelSpace, 0);
+        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);                                             
                                                                                                                                                                   
-        if (mIsStl) mStlObject.draw(mvp, mvp, lightPosInEyeSpace);
-        else mGcodeObject.draw(vp);
+        if (mIsStl) mStlObject.draw(mMVPMatrix, mMVPMatrix, mLightPosInEyeSpace);
+        else mGcodeObject.draw(mVPFinalMatrix);
         
         if (mSnapShot) {
-        	mInfinitePlane.draw(vp, mv);
+        	mInfinitePlane.draw(mVPFinalMatrix, mMVMatrix);
         	takeScreenShot(unused);
         } else {
-        	if (mShowDownWitboxFace) mWitboxFaceDown.draw(vp, mv);      
-        	if (mShowBackWitboxFace) mWitboxFaceBack.draw(vp);
-        	if (mShowRightWitboxFace) mWitboxFaceRight.draw(vp);
-        	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(vp);
+        	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mVPFinalMatrix, mMVMatrix);      
+        	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mVPFinalMatrix);
+        	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mVPFinalMatrix);
+        	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mVPFinalMatrix);
         }        
 	}
 	

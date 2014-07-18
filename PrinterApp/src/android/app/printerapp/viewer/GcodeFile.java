@@ -11,49 +11,84 @@ import android.os.Message;
 import android.util.Log;
 import android.app.printerapp.R;
 
-public class GcodeFile implements Runnable {
+public class GcodeFile  {
 	private static final String TAG = "GCodeFile";
 	public static final int COORDS_PER_VERTEX = 3;
-	private File mFile;
-	private Context mContext;
-	private DataStorage mData;
+	private static File mFile;
+	private static DataStorage mData;
 	
-	private int mMaxLayer;
-	private float mExecutionTime;
+	private static ProgressDialog mProgressDialog;
+	private static Thread mThread;
+	private static int mMaxLayer;
+	
+	static String [] mSplitLine;
+	
+	private static int mLines=0;
+	private static boolean mEnd = false;
+	private static boolean mStart = false;
 		
-	float mX, mY, mZ, mF;
-	String [] mSplitLine;
-	private float mLastX=0;
-	private float mLastY=0;
-	private float mLastZ=0;
+	static float mX;
+	static float mY;
+	static float mZ;
+	static float mF;
+	private static float mLastX=0;
+	private static float mLastY=0;
+	private static float mLastZ=0;
 	
-	private int mLength; 
-	private int mLayer;
-	private int mType;
-
-	private final ProgressDialog mProgressDialog;
-	private Thread mThread;
+	private static int mLength; 
+	private static int mLayer;
+	private static int mType;
+	private static float mExecutionTime;
 	
-	private int mLines=0;
-	private boolean mEnd = false;
-	private boolean mStart = false;
-	
-	public GcodeFile (Context context, File file, DataStorage data) {
-		this.mContext = context;
-		this.mFile = file;		
-		this.mData = data;
-		this.mProgressDialog = prepareProgressDialog(context);
+	public static void openGcodeFile (Context context, File file, DataStorage data) {
+		mFile = file;		
+		mData = data;
+		mProgressDialog = prepareProgressDialog(context);
 		mData.setPathFile(mFile.getName().replace(".", "-"));
 		
-		mData.setMaxX(Float.MIN_VALUE);
-		mData.setMaxY(Float.MIN_VALUE);
-		mData.setMaxZ(Float.MIN_VALUE);
-		mData.setMinX(Float.MAX_VALUE);
-		mData.setMinY(Float.MAX_VALUE);
-		mData.setMinZ(Float.MAX_VALUE);
+		mData.initMaxMin();
 
+		startThreadToOpenFile (context);		
+	}
+	
+	public static void startThreadToOpenFile (final Context context) {
+		mThread = new Thread () {
+			@Override
+			public void run () {
+				Log.i(TAG, "Starting thread to open file");
+				String line;
+				StringBuilder allLines = new StringBuilder ("");
+
+				try {
+					int maxLines=0;
+					BufferedReader countReader = new BufferedReader(new FileReader(mFile));
+					while ((line = countReader.readLine()) != null) {
+						allLines.append(line + "\n");
+						maxLines++;
+					}
+					countReader.close();
+					
+					mProgressDialog.setMax(maxLines);
+					int index=0;
+					int lastIndex = 0;
+					while (mLines<maxLines) {	
+						index = allLines.indexOf("\n", lastIndex);
+						line = allLines.substring(lastIndex, index);
+						fillCoordinateList (line);
+						mLines++;
+						lastIndex = index+1;
+						
+						if (mLines % (maxLines/10) == 0)mProgressDialog.setProgress(mLines);
+					}
+					
+					mHandler.sendEmptyMessage(0);
+								
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};	
 		
-		this.mThread = new Thread(this);		
 		mThread.start();
 	}
 	
@@ -61,11 +96,11 @@ public class GcodeFile implements Runnable {
 		mData.setPathFile(mFile.getName().replace(".", "-"));
 	}
 	
-	private ProgressDialog prepareProgressDialog(Context context) {
+	private static ProgressDialog prepareProgressDialog(Context context) {
 		ProgressDialog progressDialog = new ProgressDialog(context);
 		progressDialog.setTitle(R.string.loading_gcode);
 		progressDialog.setMax(0);
-		progressDialog.setMessage(mContext.getResources().getString(R.string.be_patient));
+		progressDialog.setMessage(context.getResources().getString(R.string.be_patient));
 		progressDialog.setIndeterminate(false);
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.setCancelable(false);
@@ -75,44 +110,7 @@ public class GcodeFile implements Runnable {
 		return progressDialog;
 	}
 	
-	@Override
-	public void run() {
-		Log.i(TAG, "Starting thread to open file");
-
-		String line;
-		StringBuilder allLines = new StringBuilder ("");
-
-		try {
-			int maxLines=0;
-			BufferedReader countReader = new BufferedReader(new FileReader(mFile));
-			while ((line = countReader.readLine()) != null) {
-				allLines.append(line + "\n");
-				maxLines++;
-			}
-			countReader.close();
-			
-			mProgressDialog.setMax(maxLines);
-			int index=0;
-			int lastIndex = 0;
-			while (mLines<maxLines) {	
-				index = allLines.indexOf("\n", lastIndex);
-				line = allLines.substring(lastIndex, index);
-				fillCoordinateList (line);
-				mLines++;
-				lastIndex = index+1;
-				
-				if (mLines % (maxLines/10) == 0)mProgressDialog.setProgress(mLines);
-			}
-			
-			mHandler.sendEmptyMessage(0);
-						
-		} catch (Exception e) {
-			e.printStackTrace();
-		}			
-		
-	}
-	
-    private Handler mHandler = new Handler() {
+    private static Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
     		if (mData.getCoordinateListSize() < 1) {
@@ -141,7 +139,7 @@ public class GcodeFile implements Runnable {
     };
 	
 	
-	void fillCoordinateList (String line) {
+	static void fillCoordinateList (String line) {
 		if (line.contains("END GCODE")) mEnd = true;
 		
 		if (line.contains("end of START GCODE")) mStart = true;

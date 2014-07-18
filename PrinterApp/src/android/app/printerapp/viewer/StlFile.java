@@ -17,37 +17,60 @@ import android.util.Log;
 import android.app.printerapp.R;
 
 
-public class StlFile implements Runnable{
+public class StlFile {
 		
 	private static final String TAG = "STLFile";
 	
-	private File mFile;
-	private Uri mUri;
-	private Context mContext;
+	private static File mFile;
 
 	String mStringAux="";
 	
-	private ProgressDialog mProgressDialog;
-	private DataStorage mData;
-	Thread mThread;
+	private static ProgressDialog mProgressDialog;
+	private static DataStorage mData;
+	static Thread mThread;
 		
-	public StlFile (Context context, File file, DataStorage data) {
+	public static void openStlFile (Context context, File file, DataStorage data) {
 		Log.i(TAG, "Open File");
-		this.mContext= context;
-		this.mFile = file;
-		this.mUri = Uri.fromFile(file);
-		this.mData = data;
-		this.mProgressDialog = prepareProgressDialog(context);
-		mData.setPathFile(mFile.getName().replace(".", "-"));
+		mProgressDialog = prepareProgressDialog(context);
+		mData = data;
+
+		mFile = file;
+		Uri uri = Uri.fromFile(file);
 		
+		mData.setPathFile(mFile.getName().replace(".", "-"));	
 		mData.initMaxMin();
 		
-		this.mThread = new Thread (this);	
-		mThread.start();
-	
+		startThreadToOpenFile(context, uri);
 	}
 	
-	private byte [] toByteArray (Context context, Uri filePath) {
+	public static void startThreadToOpenFile (final Context context, final Uri uri) {
+		mThread = new Thread () {
+			@Override
+			public void run () {
+				byte [] arrayBytes = toByteArray (context, uri);
+				
+				try {
+					if (isText(arrayBytes)) {
+						Log.e(TAG,"trying text... ");
+						processText(mFile);						
+					} else {
+						Log.e(TAG,"trying binary...");
+						processBinary(arrayBytes);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				mHandler.sendEmptyMessage(0);
+			}
+		};	
+		
+		mThread.start();
+	}
+	
+	
+	
+	private static byte [] toByteArray (Context context, Uri filePath) {
 		InputStream inputStream = null;
 		byte [] arrayBytes = null;
 		try {		
@@ -67,7 +90,7 @@ public class StlFile implements Runnable{
 		return arrayBytes;
 	}
 	
-	private boolean isText (byte [] bytes) {
+	private static boolean isText (byte [] bytes) {
 		for (byte b : bytes) {
 			if (b == 0x0a || b == 0x0d || b == 0x09) {
 				// white spaces
@@ -87,11 +110,11 @@ public class StlFile implements Runnable{
 	 * Progress Dialog
 	 * ----------------------------------
 	 */
-	private ProgressDialog prepareProgressDialog(Context context) {
+	private static ProgressDialog prepareProgressDialog(Context context) {
 		ProgressDialog progressDialog = new ProgressDialog(context);
 		progressDialog.setTitle(R.string.loading_stl);
 		progressDialog.setMax(0);
-		progressDialog.setMessage(mContext.getResources().getString(R.string.be_patient));
+		progressDialog.setMessage(context.getResources().getString(R.string.be_patient));
 		progressDialog.setIndeterminate(false);
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.setCancelable(false);
@@ -101,31 +124,11 @@ public class StlFile implements Runnable{
 		return progressDialog;
 	}
 	
-	private int getIntWithLittleEndian(byte[] bytes, int offset) {
+	private static int getIntWithLittleEndian(byte[] bytes, int offset) {
 		return (0xff & bytes[offset]) | ((0xff & bytes[offset + 1]) << 8) | ((0xff & bytes[offset + 2]) << 16) | ((0xff & bytes[offset + 3]) << 24);
 	}
 	
-	@Override
-	public void run() {		
-		byte [] arrayBytes = toByteArray (mContext, mUri);
-		
-		try {
-			if (isText(arrayBytes)) {
-				Log.e(TAG,"trying text... ");
-				processText(mFile);						
-			} else {
-				Log.e(TAG,"trying binary...");
-				processBinary(arrayBytes);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		mHandler.sendEmptyMessage(0);
-		
-	}
-	
-	 private Handler mHandler = new Handler() {
+	 private static Handler mHandler = new Handler() {
 	        @Override
 	        public void handleMessage(Message msg) {
 	    		if (mData.getCoordinateListSize() < 1) {
@@ -147,7 +150,7 @@ public class StlFile implements Runnable{
 	 };
 
 	
-	private void processText (File file) {
+	private static void processText (File file) {
 		String line;
 		try {
 			int maxLines=0;
@@ -173,7 +176,6 @@ public class StlFile implements Runnable{
 				lastIndex = index+1;
 				
 				if (lines % (maxLines/10) == 0) {
-					System.gc();
 					mProgressDialog.setProgress(lines);
 				}
 			}
@@ -185,7 +187,7 @@ public class StlFile implements Runnable{
 	
 	
 	
-	public void processLine (String stlLine) throws Exception {
+	public static void processLine (String stlLine) throws Exception {
 		stlLine = stlLine.trim();
 		if (stlLine.startsWith("facet normal ")) {
 			stlLine= stlLine.replaceFirst("facet normal ", "");
@@ -213,7 +215,7 @@ public class StlFile implements Runnable{
 		}	
 	}
 	
-	private void processBinary(byte[] stlBytes) throws Exception {			
+	private static void processBinary(byte[] stlBytes) throws Exception {			
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 						
 		mProgressDialog.setMax(vectorSize);

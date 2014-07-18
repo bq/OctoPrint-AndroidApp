@@ -43,6 +43,9 @@ public class DataStorage {
 	public static final int SUPPORT = 9;
 	
 	
+	public List<Float> get () {
+		return mVertexList;
+	}
 	public int getCoordinateListSize () {
 		return mVertexList.size();
 	}
@@ -69,7 +72,7 @@ public class DataStorage {
 	}
 	
 	public void fillVertexArray () {
-		mVertexArray = new float [mVertexList.size()*GcodeFile.COORDS_PER_VERTEX ];
+		mVertexArray = new float [mVertexList.size()];
 		
 		centerSTL();
 	}
