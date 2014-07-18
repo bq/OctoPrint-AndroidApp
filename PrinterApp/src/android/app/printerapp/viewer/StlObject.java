@@ -91,7 +91,7 @@ public class StlObject {
 		mNormalArray = mData.getNormalArray();
 
 		vertexCount = mVertexArray.length/COORDS_PER_VERTEX;
-		
+			
 		configStlObject(state);	
 		
 		//Set colour
@@ -223,7 +223,7 @@ public class StlObject {
 	        for (int i=0; i<vertexCount/COORDS_PER_VERTEX; i++) {
 	        	GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, i*3, 3);
 	        }
-        } else        
+        } else     
         	GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
 	}
 }

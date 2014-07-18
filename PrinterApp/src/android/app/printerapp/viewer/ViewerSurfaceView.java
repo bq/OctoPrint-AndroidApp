@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -201,9 +200,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mPreviousY = pt.y;
 										
 						pinchScale = getPinchDistance(event) / pinchStartDistance;
-						
-						Log.i("Viewer", " pinchscale " + pinchScale + " pinchStartFactor " + pinchStartFactor + " pinchStartFactor/pinchScale " + pinchStartFactor*pinchScale);
-								
+														
 						if (mEdition && mEditionMode == SCALED_EDITION_MODE) mRenderer.scaleObject(pinchStartFactor*pinchScale);
 						else {
 							mRenderer.setCameraPosY(pinchStartY / pinchScale);

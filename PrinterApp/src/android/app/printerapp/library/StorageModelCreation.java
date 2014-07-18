@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 /**
  * 
@@ -22,7 +23,6 @@ public class StorageModelCreation {
 	
 	//Static method to create a folder structure
 	public static void createFolderStructure(Context context, File source){
-		
 		//Catch null pointer because file browser buttons aren't implemented
 		if (source!=null){
 			String name = source.getName().substring(0, source.getName().lastIndexOf('.'));

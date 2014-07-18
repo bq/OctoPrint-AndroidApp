@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.viewer.FileBrowser;
-import android.app.printerapp.viewer.FileBrowser.OnFileListDialogListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -286,24 +285,9 @@ public class LibraryFragment extends Fragment {
 	}
 	
 	//Add a new project using the viewer file browser
-	public void optionAddLibrary(){
-		
+	public void optionAddLibrary(){		
 		//TODO fix filebrowser parameters
-		FileBrowser browser = new FileBrowser(getActivity(),"Mi titulo", ".stl", ".stl");
-
-		browser.setOnFileListDialogListener(new OnFileListDialogListener() {
-			
-			@Override
-			public void onClickFileList(File file) {
-				
-				StorageModelCreation.createFolderStructure(getActivity(),file);
-				
-			}
-		});
-		
-		browser.show(StorageController.getParentFolder().getAbsolutePath());
-		
-		
+		FileBrowser.openFileBrowser(getActivity(),FileBrowser.LIBRARY, "Add Model", ".stl", "");
 	}
 	
 	//Create a single new folder via mkdir
