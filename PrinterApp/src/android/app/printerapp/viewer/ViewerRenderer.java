@@ -38,7 +38,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	public static float mCenterY = 0f;
 	public static float mCenterZ = 0f;
 	
-	public static float mSceneAngleX = -40f;
+	public static float mSceneAngleX = 0f;
 	public static float mSceneAngleY = 0f;
 	
 	public static float RED = 0.80f;
@@ -431,6 +431,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		mLightVector[0] = LIGHT_X;
 		mLightVector[1] = LIGHT_Y;
 		mLightVector[2] = LIGHT_Z;
+		
+        mSceneAngleX = -40f;	
 
 		while (!mData.isDrawEnabled()) ; //wait	
 		
@@ -487,9 +489,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         	mCameraY = -300f;
         	mCameraZ = 300f;
         }
-    	
-        mSceneAngleX = -40f;
-
 	}
 
 	@Override
@@ -514,7 +513,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
                         
         //Set Identity
         Matrix.setIdentityM(mRotationMatrix, 0);
-                
+                        
         //Rotation x       
         Matrix.rotateM(mRotationMatrix, 0, mSceneAngleX, 0.0f, 0.0f, 1.0f);
         
