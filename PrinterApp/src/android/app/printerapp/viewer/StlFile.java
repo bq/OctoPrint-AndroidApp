@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.app.printerapp.R;
+import android.app.printerapp.viewer.Geometry.*;
 
 
 public class StlFile {
@@ -76,7 +77,6 @@ public class StlFile {
 		try {		
 			inputStream = context.getContentResolver().openInputStream(filePath);		
 			arrayBytes = IOUtils.toByteArray(inputStream);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {		
@@ -149,7 +149,6 @@ public class StlFile {
 	        }
 	 };
 
-	
 	private static void processText (File file) {
 		String line;
 		try {
@@ -157,23 +156,36 @@ public class StlFile {
 			StringBuilder allLines = new StringBuilder ("");
 			BufferedReader countReader = new BufferedReader(new FileReader(file));
 			while ((line = countReader.readLine()) != null) {
-				allLines.append(line+"\n");
-				maxLines++;
+				if (line.trim().startsWith("vertex ")) {
+					line = line.replaceFirst("vertex ", "").trim();
+					allLines.append(line+"\n");
+					maxLines++;
+					if (maxLines%1000==0) mProgressDialog.setMax(maxLines);
+				}
 			}
-			countReader.close();
-			
+				
 			mProgressDialog.setMax(maxLines);
 			
+			countReader.close();
+			
+			
 			int lines =0;
-			int index = 0;
-			int lastIndex = 0;
+		
+			int firstVertexIndex = 0;
+			int secondVertexIndex = 0;
+			int thirdVertexIndex = 0;
+			int initialVertexIndex = -1;
 
 			while (lines < maxLines) {
-				index = allLines.indexOf("\n", lastIndex);
-				line = allLines.substring(lastIndex, index);
-				processLine(line);
-				lines++;
-				lastIndex = index+1;
+				firstVertexIndex =  allLines.indexOf("\n", thirdVertexIndex+1);
+				secondVertexIndex = allLines.indexOf("\n", firstVertexIndex+1);
+				thirdVertexIndex = allLines.indexOf("\n", secondVertexIndex+1);
+							
+				line = allLines.substring(initialVertexIndex+1, thirdVertexIndex);			
+				initialVertexIndex = thirdVertexIndex;
+				
+				processTriangle(line);
+				lines+=3;
 				
 				if (lines % (maxLines/10) == 0) {
 					mProgressDialog.setProgress(lines);
@@ -185,58 +197,69 @@ public class StlFile {
 		}
 	}
 	
-	
-	
-	public static void processLine (String stlLine) throws Exception {
-		stlLine = stlLine.trim();
-		if (stlLine.startsWith("facet normal ")) {
-			stlLine= stlLine.replaceFirst("facet normal ", "");
-			String[] normalValue = stlLine.split(" ");
-			for (int j=0; j<3; j++) {
-				mData.addNormal(Float.parseFloat(normalValue[0]));
-				mData.addNormal(Float.parseFloat(normalValue[1]));
-				mData.addNormal(Float.parseFloat(normalValue[2]));
-			}
-		}
+	public static void processTriangle (String line) throws Exception {		
+		String[] vertex = line.split("\n");
+				
+		String[] vertexValues = vertex[0].split(" ");	
+		float x = Float.parseFloat(vertexValues [0]);
+		float y = Float.parseFloat(vertexValues [1]);
+		float z = Float.parseFloat(vertexValues [2]);
+		Vector v0 = new Vector (x,y,z);
+		mData.adjustMaxMin(x, y, z);
+		mData.addVertex(x);
+		mData.addVertex(y);
+		mData.addVertex(z);
 		
-		if (stlLine.startsWith("vertex ")) {
-			stlLine= stlLine.replaceFirst("vertex ", "");
-			String[] vertexValue = stlLine.split(" ");
-			
-			float x= Float.parseFloat(vertexValue[0]);
-			float y= Float.parseFloat(vertexValue[1]);
-			float z= Float.parseFloat(vertexValue[2]);
-								
-			mData.adjustMaxMin(x, y, z);
-															
-			mData.addVertex(x);
-			mData.addVertex(y);
-			mData.addVertex(z);
-		}	
+		vertexValues = vertex[1].split(" ");	
+		x = Float.parseFloat(vertexValues [0]);
+		y = Float.parseFloat(vertexValues [1]);
+		z = Float.parseFloat(vertexValues [2]);
+		Vector v1 = new Vector (x,y,z);
+		mData.adjustMaxMin(x, y, z);
+		mData.addVertex(x);
+		mData.addVertex(y);
+		mData.addVertex(z);
+		
+		vertexValues = vertex[2].split(" ");	
+		x = Float.parseFloat(vertexValues [0]);
+		y = Float.parseFloat(vertexValues [1]);
+		z = Float.parseFloat(vertexValues [2]);
+		Vector v2 = new Vector (x,y,z);
+		mData.adjustMaxMin(x, y, z);
+		mData.addVertex(x);
+		mData.addVertex(y);
+		mData.addVertex(z);
+		
+		//Calculate triangle normal vector
+		Vector normal = Vector.normalize(Vector.crossProduct(Vector.substract(v1 , v0), Vector.substract(v2, v0)));
+
+		mData.addNormal(normal.x);
+		mData.addNormal(normal.y);
+		mData.addNormal(normal.z);		
+	
 	}
 	
 	private static void processBinary(byte[] stlBytes) throws Exception {			
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 						
 		mProgressDialog.setMax(vectorSize);
-		for (int i = 0; i < vectorSize; i++) {
-			for (int j=0; j<3; j++) {
-				mData.addNormal(Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50)));
-				mData.addNormal(Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 4)));
-				mData.addNormal(Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 8)));
-			}
-			
+		for (int i = 0; i < vectorSize; i++) {		
 			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
 			float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
 			float z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 20));
+			Vector v0 = new Vector (x,y,z);
+
 			mData.adjustMaxMin(x, y, z);
 			mData.addVertex(x);
 			mData.addVertex(y);
 			mData.addVertex(z);
 			
+		
 			x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 24));
 			y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 28));
 			z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 32));
+			Vector v1 = new Vector (x,y,z);
+
 			mData.adjustMaxMin(x, y, z);
 			mData.addVertex(x);
 			mData.addVertex(y);
@@ -245,14 +268,28 @@ public class StlFile {
 			x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 36));
 			y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 40));
 			z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 44));
+			Vector v2 = new Vector (x,y,z);
+
 			mData.adjustMaxMin(x, y, z);
 			mData.addVertex(x);
 			mData.addVertex(y);
 			mData.addVertex(z);
 			
+			//Calculate triangle normal vector
+			Vector normal = Vector.normalize(Vector.crossProduct(Vector.substract(v1 , v0), Vector.substract(v2, v0)));
+
+			mData.addNormal(normal.x);
+			mData.addNormal(normal.y);
+			mData.addNormal(normal.z);		
+			
+			
 			if (i % (vectorSize / 10) == 0) {
 				mProgressDialog.setProgress(i);
 			}
 		}
+	}
+	
+	public void calculateNormals (float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3) {
+		
 	}
 }

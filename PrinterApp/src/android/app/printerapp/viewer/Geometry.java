@@ -41,10 +41,29 @@ public class Geometry {
 	         this.z = z;
 	     }
 	     
-	     public boolean equals (Vector v) {
-	    	 if (v.x == this.x && v.y == this.y && v.z == this.z) return true;
+	     public static Vector substract (Vector v1, Vector v2) {
+	    	 float x = v1.x-v2.x;
+	    	 float y = v1.y-v2.y;
+	    	 float z = v1.z-v2.z;
 	    	 
-	    	 return false;
+	    	 Vector substract = new Vector (x,y,z);
+	    	 return substract;
+	    	 
+	     }
+	     
+	     public static Vector crossProduct (Vector v, Vector v2) {
+	    	 float x = (v.y*v2.z) - (v.z*v2.y);
+	    	 float y = (v.z*v2.x) - (v.x*v2.z);
+	    	 float z = (v.x*v2.y) - (v.y*v2.x);
+	    	 
+	    	 Vector result = new Vector (x, y, z);
+	    	 return result;	    	 
+	     }
+	     
+	     public static Vector normalize (Vector v) {
+	    	 float length = (float) Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+	    	 Vector result = new Vector (v.x/length, v.y/length, v.z/length);
+	    	 return result;    	 
 	     }
 	 }
 	 
