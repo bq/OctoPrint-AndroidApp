@@ -25,18 +25,25 @@ import android.widget.TextView;
  */
 public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Filterable{
 	
+	private static final int maxItems = 12;
+	
 	//Original list and current list to be filtered
 	private ArrayList<ModelPrinter> mCurrent;
 	private ArrayList<ModelPrinter> mOriginal;
+	
 	//Filter
 	private GridFilter mFilter;
+	
 
 	//Constructor
 	public DevicesGridAdapter(Context context, int resource, List<ModelPrinter> objects) {
 		super(context, resource, objects);
 		
+		
+		
 		mOriginal = (ArrayList<ModelPrinter>) objects;
-		mCurrent = (ArrayList<ModelPrinter>) objects;
+		mCurrent = (ArrayList<ModelPrinter>) objects;		
+		
 	}
 	
 	//Overriding our view to show the grid on screen
@@ -46,82 +53,102 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		View v = convertView;
 		ModelPrinter m = getItem(position);
 		
-		
-		//View not yet created
-		if (v==null){
-			
-			//Inflate the view
-			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.grid_element, null, false);
-			
-			v.setOnDragListener(new DevicesDragListener(m));
-			
-			
-		} else {
-			//v = convertView;
-		}
-		
-		
-		
-		//Printer tag reference
-		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
-		tag.setText(m.getName());
+		if (m!=null){
+			//View not yet created
+			if (v==null){
 				
-		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
-		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
-		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
-		
-		
-		int status = m.getStatus();
-		
-		//Witbox icon
-		switch(status){
-		
-			case StateUtils.STATE_NONE:{
-				icon.setImageResource(R.drawable.witbox_offline_icon);	
-			}break;
-			
-			case StateUtils.STATE_NEW:{
-				icon.setImageResource(R.drawable.witbox_offline_icon_ghost);
-			}break;
-			
-			default:{
-				icon.setImageResource(R.drawable.witbox_icon);	
-			}break;
-		
-		}
-		
-		//Status icon
-		switch (status){
-		
-			case StateUtils.STATE_OPERATIONAL:{
-				iv.setImageResource(R.drawable.tick_icon_small);
-				iv.setVisibility(View.VISIBLE);
-				pb.setVisibility(View.GONE);
-			} break;
-			
-			case StateUtils.STATE_PRINTING:{
-				iv.setVisibility(View.VISIBLE);
-				pb.setVisibility(View.VISIBLE);
-				Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
-				pb.setProgress(n.intValue());
+				//Inflate the view
+				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = inflater.inflate(R.layout.grid_element, null, false);
 				
-				iv.setImageResource(R.drawable.printer_icon);
-			}break;
+				v.setOnDragListener(new DevicesDragListener(m));
+				
+				
+			} else {
+				//v = convertView;
+			}		
 			
-			case StateUtils.STATE_ERROR:{
-				iv.setImageResource(R.drawable.warning_icon);
-				iv.setVisibility(View.VISIBLE);
-				pb.setVisibility(View.GONE);
-			}break;
+			//Printer tag reference
+			TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
+			tag.setText(m.getName());
+					
+			ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
+			ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
+			icon.setVisibility(View.VISIBLE);
+			ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
 			
-			default:{
-				iv.setVisibility(View.GONE);
-				pb.setVisibility(View.GONE);
-				Log.i("OUT","INVISIBLE!");
+			
+			int status = m.getStatus();
+			
+			//Witbox icon
+			switch(status){
+			
+				case StateUtils.STATE_NONE:{
+					icon.setImageResource(R.drawable.witbox_offline_icon);	
+				}break;
+				
+				case StateUtils.STATE_NEW:{
+					icon.setImageResource(R.drawable.witbox_offline_icon_ghost);
+				}break;
+				
+				default:{
+					icon.setImageResource(R.drawable.witbox_icon);	
+				}break;
+			
 			}
 			
-		}
+			//Status icon
+			switch (status){
+			
+				case StateUtils.STATE_OPERATIONAL:{
+					iv.setImageResource(R.drawable.tick_icon_small);
+					iv.setVisibility(View.VISIBLE);
+					pb.setVisibility(View.GONE);
+				} break;
+				
+				case StateUtils.STATE_PRINTING:{
+					iv.setVisibility(View.VISIBLE);
+					pb.setVisibility(View.VISIBLE);
+					Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
+					pb.setProgress(n.intValue());
+					
+					iv.setImageResource(R.drawable.printer_icon);
+				}break;
+				
+				case StateUtils.STATE_ERROR:{
+					iv.setImageResource(R.drawable.warning_icon);
+					iv.setVisibility(View.VISIBLE);
+					pb.setVisibility(View.GONE);
+				}break;
+				
+				default:{
+					iv.setVisibility(View.GONE);
+					pb.setVisibility(View.GONE);
+					Log.i("OUT","INVISIBLE!");
+				}
+				
+			}
+		} else {
+			
+			//View not yet created
+			if (v==null){
+				
+				Log.i("OUT", "Position null " + position);
+				//Inflate the view
+				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = inflater.inflate(R.layout.grid_element, null, false);
+				v.findViewById(R.id.grid_element_icon).setVisibility(View.INVISIBLE);
+				//v.setOnClickListener(null);
+				
+				
+			} else {
+				//v = convertView;
+			}
+			
+			
+			}
+			
+			
 
 		return v;
 	}
@@ -129,13 +156,18 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 	//Retrieve item from current list
 	@Override
 	public ModelPrinter getItem(int position) {
-		return mCurrent.get(position);
+					
+		for (ModelPrinter p : mCurrent){
+			if (p.getPosition()==position) return p;				
+		}
+
+		return null;
 	}
 		
 	//Retrieve count from current list
 	@Override
 	public int getCount() {
-		return mCurrent.size();
+		return maxItems;
 	}
 	
 	//Get filter

@@ -111,26 +111,35 @@ public class DevicesFragment extends Fragment{
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					
-					ModelPrinter m = DevicesListController.getList().get(arg2);
+					ModelPrinter m = null;
+						
+					for (ModelPrinter mp : DevicesListController.getList()){
+						if (mp.getPosition()==arg2) m = mp;
+					}
 					
-					ActionModeHandler.modeStart(arg1,m);
+					if (m!=null){
+						
+						ActionModeHandler.modeStart(arg1,m);
 
-									 					 
-					 if (m.getStatus()== StateUtils.STATE_ERROR){
-						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-						 adb.setTitle(R.string.devices_error_dialog_title);
-						 adb.setMessage((DevicesListController.getList().get(arg2).getMessage()));
-						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
-						 adb.show();
-					 }
-					 
-					 if (m.getStatus()== StateUtils.STATE_PRINTING){
-						setDialogAdapter(m);
-					 }
-					 
-					 if (m.getStatus()==StateUtils.STATE_NEW){
-						 codeDialog(m);
-					 }
+	 					 
+						 if (m.getStatus()== StateUtils.STATE_ERROR){
+							 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+							 adb.setTitle(R.string.devices_error_dialog_title);
+							 adb.setMessage(m.getMessage());
+							 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
+							 adb.show();
+						 }
+						 
+						 if (m.getStatus()== StateUtils.STATE_PRINTING){
+							setDialogAdapter(m);
+						 }
+						 
+						 if (m.getStatus()==StateUtils.STATE_NEW){
+							 codeDialog(m);
+						 }
+					}
+					
+					
 					
 				}
 			});
@@ -403,7 +412,7 @@ public class DevicesFragment extends Fragment{
 			public void onClick(DialogInterface dialog, int which) {
 
 				//m.startUpdate();
-				DatabaseController.writeDb(m.getName(), m.getAddress());	
+				DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()));	
 				DevicesListController.loadList(getActivity());
 			}
 		});

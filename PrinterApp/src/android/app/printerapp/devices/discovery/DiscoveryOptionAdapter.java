@@ -45,7 +45,7 @@ public class DiscoveryOptionAdapter extends ArrayAdapter<ModelPrinter>{
 				@Override
 				public void onClick(View v) {
 					
-					DatabaseController.writeDb(m.getName(),m.getAddress());
+					DatabaseController.writeDb(m.getName(),m.getAddress(),String.valueOf(m.getPosition()));
 					
 				}
 			});

@@ -13,6 +13,7 @@ public final class DeviceInfo {
         public static final String TABLE_NAME = "Devices";
         public static final String DEVICES_NAME = "name";
         public static final String DEVICES_ADDRESS = "address";
+        public static final String DEVICES_POSITION = "position";
     }
 
 }
