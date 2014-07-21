@@ -42,6 +42,8 @@ public class DataStorage {
 	public static final int WALL_OUTER = 8;
 	public static final int SUPPORT = 9;
 	
+	public static final int TRIANGLE_VERTEX = 3;
+	
 	
 	public List<Float> get () {
 		return mVertexList;
@@ -107,11 +109,26 @@ public class DataStorage {
 	}
 	
 	public void fillNormalArray() {
-		mNormalArray = new float [mNormalList.size()];
+		mNormalArray = new float [mNormalList.size()*TRIANGLE_VERTEX];	
+		int index =0;
+
+		float x;
+		float y;
+		float z;
 		
-		for (int i=0; i<mNormalList.size(); i++) {
-			mNormalArray[i] = mNormalList.get(i);
-		}		
+		for (int i=0; i<mNormalList.size(); i+=3) {
+			x = mNormalList.get(i);
+			y = mNormalList.get(i+1);
+			z = mNormalList.get(i+2);
+			
+			for (int j=0; j<TRIANGLE_VERTEX; j++) {
+				mNormalArray[index] = x;
+				mNormalArray[index+1] = y;
+				mNormalArray[index+2] = z;
+				index+=3;
+			}
+			
+		}
 	}
 	
 	public void fillLayerArray () {
