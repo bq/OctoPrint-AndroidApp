@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
@@ -80,7 +81,7 @@ public class DiscoveryOptionController {
 					if (s.get(i)){
 						
 						//Write every new printer on the db
-						DatabaseController.writeDb(mServiceList.get(i).getName(), mServiceList.get(i).getAddress());	
+						DatabaseController.writeDb(mServiceList.get(i).getName(), mServiceList.get(i).getAddress(), String.valueOf(DevicesListController.searchAvailablePosition()));	
 						
 						//Add them to the list separately
 						//DevicesFragment.addElement(new ModelPrinter(mServiceList.get(i).getName(), mServiceList.get(i).getAddress()));

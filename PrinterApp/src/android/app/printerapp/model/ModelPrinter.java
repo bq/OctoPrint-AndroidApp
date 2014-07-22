@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.StateUtils;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.camera.MjpegView;
 import android.app.printerapp.octoprint.OctoprintConnection;
@@ -32,12 +33,19 @@ public class ModelPrinter {
 	//Camera
 	private CameraHandler mCam;
 	
-	public ModelPrinter(String name, String address){
+	//Position in grid
+	private int mPosition;
+	
+	public ModelPrinter(String name, String address, int position){
 		
 		mName = name;
 		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
+		
+		//Set new position according to the position in the DB, or the first available
+		if (position<0) mPosition = DevicesListController.searchAvailablePosition();
+		else mPosition = position;
 			
 	}
 	
@@ -75,6 +83,10 @@ public class ModelPrinter {
 	
 	public MjpegView getVideo(){
 		return mCam.getView();
+	}
+	
+	public int getPosition(){
+		return mPosition;
 	}
 	
 	/**********
@@ -122,7 +134,12 @@ public class ModelPrinter {
 	}
 	
 	//Set video stream from the camera
-		public void setVideoStream(Context context){
-			mCam = new CameraHandler(context,mAddress);
-		}
+	public void setVideoStream(Context context){
+		mCam = new CameraHandler(context,mAddress);
+	}
+	
+	//change position
+	public void setPosition(int pos){	
+		mPosition = pos;
+	}
 }

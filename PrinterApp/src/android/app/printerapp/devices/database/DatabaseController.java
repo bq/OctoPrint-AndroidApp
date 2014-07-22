@@ -29,7 +29,7 @@ public class DatabaseController {
 	}
 	
 	//Add a new element to the permanent database
-	public static void writeDb(String name, String address){
+	public static void writeDb(String name, String address, String position){
 		
 		// Gets the data repository in write mode
 		mDb = mDbHelper.getWritableDatabase();
@@ -39,13 +39,14 @@ public class DatabaseController {
 		ContentValues values = new ContentValues();
 		values.put(FeedEntry.DEVICES_NAME, name);
 		values.put(FeedEntry.DEVICES_ADDRESS, address);
+		values.put(FeedEntry.DEVICES_POSITION, position);
 		
 		mDb.insert(FeedEntry.TABLE_NAME, null, values);		
 		mDb.close();
 		
 	}
 	
-	public static void deleteFromDb(String name, String address){
+	public static void deleteFromDb(String name){
 		
 		mDb = mDbHelper.getWritableDatabase();
 		
@@ -104,6 +105,24 @@ public class DatabaseController {
 		closeDb();
 		
 		return exists;
+		
+	}
+	
+	//update new position
+	public static void updateDB(String tableName, String id, String newValue){
+		
+		mDb = mDbHelper.getReadableDatabase();
+		
+		// New value for one column
+		ContentValues values = new ContentValues();
+		values.put(tableName, newValue);
+		
+		int count = mDb.update(FeedEntry.TABLE_NAME, values,
+				FeedEntry.DEVICES_NAME + " = '" + id + "'", null);
+		
+		Log.i("OUT", "Updated: " + count + " with " + tableName + " updated with " + newValue + " where " + id);
+		
+		mDb.close();
 		
 	}
 	

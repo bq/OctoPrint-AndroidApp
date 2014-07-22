@@ -70,7 +70,7 @@ public class ActionModeHandler {
 	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 	        switch (item.getItemId()) {
 	            case R.id.menu_cab_delete:
-	                DatabaseController.deleteFromDb(mCurrentModel.getName(), mCurrentModel.getAddress());
+	                DatabaseController.deleteFromDb(mCurrentModel.getName());
 	                mode.finish();
 	                return true;
 	                

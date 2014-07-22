@@ -10,6 +10,7 @@ import javax.jmdns.ServiceInfo;
 import javax.jmdns.ServiceListener;
 
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
@@ -114,7 +115,7 @@ public class JmdnsServiceListener implements ServiceListener{
 			 Log.i("Model","Service resolved: " + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 			 //mContext.listHandler(new ModelPrinter(service));
-			 mContext.addElement(new ModelPrinter(service.getName(),service.getInetAddresses()[0].toString()));
+			 mContext.addElement(new ModelPrinter(service.getName(),service.getInetAddresses()[0].toString(),DevicesListController.searchAvailablePosition()));
 			 
 		}
 		

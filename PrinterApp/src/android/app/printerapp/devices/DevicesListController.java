@@ -44,9 +44,9 @@ public class DevicesListController {
 		
 		while (!c.isAfterLast()){
 			
-			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2));
+			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3));
 			
-			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) );
+			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
 			
 			addToList(m);
 			m.startUpdate();
@@ -58,6 +58,35 @@ public class DevicesListController {
 	   DatabaseController.closeDb();
 	   ItemListActivity.notifyAdapters();
 
+	}
+	
+	//Search first available position by listing the printers
+	//TODO HARDCODED MAXIMUM CELLS
+	public static int searchAvailablePosition(){
+		
+		int max = 12;
+		boolean[] mFree = new boolean[max];
+		
+		for (int i = 0; i<max; i++){
+			mFree[i] = false;
+		
+		}
+		
+		for (ModelPrinter p : mList){
+			
+			mFree[p.getPosition()] = true;
+			
+		}
+		
+		for (int i = 0; i<max; i++){
+			
+			if (!mFree[i]) return i;
+			
+		}
+		
+		
+		return -1;
+		
 	}
 		
 }
