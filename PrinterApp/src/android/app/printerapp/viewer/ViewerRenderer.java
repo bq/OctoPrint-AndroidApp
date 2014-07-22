@@ -120,8 +120,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	float mDz;
 
 	private float mAdjustZ = 0;
-	private float mScaleFactor=1.0f;
-	private float mLastScaleFactor = 1.0f;
+	private float mScaleFactorX=1.0f;
+	private float mScaleFactorY=1.0f;
+	private float mScaleFactorZ=1.0f;
+
+	private float mLastScaleFactorX = 1.0f;
+	private float mLastScaleFactorY = 1.0f;
+	private float mLastScaleFactorZ = 1.0f;
+
 		
 	private Vector mVector = new Vector (1,0,0); //default
 	private float mRotateAngle=0;
@@ -188,8 +194,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		mVector = vector;
 	}
 	
-	public float getFactorScale () {
-		return mScaleFactor;
+	public float getFactorScaleX () {
+		return mScaleFactorX;
+	}
+	 
+	public float getFactorScaleY () {
+		return mScaleFactorY;
+	}
+	
+	public float getFactorScaleZ () {
+		return mScaleFactorZ;
 	}
 	
 	public boolean touchPoint (float x, float y) {
@@ -219,7 +233,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
                 
         float dx = mMoveX-mLastCenter.x;
 		float dy = mMoveY-mLastCenter.y;
-		
+
 		float maxX = mData.getMaxX() + dx;
 		float maxY = mData.getMaxY() + dy;
 		float minX = mData.getMinX() + dx;
@@ -239,9 +253,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		
     }
 	
-	public void scaleObject (float f) {
-		if (f>0.1 && f<10) {	
-			mScaleFactor = f;
+	public void scaleObject (float fx, float fy, float fz) {
+		if (Math.abs(fx)>0.1 && Math.abs(fx)<10&& Math.abs(fy)>0.1 && Math.abs(fy)<10 && Math.abs(fz)>0.1 && Math.abs(fz)<10) {	
+			mScaleFactorX = fx;
+			mScaleFactorY = fy;
+			mScaleFactorZ = fz;
 			
 			float maxX = mData.getMaxX()-mLastCenter.x;
 			float maxY = mData.getMaxY()-mLastCenter.y;
@@ -250,14 +266,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 			float minY = mData.getMinY()-mLastCenter.y;
 			float minZ = mData.getMinZ();
 			
-			maxX = (maxX+(mScaleFactor-mLastScaleFactor)*(maxX/mLastScaleFactor))+mLastCenter.x;
-			maxY = (maxY+(mScaleFactor-mLastScaleFactor)*(maxY/mLastScaleFactor))+mLastCenter.y;
-			maxZ = (maxZ+(mScaleFactor-mLastScaleFactor)*(maxZ/mLastScaleFactor))+mLastCenter.z;
+			maxX = (maxX+(Math.abs(mScaleFactorX)-Math.abs(mLastScaleFactorX))*(maxX/Math.abs(mLastScaleFactorX)))+mLastCenter.x;
+			maxX = maxX * Math.signum(mScaleFactorX);
+			maxY = (maxY+(mScaleFactorY-mLastScaleFactorY)*(maxY/mLastScaleFactorY))+mLastCenter.y;
+			maxZ = (maxZ+(mScaleFactorZ-mLastScaleFactorZ)*(maxZ/mLastScaleFactorZ))+mLastCenter.z;
 			
-			minX = (minX+(mScaleFactor-mLastScaleFactor)*(minX/mLastScaleFactor))+mLastCenter.x;
-			minY = (minY+(mScaleFactor-mLastScaleFactor)*(minY/mLastScaleFactor))+mLastCenter.y;
-			minZ = (minZ+(mScaleFactor-mLastScaleFactor)*(minZ/mLastScaleFactor))+mLastCenter.z;
-	
+			minX = (minX+(Math.abs(mScaleFactorX)-Math.abs(mLastScaleFactorX))*(minX/Math.abs(mLastScaleFactorX)))+mLastCenter.x;
+			maxX = minX * Math.signum(mScaleFactorX);
+			minY = (minY+(mScaleFactorY-mLastScaleFactorY)*(minY/mLastScaleFactorY))+mLastCenter.y;
+			minZ = (minZ+(mScaleFactorZ-mLastScaleFactorZ)*(minZ/mLastScaleFactorZ))+mLastCenter.z;
+						
 			mData.setMaxX(maxX);
 			mData.setMaxY(maxY);
 			mData.setMaxZ(maxZ);
@@ -266,7 +284,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 			mData.setMinY(minY);
 			mData.setMinZ(minZ);
 			
-			mLastScaleFactor = mScaleFactor;
+			mLastScaleFactorX = mScaleFactorX;
+			mLastScaleFactorY = mScaleFactorY;
+			mLastScaleFactorZ = mScaleFactorZ;
 			
 			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
 					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
@@ -292,7 +312,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 			float [] vector = new float [4];
 			float [] result = new float [4];
 			float [] aux = new float [16];
-						
+
+			
 			for (int i=0; i<coordinatesArray.length; i+=3) {
 				vector[0] = coordinatesArray[i];
 				vector[1] = coordinatesArray[i+1];
@@ -314,17 +335,17 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 			float minY = mData.getMinY();
 			float maxY = mData.getMaxY();
 			float maxZ = mData.getMaxZ();
-			float minZ = mData.getMinZ();
+			float minZ = mData.getMinZ();	
 			
 			//We have to introduce the rest of transformations.
-			maxX = maxX*mScaleFactor+mLastCenter.x;
-			maxY = maxY*mScaleFactor+mLastCenter.y;
-			maxZ = maxZ*mScaleFactor+mLastCenter.z;
+			maxX = maxX*Math.abs(mScaleFactorX)+mLastCenter.x;
+			maxY = maxY*mScaleFactorY+mLastCenter.y;
+			maxZ = maxZ*mScaleFactorZ+mLastCenter.z;
 			
-			minX = minX*mScaleFactor+mLastCenter.x;
-			minY = minY*mScaleFactor+mLastCenter.y;
-			minZ = minZ*mScaleFactor+mLastCenter.z;	
-			
+			minX = minX*Math.abs(mScaleFactorX)+mLastCenter.x;
+			minY = minY*mScaleFactorY+mLastCenter.y;
+			minZ = minZ*mScaleFactorZ+mLastCenter.z;	
+
 			mData.setMaxX(maxX);
 			mData.setMaxY(maxY);
 			
@@ -543,7 +564,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
       
         Matrix.setIdentityM(mObjectModel, 0);
         Matrix.translateM(mObjectModel, 0, mMoveX, mMoveY, mMoveZ);  
-        Matrix.scaleM(mObjectModel, 0, mScaleFactor, mScaleFactor, mScaleFactor);
+        Matrix.scaleM(mObjectModel, 0, mScaleFactorX, mScaleFactorY, mScaleFactorZ);
         
         Matrix.translateM(mObjectModel, 0, 0, 0, mAdjustZ);
 

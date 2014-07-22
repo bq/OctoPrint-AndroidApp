@@ -64,6 +64,7 @@ public class ViewerMain extends Fragment {
 	private static LinearLayout mMenu;
 	private ImageButton mMove;
 	private ImageButton mRotation;
+	private ImageButton mMirror;	
 	private ImageButton mScale;
 	private ImageButton mExit;
 	
@@ -72,7 +73,6 @@ public class ViewerMain extends Fragment {
 	
 	//TODO 
 	//private ImageButton mDelete;
-	//private ImageButton mMirror;	
 	
 	//Empty constructor
 	public ViewerMain(){}
@@ -266,6 +266,15 @@ public class ViewerMain extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
+			} 
+		});
+		
+		mMirror = (ImageButton) rootView.findViewById(R.id.mirror);
+		mMirror.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
+				mSurface.doMirror();
 			} 
 		});
 		
@@ -485,9 +494,7 @@ public class ViewerMain extends Fragment {
 	
 	/************************* SURFACE CONTROL ********************************/
 	//This method will set the visibility of the surfaceview so it doesn't overlap
-	//with the video grid view
-	
-	//TODO Bug: When the view is visible again, the model moves slightly
+	//with the video grid view	
 	public void setSurfaceVisibility(int i){
 		
 		if (mSurface!=null){
