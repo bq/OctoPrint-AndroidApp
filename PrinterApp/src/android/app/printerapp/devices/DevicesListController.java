@@ -60,16 +60,24 @@ public class DevicesListController {
 
 	}
 	
+	//Search first available position by listing the printers
+	//TODO HARDCODED MAXIMUM CELLS
 	public static int searchAvailablePosition(){
 		
 		int max = 12;
 		boolean[] mFree = new boolean[max];
+		
+		for (int i = 0; i<max; i++){
+			mFree[i] = false;
+		
+		}
 		
 		for (ModelPrinter p : mList){
 			
 			mFree[p.getPosition()] = true;
 			
 		}
+		
 		for (int i = 0; i<max; i++){
 			
 			if (!mFree[i]) return i;

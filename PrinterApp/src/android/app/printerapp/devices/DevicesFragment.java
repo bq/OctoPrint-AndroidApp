@@ -9,6 +9,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -21,8 +22,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.DragShadowBuilder;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -105,44 +108,9 @@ public class DevicesFragment extends Fragment{
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
 					R.layout.grid_element, DevicesListController.getList());
 			
-			g.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-					
-					ModelPrinter m = null;
-						
-					for (ModelPrinter mp : DevicesListController.getList()){
-						if (mp.getPosition()==arg2) m = mp;
-					}
-					
-					if (m!=null){
-						
-						ActionModeHandler.modeStart(arg1,m);
-
-	 					 
-						 if (m.getStatus()== StateUtils.STATE_ERROR){
-							 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-							 adb.setTitle(R.string.devices_error_dialog_title);
-							 adb.setMessage(m.getMessage());
-							 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
-							 adb.show();
-						 }
-						 
-						 if (m.getStatus()== StateUtils.STATE_PRINTING){
-							setDialogAdapter(m);
-						 }
-						 
-						 if (m.getStatus()==StateUtils.STATE_NEW){
-							 codeDialog(m);
-						 }
-					}
-					
-					
-					
-				}
-			});
+			//assign click listeners
+			g.setOnItemClickListener(gridClickListener());	
+			g.setOnItemLongClickListener(gridLongClickListener());
 	 
 			g.setAdapter(mGridAdapter);
 			
@@ -423,6 +391,77 @@ public class DevicesFragment extends Fragment{
 		
 		adb.show();
 		
+	}
+	
+	/******************************** click listeners *********************************/
+	
+	//onclick listener will open the action mode
+	public OnItemClickListener gridClickListener(){
+
+		return new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				
+				ModelPrinter m = null;
+				
+				//search printer by position
+				for (ModelPrinter mp : DevicesListController.getList()){
+					if (mp.getPosition()==arg2) m = mp;
+				}
+				
+				if (m!=null){
+					
+					//start action mode
+					ActionModeHandler.modeStart(arg1,m);
+
+ 					 //show custom dialog
+					 if (m.getStatus()== StateUtils.STATE_ERROR){
+						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+						 adb.setTitle(R.string.devices_error_dialog_title);
+						 adb.setMessage(m.getMessage());
+						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
+						 adb.show();
+					 }
+					 
+					 if (m.getStatus()== StateUtils.STATE_PRINTING){
+						setDialogAdapter(m);
+					 }
+					 
+					 if (m.getStatus()==StateUtils.STATE_NEW){
+						 codeDialog(m);
+					 }
+				}
+				
+			}
+		};
+		
+	}
+	
+	//onlongclick will start the draggable printer handler
+	public OnItemLongClickListener gridLongClickListener(){
+		return new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				
+				ModelPrinter m = null;
+				
+				for (ModelPrinter mp : DevicesListController.getList()){
+					if (mp.getPosition()==arg2) m = mp;
+				}
+				
+				ClipData data = null;						
+				data = ClipData.newPlainText("printer", m.getName());	
+				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(arg1);
+				arg1.startDrag(data, shadowBuilder, arg1, 0);
+				
+				
+				return false;
+			}
+		};
 	}
 	
 	

@@ -52,29 +52,38 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
 		View v = convertView;
 		ModelPrinter m = getItem(position);
-		
-		if (m!=null){
-			//View not yet created
-			if (v==null){
 				
-				//Inflate the view
-				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = inflater.inflate(R.layout.grid_element, null, false);
-				
-				v.setOnDragListener(new DevicesDragListener(m));
-				
-				
-			} else {
-				//v = convertView;
-			}		
 			
-			//Printer tag reference
-			TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
+		//View not yet created
+		if (v==null){
+			
+			//Inflate the view
+			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			v = inflater.inflate(R.layout.grid_element, null, false);
+			
+			
+		} else {
+			//v = convertView;
+
+		}
+		
+		
+		//Printer tag reference
+		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
+		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
+		
+		
+		//Check if it's an actual printer or just an empty slot
+		if (m==null){
+			v.setOnDragListener(new DevicesEmptyDragListener(position));
+			tag.setText("");
+			icon.setVisibility(View.INVISIBLE);
+			
+		} else {
+			v.setOnDragListener(new DevicesDragListener(m));
 			tag.setText(m.getName());
-					
-			ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
-			ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
 			icon.setVisibility(View.VISIBLE);
+			ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
 			
 			
@@ -128,32 +137,16 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 				}
 				
 			}
-		} else {
+
 			
-			//View not yet created
-			if (v==null){
-				
-				Log.i("OUT", "Position null " + position);
-				//Inflate the view
-				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = inflater.inflate(R.layout.grid_element, null, false);
-				v.findViewById(R.id.grid_element_icon).setVisibility(View.INVISIBLE);
-				//v.setOnClickListener(null);
-				
-				
-			} else {
-				//v = convertView;
-			}
-			
-			
-			}
+		}
 			
 			
 
 		return v;
 	}
 	
-	//Retrieve item from current list
+	//Retrieve item from current list by its position on the grid
 	@Override
 	public ModelPrinter getItem(int position) {
 					
@@ -164,7 +157,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		return null;
 	}
 		
-	//Retrieve count from current list
+	//Retrieve count for MAX items to show empty slots
 	@Override
 	public int getCount() {
 		return maxItems;
