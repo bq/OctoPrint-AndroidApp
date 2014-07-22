@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
+
 /**
  * Helper class for providing sample content for user interfaces created by
  * Android template wizards.
@@ -22,15 +24,6 @@ public class ListContent {
 	 * A map of sample (dummy) items, by ID.
 	 */
 	public static Map<String, ListItem> ITEM_MAP = new HashMap<String, ListItem>();
-
-	static {
-		
-		addItem(new ListItem("1", "Devices"));
-		addItem(new ListItem("2", "Print panel"));
-		addItem(new ListItem("3", "Models"));
-		addItem(new ListItem("4", "History"));
-		addItem(new ListItem("5", "Settings"));
-	}
 
 	private static void addItem(ListItem item) {
 		ITEMS.add(item);
@@ -53,5 +46,22 @@ public class ListContent {
 		public String toString() {
 			return content;
 		}
+	}
+	
+	/**Added method to retrieve list with string values
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static List<ListItem> getItemList(Context context){
+		
+		addItem(new ListItem("1", context.getString(R.string.fragment_devices)));
+		addItem(new ListItem("2", context.getString(R.string.fragment_print)));
+		addItem(new ListItem("3", context.getString(R.string.fragment_models)));
+		addItem(new ListItem("4", context.getString(R.string.fragment_history)));
+		addItem(new ListItem("5", context.getString(R.string.fragment_settings)));
+		
+		return ITEMS;
+	
 	}
 }

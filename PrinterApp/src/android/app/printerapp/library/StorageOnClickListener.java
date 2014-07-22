@@ -156,7 +156,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				ItemListActivity.requestOpenFile(f.getAbsolutePath());
 			} else {
 				
-				Toast.makeText(mContext.getActivity(), "File is corrupted", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
 
 			}
 			
@@ -259,7 +259,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						ItemListActivity.requestOpenFile(f.getAbsolutePath());
 					} else {
 						
-						Toast.makeText(mContext.getActivity(), "File is corrupted", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
 
 					}
 					

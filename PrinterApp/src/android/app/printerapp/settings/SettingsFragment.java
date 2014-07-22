@@ -96,17 +96,17 @@ public class SettingsFragment extends Fragment{
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Connection");
-		spec.setIndicator("Connection and Network");
+		spec.setIndicator(getString(R.string.settings_tabhost_tab_connection));
 		spec.setContent(R.id.tab1);
 		tabs.addTab(spec);
 		 
 		spec=tabs.newTabSpec("Devices");
-		spec.setIndicator("Devices");
+		spec.setIndicator(getString(R.string.settings_tabhost_tab_devices));
 		spec.setContent(R.id.tab2);
 		tabs.addTab(spec);
 		
 		spec=tabs.newTabSpec("Users");
-		spec.setIndicator("Users");
+		spec.setIndicator(getString(R.string.settings_tabhost_tab_users));
 		spec.setContent(R.id.tab3);
 		tabs.addTab(spec);
 		 

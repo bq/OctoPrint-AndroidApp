@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:text="Down" />
+        android:text="@string/viewer_button_down" />
 
     <Button
         android:id="@+id/left"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/down"
-        android:text="Left" />
+        android:text="@string/viewer_button_left" />
 
     <Button
         android:id="@+id/back"
@@ -28,7 +28,7 @@
         android:layout_alignBaseline="@+id/right"
         android:layout_alignBottom="@+id/right"
         android:layout_toLeftOf="@+id/right"
-        android:text="Back" />
+        android:text="@string/viewer_button_back" />
 
     <Button
         android:id="@+id/right"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/down"
         android:layout_toRightOf="@+id/down"
-        android:text="Right" />
+        android:text="@string/viewer_button_right" />
     
     <RadioGroup
         android:id="@+id/radio_group_rotation"
@@ -51,19 +51,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Rotation X" />
+            android:text="@string/viewer_button_rx" />
          
         <RadioButton
             android:id="@+id/rotation_y"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rotation Y" />
+            android:text="@string/viewer_button_ry" />
 
         <RadioButton
             android:id="@+id/rotation_z"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rotation Z" />
+            android:text="@string/viewer_button_rz" />
     </RadioGroup>
 
     <RadioGroup
@@ -78,20 +78,20 @@
             android:id="@+id/lightRotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Light" />
+            android:text="@string/viewer_button_light" />
          
         <RadioButton
             android:id="@+id/radioRotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Rotation" />
+            android:text="@string/viewer_button_rotation" />
 
         <RadioButton
             android:id="@+id/radioTranslation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Translation" />
+            android:text="@string/viewer_button_translation" />
     </RadioGroup>
     
      <SeekBar
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Normal" />
+        android:text="@string/viewer_button_normal" />
     
     <Button
         android:id="@+id/overhang"
@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/normal"
         android:layout_alignParentTop="true"
-        android:text="Overhandle" />
+        android:text="@string/viewer_button_overhang" />
 
     <Button
         android:id="@+id/xray"
@@ -131,7 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/overhang"
-        android:text="X-ray" />
+        android:text="@string/viewer_button_xray" />
 
     <Button
         android:id="@+id/layers"
@@ -139,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/transparent"
-        android:text="Layers" />
+        android:text="@string/viewer_button_layers" />
 
     <Button
         android:id="@+id/transparent"
@@ -147,7 +147,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/xray"
-        android:text="Transparent" />
+        android:text="@string/viewer_button_transparent" />
      
      <LinearLayout
    	 	android:id="@+id/edition_menu"

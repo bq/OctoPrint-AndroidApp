@@ -195,7 +195,7 @@ public class ItemListActivity extends FragmentActivity implements
 			@Override
 			public void run() {
 				
-				mViewerFragment.openFile(path);
+				ViewerMain.openFile(path);
 					
 				}	
 			});
