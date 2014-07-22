@@ -29,7 +29,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private float pinchStartY = 0.0f;
 	private float pinchStartZ = 0.0f;
 	private float pinchStartDistance = 0.0f;
-	private float pinchStartFactor = 0.0f;
+	private float pinchStartFactorX = 0.0f;
+	private float pinchStartFactorY = 0.0f;
+	private float pinchStartFactorZ = 0.0f;
 
 	// for touch event handling
 	private static final int TOUCH_NONE = 0;
@@ -53,6 +55,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int MOVE_EDITION_MODE = 1;
 	public static final int ROTATION_EDITION_MODE =2;
 	public static final int SCALED_EDITION_MODE = 3;
+	public static final int MIRROR_EDITION_MODE = 4;
 
 
 	public static final int ROTATE_X = 0;
@@ -166,7 +169,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartDistance = getPinchDistance(event);
 					pinchStartY = mRenderer.getCameraPosY();
 					pinchStartZ = mRenderer.getCameraPosZ();
-					pinchStartFactor = mRenderer.getFactorScale();
+					pinchStartFactorX = mRenderer.getFactorScaleX();
+					pinchStartFactorY = mRenderer.getFactorScaleY();
+					pinchStartFactorZ = mRenderer.getFactorScaleZ();
+
 					if (pinchStartDistance > 50f) {
 						getPinchCenterPoint(event, pinchStartPoint);
 						mPreviousX = pinchStartPoint.x;
@@ -200,9 +206,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mPreviousY = pt.y;
 										
 						pinchScale = getPinchDistance(event) / pinchStartDistance;
+						
 														
-						if (mEdition && mEditionMode == SCALED_EDITION_MODE) mRenderer.scaleObject(pinchStartFactor*pinchScale);
-						else {
+						if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
+							float fx = pinchStartFactorX*pinchScale;
+							float fy = pinchStartFactorY*pinchScale;
+							float fz = pinchStartFactorZ*pinchScale;
+
+							mRenderer.scaleObject(fx,fy,fz);
+						} else {
 							mRenderer.setCameraPosY(pinchStartY / pinchScale);
 							mRenderer.setCameraPosZ(pinchStartZ / pinchScale);						
 						}
@@ -288,6 +300,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			break;
 		}
 		
+	}
+	
+	public void doMirror () {
+		float fx = mRenderer.getFactorScaleX();
+		float fy = mRenderer.getFactorScaleY();
+		float fz = mRenderer.getFactorScaleZ();
+		
+		mRenderer.scaleObject(-1*fx, fy, fz);
+		requestRender();
 	}
 	
 	private void doRotation (float dx, float dy) {              
