@@ -293,7 +293,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 			float [] result = new float [4];
 			float [] aux = new float [16];
 						
-			for (int i=0; i<coordinatesArray.length/3; i+=3) {
+			for (int i=0; i<coordinatesArray.length; i+=3) {
 				vector[0] = coordinatesArray[i];
 				vector[1] = coordinatesArray[i+1];
 				vector[2] = coordinatesArray[i+2];
