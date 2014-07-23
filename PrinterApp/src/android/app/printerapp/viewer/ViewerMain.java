@@ -326,7 +326,7 @@ public class ViewerMain extends Fragment {
 	   switch (item.getItemId()) {
 	   
 	   case R.id.viewer_open: 		   
-		   	FileBrowser.openFileBrowser(getActivity(), FileBrowser.VIEWER, "Choose file...", ".stl", ".gcode");
+		   	FileBrowser.openFileBrowser(getActivity(), FileBrowser.VIEWER, getString(R.string.choose_file), ".stl", ".gcode");
 			return true;
 			
        	case R.id.viewer_save: 
@@ -381,13 +381,13 @@ public class ViewerMain extends Fragment {
 				if (type.equals(".gcode")) pathFile = getAssociatedStl (name);
 				else if (type.equals(".stl")) pathFile = getAssociatedGcode (name);
 							
-				if (pathFile==null) Toast.makeText(getActivity(), "This view is not available.", Toast.LENGTH_SHORT).show();
+				if (pathFile==null) Toast.makeText(getActivity(), R.string.viewer_toast_not_available, Toast.LENGTH_SHORT).show();
 				else openFile (pathFile);
 			
 			} else 	mSurface.configViewMode(mState);		
 			
 										
-		} else Toast.makeText(getActivity(), "This view is not available. Open a file first", Toast.LENGTH_SHORT).show();		
+		} else Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();		
 	}
    
    private void fillFilesList() {

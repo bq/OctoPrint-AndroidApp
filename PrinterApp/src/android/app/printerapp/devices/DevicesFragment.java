@@ -212,17 +212,17 @@ public class DevicesFragment extends Fragment{
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Map");
-		spec.setIndicator("Map");
+		spec.setIndicator(getString(R.string.devices_tabhost_tab_map));
 		spec.setContent(R.id.tab1);
 		tabs.addTab(spec);
 		 
 		spec=tabs.newTabSpec("List");
-		spec.setIndicator("List");
+		spec.setIndicator(getString(R.string.devices_tabhost_tab_list));
 		spec.setContent(R.id.tab2);
 		tabs.addTab(spec);
 		
 		spec=tabs.newTabSpec("Videowall");
-		spec.setIndicator("Videowall");
+		spec.setIndicator(getString(R.string.devices_tabhost_tab_video));
 		spec.setContent(R.id.tab3);
 		tabs.addTab(spec);
 		
@@ -432,8 +432,7 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_NEW){
 						 codeDialog(m);
 					 }
-				}
-				
+				} 				
 			}
 		};
 		
@@ -453,10 +452,13 @@ public class DevicesFragment extends Fragment{
 					if (mp.getPosition()==arg2) m = mp;
 				}
 				
-				ClipData data = null;						
-				data = ClipData.newPlainText("printer", m.getName());	
-				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(arg1);
-				arg1.startDrag(data, shadowBuilder, arg1, 0);
+				if (m!=null){
+					
+					ClipData data = null;						
+					data = ClipData.newPlainText("printer", m.getName());	
+					DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(arg1);
+					arg1.startDrag(data, shadowBuilder, arg1, 0);
+				}
 				
 				
 				return false;

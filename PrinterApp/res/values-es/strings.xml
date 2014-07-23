@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PrinterApp</string>
+    <string name="title_item_detail">Item Detail</string>
+    
+    <string name="add">Añadir</string>
+    <string name="cancel">Cancelar</string>
+    <string name="filter">Filtrar</string>
+    <string name="search">Buscar</string>
+    <string name="create">Crear</string>
+    <string name="delete">Eliminar</string>
+    
+    <string name="fragment_devices">Dispositivos</string>
+    <string name="fragment_print">Panel de impresión</string>
+    <string name="fragment_models">Modelos</string>
+    <string name="fragment_history">Historial</string>
+    <string name="fragment_settings">Ajustes</string>
+    
+    <string name="devices_quickprint">Impresión rápida</string>
+    <string name="devices_add_dialog_title">Impresoras detectadas</string>
+    <string name="devices_add_dialog_message">Elige una impresora para añadirla al panel</string>
+    <string name="devices_filter_dialog_title">Mostrar</string>
+    <string name="devices_progress_dialog_title">Progreso</string>
+    <string name="devices_tabhost_tab_map">Mapa</string>
+    <string name="devices_tabhost_tab_list">Lista</string>
+    <string name="devices_tabhost_tab_video">Panel de video</string>
+    <string name="devices_error_dialog_title">Mensaje de error</string>
+    <string name="devices_setup_title">Configurar impresora </string>
+    <string name="devices_setup_message">Introduce el código de la impresora o escanea el QR localizado en la parte trasera de tu dispositivo</string>
+    
+    <string name="devices_menu_add">Añadir impresora</string>
+    <string name="devices_menu_filter">Filtrar dispositivos</string>
+    <string name="devices_cab_menu_delete">Eliminar impresora</string>
+    <string name="devices_cab_menu_settings">Opciones de impresora</string>
+    
+    <string name="devices_filter_dialog_all">Todos</string>
+    <string name="devices_filter_dialog_progress">Impresoras \'en progreso\'</string>
+    <string name="devices_filter_dialog_inactive">Impresoras \'inactivas\'</string>
+    <string name="devices_filter_dialog_groups">Vista de grupos</string>
+    <string name="devices_filter_dialog_linked">Solo impresoras enlazadas</string>
+    
+    <string name="devices_toast_no_gcode">No se ha encontrado .gcode</string>
+    <string name="storage_toast_corrupted">El fichero está corrupto</string>
+    <string name="viewer_toast_not_available">No hay vista disponible.</string>
+    <string name="viewer_toast_not_available_2">No hay vista disponible, abra primero un fichero</string>
+    
+    
+    <string name="library_search_dialog_title">Palabra a buscar</string>
+    <string name="library_filter_dialog_show">Mostrar todo</string>
+    <string name="library_filter_dialog_gcode">Mostrar archivos GCODE</string>
+    <string name="library_filter_dialog_stl">Mostrar archivos STL</string>
+    <string name="library_filter_dialog_remove">Borrar filtros</string>
+        
+    <string name="library_create_dialog_title">Nombre de la nueva carpeta</string>
+    <string name="library_select_printer_title">Seleccionar impresora(s)</string>
+    <string name="library_option_dialog_title">Opciones del modelo</string>
+    <string name="library_option_print">Imprimir</string>
+    <string name="library_delete_dialog_title">¿Quieres eliminar este fichero?</string>
+    
+    <string name="library_menu_search">Buscar modelo</string>
+    <string name="library_menu_filter">Filtrar modelos</string>
+    <string name="library_menu_list">Vista de lista</string>
+    <string name="library_menu_add">Añadir modelo</string>
+    <string name="library_menu_folder">Crear nueva carpeta</string>
+    
+    <string name="library_tabhost_tab_all">Todos los modelos</string>
+    <string name="library_tabhost_tab_memory">Memoria Witbox</string>
+    <string name="library_tabhost_tab_usb">USB</string>
+    <string name="library_tabhost_tab_favorites">Favoritos</string>
+    
+    <string name="viewer_menu_open">Abrir fichero</string>
+    <string name="viewer_menu_save">Guardar</string>
+    <string name="viewer_menu_notes">Notas</string>
+    <string name="viewer_menu_autofit">Auto ajustar</string>
+    <string name="viewer_menu_clean">Limpiar panel</string>
+    
+    <string name="settings_network">Red por defecto</string>
+    <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>
+    <string name="settings_add_title">Descubrir impresora(s)</string>
+     
+    <string name="settings_tabhost_tab_connection">Conexión y red</string>
+    <string name="settings_tabhost_tab_devices">Dispositivos</string>
+    <string name="settings_tabhost_tab_users">Usuarios</string>
+    
+    <string name="viewer_button_back">Atrás</string>
+    <string name="viewer_button_right">Derecha</string>
+    <string name="viewer_button_down">Abajo</string>
+    <string name="viewer_button_left">Izquierda</string>
+    <string name="viewer_button_normal">Normal</string>
+    <string name="viewer_button_overhang">Soporte</string>
+    <string name="viewer_button_xray">Triángulos</string>
+    <string name="viewer_button_layers">Capas</string>
+    <string name="viewer_button_transparent">Transparente</string>
+    <string name="viewer_button_light">Luz</string>
+    <string name="viewer_button_rotation">Rotación</string>
+    <string name="viewer_button_translation">Translación</string>
+    <string name="viewer_button_rx">Rotación X</string>
+    <string name="viewer_button_ry">Rotación Y</string>
+    <string name="viewer_button_rz">Rotación Z</string>
+    
+    <string name="choose_file">Elegir fichero</string> 
+	<string name="open">Abrir</string>  
+	<string name="close_browser">Cerrar</string>  
+		   
+    <string name="viewer_title">Panel de impresión</string>
+    <string name="loading_stl">Cargando archivo STL</string>
+    <string name="loading_gcode">Cargando archivo GCODE</string>
+    
+     <string name="be_patient">Esto puede llevar un rato. Por favor, tenga paciencia.</string>
+
+</resources>

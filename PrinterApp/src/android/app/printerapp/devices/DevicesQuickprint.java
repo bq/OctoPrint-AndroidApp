@@ -124,7 +124,7 @@ public class DevicesQuickprint {
 							
 							
 							
-						} else 	Toast.makeText(mContext, "No .gcode found", Toast.LENGTH_SHORT).show();
+						} else 	Toast.makeText(mContext, R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
 	
 						
 					

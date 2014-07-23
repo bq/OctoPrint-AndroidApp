@@ -145,22 +145,22 @@ public class LibraryFragment extends Fragment {
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Models");
-		spec.setIndicator("All the models");
+		spec.setIndicator(getString(R.string.library_tabhost_tab_all));
 		spec.setContent(R.id.tab1);
 		tabs.addTab(spec);
 		 
 		spec=tabs.newTabSpec("Witbox");
-		spec.setIndicator("Witbox memory");
+		spec.setIndicator(getString(R.string.library_tabhost_tab_memory));
 		spec.setContent(R.id.tab2);
 		tabs.addTab(spec);
 		
 		spec=tabs.newTabSpec("Usb");
-		spec.setIndicator("USB");
+		spec.setIndicator(getString(R.string.library_tabhost_tab_usb));
 		spec.setContent(R.id.tab3);
 		tabs.addTab(spec);
 		
 		spec=tabs.newTabSpec("Favorites");
-		spec.setIndicator("Favorites");
+		spec.setIndicator(getString(R.string.library_tabhost_tab_favorites));
 		spec.setContent(R.id.tab4);
 		tabs.addTab(spec);
 		
@@ -287,7 +287,7 @@ public class LibraryFragment extends Fragment {
 	//Add a new project using the viewer file browser
 	public void optionAddLibrary(){		
 		//TODO fix filebrowser parameters
-		FileBrowser.openFileBrowser(getActivity(),FileBrowser.LIBRARY, "Add Model", ".stl", "");
+		FileBrowser.openFileBrowser(getActivity(),FileBrowser.LIBRARY, getString(R.string.library_menu_add), ".stl", "");
 	}
 	
 	//Create a single new folder via mkdir
