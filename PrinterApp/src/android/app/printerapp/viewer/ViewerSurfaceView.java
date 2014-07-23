@@ -138,6 +138,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mEditionMode = mode;
 	}
 	
+	public void deleteObject() {
+		mRenderer.deleteObject();
+		requestRender();
+	}
+	
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:

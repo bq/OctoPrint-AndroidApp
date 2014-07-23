@@ -67,13 +67,10 @@ public class ViewerMain extends Fragment {
 	private ImageButton mMirror;	
 	private ImageButton mScale;
 	private ImageButton mExit;
-	
-	static Context mContext;
+	private ImageButton mDelete;
 
 	
-	//TODO 
-	//private ImageButton mDelete;
-	
+	static Context mContext;
 	//Empty constructor
 	public ViewerMain(){}
 	
@@ -283,6 +280,14 @@ public class ViewerMain extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
+			} 
+		});
+		
+		mDelete = (ImageButton) rootView.findViewById (R.id.delete);		
+		mDelete.setOnClickListener(new OnClickListener () {
+			@Override
+			public void onClick(View v) {
+				mSurface.deleteObject();
 			} 
 		});
 		
