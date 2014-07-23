@@ -16,6 +16,7 @@
     <item
         android:id="@+id/library_list"
         android:showAsAction="never"
+        android:visible="false"
         android:title="@string/library_menu_list"/>
     
     <item

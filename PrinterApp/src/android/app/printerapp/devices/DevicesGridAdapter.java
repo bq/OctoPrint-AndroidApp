@@ -71,6 +71,9 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
+		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
+		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
+		
 		
 		
 		//Check if it's an actual printer or just an empty slot
@@ -78,14 +81,13 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			v.setOnDragListener(new DevicesEmptyDragListener(position));
 			tag.setText("");
 			icon.setVisibility(View.INVISIBLE);
+			iv.setVisibility(View.GONE);
+			pb.setVisibility(View.GONE);
 			
 		} else {
 			v.setOnDragListener(new DevicesDragListener(m));
 			tag.setText(m.getName());
 			icon.setVisibility(View.VISIBLE);
-			ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
-			ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
-			
 			
 			int status = m.getStatus();
 			

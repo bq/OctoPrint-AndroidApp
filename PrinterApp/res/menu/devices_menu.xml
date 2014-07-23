@@ -4,7 +4,8 @@
         android:id="@+id/menu_add"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/devices_menu_add"/>
+        android:title="@string/devices_menu_add"
+        android:visible="false"/>
       
     <item
         android:id="@+id/menu_filter"
