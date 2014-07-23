@@ -140,7 +140,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	
 	private int mStateObject;
 	
-
+	private boolean mDeleteObject = false;
+	
 	public ViewerRenderer (DataStorage data, Context context, int state, boolean doSnapshot, boolean stl) {	
 		this.mData = data;
 		this.mContext = context;
@@ -206,19 +207,27 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 		return mScaleFactorZ;
 	}
 	
+	public void deleteObject () {
+		mDeleteObject = true;
+		mData = null;
+	}
+	
 	public boolean touchPoint (float x, float y) {
-		Ray ray = convertNormalized2DPointToRay(x, y);
-		 	 		 
-        Box objectBox = new Box (mData.getMinX(), mData.getMaxX(), mData.getMinY(), mData.getMaxY(), mData.getMinZ(), mData.getMaxZ());
-
-        // If the ray intersects (if the user touched a part of the screen that
-        // intersects the stl object's bounding box), then set objectPressed =
-        // true.
-        objectPressed = Geometry.intersects(objectBox, ray);
-        
-        if (objectPressed && mStateObject == INSIDE_NOT_TOUCHED) mStateObject = INSIDE_TOUCHED;
-        
-        return objectPressed;
+		if (mData!= null) {
+			Ray ray = convertNormalized2DPointToRay(x, y);
+			 	 		 
+	        Box objectBox = new Box (mData.getMinX(), mData.getMaxX(), mData.getMinY(), mData.getMaxY(), mData.getMinZ(), mData.getMaxZ());
+	
+	        // If the ray intersects (if the user touched a part of the screen that
+	        // intersects the stl object's bounding box), then set objectPressed =
+	        // true.
+	        objectPressed = Geometry.intersects(objectBox, ray);
+	        
+	        if (objectPressed && mStateObject == INSIDE_NOT_TOUCHED) mStateObject = INSIDE_TOUCHED;
+	        
+	        return objectPressed;
+		}
+		return false;
 	}
 	
 	int count = 0;
@@ -518,9 +527,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         
         if (mIsStl) setColor();
-                
-		
-				
+                	
 	    GLES20.glEnable (GLES20.GL_BLEND);
 	 	
 		// Enable depth testing
@@ -583,8 +590,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, mTemporaryModel, 0, mLightPosInModelSpace, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);                                             
                                                                                                                                                                   
-        if (mIsStl) mStlObject.draw(mMVPMatrix, mMVPMatrix, mLightPosInEyeSpace);
-        else mGcodeObject.draw(mVPFinalMatrix);
+        if (!mIsStl) mGcodeObject.draw(mVPFinalMatrix); 
+        else if (!mDeleteObject) mStlObject.draw(mMVPMatrix, mMVPMatrix, mLightPosInEyeSpace);
         
         if (mSnapShot) {
         	mInfinitePlane.draw(mVPFinalMatrix, mMVMatrix);
