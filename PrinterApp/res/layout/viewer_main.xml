@@ -42,7 +42,6 @@
         android:id="@+id/radio_group_rotation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edition_menu"
         android:layout_alignParentRight="true"
         android:visibility="visible" >
 
@@ -106,7 +105,49 @@
         android:layout_width="512dp"
         android:layout_height="512dp"
         android:layout_below="@+id/barLayer" >
-
+        
+         <LinearLayout
+	   	 	android:id="@+id/edition_menu"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:orientation="vertical" >
+        
+          <ImageButton
+	        android:id="@+id/move"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/move" />
+    
+	     <ImageButton
+	        android:id="@+id/rotate"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/rotate" />
+	     
+	      <ImageButton
+	        android:id="@+id/scale"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/scale" />
+	      
+	       <ImageButton
+	        android:id="@+id/mirror"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/mirror" />
+	       
+	        <ImageButton
+	        android:id="@+id/delete"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/delete" />
+	        
+	        <ImageButton
+	        android:id="@+id/exit"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/exit" />
+		</LinearLayout>
     </FrameLayout>
 
     <Button
@@ -148,49 +189,5 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/xray"
         android:text="@string/viewer_button_transparent" />
-     
-     <LinearLayout
-   	 	android:id="@+id/edition_menu"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_alignParentRight="true"
-    	android:orientation="vertical" >
-        
-          <ImageButton
-	        android:id="@+id/move"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/move" />
-    
-	     <ImageButton
-	        android:id="@+id/rotate"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/rotate" />
-	     
-	      <ImageButton
-	        android:id="@+id/scale"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/scale" />
-	      
-	       <ImageButton
-	        android:id="@+id/mirror"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/mirror" />
-	       
-	        <ImageButton
-	        android:id="@+id/delete"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/delete" />
-	        
-	        <ImageButton
-	        android:id="@+id/exit"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/exit" />
-	</LinearLayout>
 
 </RelativeLayout>

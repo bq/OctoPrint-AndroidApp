@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -117,6 +118,7 @@ public class ViewerMain extends Fragment {
 		mSeekBar.setVisibility(View.INVISIBLE);
 		
 		mLayout = (FrameLayout) rootView.findViewById (R.id.frameLayout);
+
 		mGroupMovement = (RadioGroup) rootView.findViewById (R.id.radioGroupMovement);		
 		mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener () {
 			@Override
@@ -454,7 +456,7 @@ public class ViewerMain extends Fragment {
 	
 	private static void drawAndSnapshot (String filePath) {	
 		String pathSnapshot;
-		mLayout.removeAllViews();
+		setEditionMenuVisibility(View.INVISIBLE);
 
 		if (filePath.endsWith(".stl")) {
 			mSeekBar.setVisibility(View.INVISIBLE);
@@ -473,15 +475,18 @@ public class ViewerMain extends Fragment {
 
 			mSurface = new ViewerSurfaceView (mContext, mDataGcode, mState, mDoSnapshot, false);
 		}
-					
-		//TODO Changed 
-		//Set the surface Z priority to top
-		mSurface.setZOrderOnTop(true);
-		
+							
 		//Add the view
-		mLayout.addView(mSurface);
+		mLayout.removeAllViews();
+		mLayout.addView(mSurface, 0);
+		mLayout.addView(mMenu, 1);
+				
+		//TODO CHANGED: Edition menu does not appear on top if we set setZOrderOnTop (true).
+		//Set the surface Z priority to top
+		//mSurface.setZOrderOnTop(true);
 		
-		if (mDoSnapshot) mLayout.setVisibility(View.INVISIBLE);		
+		if (mDoSnapshot) mLayout.setVisibility(View.INVISIBLE);	
+
 	}
 		
 	/*
