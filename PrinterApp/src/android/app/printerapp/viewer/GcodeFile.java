@@ -19,35 +19,18 @@ public class GcodeFile  {
 	
 	private static ProgressDialog mProgressDialog;
 	private static Thread mThread;
+	
+	private static String [] mSplitLine;
 	private static int mMaxLayer;
-	
-	static String [] mSplitLine;
-	
-	private static int mLines=0;
-	private static boolean mEnd = false;
-	private static boolean mStart = false;
 		
-	static float mX;
-	static float mY;
-	static float mZ;
-	static float mF;
-	private static float mLastX=0;
-	private static float mLastY=0;
-	private static float mLastZ=0;
-	
-	private static int mLength; 
-	private static int mLayer;
-	private static int mType;
-	private static float mExecutionTime;
-	
 	public static void openGcodeFile (Context context, File file, DataStorage data) {
 		mFile = file;		
 		mData = data;
 		mProgressDialog = prepareProgressDialog(context);
 		mData.setPathFile(mFile.getName().replace(".", "-"));
-		
+			
 		mData.initMaxMin();
-
+		mMaxLayer=-1;
 		startThreadToOpenFile (context);		
 	}
 	
@@ -69,18 +52,8 @@ public class GcodeFile  {
 					countReader.close();
 					
 					mProgressDialog.setMax(maxLines);
-					int index=0;
-					int lastIndex = 0;
-					while (mLines<maxLines) {	
-						index = allLines.indexOf("\n", lastIndex);
-						line = allLines.substring(lastIndex, index);
-						fillCoordinateList (line);
-						mLines++;
-						lastIndex = index+1;
-						
-						if (mLines % (maxLines/10) == 0)mProgressDialog.setProgress(mLines);
-					}
-					
+					processGcode(allLines, maxLines);
+
 					mHandler.sendEmptyMessage(0);
 								
 				} catch (Exception e) {
@@ -110,6 +83,108 @@ public class GcodeFile  {
 		return progressDialog;
 	}
 	
+	public static void processGcode(StringBuilder allLines, int maxLines) {
+		int index=0;
+		int lastIndex = 0;
+		int lines = 0;
+		String line="";
+		
+		boolean end = false;
+		boolean start = false;
+		float x=0;
+		float y=0;
+		float z=0;
+		int type = -1;
+		int length = 0;
+		int layer = 0;
+		
+		while (lines<maxLines) {	
+			index = allLines.indexOf("\n", lastIndex);
+			line = allLines.substring(lastIndex, index);
+
+			if (line.contains("END GCODE")) end = true;
+			
+			if (line.contains("end of START GCODE")) start = true;
+			
+			if(line.contains("MOVE")) {
+	        	 type = DataStorage.MOVE;
+	         }else if(line.contains("FILL")) {
+	        	 type = DataStorage.FILL;
+	         }else if(line.contains("PERIMETER")) {
+	        	 type = DataStorage.PERIMETER;
+	         }else if(line.contains("RETRACT")) {
+	        	 type = DataStorage.RETRACT;
+	         }else if(line.contains("COMPENSATE")) {
+	        	 type = DataStorage.COMPENSATE;
+	         }else if(line.contains("BRIDGE")) {
+	        	 type = DataStorage.BRIDGE;
+	         }else if(line.contains("SKIRT")) {
+	        	 type = DataStorage.SKIRT;	            		 
+	         } else if(line.contains("WALL-INNER")) {
+	        	 type = DataStorage.WALL_INNER;	            		 
+	         } else if(line.contains("WALL-OUTER")) {
+	        	 type = DataStorage.WALL_OUTER;	            		 
+	         }  else if(line.contains("SUPPORT")) {
+	        	 type = DataStorage.SUPPORT;	
+	         }
+			
+			//From comments
+			if (line.contains("LAYER")) {
+	        	 int pos = line.indexOf(":");
+	        	 layer = Integer.parseInt(line.substring(pos+1, line.length()));
+			}	 
+					
+			if (line.startsWith("G0") || line.startsWith("G1")) {
+				mSplitLine = line.split(" ");
+				
+				//Get the coord from the line					
+				for (int i=0; i<mSplitLine.length; i++) {
+					if (mSplitLine[i].length()<=1) continue;
+					if (mSplitLine[i].startsWith("X")) {
+						mSplitLine[i] = mSplitLine[i].replace("X", "");
+						x= Float.valueOf(mSplitLine[i])-WitboxFaces.WITBOX_LONG;
+					} else if (mSplitLine[i].startsWith("Y")) {
+						mSplitLine[i] = mSplitLine[i].replace("Y", "");
+						y = Float.valueOf(mSplitLine[i])-WitboxFaces.WITBOX_WITDH;
+					} else if (mSplitLine[i].startsWith("Z")) {
+						mSplitLine[i] = mSplitLine[i].replace("Z", "");
+						z = Float.valueOf(mSplitLine[i]);
+					} 
+				}
+	
+				 if (line.startsWith("G0")) {
+					 mData.addLineLength(length);
+		             length = 1;
+		            
+				 } else if (line.startsWith("G1")) {
+					 //GCode saves the movement from one type to another (i.e wall_inner-wall_outer) in the list of the previous type. 
+					 //If we have just started a line, we set again the colour of the first vertex to avoid wrong colour
+					 //This avoids gradients in rendering.			 
+					 if (length == 1) mData.changeTypeAtIndex(mData.getTypeListSize()-1, type);
+	
+					 length ++;
+					 
+					
+					 if (start && !end) mData.adjustMaxMin(x,y, z);
+				 }
+				 
+				 mData.addVertex(x);
+				 mData.addVertex(y);
+				 mData.addVertex(z);
+				 mData.addLayer(layer);
+				 mData.addType(type);
+				 		 
+				 if (layer>mMaxLayer) mMaxLayer = layer;
+				 		
+			}
+			
+			 lines++;
+			 lastIndex = index+1;
+				
+			 if (lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);	
+		}			
+	}
+	
     private static Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -137,107 +212,4 @@ public class GcodeFile  {
 	        	
         }
     };
-	
-	
-	static void fillCoordinateList (String line) {
-		if (line.contains("END GCODE")) mEnd = true;
-		
-		if (line.contains("end of START GCODE")) mStart = true;
-		
-		if(line.contains("MOVE")) {
-        	 mType = DataStorage.MOVE;
-         }else if(line.contains("FILL")) {
-        	 mType = DataStorage.FILL;
-         }else if(line.contains("PERIMETER")) {
-        	 mType = DataStorage.PERIMETER;
-         }else if(line.contains("RETRACT")) {
-        	 mType = DataStorage.RETRACT;
-         }else if(line.contains("COMPENSATE")) {
-        	 mType = DataStorage.COMPENSATE;
-         }else if(line.contains("BRIDGE")) {
-        	 mType = DataStorage.BRIDGE;
-         }else if(line.contains("SKIRT")) {
-        	 mType = DataStorage.SKIRT;	            		 
-         } else if(line.contains("WALL-INNER")) {
-        	 mType = DataStorage.WALL_INNER;	            		 
-         } else if(line.contains("WALL-OUTER")) {
-        	 mType = DataStorage.WALL_OUTER;	            		 
-         }  else if(line.contains("SUPPORT")) {
-        	 mType = DataStorage.SUPPORT;	
-         }
-		
-		//From comments
-		if (line.contains("LAYER")) {
-        	 int pos = line.indexOf(":");
-        	 mLayer = Integer.parseInt(line.substring(pos+1, line.length()));
-		}	 
-				
-		if (line.startsWith("G0") || line.startsWith("G1")) {
-			mSplitLine = line.split(" ");
-			
-			//Get the coord from the line					
-			for (int i=0; i<mSplitLine.length; i++) {
-				if (mSplitLine[i].length()<=1) continue;
-				if (mSplitLine[i].startsWith("X")) {
-					mSplitLine[i] = mSplitLine[i].replace("X", "");
-					mX= Float.valueOf(mSplitLine[i])-WitboxFaces.WITBOX_LONG;
-				} else if (mSplitLine[i].startsWith("Y")) {
-					mSplitLine[i] = mSplitLine[i].replace("Y", "");
-					mY = Float.valueOf(mSplitLine[i])-WitboxFaces.WITBOX_WITDH;
-				} else if (mSplitLine[i].startsWith("Z")) {
-					mSplitLine[i] = mSplitLine[i].replace("Z", "");
-					mZ = Float.valueOf(mSplitLine[i]);
-				} else if (mSplitLine[i].startsWith("F")) {
-					mSplitLine[i] = mSplitLine[i].replace("F", "");
-					mF = Float.valueOf(mSplitLine[i]);
-				}
-			}
-			
-			 
-			 if (line.startsWith("G0")) {
-				 mData.addLineLength(mLength);
-	             mLength = 1;
-	            
-			 } else if (line.startsWith("G1")) {
-				 //GCode saves the movement from one type to another (i.e wall_inner-wall_outer) in the list of the previous type. 
-				 //If we have just started a line, we set again the colour of the first vertex to avoid wrong colour
-				 //This avoids gradients in rendering.			 
-				 if (mLength == 1) mData.changeTypeAtIndex(mData.getTypeListSize()-1, mType);
-
-				 mLength ++;
-				 
-				
-				 if (mStart && !mEnd) mData.adjustMaxMin(mX,mY, mZ);
-
-				 //Get distance for each axis
-	             float dx = Math.abs(mLastX-mX);
-	             float dy = Math.abs(mLastY-mY);
-	             float dz = Math.abs(mLastZ-mZ);
-	             		             
-	             float dist = (float) Math.sqrt(dx*dx+dy*dy+dz*dz);
-	             
-	             mExecutionTime = mExecutionTime + dist/mF;	//estimate the time 
-			 }
-			 
-			 mData.addVertex(mX);
-			 mData.addVertex(mY);
-			 mData.addVertex(mZ);
-			 mData.addLayer(mLayer);
-			 mData.addType(mType);
-			 
-			 mLastX = mX;
-			 mLastY = mY; 
-			 mLastZ = mZ;
-			 
-			 if (mLayer>mMaxLayer) mMaxLayer = mLayer;
-
-		}else if(line.startsWith("M")) {
-        	//Execution time when a Machine code is executed. 
-            mExecutionTime += 0.016666667; //add half a second to time for mcode
-        }else if(line.startsWith("G4")) {
-        	//G4 is a wait command. So add wait time to execution time.
-        	String time = line.replace("G4 P", "");
-        	mExecutionTime += Double.parseDouble(time)/60;
-        }
-	}
  }
