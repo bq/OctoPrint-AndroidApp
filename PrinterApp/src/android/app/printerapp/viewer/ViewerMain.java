@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -357,11 +356,11 @@ public class ViewerMain extends Fragment {
    public static void openFile (String filePath) {
 		mFile = new File(filePath);
 		//Open the file
-		if (filePath.endsWith(".stl") && !mLastStlOpened.equals(mFile.getName())) {
+		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) && !mLastStlOpened.equals(mFile.getName())) {
 			mDataStl = new DataStorage ();
 			StlFile.openStlFile (mContext, mFile, mDataStl);
 			mLastStlOpened = mFile.getName();
-		} else if (filePath.endsWith(".gcode") && !mLastGcodeOpened.equals(mFile.getName())) {
+		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE")) && !mLastGcodeOpened.equals(mFile.getName())) {
 			mDataGcode = new DataStorage ();
 			GcodeFile.openGcodeFile(mContext, mFile, mDataGcode);	
 			mLastGcodeOpened = mFile.getName();
@@ -458,7 +457,7 @@ public class ViewerMain extends Fragment {
 		String pathSnapshot;
 		setEditionMenuVisibility(View.INVISIBLE);
 
-		if (filePath.endsWith(".stl")) {
+		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
 			mSeekBar.setVisibility(View.INVISIBLE);
 			
 			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataStl.getPathFile() + ".jpeg";
@@ -467,7 +466,7 @@ public class ViewerMain extends Fragment {
 
 			mSurface = new ViewerSurfaceView (mContext, mDataStl, mState, mDoSnapshot, true);
 
-		} else if (filePath.endsWith(".gcode")) {
+		} else if (filePath.endsWith(".gcode") || filePath.endsWith(".GCODE")) {
 			mSeekBar.setVisibility(View.VISIBLE);
 			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataGcode.getPathFile() + ".jpeg";
 			mDataGcode.setPathSnapshot(pathSnapshot);
