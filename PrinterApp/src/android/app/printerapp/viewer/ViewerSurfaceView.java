@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -163,7 +164,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX();
         float y = event.getY();
-        
+               
         float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
 				
