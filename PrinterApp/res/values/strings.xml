@@ -100,7 +100,8 @@
     
     <string name="choose_file">Choose File</string> 
 	<string name="open">Open</string>  
-	<string name="close_browser">Close browser</string>  
+    <string name="gcode_viewer">Gcode Files</string>
+	<string name="close_browser">Close browser</string>
 		   
     <string name="viewer_title">Print Panel</string>
     <string name="loading_stl">Loading STL file</string>

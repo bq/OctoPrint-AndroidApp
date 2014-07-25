@@ -3,9 +3,11 @@ package android.app.printerapp.viewer;
 import java.io.File;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -22,8 +25,10 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.app.AlertDialog;
 import android.app.printerapp.R;
-
+import android.app.printerapp.library.StorageController;
+import android.app.printerapp.model.ModelFile;
 
 public class ViewerMain extends Fragment {	
 	private static int mState;
@@ -203,8 +208,7 @@ public class ViewerMain extends Fragment {
 		mLayers.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
-				int state = ViewerSurfaceView.LAYERS;			
-				changeViewFrom (state, ".stl");
+				showGcodeFiles ();
 			} 
 		});
 		
@@ -225,6 +229,58 @@ public class ViewerMain extends Fragment {
 		    	mSurface.requestRender();
 		    }       
 		}); 	
+	}
+	
+	private void showGcodeFiles () {
+		//Logic for getting file type
+		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+		String pathProject = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name;
+		File f = new File (pathProject);
+
+		//Only when it's a project
+		if (f.isDirectory()){
+			String path = pathProject+"/_gcode";
+			
+			if (StorageController.isProject(f) && new File (path).list().length>0){				
+				AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+				adb.setTitle(mContext.getString(R.string.gcode_viewer));
+				
+				//We need the alertdialog instance to dismiss it
+				final AlertDialog ad = adb.create();
+									
+				if (path!=null) {					
+					final File[] files = (new File(path)).listFiles();
+					
+					//Create a string-only array for the adapter
+					if (files!=null){
+						String[] names = new String[files.length];
+						
+						for (int i = 0 ; i< files.length ; i++){							
+							names[i] = files[i].getName();
+							
+						}
+							
+						adb.setAdapter(new ArrayAdapter<String> (mContext, android.R.layout.simple_list_item_1, names), new DialogInterface.OnClickListener() {					
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+		
+								    File m = files[which];
+		
+								    //Open desired file
+								    openFile (m.getAbsolutePath());								    								    
+								    ad.dismiss();
+							}
+						});
+					
+					} 
+				}
+				adb.show();
+			} else {
+				Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
+			}
+		} else {
+			Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
+		}							
 	}
 	
 	private void initEditButtons (View rootView) {
