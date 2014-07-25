@@ -19,7 +19,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
             </TabWidget>
-
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
@@ -94,10 +93,21 @@
                         <ListView
                             android:id="@+id/lv_settings"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-                        </ListView>
+                            android:layout_height="124dp"
+                            android:layout_weight="0.16" >
 
+                        </ListView>
+   						
+                        <!-- Cuando haya que quitar la versión, borrar este textView y poner en el list view de arriba layout_height = match_parent y borrar el parámetro weight -->
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.08"
+                            android:text="Version v.20140725_1246" />
                     </LinearLayout>
+                    
+                    
 
                 </LinearLayout>
 
