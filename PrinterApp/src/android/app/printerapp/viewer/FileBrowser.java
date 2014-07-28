@@ -116,10 +116,15 @@ public class FileBrowser extends Activity  {
 							name = file.getName() + File.separator;
 						}
 					} else {
-						if (file.getName().toLowerCase(Locale.US).endsWith(mExtStl.toLowerCase(Locale.US)) || file.getName().toLowerCase(Locale.US).endsWith(mExtGcode.toLowerCase(Locale.US))) {
+						if (file.getName().toLowerCase(Locale.US).endsWith(mExtStl.toLowerCase(Locale.US))) {
+							name = file.getName();
+						}
+						
+						if (file.getName().toLowerCase(Locale.US).endsWith(mExtGcode.toLowerCase(Locale.US))) {
 							name = file.getName();
 						}
 					}
+
 					if (name != null) {
 						list.add(name);
 						fileList.add(file);
@@ -199,8 +204,7 @@ public class FileBrowser extends Activity  {
 		mFileListListener = new OnFileListDialogListener() {			
 			@Override
 			public void onClickFileList(File file) {
-				if (file!= null) ViewerMain.openFile(file.getPath());
-								
+				if (file!= null) ViewerMain.openFile(file.getPath());							
 			}
 		};
 	}

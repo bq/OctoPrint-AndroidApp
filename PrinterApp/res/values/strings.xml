@@ -39,6 +39,7 @@
     <string name="devices_filter_dialog_groups">As groups</string>
     <string name="devices_filter_dialog_linked">Only linked printers</string>
     
+    <string name="devices_toast_no_stl">No .stl found</string>
     <string name="devices_toast_no_gcode">No .gcode found</string>
     <string name="storage_toast_corrupted">File is corrupted</string>
     <string name="viewer_toast_not_available">This view is not available.</string>
@@ -100,7 +101,8 @@
     
     <string name="choose_file">Choose File</string> 
 	<string name="open">Open</string>  
-	<string name="close_browser">Close browser</string>  
+    <string name="gcode_viewer">Gcode Files</string>
+	<string name="close_browser">Close browser</string>
 		   
     <string name="viewer_title">Print Panel</string>
     <string name="loading_stl">Loading STL file</string>
