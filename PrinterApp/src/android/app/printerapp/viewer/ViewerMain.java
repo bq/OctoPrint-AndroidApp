@@ -28,14 +28,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
-import android.app.printerapp.model.ModelFile;
 
 public class ViewerMain extends Fragment {	
 	private static int mState;
-	
-	private static final int GCODE_EXTENSION = 6;
-	private static final int STL_EXTENSION = 4;
-		
+			
 	private static File mFile;
 
 	private static ViewerSurfaceView mSurface;
@@ -61,7 +57,6 @@ public class ViewerMain extends Fragment {
 	//TODO check
 	private static boolean mDoSnapshot  = false;
 	
-	private File [] mFilesList;
 	private static String mLastStlOpened = "";
 	private static String mLastGcodeOpened = "";
 	
@@ -181,8 +176,7 @@ public class ViewerMain extends Fragment {
 		mNormal.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
-				int state = mState = ViewerSurfaceView.NORMAL;				
-				changeViewFrom (state, ".gcode");	
+				changeStlViews(ViewerSurfaceView.NORMAL);	
 			} 
 		});
 		
@@ -190,8 +184,7 @@ public class ViewerMain extends Fragment {
 		mXray.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
-				int state = ViewerSurfaceView.XRAY;
-				changeViewFrom (state, ".gcode");			
+				changeStlViews(ViewerSurfaceView.XRAY);	
 			}			
 		});
 		
@@ -199,8 +192,7 @@ public class ViewerMain extends Fragment {
 		mTransparent.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
-				int state = ViewerSurfaceView.TRANSPARENT;			
-				changeViewFrom (state,".gcode");					
+				changeStlViews(ViewerSurfaceView.TRANSPARENT);	
 			}			
 		});		
 		
@@ -229,58 +221,6 @@ public class ViewerMain extends Fragment {
 		    	mSurface.requestRender();
 		    }       
 		}); 	
-	}
-	
-	private void showGcodeFiles () {
-		//Logic for getting file type
-		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-		String pathProject = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name;
-		File f = new File (pathProject);
-
-		//Only when it's a project
-		if (f.isDirectory()){
-			String path = pathProject+"/_gcode";
-			
-			if (StorageController.isProject(f) && new File (path).list().length>0){				
-				AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-				adb.setTitle(mContext.getString(R.string.gcode_viewer));
-				
-				//We need the alertdialog instance to dismiss it
-				final AlertDialog ad = adb.create();
-									
-				if (path!=null) {					
-					final File[] files = (new File(path)).listFiles();
-					
-					//Create a string-only array for the adapter
-					if (files!=null){
-						String[] names = new String[files.length];
-						
-						for (int i = 0 ; i< files.length ; i++){							
-							names[i] = files[i].getName();
-							
-						}
-							
-						adb.setAdapter(new ArrayAdapter<String> (mContext, android.R.layout.simple_list_item_1, names), new DialogInterface.OnClickListener() {					
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-		
-								    File m = files[which];
-		
-								    //Open desired file
-								    openFile (m.getAbsolutePath());								    								    
-								    ad.dismiss();
-							}
-						});
-					
-					} 
-				}
-				adb.show();
-			} else {
-				Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
-			}
-		} else {
-			Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
-		}							
 	}
 	
 	private void initEditButtons (View rootView) {
@@ -367,7 +307,7 @@ public class ViewerMain extends Fragment {
 		mSeekBar.setMax(max);
 		mSeekBar.setProgress(max);
 	}
-	
+		
 	
 	/************************* OPTIONS MENU ********************************/	
 	//Create option menu and inflate viewer menu
@@ -425,88 +365,78 @@ public class ViewerMain extends Fragment {
 		drawAndSnapshot(filePath);
 	}
    
-   private void changeViewFrom (int state, String type) {
-		if (mFile!= null) {
-			mState = state;
-			
-			fillFilesList();
-
-			String name = mFile.getName();
-			String pathFile="";
-			
-			if (name.endsWith(type)) {
-				if (type.equals(".gcode")) pathFile = getAssociatedStl (name);
-				else if (type.equals(".stl")) pathFile = getAssociatedGcode (name);
-							
-				if (pathFile==null) Toast.makeText(getActivity(), R.string.viewer_toast_not_available, Toast.LENGTH_SHORT).show();
-				else openFile (pathFile);
-			
-			} else 	mSurface.configViewMode(mState);		
-			
-										
-		} else Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();		
+	private void changeStlViews (int state) {
+		mState = state;
+		if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) openStlFile ();	
+		else mSurface.configViewMode(state);	
 	}
    
-   private void fillFilesList() {
-		if (mFilesList == null) {
-			String d = Environment.getExternalStorageDirectory().getPath() + "/PrintManager";
-			File dir = new File (d);
+   private void openStlFile () {
+		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+		String pathStl = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl";
+		File f = new File (pathStl);
+
+		//Only when it's a project
+		if (f.isDirectory() && f.list().length>0){
+			openFile (f.list()[0]);
+		} else {
+			Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+		}	   
+	}
+
+
+	private void showGcodeFiles () {
+		//Logic for getting file type
+		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+		String pathProject = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name;
+		File f = new File (pathProject);
+
+		//Only when it's a project
+		if (f.isDirectory()){
+			String path = pathProject+"/_gcode";
 			
-			if (dir.exists()) {
-				mFilesList = dir.listFiles();
-			}
-		}
-	}
-	
-	private String getAssociatedGcode (String name) {
-		String splitedName;
-		String pathFile;
-		int indexStartName;
-		int indexStartExt;
-		
-		name = name.substring(0, name.length()-STL_EXTENSION);
-
-		for (int i=0; i<mFilesList.length; i++) {
-			if (mFilesList[i].isFile()) {
-				pathFile = mFilesList[i].getPath();
-								
-				indexStartName = pathFile.lastIndexOf("/");
-				indexStartExt = pathFile.lastIndexOf(".");
-	
-				splitedName = pathFile.substring(indexStartName+1, indexStartExt);
+			if (StorageController.isProject(f) && new File (path).list().length>0){				
+				AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+				adb.setTitle(mContext.getString(R.string.gcode_viewer));
 				
-				if (splitedName.equals(name) && pathFile.endsWith(".gcode")) {
-					return mFilesList[i].getPath();
+				//We need the alertdialog instance to dismiss it
+				final AlertDialog ad = adb.create();
+									
+				if (path!=null) {					
+					final File[] files = (new File(path)).listFiles();
+					
+					//Create a string-only array for the adapter
+					if (files!=null){
+						String[] names = new String[files.length];
+						
+						for (int i = 0 ; i< files.length ; i++){							
+							names[i] = files[i].getName();
+							
+						}
+							
+						adb.setAdapter(new ArrayAdapter<String> (mContext, android.R.layout.simple_list_item_1, names), new DialogInterface.OnClickListener() {					
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+		
+								    File m = files[which];
+		
+								    //Open desired file
+								    openFile (m.getAbsolutePath());
+									mState = ViewerSurfaceView.LAYERS;
+
+								    ad.dismiss();
+							}
+						});
+					
+					} 
 				}
+				adb.show();
+			} else {
+				Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
 			}
-		}
-		
-		return null;
-	}
-	
-	private String getAssociatedStl (String name) {
-		String splitedName;
-		String pathFile;
-		int indexStartName;
-		int indexStartExt;
-		
-		name = name.substring(0, name.length()-GCODE_EXTENSION);
-
-		for (int i=0; i<mFilesList.length; i++) {
-			if (mFilesList[i].isFile()) {
-				pathFile = mFilesList[i].getPath();
-								
-				indexStartName = pathFile.lastIndexOf("/");
-				indexStartExt = pathFile.lastIndexOf(".");
-	
-				splitedName = pathFile.substring(indexStartName+1, indexStartExt);
-								
-				if (splitedName.equals(name) && pathFile.endsWith(".stl")) return mFilesList[i].getPath();
-				
-			}
-		}
-		
-		return null;
+		} else {
+			Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
+		}							
 	}
 	
 	private static void drawAndSnapshot (String filePath) {	
@@ -529,12 +459,12 @@ public class ViewerMain extends Fragment {
 			//mDoSnapshot = doSnapshot (pathSnapshot);
 
 			mSurface = new ViewerSurfaceView (mContext, mDataGcode, mState, mDoSnapshot, false);
-		}
-							
+		}							
 		//Add the view
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);
 		mLayout.addView(mMenu, 1);
+		
 				
 		//TODO CHANGED: Edition menu does not appear on top if we set setZOrderOnTop (true).
 		//Set the surface Z priority to top

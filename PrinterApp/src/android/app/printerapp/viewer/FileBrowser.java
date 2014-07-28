@@ -204,8 +204,7 @@ public class FileBrowser extends Activity  {
 		mFileListListener = new OnFileListDialogListener() {			
 			@Override
 			public void onClickFileList(File file) {
-				if (file!= null) ViewerMain.openFile(file.getPath());
-								
+				if (file!= null) ViewerMain.openFile(file.getPath());							
 			}
 		};
 	}
