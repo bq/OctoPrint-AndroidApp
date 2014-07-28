@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -200,7 +199,9 @@ public class ViewerMain extends Fragment {
 		mLayers.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
-				showGcodeFiles ();
+				if (mFile!=null) {
+					showGcodeFiles ();
+				} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
 			} 
 		});
 		
@@ -366,9 +367,11 @@ public class ViewerMain extends Fragment {
 	}
    
 	private void changeStlViews (int state) {
-		mState = state;
-		if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) openStlFile ();	
-		else mSurface.configViewMode(state);	
+		if (mFile!=null) {
+			mState = state;
+			if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) openStlFile ();	
+			else mSurface.configViewMode(state);	
+		} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();		
 	}
    
    private void openStlFile () {
