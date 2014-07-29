@@ -104,7 +104,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.08"
-                            android:text="Version v.20140728_1407" />
+                            android:text="Version v.20140729_1720" />
                     </LinearLayout>
                     
                     
