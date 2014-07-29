@@ -62,13 +62,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int ROTATE_Y = 1;
 	public static final int ROTATE_Z = 2;
 	
+	private static boolean mLockEdition=false;
+	
 	public ViewerSurfaceView(Context context) {
 	    super(context);
 	}
 	public ViewerSurfaceView(Context context, AttributeSet attrs) {
 	    super(context, attrs);
 	}
-	
+		
 	public ViewerSurfaceView(Context context, DataStorage data, int state, boolean doSnapshot, boolean stl) {
 		super(context);
 		
@@ -100,8 +102,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		
 		requestRender();
 	}
-	
-	
+		
 	public void showBackWitboxFace () {
 		if (mRenderer.getShowBackWitboxFace()) mRenderer.showBackWitboxFace(false);
 		else mRenderer.showBackWitboxFace(true);	
@@ -158,15 +159,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.resetTotalAngle();
 	}
 	
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if (mLockEdition) return false;
 		float x = event.getX();
         float y = event.getY();
                
         float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
-				
+								
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -243,22 +244,26 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			
 			// end pinch
 			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_POINTER_UP:				
+			case MotionEvent.ACTION_POINTER_UP:		
 				if (touchMode == TOUCH_ZOOM) {
 					pinchScale = 1.0f;
 					pinchStartPoint.x = 0.0f;
 					pinchStartPoint.y = 0.0f;
 				}
-				
-				if(mEdition && mEditionMode==ROTATION_EDITION_MODE)	mRenderer.refreshRotatedObjectCoordinates();					
-													
-				requestRender();					
-
+								
+				if(mEdition && mEditionMode==ROTATION_EDITION_MODE) mRenderer.refreshRotatedObjectCoordinates();
+								
 				touchMode = TOUCH_NONE;
+								
 				break;				
 		}
 		return true;
 	}
+	
+	public static void setLockEditionMode (boolean lock) {
+		mLockEdition = lock;
+	}
+	
 	
 	public void exitEditionMode () {
 		mEdition = false;

@@ -13,11 +13,13 @@ import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.app.printerapp.viewer.Geometry.*;
 
 
-public class ViewerRenderer implements GLSurfaceView.Renderer {
+public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	Context mContext;
 	private static String TAG = "ViewerRenderer";
 	
@@ -313,63 +315,81 @@ public class ViewerRenderer implements GLSurfaceView.Renderer {
 	}
 	
 	public void refreshRotatedObjectCoordinates () {	
-		if (mTotalAngle!=0) {
-			mData.initMaxMin();
-			float [] coordinatesArray = mData.getVertexArray();
-			float x,y,z;
-			
-			float [] vector = new float [4];
-			float [] result = new float [4];
-			float [] aux = new float [16];
+		final AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
+			protected void onPreExecute() {			
+				ViewerMain.configureProgressState(View.VISIBLE);
+				ViewerSurfaceView.setLockEditionMode(true);
+			}
 			
-			for (int i=0; i<coordinatesArray.length; i+=3) {
-				vector[0] = coordinatesArray[i];
-				vector[1] = coordinatesArray[i+1];
-				vector[2] = coordinatesArray[i+2];
+			@Override
+			protected Void doInBackground(Void... params) {
+				mData.initMaxMin();
+				float [] coordinatesArray = mData.getVertexArray();
+				float x,y,z;
 				
-				Matrix.setIdentityM(aux, 0);
-				Matrix.multiplyMM(aux, 0, mAccumulatedRotationObjectMatrix, 0, aux, 0);
-				Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
-								
-				x = result [0];
-				y = result [1];
-				z = result [2];
-						
-				mData.adjustMaxMin(x, y, z);
+				float [] vector = new float [4];
+				float [] result = new float [4];
+				float [] aux = new float [16];
+				
+				for (int i=0; i<coordinatesArray.length; i+=3) {
+					vector[0] = coordinatesArray[i];
+					vector[1] = coordinatesArray[i+1];
+					vector[2] = coordinatesArray[i+2];
+					
+					Matrix.setIdentityM(aux, 0);
+					Matrix.multiplyMM(aux, 0, mAccumulatedRotationObjectMatrix, 0, aux, 0);
+					Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
+									
+					x = result [0];
+					y = result [1];
+					z = result [2];
+							
+					mData.adjustMaxMin(x, y, z);
+				}		
+							
+				float maxX = mData.getMaxX();
+				float minX = mData.getMinX();
+				float minY = mData.getMinY();
+				float maxY = mData.getMaxY();
+				float maxZ = mData.getMaxZ();
+				float minZ = mData.getMinZ();	
+				
+				//We have to introduce the rest of transformations.
+				maxX = maxX*Math.abs(mScaleFactorX)+mLastCenter.x;
+				maxY = maxY*mScaleFactorY+mLastCenter.y;
+				maxZ = maxZ*mScaleFactorZ+mLastCenter.z;
+				
+				minX = minX*Math.abs(mScaleFactorX)+mLastCenter.x;
+				minY = minY*mScaleFactorY+mLastCenter.y;
+				minZ = minZ*mScaleFactorZ+mLastCenter.z;	
+
+				mData.setMaxX(maxX);
+				mData.setMaxY(maxY);
+				
+				mData.setMinX(minX);
+				mData.setMinY(minY);
+			
+				if (minZ!=0) mAdjustZ = -mData.getMinZ();
+				
+				mData.setMinZ(mData.getMinZ()+mAdjustZ);			
+				mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
+				
+				if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
+						|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
+				else mStateObject = INSIDE_TOUCHED;			
+			
+				return null;
+			}
+			
+			protected void onPostExecute(final Void unused) {
+				ViewerMain.configureProgressState(View.GONE);
+				ViewerSurfaceView.setLockEditionMode(false);
 			}		
-						
-			float maxX = mData.getMaxX();
-			float minX = mData.getMinX();
-			float minY = mData.getMinY();
-			float maxY = mData.getMaxY();
-			float maxZ = mData.getMaxZ();
-			float minZ = mData.getMinZ();	
-			
-			//We have to introduce the rest of transformations.
-			maxX = maxX*Math.abs(mScaleFactorX)+mLastCenter.x;
-			maxY = maxY*mScaleFactorY+mLastCenter.y;
-			maxZ = maxZ*mScaleFactorZ+mLastCenter.z;
-			
-			minX = minX*Math.abs(mScaleFactorX)+mLastCenter.x;
-			minY = minY*mScaleFactorY+mLastCenter.y;
-			minZ = minZ*mScaleFactorZ+mLastCenter.z;	
-
-			mData.setMaxX(maxX);
-			mData.setMaxY(maxY);
-			
-			mData.setMinX(minX);
-			mData.setMinY(minY);
+		};
 		
-			if (minZ!=0) mAdjustZ = -mData.getMinZ();
-
-			mData.setMinZ(mData.getMinZ()+mAdjustZ);			
-			mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
+		if (mTotalAngle!=0) task.execute();
 			
-			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
-					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
-			else mStateObject = INSIDE_TOUCHED;			
-		}	
 	}
 	
 	

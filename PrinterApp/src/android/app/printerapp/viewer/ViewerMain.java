@@ -19,12 +19,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 
@@ -67,6 +69,8 @@ public class ViewerMain extends Fragment {
 	private ImageButton mScale;
 	private ImageButton mExit;
 	private ImageButton mDelete;
+	
+	private static ProgressBar mProgress;
 
 	
 	static Context mContext;
@@ -222,6 +226,9 @@ public class ViewerMain extends Fragment {
 		    	mSurface.requestRender();
 		    }       
 		}); 	
+		
+		mProgress = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+		mProgress.setVisibility(View.GONE);
 	}
 	
 	private void initEditButtons (View rootView) {
@@ -307,6 +314,13 @@ public class ViewerMain extends Fragment {
 	public static void initSeekBar (int max) {
 		mSeekBar.setMax(max);
 		mSeekBar.setProgress(max);
+	}
+	
+	public static void configureProgressState (int v) {
+		if (v== View.GONE) mSurface.requestRender();
+		else if (v==View.VISIBLE) 	mProgress.bringToFront();
+		
+		mProgress.setVisibility(v);
 	}
 		
 	
