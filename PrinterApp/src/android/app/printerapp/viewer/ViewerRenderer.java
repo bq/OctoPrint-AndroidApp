@@ -4,6 +4,8 @@ import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -64,14 +66,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	private int mState;
 
-	private StlObject mStlObject;
+	private List<StlObject> mStlObjectList = new ArrayList<StlObject>();
 	private GcodeObject mGcodeObject;
 	private WitboxPlate mWitboxFaceDown;
 	private WitboxFaces mWitboxFaceRight;
 	private WitboxFaces mWitboxFaceBack;
 	private WitboxFaces mWitboxFaceLeft;
 	private WitboxPlate mInfinitePlane;
-	private DataStorage mData;
+	private List<DataStorage> mDataList;
+	//private DataStorage mData;
+
 			
 	private boolean mShowLeftWitboxFace = true;
 	private boolean mShowRightWitboxFace = true;
@@ -99,9 +103,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	float[] mLightPosInWorldSpace = new float[4];
 	
 	
-    //Object
-	private final float[] mAccumulatedRotationObjectMatrix = new float[16];
-	
+    //Object	
 	private final float[] mLightVector = new float [4];
 	float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
 			
@@ -110,42 +112,27 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private boolean mIsStl;
 	
 	//Variables Touch events
-	private boolean objectPressed = false;
+	private int mObjectPressed;
 	
 	//Variables for object edition
-	float mMoveX=0;
-	float mMoveY=0;
-	float mMoveZ=0;
-	
 	float mDx;
 	float mDy;
 	float mDz;
 
-	private float mAdjustZ = 0;
 	private float mScaleFactorX=1.0f;
 	private float mScaleFactorY=1.0f;
 	private float mScaleFactorZ=1.0f;
-
-	private float mLastScaleFactorX = 1.0f;
-	private float mLastScaleFactorY = 1.0f;
-	private float mLastScaleFactorZ = 1.0f;
-
-		
+	
 	private Vector mVector = new Vector (1,0,0); //default
 	private float mRotateAngle=0;
 	private float mTotalAngle=0;
-	private Point mLastCenter = new Point (0,0,0);
 	
 	private final int INSIDE_NOT_TOUCHED = 0;
 	private final int OUT = 1;
 	private final int INSIDE_TOUCHED = 2;
-	
-	private int mStateObject;
-	
-	private boolean mDeleteObject = false;
-	
-	public ViewerRenderer (DataStorage data, Context context, int state, boolean doSnapshot, boolean stl) {	
-		this.mData = data;
+			
+	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot, boolean stl) {	
+		this.mDataList = dataList;
 		this.mContext = context;
 		this.mState = state;
 		
@@ -186,81 +173,78 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	}
 	
 	public void setTransparent (boolean transparent) {
-		if (mStlObject!= null) mStlObject.setTransparent(transparent);
+		for (int i=0; i<mStlObjectList.size(); i++) 
+			mStlObjectList.get(i).setTransparent(transparent);
 	}
 	
 	public void setXray (boolean xray) {
-		if (mStlObject!= null) mStlObject.setXray(xray);
+		for (int i=0; i<mStlObjectList.size(); i++) 
+			mStlObjectList.get(i).setXray (xray);
 	}
 	
 	public void setRotationVector (Vector vector) {
 		mVector = vector;
 	}
 	
-	public float getFactorScaleX () {
-		return mScaleFactorX;
-	}
-	 
-	public float getFactorScaleY () {
-		return mScaleFactorY;
+	public void setObjectPressed (int i) {
+		mObjectPressed = i;
 	}
 	
-	public float getFactorScaleZ () {
-		return mScaleFactorZ;
-	}
-	
-	public void deleteObject () {
-		mDeleteObject = true;
-		mData = null;
-	}
-	
-	public boolean touchPoint (float x, float y) {
-		if (mData!= null) {
-			Ray ray = convertNormalized2DPointToRay(x, y);
-			 	 		 
-	        Box objectBox = new Box (mData.getMinX(), mData.getMaxX(), mData.getMinY(), mData.getMaxY(), mData.getMinZ(), mData.getMaxZ());
-	
-	        // If the ray intersects (if the user touched a part of the screen that
-	        // intersects the stl object's bounding box), then set objectPressed =
-	        // true.
-	        objectPressed = Geometry.intersects(objectBox, ray);
-	        
-	        if (objectPressed && mStateObject == INSIDE_NOT_TOUCHED) mStateObject = INSIDE_TOUCHED;
-	        
-	        return objectPressed;
+	public void deleteObject (int i) {
+		if (!mDataList.isEmpty()) {
+			mStlObjectList.remove(i);
+			mDataList.remove(i);
 		}
-		return false;
 	}
 	
-	int count = 0;
-	
+	public int objectPressed (float x, float y) {
+		int object = -1;
+		if (mDataList!=null && !mDataList.isEmpty()) {
+			Ray ray = convertNormalized2DPointToRay(x, y);
+			 	 
+			for (int i=0; i<mDataList.size(); i++) {
+		        Box objectBox = new Box (mDataList.get(i).getMinX(), mDataList.get(i).getMaxX(), mDataList.get(i).getMinY(), mDataList.get(i).getMaxY(), mDataList.get(i).getMinZ(), mDataList.get(i).getMaxZ());
+		
+		        // If the ray intersects (if the user touched a part of the screen that
+		        // intersects the stl object's bounding box), then set objectPressed =
+		        // true.		        
+		        if (Geometry.intersects(objectBox, ray) && object==-1) {
+		        	object = i;
+		        	setObjectPressed(i);	
+		        	if (mDataList.get(i).getStateObject()==INSIDE_NOT_TOUCHED) mDataList.get(i).setStateObject(INSIDE_TOUCHED);
+		        }	        
+		        
+		        if (object!=i && mDataList.get(i).getStateObject()==INSIDE_TOUCHED) mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);
+			}       
+		}
+		return object;
+	}
+		
 	public void dragObject (float x, float y) {
 		Ray ray = convertNormalized2DPointToRay(x, y);
 
 		Point touched = Geometry.intersectionPointWitboxPlate(ray);
+		           
+		DataStorage data = mDataList.get(mObjectPressed);
 		
-		mMoveX = touched.x ;
-        mMoveY = touched.y;
-                
-        float dx = mMoveX-mLastCenter.x;
-		float dy = mMoveY-mLastCenter.y;
-
-		float maxX = mData.getMaxX() + dx;
-		float maxY = mData.getMaxY() + dy;
-		float minX = mData.getMinX() + dx;
-		float minY = mData.getMinY() + dy;
+        float dx = touched.x-data.getLastCenter().x;
+		float dy = touched.y-data.getLastCenter().y;
 		
-		mLastCenter = new Point (mMoveX,mMoveY,mLastCenter.z);
+		float maxX = data.getMaxX() + dx;
+		float maxY = data.getMaxY() + dy;
+		float minX = data.getMinX() + dx;
+		float minY = data.getMinY() + dy;
+		mDataList.get(mObjectPressed).setLastCenter(new Point (touched.x,touched.y,data.getLastCenter().z));
 		
-		mData.setMaxX(mData.getMaxX() + dx);
-		mData.setMaxY(mData.getMaxY() + dy);
-		mData.setMinX(mData.getMinX() + dx);
-		mData.setMinY(mData.getMinY() + dy);
+		data.setMaxX(maxX);
+		data.setMaxY(maxY);
+		data.setMinX(minX);
+		data.setMinY(minY);
 		
 		//We change the colour if we are outside Witbox Plate
 		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
-			mStateObject = OUT;
-		else mStateObject = INSIDE_TOUCHED;
+			data.setStateObject(OUT);
+		else data.setStateObject(INSIDE_TOUCHED);
 		
     }
 	
@@ -270,38 +254,45 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			mScaleFactorY = fy;
 			mScaleFactorZ = fz;
 			
-			float maxX = mData.getMaxX()-mLastCenter.x;
-			float maxY = mData.getMaxY()-mLastCenter.y;
-			float maxZ = mData.getMaxZ();
-			float minX = mData.getMinX()-mLastCenter.x;
-			float minY = mData.getMinY()-mLastCenter.y;
-			float minZ = mData.getMinZ();
+			DataStorage data = mDataList.get(mObjectPressed);
 			
-			maxX = (maxX+(Math.abs(mScaleFactorX)-Math.abs(mLastScaleFactorX))*(maxX/Math.abs(mLastScaleFactorX)))+mLastCenter.x;
-			maxX = maxX * Math.signum(mScaleFactorX);
-			maxY = (maxY+(mScaleFactorY-mLastScaleFactorY)*(maxY/mLastScaleFactorY))+mLastCenter.y;
-			maxZ = (maxZ+(mScaleFactorZ-mLastScaleFactorZ)*(maxZ/mLastScaleFactorZ))+mLastCenter.z;
+			Point lastCenter = data.getLastCenter();
 			
-			minX = (minX+(Math.abs(mScaleFactorX)-Math.abs(mLastScaleFactorX))*(minX/Math.abs(mLastScaleFactorX)))+mLastCenter.x;
-			maxX = minX * Math.signum(mScaleFactorX);
-			minY = (minY+(mScaleFactorY-mLastScaleFactorY)*(minY/mLastScaleFactorY))+mLastCenter.y;
-			minZ = (minZ+(mScaleFactorZ-mLastScaleFactorZ)*(minZ/mLastScaleFactorZ))+mLastCenter.z;
+			float maxX = data.getMaxX()-lastCenter.x;
+			float maxY = data.getMaxY()-lastCenter.y;
+			float maxZ = data.getMaxZ();
+			float minX = data.getMinX()-lastCenter.x;
+			float minY = data.getMinY()-lastCenter.y;
+			float minZ = data.getMinZ();
+			
+			float lastScaleFactorX = data.getLastScaleFactorX();
+			float lastScaleFactorY = data.getLastScaleFactorY();
+			float lastScaleFactorZ = data.getLastScaleFactorZ();
+			
+			maxX = (maxX+(Math.abs(mScaleFactorX)-Math.abs(lastScaleFactorX))*(maxX/Math.abs(lastScaleFactorX)))+lastCenter.x;
+			maxY = (maxY+(mScaleFactorY-lastScaleFactorY)*(maxY/lastScaleFactorY))+lastCenter.y;
+			maxZ = (maxZ+(mScaleFactorZ-lastScaleFactorZ)*(maxZ/lastScaleFactorZ))+lastCenter.z;
+			
+			minX = (minX+(Math.abs(mScaleFactorX)-Math.abs(lastScaleFactorX))*(minX/Math.abs(lastScaleFactorX)))+lastCenter.x;
+			minY = (minY+(mScaleFactorY-lastScaleFactorY)*(minY/lastScaleFactorY))+lastCenter.y;
+			minZ = (minZ+(mScaleFactorZ-lastScaleFactorZ)*(minZ/lastScaleFactorZ))+lastCenter.z;
 						
-			mData.setMaxX(maxX);
-			mData.setMaxY(maxY);
-			mData.setMaxZ(maxZ);
+			data.setMaxX(maxX);
+			data.setMaxY(maxY);
+			data.setMaxZ(maxZ);
 			
-			mData.setMinX(minX);
-			mData.setMinY(minY);
-			mData.setMinZ(minZ);
-			
-			mLastScaleFactorX = mScaleFactorX;
-			mLastScaleFactorY = mScaleFactorY;
-			mLastScaleFactorZ = mScaleFactorZ;
+			data.setMinX(minX);
+			data.setMinY(minY);
+			data.setMinZ(minZ);
+						
+			data.setLastScaleFactorX(mScaleFactorX);
+			data.setLastScaleFactorY(mScaleFactorY);
+			data.setLastScaleFactorZ(mScaleFactorZ);
+
 			
 			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
-					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
-			else mStateObject = INSIDE_TOUCHED;
+					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) data.setStateObject(OUT);
+			else data.setStateObject(INSIDE_TOUCHED);
 		}
 	}
 	
@@ -324,13 +315,17 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 			@Override
 			protected Void doInBackground(Void... params) {
-				mData.initMaxMin();
-				float [] coordinatesArray = mData.getVertexArray();
+				DataStorage data = mDataList.get(mObjectPressed);
+
+				data.initMaxMin();
+				float [] coordinatesArray = data.getVertexArray();
 				float x,y,z;
 				
 				float [] vector = new float [4];
 				float [] result = new float [4];
 				float [] aux = new float [16];
+				
+				float[] rotationMatrix = data.getRotationMatrix();
 				
 				for (int i=0; i<coordinatesArray.length; i+=3) {
 					vector[0] = coordinatesArray[i];
@@ -338,46 +333,49 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 					vector[2] = coordinatesArray[i+2];
 					
 					Matrix.setIdentityM(aux, 0);
-					Matrix.multiplyMM(aux, 0, mAccumulatedRotationObjectMatrix, 0, aux, 0);
+					Matrix.multiplyMM(aux, 0, rotationMatrix, 0, aux, 0);
 					Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
 									
 					x = result [0];
 					y = result [1];
 					z = result [2];
 							
-					mData.adjustMaxMin(x, y, z);
+					data.adjustMaxMin(x, y, z);
 				}		
 							
-				float maxX = mData.getMaxX();
-				float minX = mData.getMinX();
-				float minY = mData.getMinY();
-				float maxY = mData.getMaxY();
-				float maxZ = mData.getMaxZ();
-				float minZ = mData.getMinZ();	
+				float maxX = data.getMaxX();
+				float minX = data.getMinX();
+				float minY = data.getMinY();
+				float maxY = data.getMaxY();
+				float maxZ = data.getMaxZ();
+				float minZ = data.getMinZ();	
 				
+				Point lastCenter = data.getLastCenter();
 				//We have to introduce the rest of transformations.
-				maxX = maxX*Math.abs(mScaleFactorX)+mLastCenter.x;
-				maxY = maxY*mScaleFactorY+mLastCenter.y;
-				maxZ = maxZ*mScaleFactorZ+mLastCenter.z;
+				maxX = maxX*Math.abs(mScaleFactorX)+lastCenter.x;
+				maxY = maxY*mScaleFactorY+lastCenter.y;
+				maxZ = maxZ*mScaleFactorZ+lastCenter.z;
 				
-				minX = minX*Math.abs(mScaleFactorX)+mLastCenter.x;
-				minY = minY*mScaleFactorY+mLastCenter.y;
-				minZ = minZ*mScaleFactorZ+mLastCenter.z;	
+				minX = minX*Math.abs(mScaleFactorX)+lastCenter.x;
+				minY = minY*mScaleFactorY+lastCenter.y;
+				minZ = minZ*mScaleFactorZ+lastCenter.z;	
 
-				mData.setMaxX(maxX);
-				mData.setMaxY(maxY);
+				data.setMaxX(maxX);
+				data.setMaxY(maxY);
 				
-				mData.setMinX(minX);
-				mData.setMinY(minY);
+				data.setMinX(minX);
+				data.setMinY(minY);
 			
-				if (minZ!=0) mAdjustZ = -mData.getMinZ();
+				float adjustZ = 0;
+				if (minZ!=0) adjustZ= -data.getMinZ();
 				
-				mData.setMinZ(mData.getMinZ()+mAdjustZ);			
-				mData.setMaxZ(mData.getMaxZ()+mAdjustZ);
+				data.setAdjustZ(adjustZ);
+				data.setMinZ(data.getMinZ()+adjustZ);			
+				data.setMaxZ(data.getMaxZ()+adjustZ);
 				
 				if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
-						|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) mStateObject = OUT;
-				else mStateObject = INSIDE_TOUCHED;			
+						|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) data.setStateObject(OUT);
+				else data.setStateObject(INSIDE_TOUCHED);
 			
 				return null;
 			}
@@ -439,29 +437,30 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	  }
 	  
 	  public void exitEditionMode () {
-		  switch (mStateObject) {
+		  DataStorage data = mDataList.get(mObjectPressed);
+
+		  switch (data.getStateObject()) {
 		  case INSIDE_NOT_TOUCHED:
-			  mStateObject = INSIDE_NOT_TOUCHED;
-			  break;
 		  case INSIDE_TOUCHED:
-			  mStateObject = INSIDE_NOT_TOUCHED;
+			  data.setStateObject(INSIDE_NOT_TOUCHED);
 			  break;
 		  case OUT: 
-			  mStateObject = OUT;
+			  data.setStateObject(OUT);
 			  break;
 		  }
 	  }
 	  
-	  private void setColor () {
-		  switch (mStateObject) {
+	  private void setColor (int object) {
+		  StlObject stl = mStlObjectList.get(object);
+		  switch (mDataList.get(object).getStateObject()) {
 		  case INSIDE_NOT_TOUCHED:
-			  mStlObject.setColor(StlObject.colorNormal);
+			  stl.setColor(StlObject.colorNormal);
 			  break;
 		  case INSIDE_TOUCHED:
-			  mStlObject.setColor(StlObject.colorSelectedObject);
+			  stl.setColor(StlObject.colorSelectedObject);
 			  break;
 		  case OUT: 
-			  mStlObject.setColor(StlObject.colorObjectOut);
+			  stl.setColor(StlObject.colorObjectOut);
 			  break;
 		  }
 	  }
@@ -475,8 +474,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		
 		Matrix.setIdentityM(mAccumulatedRotationMatrix, 0);
-		Matrix.setIdentityM(mAccumulatedRotationObjectMatrix, 0);
-
 		
 		mLightVector[0] = LIGHT_X;
 		mLightVector[1] = LIGHT_Y;
@@ -484,10 +481,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		
         mSceneAngleX = -40f;	
 
-		while (!mData.isDrawEnabled()) ; //wait	
+		while (!mDataList.get(mDataList.size()-1).isDrawEnabled()) ; //wait	if the last element has not been opened
 		
-		if (mIsStl) mStlObject = new StlObject (mData, mContext, mState);
-		else mGcodeObject = new GcodeObject (mData, mContext);
+		if (mIsStl) {
+			//First, reset the stl object list
+			for (int i=0; i<mStlObjectList.size(); i++)mStlObjectList.remove(i);
+			//Add the new ones.
+			for (int i=0; i<mDataList.size(); i++) mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
+		} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
 		
 		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
 
@@ -512,9 +513,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, Z_NEAR, Z_FAR);	
         
         if (mSnapShot) {
-	        float h = mData.getHeight();
-	        float l = mData.getLong();
-	        float w = mData.getWidth();
+        	DataStorage data = mDataList.get(0);
+	        float h = data.getHeight();
+	        float l = data.getLong();
+	        float w = data.getWidth();
 	        
 	        l = l/ratio; //We calculate the height related to the square in the frustum with this width 
 	        w = w/ratio;
@@ -523,14 +525,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        float dl = (float) (l/ (2*Math.tan(Math.toRadians(45/2))));
 	        float dw = (float) (w/ (2*Math.tan(Math.toRadians(45/2))));
 	        
-	        Log.i(TAG, "WIDTH " +mData.getWidth() + " HEIGHT " + mData.getHeight() + " LONG " + mData.getLong() + " dw " + dw + " dh " + dh + " dl " + dl);
+	        Log.i(TAG, "WIDTH " +data.getWidth() + " HEIGHT " + data.getHeight() + " LONG " + data.getLong() + " dw " + dw + " dh " + dh + " dl " + dl);
 
 	        if (dw>dh && dw>dl) mCameraZ = OFFSET_BIG_HEIGHT*h;
 	        else if (dh>dl) mCameraZ = OFFSET_HEIGHT*h;
 	        else mCameraZ = OFFSET_BIG_HEIGHT*h;
 	        
-	        dl = dl + Math.abs(mData.getMinY());
-	        dw = dw + Math.abs(mData.getMinX());
+	        dl = dl + Math.abs(data.getMinY());
+	        dw = dw + Math.abs(data.getMinX());
 	        
 	        if (dw>dh && dw>dl) mCameraY = - dw;
 	        else if (dh>dl) mCameraY = -dh;
@@ -545,9 +547,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public void onDrawFrame(GL10 unused) {
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+        if (mIsStl) 
+        	for (int i=0; i<mStlObjectList.size(); i++)
+        		setColor(i);
         
-        if (mIsStl) setColor();
-                	
 	    GLES20.glEnable (GLES20.GL_BLEND);
 	 	
 		// Enable depth testing
@@ -589,30 +593,56 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
         Matrix.invertM(invertedViewProjectionMatrix, 0, mVPFinalMatrix, 0);
       
-        Matrix.setIdentityM(mObjectModel, 0);
-        Matrix.translateM(mObjectModel, 0, mMoveX, mMoveY, mMoveZ);  
-        Matrix.scaleM(mObjectModel, 0, mScaleFactorX, mScaleFactorY, mScaleFactorZ);
-        
-        Matrix.translateM(mObjectModel, 0, 0, 0, mAdjustZ);
+        if (mDataList.size()>0 && mObjectPressed!=-1) {
+	        DataStorage data = mDataList.get(mObjectPressed);
+	        Point center = data.getLastCenter();
+	
+	        Matrix.setIdentityM(mObjectModel, 0);
+	        Matrix.translateM(mObjectModel, 0, center.x, center.y, center.z);  
+	        Matrix.scaleM(mObjectModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
+	        
+	        Matrix.translateM(mObjectModel, 0, 0, 0, data.getAdjustZ());
+	
+	        //Object rotation  
+	        float [] rotateObjectMatrix = data.getRotationMatrix();
+	        Matrix.rotateM(rotateObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
+	
+	        if (mObjectPressed!=-1) mDataList.get(mObjectPressed).setRotationMatrix(rotateObjectMatrix);
+	
+	        //Reset angle, we store the rotation in the matrix
+	        mRotateAngle=0;
+	
+	        //Multiply the model by the accumulated rotation
+	        Matrix.multiplyMM(mTemporaryModel, 0, mObjectModel, 0,rotateObjectMatrix, 0);     
+	
+	        Matrix.multiplyMM(mMVPMatrix, 0,mVPFinalMatrix, 0, mTemporaryModel, 0);   
+	
+	        //Set Light direction  
+	        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mTemporaryModel, 0, mLightPosInModelSpace, 0);
+	        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);    
+        }
+	                                                                                              
+        if (mIsStl) 
+    		for (int i=0; i<mStlObjectList.size(); i++) 
+    			if (i==mObjectPressed) {
+    				mDataList.get(i).setModelMatrix(mTemporaryModel);
 
-        //Object rotation  
-        Matrix.rotateM(mAccumulatedRotationObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
+    				mStlObjectList.get(i).draw(mMVPMatrix, mMVPMatrix, mLightPosInEyeSpace);
+    			}
+    			else  {
+    				float [] editionMatrix = mDataList.get(i).getModelMatrix();
+    				float [] matrix = new float[16];
+    				Matrix.multiplyMM(matrix, 0,mVPFinalMatrix, 0, editionMatrix, 0);  
 
-        //Reset angle, we store the rotation in the matrix
-        mRotateAngle=0;
-                
-        //Multiply the model by the accumulated rotation
-        Matrix.multiplyMM(mTemporaryModel, 0, mObjectModel, 0, mAccumulatedRotationObjectMatrix, 0);     
-             
-        Matrix.multiplyMM(mMVPMatrix, 0,mVPFinalMatrix, 0, mTemporaryModel, 0);   
-            
-        //Set Light direction  
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mTemporaryModel, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);                                             
-                                                                                                                                                                  
-        if (!mIsStl) mGcodeObject.draw(mVPFinalMatrix); 
-        else if (!mDeleteObject) mStlObject.draw(mMVPMatrix, mMVPMatrix, mLightPosInEyeSpace);
+    				Matrix.multiplyMV(mLightPosInWorldSpace, 0, editionMatrix, 0, mLightPosInModelSpace, 0);
+    		        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
+    				mStlObjectList.get(i).draw(matrix, matrix, mLightPosInEyeSpace);
+    			}
         
+        else 
+        	mGcodeObject.draw(mVPFinalMatrix); 
+        
+
         if (mSnapShot) {
         	mInfinitePlane.draw(mVPFinalMatrix, mMVMatrix);
         	takeScreenShot(unused);
@@ -655,7 +685,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         bitmap.copyPixelsFromBuffer(sb);
         
         try {
-            FileOutputStream fos = new FileOutputStream(mData.getPathSnapshot());
+            FileOutputStream fos = new FileOutputStream(mDataList.get(0).getPathSnapshot());
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();

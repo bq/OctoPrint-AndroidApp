@@ -3,6 +3,10 @@ package android.app.printerapp.viewer;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.printerapp.viewer.Geometry.Point;
+import android.opengl.Matrix;
+import android.util.Log;
+
 public class DataStorage {		
 	private List<Float> mVertexList = new ArrayList<Float>();
 	private List<Float> mNormalList = new ArrayList<Float>();
@@ -29,8 +33,7 @@ public class DataStorage {
 	
 	private String mPath;
 	private String mPathSnapshot;
-
-	
+		
 	public static final int MOVE = 0;
 	public static final int FILL = 1;
 	public static final int PERIMETER = 2;
@@ -44,10 +47,20 @@ public class DataStorage {
 	
 	public static final int TRIANGLE_VERTEX = 3;
 	
+	private float [] mRotationMatrix = new float[16];
+	private float [] mModelMatrix = new float[16];
+	private float mLastScaleFactorX= 1.0f;
+	private float mLastScaleFactorY= 1.0f;
+	private float mLastScaleFactorZ= 1.0f;	
+	private Point mLastCenter = new Point (0,0,0);
+	private int mStateObject;
+	private float mAdjustZ;
 	
-	public List<Float> get () {
-		return mVertexList;
+	public DataStorage () {
+		Matrix.setIdentityM(mRotationMatrix, 0);
+		Matrix.setIdentityM(mModelMatrix, 0);
 	}
+	
 	public int getCoordinateListSize () {
 		return mVertexList.size();
 	}
@@ -76,7 +89,7 @@ public class DataStorage {
 	public void fillVertexArray () {
 		mVertexArray = new float [mVertexList.size()];
 		
-		centerSTL();
+		LastCenterSTL();
 	}
 	
 	public void initMaxMin () {
@@ -88,7 +101,7 @@ public class DataStorage {
 		setMinZ(Float.MAX_VALUE);		
 	}
 	
-	public void centerSTL(){	
+	public void LastCenterSTL(){	
 		float distX = mMinX + (mMaxX - mMinX)/2;
 		float distY = mMinY + (mMaxY - mMinY)/2;
 		float distZ = mMinZ;
@@ -315,5 +328,74 @@ public class DataStorage {
 	
 	public String getPathSnapshot () {
 		return mPathSnapshot;
+	}
+	
+	/************************* EDITION INFORMATION ********************************/
+	public void setLastCenter (Point p) {
+		mLastCenter = p;
+	}
+
+	public Point getLastCenter () {
+		return mLastCenter;
+	}		
+	
+	public void setRotationMatrix (float [] m) {
+		for (int i=0;i<mRotationMatrix.length; i++) {
+			mRotationMatrix[i] = m[i];
+		}
+	}
+	
+	public float[] getRotationMatrix () {
+		return mRotationMatrix;
+	}
+	
+	public void setModelMatrix (float [] m) {
+		for (int i=0;i<mModelMatrix.length; i++) {
+			mModelMatrix[i] = m[i];
+		}
+	}
+	
+	public float[] getModelMatrix () {
+		return mModelMatrix;
+	}
+	
+	public void setLastScaleFactorX (float f) {
+		mLastScaleFactorX=f;
+	}
+	 
+	public void setLastScaleFactorY (float f) {
+		mLastScaleFactorY=f;
+	}
+	
+	public void setLastScaleFactorZ (float f) {
+		mLastScaleFactorZ=f;
+	}
+	
+	public float getLastScaleFactorX () {
+		return mLastScaleFactorX;
+	}
+	 
+	public float getLastScaleFactorY () {
+		return mLastScaleFactorY;
+	}
+	
+	public float getLastScaleFactorZ () {
+		return mLastScaleFactorZ;
+	}
+	
+	public void setStateObject (int state) {
+		mStateObject = state;
+	}
+	
+	public int getStateObject() {
+		return mStateObject;
+	}
+	
+	public void setAdjustZ (float z) {
+		mAdjustZ = z;
+	}
+	
+	public float getAdjustZ () {
+		return mAdjustZ;
 	}
 }

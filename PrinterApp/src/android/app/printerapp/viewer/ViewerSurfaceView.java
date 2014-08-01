@@ -1,10 +1,14 @@
 package android.app.printerapp.viewer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -16,7 +20,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int LAYERS = 3;
 	
 	ViewerRenderer mRenderer;
-	
+	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
 	//Touch
 	private final float TOUCH_SCALE_FACTOR_ROTATION = 90.0f / 320;  //180.0f / 320;
 	private float mPreviousX;
@@ -63,6 +67,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int ROTATE_Z = 2;
 	
 	private static boolean mLockEdition=false;
+	private int mObjectPressed = -1;
 	
 	public ViewerSurfaceView(Context context) {
 	    super(context);
@@ -71,12 +76,13 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	    super(context, attrs);
 	}
 		
-	public ViewerSurfaceView(Context context, DataStorage data, int state, boolean doSnapshot, boolean stl) {
+	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, boolean doSnapshot, boolean stl) {
 		super(context);
 		
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
       
+        mDataList = data;
 		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
 		setRenderer(mRenderer);
 				
@@ -140,7 +146,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	}
 	
 	public void deleteObject() {
-		mRenderer.deleteObject();
+		mRenderer.deleteObject(mObjectPressed);
+		exitEditionMode();
 		requestRender();
 	}
 	
@@ -161,6 +168,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+
 		if (mLockEdition) return false;
 		float x = event.getX();
         float y = event.getY();
@@ -175,9 +183,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartDistance = getPinchDistance(event);
 					pinchStartY = mRenderer.getCameraPosY();
 					pinchStartZ = mRenderer.getCameraPosZ();
-					pinchStartFactorX = mRenderer.getFactorScaleX();
-					pinchStartFactorY = mRenderer.getFactorScaleY();
-					pinchStartFactorZ = mRenderer.getFactorScaleZ();
+					
+					if (mObjectPressed!=-1) {
+						pinchStartFactorX = mDataList.get(mObjectPressed).getLastScaleFactorX();
+						pinchStartFactorY = mDataList.get(mObjectPressed).getLastScaleFactorY();
+						pinchStartFactorZ = mDataList.get(mObjectPressed).getLastScaleFactorZ();
+					}
 
 					if (pinchStartDistance > 50f) {
 						getPinchCenterPoint(event, pinchStartPoint);
@@ -189,8 +200,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				break;				
 			case MotionEvent.ACTION_DOWN:
 				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
-					if (!mEdition && mRenderer.touchPoint(normalizedX, normalizedY)) {
+					int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
+					if (!mEdition && objPressed!=-1) {
 						mEdition = true;
+						mObjectPressed=objPressed;
 						ViewerMain.setEditionMenuVisibility(View.VISIBLE);
 					}
 					
@@ -268,7 +281,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void exitEditionMode () {
 		mEdition = false;
 		mEditionMode = NONE_EDITION_MODE;
-		mRenderer.exitEditionMode();
+		//We can exit edition mode at clicking in the menu or at deleting a model. If the model is deleted, it is not necessary to made any
+		//change in its rendering (because we have deleted it). We only call mRenderer. exitEditionMode if the object has not been deleted.
+		if (mObjectPressed<mDataList.size()) mRenderer.exitEditionMode(); 
+		mObjectPressed = -1;
+		mRenderer.setObjectPressed(mObjectPressed);
     	ViewerMain.setEditionMenuVisibility(View.INVISIBLE);
     	
     	requestRender();
@@ -313,9 +330,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	}
 	
 	public void doMirror () {
-		float fx = mRenderer.getFactorScaleX();
-		float fy = mRenderer.getFactorScaleY();
-		float fz = mRenderer.getFactorScaleZ();
+		float fx = mDataList.get(mObjectPressed).getLastScaleFactorX();
+		float fy = mDataList.get(mObjectPressed).getLastScaleFactorY();
+		float fz = mDataList.get(mObjectPressed).getLastScaleFactorZ();
 		
 		mRenderer.scaleObject(-1*fx, fy, fz);
 		requestRender();

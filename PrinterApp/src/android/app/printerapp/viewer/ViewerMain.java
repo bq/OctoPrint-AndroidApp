@@ -1,12 +1,14 @@
 package android.app.printerapp.viewer;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +28,6 @@ import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 
@@ -52,15 +53,12 @@ public class ViewerMain extends Fragment {
 	private Button mNormal;
 	private static SeekBar mSeekBar;
 	
-	private static DataStorage mDataStl;
-	private static DataStorage mDataGcode;
+	private static List<DataStorage> mDataStlList = new ArrayList<DataStorage>();	
+	private static List<DataStorage> mDataGcodeList= new ArrayList<DataStorage>();
 	
 	//TODO check
 	private static boolean mDoSnapshot  = false;
-	
-	private static String mLastStlOpened = "";
-	private static String mLastGcodeOpened = "";
-	
+		
 	//Edition menu variables
 	private static LinearLayout mMenu;
 	private ImageButton mMove;
@@ -222,7 +220,7 @@ public class ViewerMain extends Fragment {
 	
 		    @Override       
 		    public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) { 
-		    	mDataGcode.setActualLayer(progress);
+		    	mDataGcodeList.get(0).setActualLayer(progress);
 		    	mSurface.requestRender();
 		    }       
 		}); 	
@@ -365,16 +363,19 @@ public class ViewerMain extends Fragment {
    
    /************************* FILE MANAGEMENT ********************************/
    public static void openFile (String filePath) {
+	   Log.i("viewer", " file path " + filePath);
 		mFile = new File(filePath);
 		//Open the file
-		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) && !mLastStlOpened.equals(mFile.getName())) {
-			mDataStl = new DataStorage ();
-			StlFile.openStlFile (mContext, mFile, mDataStl);
-			mLastStlOpened = mFile.getName();
-		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE")) && !mLastGcodeOpened.equals(mFile.getName())) {
-			mDataGcode = new DataStorage ();
-			GcodeFile.openGcodeFile(mContext, mFile, mDataGcode);	
-			mLastGcodeOpened = mFile.getName();
+		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) ) {
+			DataStorage dataStl = new DataStorage();
+			StlFile.openStlFile (mContext, mFile, dataStl);
+			mDataStlList.add(dataStl);
+		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE"))) {
+			mDataGcodeList.clear();
+			mDataStlList.clear();
+			DataStorage dataGcode = new DataStorage();
+			GcodeFile.openGcodeFile(mContext, mFile, dataGcode);
+			mDataGcodeList.add(dataGcode);
 		}
 		
 		drawAndSnapshot(filePath);
@@ -383,19 +384,21 @@ public class ViewerMain extends Fragment {
 	private void changeStlViews (int state) {
 		if (mFile!=null) {
 			mState = state;
-			if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) openStlFile ();	
+			if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) 
+				openStlFile ();	
 			else mSurface.configViewMode(state);	
 		} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();		
 	}
    
    private void openStlFile () {
 		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-		String pathStl = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl";
+		String pathStl = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
+		
 		File f = new File (pathStl);
 
 		//Only when it's a project
 		if (f.isDirectory() && f.list().length>0){
-			openFile (f.list()[0]);
+			openFile (pathStl+ f.list()[0]);
 		} else {
 			Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
 		}	   
@@ -457,25 +460,26 @@ public class ViewerMain extends Fragment {
 	}
 	
 	private static void drawAndSnapshot (String filePath) {	
-		String pathSnapshot;
+		//String pathSnapshot;
 		setEditionMenuVisibility(View.INVISIBLE);
 
 		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
 			mSeekBar.setVisibility(View.INVISIBLE);
 			
-			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataStl.getPathFile() + ".jpeg";
-			mDataStl.setPathSnapshot(pathSnapshot);
+			//TODO Check when implementing snapshot of the pieces.
+			//pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataStl.getPathFile() + ".jpeg";
+			//mDataStl.setPathSnapshot(pathSnapshot);
 			//mDoSnapshot = doSnapshot (pathSnapshot);
 
-			mSurface = new ViewerSurfaceView (mContext, mDataStl, mState, mDoSnapshot, true);
+			mSurface = new ViewerSurfaceView (mContext, mDataStlList, mState, mDoSnapshot, true);
 
 		} else if (filePath.endsWith(".gcode") || filePath.endsWith(".GCODE")) {
 			mSeekBar.setVisibility(View.VISIBLE);
-			pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataGcode.getPathFile() + ".jpeg";
-			mDataGcode.setPathSnapshot(pathSnapshot);
+			//pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataGcode.getPathFile() + ".jpeg";
+			//mDataGcode.setPathSnapshot(pathSnapshot);
 			//mDoSnapshot = doSnapshot (pathSnapshot);
 
-			mSurface = new ViewerSurfaceView (mContext, mDataGcode, mState, mDoSnapshot, false);
+			mSurface = new ViewerSurfaceView (mContext, mDataGcodeList, mState, mDoSnapshot, false);
 		}							
 		//Add the view
 		mLayout.removeAllViews();

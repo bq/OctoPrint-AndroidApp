@@ -75,6 +75,7 @@ public class StlFile {
 		InputStream inputStream = null;
 		byte [] arrayBytes = null;
 		try {		
+			Log.i("view", "filepath " + filePath.toString());
 			inputStream = context.getContentResolver().openInputStream(filePath);		
 			arrayBytes = IOUtils.toByteArray(inputStream);
 		} catch (Exception e) {
