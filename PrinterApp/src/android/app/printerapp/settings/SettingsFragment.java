@@ -1,8 +1,14 @@
 package android.app.printerapp.settings;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -61,6 +67,11 @@ public class SettingsFragment extends Fragment{
 			mAdapter = new SettingsListAdapter(getActivity(), R.layout.settings_row, DevicesListController.getList());
 			ListView l = (ListView) rootView.findViewById(R.id.lv_settings);
 			l.setAdapter(mAdapter);
+			
+			TextView tv = (TextView) rootView.findViewById(R.id.tv_version);
+			tv.setText(setBuildVersion());
+			
+			
 			
 		}
 		return rootView;
@@ -147,6 +158,27 @@ public class SettingsFragment extends Fragment{
 			iv.setImageResource(R.drawable.stat_sys_wifi_signal_1);
 		} else iv.setImageResource(R.drawable.stat_sys_wifi_signal_0);
 
+	}
+	
+	//TODO Remove build version
+	public String setBuildVersion(){
+		
+		String s = "Version v.";
+
+		 try{
+		     ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(getActivity().getPackageName(), 0);
+		     ZipFile zf = new ZipFile(ai.sourceDir);
+		     ZipEntry ze = zf.getEntry("classes.dex");
+		     long time = ze.getTime();
+		     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm",new Locale("es", "ES"));
+		     s = s + sdf.format(new java.util.Date(time));
+		     zf.close();
+		  }catch(Exception e){
+			  
+			  e.printStackTrace();
+		  }
+		 
+		 return s;
 	}
 	
 }
