@@ -55,6 +55,9 @@ public class ListContent {
 	 */
 	public static List<ListItem> getItemList(Context context){
 		
+		//We need to clear the list before adding elements to avoid multiple insertion
+		ITEMS.clear();
+		
 		addItem(new ListItem("1", context.getString(R.string.fragment_devices)));
 		addItem(new ListItem("2", context.getString(R.string.fragment_print)));
 		addItem(new ListItem("3", context.getString(R.string.fragment_models)));
