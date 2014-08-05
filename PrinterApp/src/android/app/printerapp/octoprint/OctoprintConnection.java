@@ -24,7 +24,7 @@ public class OctoprintConnection {
 	
 	
 	//Websockets
-	private static WebSocketConnection mConnection = new WebSocketConnection();
+	
 	private static final String GET_SOCK = CUSTOM_PORT + "/sockjs/websocket";
 	
 	
@@ -43,6 +43,9 @@ public class OctoprintConnection {
 		final String wsuri = "ws:/" + p.getAddress() + GET_SOCK;
 		 
 		   try {
+			   
+			  WebSocketConnection mConnection = new WebSocketConnection();
+			   
 			   //mConnection is a new websocket connection
 		      mConnection.connect(wsuri, new WebSocketHandler() {
 		 
