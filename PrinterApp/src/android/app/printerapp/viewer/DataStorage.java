@@ -89,7 +89,7 @@ public class DataStorage {
 	public void fillVertexArray () {
 		mVertexArray = new float [mVertexList.size()];
 		
-		LastCenterSTL();
+		centerSTL();
 	}
 	
 	public void initMaxMin () {
@@ -101,11 +101,11 @@ public class DataStorage {
 		setMinZ(Float.MAX_VALUE);		
 	}
 	
-	public void LastCenterSTL(){	
+	public void centerSTL(){	
 		float distX = mMinX + (mMaxX - mMinX)/2;
 		float distY = mMinY + (mMaxY - mMinY)/2;
 		float distZ = mMinZ;
-						
+				
 		for (int i = 0; i < mVertexList.size(); i=i+3) {		
 			mVertexArray[i] = mVertexList.get(i)   - distX;
 			mVertexArray[i+1] = mVertexList.get(i+1) - distY;

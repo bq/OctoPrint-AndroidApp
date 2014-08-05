@@ -269,6 +269,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			float lastScaleFactorY = data.getLastScaleFactorY();
 			float lastScaleFactorZ = data.getLastScaleFactorZ();
 			
+			Log.i("viewer", " ANTES maxX " + maxX + " minX " + minX + " scaleFactorX " + mScaleFactorX);
+
 			maxX = (maxX+(Math.abs(mScaleFactorX)-Math.abs(lastScaleFactorX))*(maxX/Math.abs(lastScaleFactorX)))+lastCenter.x;
 			maxY = (maxY+(mScaleFactorY-lastScaleFactorY)*(maxY/lastScaleFactorY))+lastCenter.y;
 			maxZ = (maxZ+(mScaleFactorZ-lastScaleFactorZ)*(maxZ/lastScaleFactorZ))+lastCenter.z;
@@ -284,6 +286,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			data.setMinX(minX);
 			data.setMinY(minY);
 			data.setMinZ(minZ);
+			
+			Log.i("viewer", " maxX " + maxX + " minX " + minX + " scaleFactorX " + mScaleFactorX);
 						
 			data.setLastScaleFactorX(mScaleFactorX);
 			data.setLastScaleFactorY(mScaleFactorY);

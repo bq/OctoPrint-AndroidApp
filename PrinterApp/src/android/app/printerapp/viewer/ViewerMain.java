@@ -340,7 +340,7 @@ public class ViewerMain extends Fragment {
 			return true;
 			
        	case R.id.viewer_save: 
-       		//Save current file
+       		StlFile.saveModel(mDataStlList);
             return true;
             
     	case R.id.viewer_notes: 
