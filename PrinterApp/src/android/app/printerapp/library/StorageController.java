@@ -114,13 +114,25 @@ public class StorageController {
 	//TODO change this to database/folder eventually
 	public static ArrayList<ModelFile> getFavorites(){
 		
-		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
-		File path = new File(getParentFolder() + "/Files");
-		File[] files = path.listFiles();
 		
-		for (File file : files){				
-			if (isProject(file))tempList.add(new ModelFile(file.getAbsolutePath(), "Internal storage"));
+		
+		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
+		
+		
+		try{
+			File path = new File(getParentFolder() + "/Files");
+			
+			//temp solution, Files shouldn't be created here
+			path.mkdirs();
+			File[] files = path.listFiles();
+			
+			for (File file : files){				
+				if (isProject(file))tempList.add(new ModelFile(file.getAbsolutePath(), "Internal storage"));
+			}
+		} catch (Exception e){
+			e.printStackTrace();
 		}
+		
 				
 		return tempList;
 		
