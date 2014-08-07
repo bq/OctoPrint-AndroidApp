@@ -204,11 +204,23 @@ public class StorageController {
 				
 				retrievePrinterFiles(path);
 				
-			} else retrieveFiles(new File(path), false);
+			} else {
+				retrieveFiles(new File(path), false);
+				
+				File f = new File(path);
+				
+				//if it's not the parent folder, make a back folder
+				if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
+
+					//TODO change folder names
+					StorageController.addToList(new File(f.getParentFile().toString()));
+				}
+			}
 			
 			
 		}
-		
+
+				
 	}
 	
 	//Check if a folder is also a project

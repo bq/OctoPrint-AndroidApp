@@ -1,7 +1,6 @@
 package android.app.printerapp.library;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -30,12 +29,12 @@ import android.widget.ArrayAdapter;
 public class StorageOnClickListener implements OnItemClickListener, OnItemLongClickListener{
 
 	LibraryFragment mContext;
-	String[] mDialogOptions;
+
 	
 	public StorageOnClickListener(LibraryFragment context){
 		
 		this.mContext = context;
-		this.mDialogOptions = new String[]{"Print","Edit","Move", "Delete"};
+
 
 	}
 
@@ -89,12 +88,14 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				StorageController.reloadFiles(f.getAbsolutePath());
 
 				//if it's not the parent folder, make a back folder
-				if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
+				/*if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
 
 					//TODO change folder names
 					StorageController.addToList(new File(f.getParentFile().toString()));
 				}
 				
+				
+				mContext.sortAdapter();*/
 				
 				mContext.sortAdapter();
 				
@@ -112,12 +113,15 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	//Show dialog for handling files
 	private void showOptionDialog(final File f){
 		
+		String[] mDialogOptions = new String[]{"Print","Edit","Move", "Delete"};
+		
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());	
 		adb.setTitle(R.string.library_option_dialog_title);
 		
 		final AlertDialog ad = adb.create();
 		
-		adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(), android.R.layout.simple_list_item_1, mDialogOptions), 
+		adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(), 
+				android.R.layout.simple_list_item_1, mDialogOptions), 
 				new OnClickListener() {
 			
 			@Override
@@ -234,63 +238,9 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					
 				case 2: //Move
 
-					
-					//Current folder to get available directories
-					File dir = new File(StorageController.getCurrentPath().getAbsolutePath());
-					
-					//Only show directories
-					FileFilter fileFilter = new FileFilter() {
-					    public boolean accept(File file) {
-					    	
-					    	if (file.isDirectory()){
-					    		
-					    		return !StorageController.isProject(file);
-					    		
-					    	} else return false;
-					    	
-					       
-					    }
-					};
-					
-					final File[] files = dir.listFiles(fileFilter);
-					
-					String[] folderNames = new String[files.length];
-					
-					for (int i=0 ; i< files.length ; i++){
-						
-						folderNames[i] = files[i].getName();
-						
-					}
-					
-					//Folder dialog
-					AlertDialog.Builder adbFolder = new AlertDialog.Builder(mContext.getActivity());
-					
-					adbFolder.setTitle(R.string.open);
-					
-					adbFolder.setAdapter(new ArrayAdapter<String>(mContext.getActivity(),
-							android.R.layout.simple_list_item_1,folderNames), new OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									
-									//moveFile(f.getParent() + "/", f.getName(), files[which].getAbsolutePath() + "/");
-									
-									//Copy file to new folder
-									File fileTo = (new File(files[which] + "/" + f.getName()));
-									
-									//Delete file if success
-									if (!f.renameTo(fileTo)) {
-									    f.delete();
-									}
+					mContext.setMoveFile(f);
+					Toast.makeText(mContext.getActivity(), R.string.library_paste_toast, Toast.LENGTH_SHORT).show();
 
-								}
-							});
-					
-					
-					adbFolder.setNegativeButton(R.string.cancel, null);
-					
-					adbFolder.show();
-					
 					
 					break;
 					

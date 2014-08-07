@@ -57,12 +57,14 @@
     <string name="library_option_dialog_title">Opciones del modelo</string>
     <string name="library_option_print">Imprimir</string>
     <string name="library_delete_dialog_title">¿Quieres eliminar este fichero?</string>
+    <string name="library_paste_toast">Selecciona "Pegar" en el menu</string>
     
     <string name="library_menu_search">Buscar modelo</string>
     <string name="library_menu_filter">Filtrar modelos</string>
     <string name="library_menu_list">Vista de lista</string>
     <string name="library_menu_add">Añadir modelo</string>
     <string name="library_menu_folder">Crear nueva carpeta</string>
+    <string name="library_menu_paste">Pegar</string>
     
     <string name="library_tabhost_tab_all">Todos los modelos</string>
     <string name="library_tabhost_tab_memory">Memoria Witbox</string>
