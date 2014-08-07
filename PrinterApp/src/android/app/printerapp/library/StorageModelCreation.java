@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 /**
  * 
@@ -71,7 +72,7 @@ public class StorageModelCreation {
 		                }
 						
 						createFile(root.getAbsolutePath() + "/" + name + ".jpg", context, R.drawable.random);
-					
+						
 					} catch (IOException e){
 						e.printStackTrace();
 					}
@@ -83,6 +84,8 @@ public class StorageModelCreation {
 			
 			
 		}
+		
+
 		
 	}	
 	

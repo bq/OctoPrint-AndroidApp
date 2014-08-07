@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,8 @@ public class LibraryFragment extends Fragment {
 	
 	private StorageAdapter mAdapter;
 	private String mCurrentFilter = null;
+	
+	private File mMoveFile = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +101,15 @@ public class LibraryFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
+
 		inflater.inflate(R.menu.library_menu, menu);
+		
+		
+		Log.i("OUT","Derp-de-menu");
+		if (mMoveFile!=null) {
+
+			menu.findItem(R.id.library_paste).setVisible(true);
+		} else menu.findItem(R.id.library_paste).setVisible(false);
 	}
 	
 	//Option menu
@@ -125,6 +136,12 @@ public class LibraryFragment extends Fragment {
        	case R.id.library_create:
        		
        		optionCreateLibrary();
+       		
+       		return true;
+       		
+       	case R.id.library_paste:
+       		
+       		optionPaste();
        		
        		return true;
               
@@ -319,6 +336,22 @@ public class LibraryFragment extends Fragment {
 		
 	}
 	
+	public void optionPaste(){
+		
+		//Copy file to new folder
+		File fileTo = new File(StorageController.getCurrentPath() + "/" + mMoveFile.getName());
+		
+		//Delete file if success
+		if (!mMoveFile.renameTo(fileTo)) {
+		    mMoveFile.delete();
+		}
+		
+		StorageController.reloadFiles(StorageController.getCurrentPath().getAbsolutePath());				
+		sortAdapter();
+		
+		setMoveFile(null);
+	}
+	
 	//Random adapter with lots of comparisons
 	@SuppressLint("DefaultLocale")
 	public void sortAdapter(){
@@ -346,7 +379,7 @@ public class LibraryFragment extends Fragment {
 					
 					//Result will throw true for Files always
 					if (result == 0){
-										
+
 						return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
 						
 					} else	return result;
@@ -365,9 +398,17 @@ public class LibraryFragment extends Fragment {
 		mAdapter.notifyDataSetChanged();
 	}
 	
+	
+	
 	public void notifyAdapter(){
 		
 		mAdapter.notifyDataSetChanged();
+	}
+	
+	public void setMoveFile(File file){
+		
+		mMoveFile = file;
+		getActivity().invalidateOptionsMenu();
 	}
 
 }

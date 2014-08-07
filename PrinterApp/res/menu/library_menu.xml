@@ -28,6 +28,11 @@
         android:id="@+id/library_create"
         android:showAsAction="never"
         android:title="@string/library_menu_folder"/>
+        
+        <item 
+            android:id="@+id/library_paste"
+            android:showAsAction="never"
+            android:title="@string/library_menu_paste"/>
     
 
 </menu>
