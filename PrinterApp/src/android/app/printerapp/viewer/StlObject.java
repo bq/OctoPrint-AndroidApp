@@ -23,24 +23,24 @@ public class StlObject {
 			  + "void main()                    \n" 	// The entry point for our vertex shader.
 			  + "{                              \n"		
 			// Transform the vertex into eye space.
-			  + "   vec3 modelViewVertex = vec3(u_MVMatrix * a_Position);              \n"
+			  + "   vec3 modelViewVertex = vec3(u_MVMatrix * a_Position);              			\n"
 			// Transform the normal's orientation into eye space.
-			  + "   vec3 modelViewNormal = vec3(u_MVMatrix * vec4(a_Normal, 0.0));     \n"
+			  + "   vec3 modelViewNormal = normalize(vec3(u_MVMatrix * vec4(a_Normal, 0.0)));   \n"
 			// Will be used for attenuation.
-			  + "   float distance = length(u_LightPos - modelViewVertex);             \n"
+			  + "   float distance = length(u_LightPos - modelViewVertex);             			\n"
 			// Get a lighting direction vector from the light to the vertex.
-			  + "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        \n"
+			  + "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        			\n"
 			// Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
 			// pointing in the same direction then it will get max illumination.
-			  + "   float diffuse = max(dot(modelViewNormal, lightVector), 0.1);       \n" 	  		  													  
+			  + "   float diffuse = abs(dot(modelViewNormal, lightVector));       				\n" 	  		  													  
 			// Attenuate the light based on distance.
-			  + "   diffuse = diffuse;  											   \n"
+			  + "   diffuse +=0.2;  											   				\n"
 			// Multiply the color by the illumination level. It will be interpolated across the triangle.
-			  + "   v_Color = a_Color * diffuse;                                       \n" 	 
+			  + "   v_Color = a_Color * diffuse;                                       			\n" 	 
 			// gl_Position is a special variable used to store the final position.
 			// Multiply the vertex by the matrix to get the final point in normalized screen coordinates.		
-			  + "   gl_Position = u_MVPMatrix * a_Position;                            \n"     
-			  + "}                                                                     \n"; 
+			  + "   gl_Position = u_MVPMatrix * a_Position;                            			\n"     
+			  + "}                                                                     			\n"; 
    
 	private final String fragmentShaderCode =
 			"precision mediump float;       \n"		// Set the default precision to medium. We don't need as high of a precision in the fragment shader.				

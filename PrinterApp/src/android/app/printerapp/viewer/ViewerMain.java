@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 
@@ -130,10 +134,7 @@ public class ViewerMain extends Fragment {
 				case R.id.radioTranslation:
 					mSurface.setMovementMode(ViewerSurfaceView.TRANSLATION_MODE);
 					break;
-				case R.id.lightRotation:
-					mSurface.setMovementMode(ViewerSurfaceView.LIGHT_MODE);
-					break;
-				}		
+				}
 			}			
 		});
 
@@ -340,7 +341,7 @@ public class ViewerMain extends Fragment {
 			return true;
 			
        	case R.id.viewer_save: 
-       		//Save current file
+       		saveNewProyect ();		
             return true;
             
     	case R.id.viewer_notes: 
@@ -352,7 +353,6 @@ public class ViewerMain extends Fragment {
             return true;
               
     	case R.id.viewer_clean: 
-    		//Clean panel
             return true;
           
        default:
@@ -507,6 +507,65 @@ public class ViewerMain extends Fragment {
 	
 	
 */	
+	/************************* SAVE FILE ********************************/
+	private void saveNewProyect () {
+		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_proyect_name_dialog, null);
+		final EditText proyectNameText = (EditText) dialogText.findViewById(R.id.proyect_name);
+
+		proyectNameText.addTextChangedListener(new TextWatcher() {
+		    @Override
+		    public void afterTextChanged(Editable s) {
+		    	proyectNameText.setError(null);
+		    }
+
+		    @Override
+		    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		    	//do nothing
+		    }
+
+		    @Override
+		    public void onTextChanged(CharSequence s, int start, int before, int count) {
+		    	//do nothing
+		    }   		      
+		});
+			
+	
+   		AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+   		adb.setView(dialogText)
+			.setTitle(mContext.getString(R.string.proyect_name))
+			.setCancelable(false)
+   			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+   				public void onClick(DialogInterface dialog,int id) {
+   					dialog.cancel();
+   				}
+   			})
+   			.setPositiveButton(R.string.ok, null); //onclicklistener=null to avoid to dismiss the dialog
+		
+		//We need the alertdialog instance to dismiss it
+		final AlertDialog ad = adb.create();
+		ad.show();
+		
+		//We look for 
+		Button okButton = ad.getButton(DialogInterface.BUTTON_POSITIVE);
+		okButton.setOnClickListener(new CustomListener (ad, proyectNameText));
+	}
+	
+	private class CustomListener implements View.OnClickListener {
+	    private final Dialog dialog;
+	    private final EditText proyectNameText;
+	    public CustomListener(Dialog dialog, EditText proyectNameText) {
+	        this.dialog = dialog;
+	        this.proyectNameText = proyectNameText;
+	    }
+	    @Override
+	    public void onClick(View v) {
+
+	    	if (StlFile.saveModel(mDataStlList, proyectNameText.getText().toString())) dialog.dismiss();
+			else {
+				proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
+			}
+	    }
+	}
 	
 	/************************* SURFACE CONTROL ********************************/
 	//This method will set the visibility of the surfaceview so it doesn't overlap

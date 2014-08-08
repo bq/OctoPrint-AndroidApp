@@ -2,19 +2,27 @@ package android.app.printerapp.viewer;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.List;
 
 import com.devsmart.android.IOUtils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.StorageModelCreation;
 import android.app.printerapp.viewer.Geometry.*;
 
 
@@ -28,13 +36,16 @@ public class StlFile {
 	
 	private static ProgressDialog mProgressDialog;
 	private static DataStorage mData;
+	private static Context mContext;
 	static Thread mThread;
+	
+	private static final int COORDS_PER_TRIANGLE = 9;
 		
 	public static void openStlFile (Context context, File file, DataStorage data) {
 		Log.i(TAG, "Open File");
 		mProgressDialog = prepareProgressDialog(context);
 		mData = data;
-
+		mContext = context;
 		mFile = file;
 		Uri uri = Uri.fromFile(file);
 		
@@ -125,7 +136,7 @@ public class StlFile {
 		return progressDialog;
 	}
 	
-	private static int getIntWithLittleEndian(byte[] bytes, int offset) {
+	private static int getIntWithLittleEndian(byte[] bytes, int offset) {		
 		return (0xff & bytes[offset]) | ((0xff & bytes[offset + 1]) << 8) | ((0xff & bytes[offset + 2]) << 16) | ((0xff & bytes[offset + 3]) << 24);
 	}
 	
@@ -233,7 +244,7 @@ public class StlFile {
 		
 		//Calculate triangle normal vector
 		Vector normal = Vector.normalize(Vector.crossProduct(Vector.substract(v1 , v0), Vector.substract(v2, v0)));
-
+		
 		mData.addNormal(normal.x);
 		mData.addNormal(normal.y);
 		mData.addNormal(normal.z);		
@@ -242,7 +253,7 @@ public class StlFile {
 	
 	private static void processBinary(byte[] stlBytes) throws Exception {			
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
-						
+				
 		mProgressDialog.setMax(vectorSize);
 		for (int i = 0; i < vectorSize; i++) {		
 			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
@@ -278,7 +289,7 @@ public class StlFile {
 			
 			//Calculate triangle normal vector
 			Vector normal = Vector.normalize(Vector.crossProduct(Vector.substract(v1 , v0), Vector.substract(v2, v0)));
-
+				
 			mData.addNormal(normal.x);
 			mData.addNormal(normal.y);
 			mData.addNormal(normal.z);		
@@ -288,5 +299,103 @@ public class StlFile {
 				mProgressDialog.setProgress(i);
 			}
 		}
+	}
+	
+	private static float[] setTransformationVector (float x, float y, float z, float[] rotationMatrix, float scaleFactorX, float scaleFactorY, float scaleFactorZ, float adjustZ, Point center) {
+		float [] vector = new float [4];
+		float [] result = new float [4];
+		
+		vector[0] = x;
+		vector[1] = y;
+		vector[2] = z;
+		
+		Matrix.multiplyMV(result, 0, rotationMatrix, 0, vector, 0);
+
+		result[0] = result[0]*scaleFactorX+center.x;		
+		result[1] = result[1]*scaleFactorY+center.y;		
+		result[2] = result[2]*scaleFactorZ+center.z + adjustZ;		
+
+		return result;
+	}
+	
+	public static boolean saveModel (List<DataStorage> dataList, String proyectName) {
+		File check = new File (StorageController.getParentFolder().getAbsolutePath() + "/Files/" + proyectName);
+		if (check.exists()) return false;
+		
+		float[] coordinates = null;
+		int coordinateCount = 0;
+		float[] rotationMatrix = new float [16];
+		float scaleFactorX=0;
+		float scaleFactorY=0;
+		float scaleFactorZ=0;
+		Point center = new Point (0,0,0);	
+		float adjustZ = 0;
+		float[] vector = new float[3];
+
+		//Calculating buffer size
+		for (int i=0; i<dataList.size(); i++) coordinateCount+= dataList.get(i).getVertexArray().length;
+				
+		int offset=(coordinateCount/COORDS_PER_TRIANGLE)*4; //each triangle needs its normal coords and flag to indicate the end.
+		
+		ByteBuffer bb = ByteBuffer.allocateDirect((coordinateCount+offset) * 4 + 84);
+	    bb.order(ByteOrder.LITTLE_ENDIAN);
+	    
+	    //Header
+	    byte[] header = new byte[80];
+	    bb.put(header);
+	    bb.putInt(coordinateCount/COORDS_PER_TRIANGLE);
+	    
+		for (int i=0;i<dataList.size(); i++) {
+			DataStorage data = dataList.get(i);
+			rotationMatrix = data.getRotationMatrix(); 
+			scaleFactorX = data.getLastScaleFactorX();
+			scaleFactorY = data.getLastScaleFactorY();
+			scaleFactorZ = data.getLastScaleFactorZ();
+			adjustZ = data.getAdjustZ();
+			center = data.getLastCenter();
+			coordinates = data.getVertexArray();
+			
+		    for (int j=0; j<coordinates.length; j+=9) {
+		    	//Normal data. It is not necessary to store the info
+		    	bb.putFloat(0);
+		    	bb.putFloat(0);
+		    	bb.putFloat(0);
+		    	
+		    	//Triangle Data, 3 vertex with 3 coordinates (x,y,z) each one.
+		    	vector = setTransformationVector (coordinates[j], coordinates[j+1], coordinates[j+2], rotationMatrix, scaleFactorX, scaleFactorY, scaleFactorZ, adjustZ, center);
+		    	bb.putFloat(vector[0]);
+		    	bb.putFloat(vector[1]);
+		    	bb.putFloat(vector[2]);
+		    	
+		    	vector = setTransformationVector (coordinates[j+3], coordinates[j+4], coordinates[j+5], rotationMatrix, scaleFactorX, scaleFactorY, scaleFactorZ, adjustZ, center);
+		    	bb.putFloat(vector[0]);
+		    	bb.putFloat(vector[1]);
+		    	bb.putFloat(vector[2]);
+		    	
+		    	vector = setTransformationVector (coordinates[j+6], coordinates[j+7], coordinates[j+8], rotationMatrix, scaleFactorX, scaleFactorY, scaleFactorZ, adjustZ, center);
+		    	bb.putFloat(vector[0]);
+		    	bb.putFloat(vector[1]);
+		    	bb.putFloat(vector[2]);
+				
+		    	bb.putShort((short)0); // end of triangle		    	
+		    }
+		}
+		
+		bb.position(0);
+	    byte[] data = bb.array();
+	    String path = StorageController.getParentFolder().getAbsolutePath() + "/" + proyectName + ".stl";
+	    try {
+            FileOutputStream fos = new FileOutputStream(path);
+            fos.write(data);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }     
+	    
+	    File file = new File (path);
+	    StorageModelCreation.createFolderStructure(mContext, file);
+	    file.delete();
+	    
+	    return true;
 	}
 }
