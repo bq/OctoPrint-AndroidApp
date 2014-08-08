@@ -79,13 +79,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:visibility="visible" >
-
-         <RadioButton
-            android:id="@+id/lightRotation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewer_button_light" />
-         
         <RadioButton
             android:id="@+id/radioRotation"
             android:layout_width="wrap_content"

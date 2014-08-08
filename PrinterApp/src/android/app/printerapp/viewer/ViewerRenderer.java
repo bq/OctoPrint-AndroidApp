@@ -99,18 +99,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	float[] mMVPObjectMatrix = new float[16];	
 	float[] mMVObjectMatrix = new float[16];	
 	float[] mTransInvMVMatrix = new float[16];	
-
 	float[] mObjectModel = new float [16];
 	float[] mTemporaryModel = new float[16];
-	float[] mLightModelMatrix = new float[16];
-
+	
+    //Light	
+	float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
 	float[] mLightPosInEyeSpace = new float[4];
 	float[] mLightPosInWorldSpace = new float[4];
-	
-	
-    //Object	
-	private final float[] mLightVector = new float [4];
-	float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+	float[] mLightModelMatrix = new float[16];	
 			
 	private boolean mSnapShot = false;
 	
@@ -483,11 +479,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
-		
-		mLightVector[0] = LIGHT_X;
-		mLightVector[1] = LIGHT_Y;
-		mLightVector[2] = LIGHT_Z;
-		
+			
         mSceneAngleX = -40f;	
 
 		while (!mDataList.get(mDataList.size()-1).isDrawEnabled()) ; //wait	if the last element has not been opened
@@ -715,13 +707,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
             e.printStackTrace();
         }      
 	}
-	
-	public void setLightVector (float dx, float dy) {		
-		mLightVector[0]=dx*LIGHT_X;
-		mLightVector[2]=dy*LIGHT_Z;
 
-	}
-	
 	public void setSceneAngleX (float x) {
 		mSceneAngleX += x;	
 	}

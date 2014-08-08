@@ -8,21 +8,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.util.List;
 
 import com.devsmart.android.IOUtils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.StorageModelCreation;
 import android.app.printerapp.viewer.Geometry.*;
 
 
@@ -36,6 +36,7 @@ public class StlFile {
 	
 	private static ProgressDialog mProgressDialog;
 	private static DataStorage mData;
+	private static Context mContext;
 	static Thread mThread;
 	
 	private static final int COORDS_PER_TRIANGLE = 9;
@@ -44,7 +45,7 @@ public class StlFile {
 		Log.i(TAG, "Open File");
 		mProgressDialog = prepareProgressDialog(context);
 		mData = data;
-
+		mContext = context;
 		mFile = file;
 		Uri uri = Uri.fromFile(file);
 		
@@ -317,7 +318,10 @@ public class StlFile {
 		return result;
 	}
 	
-	public static void saveModel (List<DataStorage> dataList) {
+	public static boolean saveModel (List<DataStorage> dataList, String proyectName) {
+		File check = new File (StorageController.getParentFolder().getAbsolutePath() + "/Files/" + proyectName);
+		if (check.exists()) return false;
+		
 		float[] coordinates = null;
 		int coordinateCount = 0;
 		float[] rotationMatrix = new float [16];
@@ -379,14 +383,19 @@ public class StlFile {
 		
 		bb.position(0);
 	    byte[] data = bb.array();
-	    
+	    String path = StorageController.getParentFolder().getAbsolutePath() + "/" + proyectName + ".stl";
 	    try {
-            FileOutputStream fos = new FileOutputStream(StorageController.getParentFolder().getAbsolutePath() + "/Files/" + "pruebitas.stl");
+            FileOutputStream fos = new FileOutputStream(path);
             fos.write(data);
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }      					
-		
+        }     
+	    
+	    File file = new File (path);
+	    StorageModelCreation.createFolderStructure(mContext, file);
+	    file.delete();
+	    
+	    return true;
 	}
 }

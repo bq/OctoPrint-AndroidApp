@@ -311,22 +311,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		case TRANSLATION_MODE:
 			doTranslation (dx,dy);
 			break;
-		case LIGHT_MODE:
-            if (y < getHeight() * 3/4) {
-                dy = 1;
-            } else {
-            	dy = -1;
-            }
-
-            if (x < getWidth() / 2) {
-            	dx = -1;
-            } else {
-            	dx = 1;
-            }
-			doLight (dx, dy);
-			break;
 		}
-		
+
 	}
 	
 	public void doMirror () {
@@ -347,10 +333,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setCenterX(-dx);
 		mRenderer.setCenterZ(dy); //
 	}
-	
-	private void doLight (float dx, float dy) {              
-        mRenderer.setLightVector(dx, dy);		
-	} 
 	
 	public void setMovementMode (int mode) {
 		mMovementMode = mode;
