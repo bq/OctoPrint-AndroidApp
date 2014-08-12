@@ -31,20 +31,32 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
 
-                    <GridView
-                        android:id="@+id/grid_storage"
+                    <ViewSwitcher
+                        android:id="@+id/view_switcher_library"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:numColumns="4" >
-                    </GridView>
-                    
+                        android:layout_height="wrap_content" >
+
+                        <GridView
+                            android:id="@+id/grid_storage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:numColumns="4" >
+                        </GridView>
+
+                        <ListView
+                            android:id="@+id/list_storage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" >
+                        </ListView>
+
+                    </ViewSwitcher>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
 
                     <GridView
                         android:id="@+id/grid_storage_witbox"
@@ -52,7 +64,6 @@
                         android:layout_height="wrap_content"
                         android:numColumns="4" >
                     </GridView>
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -67,23 +78,20 @@
                         android:layout_height="wrap_content"
                         android:numColumns="4" >
                     </GridView>
-
                 </LinearLayout>
-                
-                
+
                 <LinearLayout
                     android:id="@+id/tab4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
-                    
+
                     <GridView
                         android:id="@+id/grid_storage_favorites"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:numColumns="4" >
                     </GridView>
-                    
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

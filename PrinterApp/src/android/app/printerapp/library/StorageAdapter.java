@@ -33,12 +33,16 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 	
 	//Filter
 	private ListFilter mFilter;
+	
+	private int mResource;
 
 	public StorageAdapter(Context context, int resource, List<File> objects) {
 		super(context, resource, objects);
 		mOriginal = (ArrayList<File>) objects;
 		mCurrent = (ArrayList<File>) objects;
 		mFilter = new ListFilter();
+		
+		mResource = resource;
 	}
 	
 	@Override
@@ -52,7 +56,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 			
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.storage_main, null, false);			
+			v = inflater.inflate(mResource, null, false);			
 			
 		} else {
 			//v = convertView;
@@ -73,7 +77,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 				if (d!=null){
 					iv.setImageDrawable(d);
 				} else {
-					iv.setImageResource(R.drawable.folder_icon);
+					iv.setImageResource(R.drawable.browser_carpeta);
 				}
 				
 			} else{	
@@ -84,7 +88,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 					iv.setImageResource(R.drawable.arrow_back);
 				
 				} else {
-					iv.setImageResource(R.drawable.folder_empty);
+					iv.setImageResource(R.drawable.browser_carpeta);
 				}
 					
 			

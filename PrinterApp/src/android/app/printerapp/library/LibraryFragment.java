@@ -20,9 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.ViewSwitcher;
 
 /**
  * Fragment to show the library with files on the system/remote
@@ -32,6 +34,10 @@ import android.widget.TabHost.OnTabChangeListener;
 public class LibraryFragment extends Fragment {
 	
 	private StorageAdapter mAdapter;
+	private StorageAdapter mListAdapter;
+	
+	private ViewSwitcher mSwitcher;
+	
 	private String mCurrentFilter = null;
 	
 	private File mMoveFile = null;
@@ -67,9 +73,12 @@ public class LibraryFragment extends Fragment {
 			
 			//References to adapters
 			//TODO maybe share a gridview
+			
+			mSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher_library);
 
 			
 			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
+			mListAdapter = new StorageAdapter(getActivity(),R.layout.storage_list_element, StorageController.getFileList());
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
 			
@@ -78,6 +87,11 @@ public class LibraryFragment extends Fragment {
 			g.setOnItemClickListener(clickListener);
 			g.setOnItemLongClickListener(clickListener);
 			g.setAdapter(mAdapter);
+			
+			ListView l = (ListView) rootView.findViewById(R.id.list_storage);
+			l.setOnItemClickListener(clickListener);
+			l.setOnItemLongClickListener(clickListener);
+			l.setAdapter(mListAdapter);
 			
 			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
 			gw.setAdapter(mAdapter);
@@ -127,9 +141,17 @@ public class LibraryFragment extends Fragment {
             return true;
             
        	case R.id.library_add:
-       		
-       		
+       			
        		optionAddLibrary();
+       		
+       		return true;
+       		
+       	case R.id.library_list:
+       		if (mSwitcher.getCurrentView().getId() == (R.id.list_storage)){
+    			item.setTitle("View as list");
+    			item.setIcon(android.R.drawable.list_selector_background);
+    		} else item.setTitle("View as grid");
+       		optionSwitchList();
        		
        		return true;
             
@@ -265,8 +287,12 @@ public class LibraryFragment extends Fragment {
 				//Apply current filter
 				if (mCurrentFilter!=null){
 					mAdapter.getFilter().filter(mCurrentFilter);
+					mListAdapter.getFilter().filter(mCurrentFilter);
 					
-				} else mAdapter.removeFilter();
+				} else {
+					mAdapter.removeFilter();
+					mListAdapter.removeFilter();
+				}
 				
 				sortAdapter();
 				
@@ -326,13 +352,25 @@ public class LibraryFragment extends Fragment {
 				String name = et.getText().toString();
 				
 				if (name!=null) StorageController.createFolder(name);
-				mAdapter.notifyDataSetChanged();
+				notifyAdapter();
 				
 			}
 		});
 		
 		adb.setNegativeButton(R.string.cancel, null);
 		adb.show();
+		
+	}
+	
+	public void optionSwitchList(){
+		
+
+		//StorageController.reloadFiles("all");
+		mSwitcher.showNext();
+		//mAdapter.clear();
+		//mAdapter  = new StorageAdapter(getActivity(),R.layout.storage_list_element, StorageController.getFileList());		
+		notifyAdapter();
+		
 		
 	}
 	
@@ -395,7 +433,7 @@ public class LibraryFragment extends Fragment {
 		
 		//Apply the current filter to the folder
 		if (mCurrentFilter!=null) mAdapter.getFilter().filter(mCurrentFilter);
-		mAdapter.notifyDataSetChanged();
+		notifyAdapter();
 	}
 	
 	
@@ -403,6 +441,7 @@ public class LibraryFragment extends Fragment {
 	public void notifyAdapter(){
 		
 		mAdapter.notifyDataSetChanged();
+		mListAdapter.notifyDataSetChanged();
 	}
 	
 	public void setMoveFile(File file){
