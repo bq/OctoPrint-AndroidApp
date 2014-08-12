@@ -7,6 +7,8 @@ import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
@@ -153,6 +155,7 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
+			new PrintNetworkManager(this);	
 		
 		}
 		return rootView;
@@ -430,7 +433,9 @@ public class DevicesFragment extends Fragment{
 					 }
 					 
 					 if (m.getStatus()==StateUtils.STATE_NEW){
-						 codeDialog(m);
+						 //codeDialog(m);
+						 PrintNetworkManager.setupNetwork(DevicesFragment.this, "My_SSID", m);
+						 
 					 }
 				} 				
 			}
