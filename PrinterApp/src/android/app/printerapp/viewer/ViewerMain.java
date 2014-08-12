@@ -36,6 +36,13 @@ import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 
 public class ViewerMain extends Fragment {	
+	//Constants 
+	public static final boolean DO_SNAPSHOT = true;
+	public static final boolean DONT_SNAPSHOT = false;
+	public static final boolean STL = true;
+	public static final boolean GCODE = false;
+	
+	//Variables
 	private static int mState;
 			
 	private static File mFile;
@@ -59,9 +66,6 @@ public class ViewerMain extends Fragment {
 	
 	private static List<DataStorage> mDataStlList = new ArrayList<DataStorage>();	
 	private static List<DataStorage> mDataGcodeList= new ArrayList<DataStorage>();
-	
-	//TODO check
-	private static boolean mDoSnapshot  = false;
 		
 	//Edition menu variables
 	private static LinearLayout mMenu;
@@ -74,8 +78,7 @@ public class ViewerMain extends Fragment {
 	
 	private static ProgressBar mProgress;
 
-	
-	static Context mContext;
+	private static Context mContext;
 	//Empty constructor
 	public ViewerMain(){}
 	
@@ -368,17 +371,17 @@ public class ViewerMain extends Fragment {
 		//Open the file
 		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) ) {
 			DataStorage dataStl = new DataStorage();
-			StlFile.openStlFile (mContext, mFile, dataStl);
+			StlFile.openStlFile (mContext, mFile, dataStl, false);
 			mDataStlList.add(dataStl);
 		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE"))) {
 			mDataGcodeList.clear();
 			mDataStlList.clear();
 			DataStorage dataGcode = new DataStorage();
-			GcodeFile.openGcodeFile(mContext, mFile, dataGcode);
+			GcodeFile.openGcodeFile(mContext, mFile, dataGcode,false);
 			mDataGcodeList.add(dataGcode);
 		}
 		
-		drawAndSnapshot(filePath);
+		draw(filePath);
 	}
    
 	private void changeStlViews (int state) {
@@ -459,27 +462,17 @@ public class ViewerMain extends Fragment {
 		}							
 	}
 	
-	private static void drawAndSnapshot (String filePath) {	
+	private static void draw (String filePath) {	
 		//String pathSnapshot;
 		setEditionMenuVisibility(View.INVISIBLE);
 
 		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
 			mSeekBar.setVisibility(View.INVISIBLE);
-			
-			//TODO Check when implementing snapshot of the pieces.
-			//pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataStl.getPathFile() + ".jpeg";
-			//mDataStl.setPathSnapshot(pathSnapshot);
-			//mDoSnapshot = doSnapshot (pathSnapshot);
-
-			mSurface = new ViewerSurfaceView (mContext, mDataStlList, mState, mDoSnapshot, true);
+			mSurface = new ViewerSurfaceView (mContext, mDataStlList, mState, DONT_SNAPSHOT, STL);
 
 		} else if (filePath.endsWith(".gcode") || filePath.endsWith(".GCODE")) {
 			mSeekBar.setVisibility(View.VISIBLE);
-			//pathSnapshot = Environment.getExternalStorageDirectory().getPath() + "/PrintManager/Icons/" + mDataGcode.getPathFile() + ".jpeg";
-			//mDataGcode.setPathSnapshot(pathSnapshot);
-			//mDoSnapshot = doSnapshot (pathSnapshot);
-
-			mSurface = new ViewerSurfaceView (mContext, mDataGcodeList, mState, mDoSnapshot, false);
+			mSurface = new ViewerSurfaceView (mContext, mDataGcodeList, mState, DONT_SNAPSHOT, GCODE);
 		}							
 		//Add the view
 		mLayout.removeAllViews();
@@ -490,23 +483,8 @@ public class ViewerMain extends Fragment {
 		//TODO CHANGED: Edition menu does not appear on top if we set setZOrderOnTop (true).
 		//Set the surface Z priority to top
 		//mSurface.setZOrderOnTop(true);
-		
-		if (mDoSnapshot) mLayout.setVisibility(View.INVISIBLE);	
-
 	}
 		
-	/*
-	private boolean doSnapshot (String path) {
-		boolean doSnapshot;
-		File png = new File (path);
-		if (png.exists()) doSnapshot =  false ;
-		else doSnapshot = true;
-		
-		return doSnapshot;
-	}
-	
-	
-*/	
 	/************************* SAVE FILE ********************************/
 	private void saveNewProyect () {
 		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_proyect_name_dialog, null);
@@ -532,7 +510,7 @@ public class ViewerMain extends Fragment {
 	
    		AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
    		adb.setView(dialogText)
-			.setTitle(mContext.getString(R.string.proyect_name))
+			.setTitle(mContext.getString(R.string.project_name))
 			.setCancelable(false)
    			.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
    				public void onClick(DialogInterface dialog,int id) {

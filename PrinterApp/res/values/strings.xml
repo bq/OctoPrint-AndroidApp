@@ -114,7 +114,9 @@
     
            
     <string name="ok">OK</string>
-    <string name="proyect_name">Please, insert a new name</string>
+    <string name="project_name">Please, insert a new name</string>
     <string name="proyect_name_not_available">That name exists! Please, choose another name</string>
+    <string name="creating_project">Creating project &#8230;</string> 
+    <string name="new_project">New project</string> 
     
 </resources>

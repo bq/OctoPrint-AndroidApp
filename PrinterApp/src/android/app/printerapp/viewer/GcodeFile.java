@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.app.printerapp.R;
+import android.app.printerapp.library.StorageModelCreation;
 
 public class GcodeFile  {
 	private static final String TAG = "GCodeFile";
@@ -22,13 +23,16 @@ public class GcodeFile  {
 	
 	private static String [] mSplitLine;
 	private static int mMaxLayer;
-		
-	public static void openGcodeFile (Context context, File file, DataStorage data) {
+
+	private static boolean mDoSnapshot = false;
+	
+	public static void openGcodeFile (Context context, File file, DataStorage data, boolean doSnapshot) {
 		mFile = file;		
 		mData = data;
-		mProgressDialog = prepareProgressDialog(context);
+		mDoSnapshot = doSnapshot;
+		if(!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
 		mData.setPathFile(mFile.getName().replace(".", "-"));
-			
+		
 		mData.initMaxMin();
 		mMaxLayer=-1;
 		startThreadToOpenFile (context);		
@@ -51,7 +55,7 @@ public class GcodeFile  {
 					}
 					countReader.close();
 					
-					mProgressDialog.setMax(maxLines);
+					if(!mDoSnapshot) mProgressDialog.setMax(maxLines);
 					processGcode(allLines, maxLines);
 
 					mHandler.sendEmptyMessage(0);
@@ -181,7 +185,7 @@ public class GcodeFile  {
 			 lines++;
 			 lastIndex = index+1;
 				
-			 if (lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);	
+			 if (!mDoSnapshot && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);	
 		}			
 	}
 	
@@ -189,7 +193,7 @@ public class GcodeFile  {
         @Override
         public void handleMessage(Message msg) {
     		if (mData.getCoordinateListSize() < 1) {
-    			mProgressDialog.dismiss();
+    			if(!mDoSnapshot) mProgressDialog.dismiss();
     			return;
     		}
     		
@@ -203,13 +207,20 @@ public class GcodeFile  {
     		mData.clearLayerList();
     		mData.clearTypeList();
     		
-    		ViewerMain.initSeekBar(mMaxLayer);
+    		if(!mDoSnapshot) ViewerMain.initSeekBar(mMaxLayer);
     		
 			mData.enableDraw ();
 
     		//ProgressDialog
-    		mProgressDialog.dismiss();      		
-	        	
+			if(!mDoSnapshot) mProgressDialog.dismiss();   
+			else {
+				try {
+					mThread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				StorageModelCreation.dismissDialog();
+			}	        	
         }
     };
  }
