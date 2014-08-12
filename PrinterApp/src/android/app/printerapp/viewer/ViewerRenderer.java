@@ -1,9 +1,7 @@
 package android.app.printerapp.viewer;
 
-import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +9,13 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.app.printerapp.library.StorageModelCreation;
 import android.app.printerapp.viewer.Geometry.*;
 
 
@@ -473,7 +471,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		// Set the background frame color
-		GLES20.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);		
+		GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);		
 		
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -679,33 +677,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
 
         GLES20.glReadPixels(minX, minY, mWidth, mHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
-        int pixelsBuffer[] = new int[screenshotSize];
-        bb.asIntBuffer().get(pixelsBuffer);
-        bb = null;
-        Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.RGB_565);
-        bitmap.setPixels(pixelsBuffer, screenshotSize-mWidth, -mWidth, 0, 0, mWidth, mHeight);
-        pixelsBuffer = null;
-
-        short sBuffer[] = new short[screenshotSize];
-        ShortBuffer sb = ShortBuffer.wrap(sBuffer);
-        bitmap.copyPixelsToBuffer(sb);
-
-        //Making created bitmap (from OpenGL points) compatible with Android bitmap
-        for (int i = 0; i < screenshotSize; ++i) {                  
-            short v = sBuffer[i];
-            sBuffer[i] = (short) (((v&0x1f) << 11) | (v&0x7e0) | ((v&0xf800) >> 11));
-        }
-        sb.rewind();
-        bitmap.copyPixelsFromBuffer(sb);
-        
-        try {
-            FileOutputStream fos = new FileOutputStream(mDataList.get(0).getPathSnapshot());
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }      
+        StorageModelCreation.saveScreenShot(mWidth, mHeight, bb);
 	}
 
 	public void setSceneAngleX (float x) {

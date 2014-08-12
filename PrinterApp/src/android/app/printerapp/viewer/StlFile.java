@@ -19,7 +19,6 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.library.StorageModelCreation;
@@ -37,13 +36,16 @@ public class StlFile {
 	private static ProgressDialog mProgressDialog;
 	private static DataStorage mData;
 	private static Context mContext;
+	private static boolean mDoSnapshot;
 	static Thread mThread;
 	
 	private static final int COORDS_PER_TRIANGLE = 9;
 		
-	public static void openStlFile (Context context, File file, DataStorage data) {
+	public static void openStlFile (Context context, File file, DataStorage data, boolean doSnapshot) {
 		Log.i(TAG, "Open File");
-		mProgressDialog = prepareProgressDialog(context);
+		mDoSnapshot = doSnapshot;
+
+		if (!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
 		mData = data;
 		mContext = context;
 		mFile = file;
@@ -131,7 +133,7 @@ public class StlFile {
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.setCancelable(false);
 		
-		progressDialog.show();
+		if (!mDoSnapshot) progressDialog.show();
 		
 		return progressDialog;
 	}
@@ -144,7 +146,7 @@ public class StlFile {
 	        @Override
 	        public void handleMessage(Message msg) {
 	    		if (mData.getCoordinateListSize() < 1) {
-	    			mProgressDialog.dismiss();
+	    			if (!mDoSnapshot) mProgressDialog.dismiss();
 	    			return;
 	    		}
 	    			
@@ -156,8 +158,15 @@ public class StlFile {
 	    		
 				mData.enableDraw ();	    						
 	    		//ProgressDialog
-	    		mProgressDialog.dismiss();      		
-		        	
+				if (!mDoSnapshot) mProgressDialog.dismiss();  
+				else {
+					try {
+						mThread.sleep(3000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					StorageModelCreation.dismissDialog();
+				}  	
 	        }
 	 };
 
@@ -172,11 +181,11 @@ public class StlFile {
 					line = line.replaceFirst("vertex ", "").trim();
 					allLines.append(line+"\n");
 					maxLines++;
-					if (maxLines%1000==0) mProgressDialog.setMax(maxLines);
+					if (maxLines%1000==0 && !mDoSnapshot) mProgressDialog.setMax(maxLines);
 				}
 			}
 				
-			mProgressDialog.setMax(maxLines);
+			if (!mDoSnapshot) mProgressDialog.setMax(maxLines);
 			
 			countReader.close();
 			
@@ -200,7 +209,7 @@ public class StlFile {
 				lines+=3;
 				
 				if (lines % (maxLines/10) == 0) {
-					mProgressDialog.setProgress(lines);
+					if (!mDoSnapshot) mProgressDialog.setProgress(lines);
 				}
 			}
 			
@@ -254,7 +263,7 @@ public class StlFile {
 	private static void processBinary(byte[] stlBytes) throws Exception {			
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 				
-		mProgressDialog.setMax(vectorSize);
+		if (!mDoSnapshot) mProgressDialog.setMax(vectorSize);
 		for (int i = 0; i < vectorSize; i++) {		
 			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
 			float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
@@ -296,7 +305,7 @@ public class StlFile {
 			
 			
 			if (i % (vectorSize / 10) == 0) {
-				mProgressDialog.setProgress(i);
+				if (!mDoSnapshot) mProgressDialog.setProgress(i);
 			}
 		}
 	}
@@ -318,8 +327,8 @@ public class StlFile {
 		return result;
 	}
 	
-	public static boolean saveModel (List<DataStorage> dataList, String proyectName) {
-		File check = new File (StorageController.getParentFolder().getAbsolutePath() + "/Files/" + proyectName);
+	public static boolean saveModel (List<DataStorage> dataList, String projectName) {
+		File check = new File (StorageController.getParentFolder().getAbsolutePath() + "/Files/" + projectName);
 		if (check.exists()) return false;
 		
 		float[] coordinates = null;
@@ -383,7 +392,7 @@ public class StlFile {
 		
 		bb.position(0);
 	    byte[] data = bb.array();
-	    String path = StorageController.getParentFolder().getAbsolutePath() + "/" + proyectName + ".stl";
+	    String path = StorageController.getParentFolder().getAbsolutePath() + "/" + projectName + ".stl";
 	    try {
             FileOutputStream fos = new FileOutputStream(path);
             fos.write(data);
