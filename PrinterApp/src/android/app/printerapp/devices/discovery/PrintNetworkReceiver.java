@@ -73,7 +73,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 
 			 if (activeNetwork!=null){
 				 Log.d("app","Network connectivity change " + activeNetwork.getState());
-				 //mController.dismissNetworkDialog();	
+				 PrintNetworkManager.dismissNetworkDialog();	
 			 }
 		}
 
@@ -93,13 +93,18 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        		//Log.i("Network",s.toString());
 	        		if (s.SSID.contains(NETWORK_NAME)){
 	        			
-	        			
-	        			
 	        			Log.i("Network","New printer found! " + s.SSID);
-	        			//mController.unregisterReceiver(this);
+	        			//unregister();
+	        			
+	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.0.0.1",DevicesListController.searchAvailablePosition());
 	        			        			
-	        			//TODO: Create a generic Network service to add to the list
-	        			mController.addElement(new ModelPrinter(s.SSID,"/10.0.0.1",DevicesListController.searchAvailablePosition()));
+	        			//Check if network is already on the list
+	        			if (!DevicesListController.checkExisting(m)){
+	        				
+	        				mController.addElement(m);
+	        				m.setNotConfigured();
+	        			}
+	        			else Log.i("OUT","QUe existo ya coño");
 	       			 
 	        			
 	        		}

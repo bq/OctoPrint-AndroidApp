@@ -37,7 +37,7 @@ public class PrintNetworkManager {
 	
 	
 	//This should contain the static generic password to the ad-hoc network
-	private static final String PASS = "45CDBEEF6D";
+	private static final String PASS = "raspberry";
 	
 	//Parent Network to connect if errors are found
 	//private static int parent;
@@ -62,7 +62,7 @@ public class PrintNetworkManager {
 		
 	}
 		
-	public static void setupNetwork(final DevicesFragment context, final String ssid, final ModelPrinter p){
+	public void setupNetwork(final DevicesFragment context, final String ssid, final ModelPrinter p){
 
 		
 		
@@ -117,8 +117,7 @@ public class PrintNetworkManager {
 		         
 		         tv_ssid.setText("SSID:");
 		         tv_pass.setText("Password:");
-		         
- 
+
 		         //TODO: Hardcoded parameters for testing
 		         et_ssid.setText(PrintNetworkReceiver.getNetworkList().getItem(which));
 		         et_pass.setText("P3dr0y3ll0b0!");
@@ -169,7 +168,7 @@ public class PrintNetworkManager {
 							});
 						
 							//We're not removing anymore but updating the same service sharing an ID.
-							p.setLinked();
+							//p.setLinked();
 						
 							
 							/**
@@ -222,6 +221,7 @@ public class PrintNetworkManager {
 			         adb_net.setNegativeButton("Cancel", null);
 			         
 			         adb_net.show();
+			       
 			         
 			         
 				
@@ -230,7 +230,7 @@ public class PrintNetworkManager {
         
 //if (!mController.getNetworkType())
          adb.show();        
-		 
+         createNetworkDialog("WARNING!!! Connecting to printer network.");
 	}
 	
 	
@@ -278,8 +278,7 @@ public class PrintNetworkManager {
        Log.i("Network","Added a new network " + ssid);
         
         return mManager.addNetwork(ssid);
-	}
-	
+	}	
 	
 	
 	/***********************************************
@@ -301,5 +300,9 @@ public class PrintNetworkManager {
 		if (mDialog!=null)
 		mDialog.dismiss();
 		}
+	
+	public DevicesFragment getController(){
+		return mController;
+	}
 
 }
