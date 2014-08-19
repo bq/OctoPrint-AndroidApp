@@ -61,6 +61,7 @@
     <string name="library_menu_search">Search model</string>
     <string name="library_menu_filter">Filter models</string>
     <string name="library_menu_list">View as list</string>
+    <string name="library_menu_grid">View as grid</string>
     <string name="library_menu_add">Add model</string>
     <string name="library_menu_folder">Create new folder</string>
     <string name="library_menu_paste">Paste</string>

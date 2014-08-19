@@ -148,9 +148,9 @@ public class LibraryFragment extends Fragment {
        		
        	case R.id.library_list:
        		if (mSwitcher.getCurrentView().getId() == (R.id.list_storage)){
-    			item.setTitle("View as list");
+    			item.setTitle(R.string.library_menu_list);
     			item.setIcon(android.R.drawable.list_selector_background);
-    		} else item.setTitle("View as grid");
+    		} else item.setTitle(R.string.library_menu_grid);
        		optionSwitchList();
        		
        		return true;
