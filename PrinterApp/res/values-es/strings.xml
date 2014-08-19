@@ -56,8 +56,11 @@
     <string name="library_select_printer_title">Seleccionar impresora(s)</string>
     <string name="library_option_dialog_title">Opciones del modelo</string>
     <string name="library_option_print">Imprimir</string>
+    <string name="library_option_edit">Editar</string>
+    <string name="library_option_move">Mover</string>
     <string name="library_delete_dialog_title">¿Quieres eliminar este fichero?</string>
     <string name="library_paste_toast">Selecciona "Pegar" en el menu</string>
+    <string name="library_parent_folder">[Carpeta anterior]</string>
     
     <string name="library_menu_search">Buscar modelo</string>
     <string name="library_menu_filter">Filtrar modelos</string>

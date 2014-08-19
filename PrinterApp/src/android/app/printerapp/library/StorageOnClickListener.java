@@ -113,7 +113,9 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	//Show dialog for handling files
 	private void showOptionDialog(final File f){
 		
-		String[] mDialogOptions = new String[]{"Print","Edit","Move", "Delete"};
+		String[] mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print),
+				mContext.getResources().getString(R.string.library_option_edit),mContext.getResources().getString(R.string.library_option_move),
+				mContext.getResources().getString(R.string.delete)};
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());	
 		adb.setTitle(R.string.library_option_dialog_title);
