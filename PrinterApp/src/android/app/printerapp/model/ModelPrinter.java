@@ -125,7 +125,7 @@ public class ModelPrinter {
 	
 	public void setNotConfigured(){
 		mStatus = StateUtils.STATE_ADHOC;
-		mMessage = "New";
+		mMessage = "Not configured";
 	}
 	
 	public void setNotLinked(){	

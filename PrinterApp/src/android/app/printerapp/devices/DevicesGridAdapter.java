@@ -98,7 +98,8 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 					icon.setImageResource(R.drawable.witbox_offline_icon);	
 				}break;
 				
-				case StateUtils.STATE_NEW:{
+				case StateUtils.STATE_NEW:
+				case StateUtils.STATE_ADHOC: {
 					icon.setImageResource(R.drawable.witbox_offline_icon_ghost);
 				}break;
 				
