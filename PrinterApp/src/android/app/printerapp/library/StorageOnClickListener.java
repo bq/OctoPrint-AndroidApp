@@ -113,7 +113,17 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	//Show dialog for handling files
 	private void showOptionDialog(final File f){
 		
-		String[] mDialogOptions = new String[]{"Print","Edit","Move", "Delete"};
+		String[] mDialogOptions;
+		
+		
+		if (f.getParent().equals("sd")||f.getParent().equals("witbox")){
+			
+			mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print)};
+		}else {
+			mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print),
+				mContext.getResources().getString(R.string.library_option_edit),mContext.getResources().getString(R.string.library_option_move),
+				mContext.getResources().getString(R.string.delete)};
+		}
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());	
 		adb.setTitle(R.string.library_option_dialog_title);
@@ -189,7 +199,17 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 									if (checkedItems[i]){
 										
 										ModelPrinter m = DevicesListController.getList().get(i);
-							    		OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
+										
+										if (f.getParent().equals("sd")){
+											OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, true);
+							    			
+										} else if (f.getParent().equals("witbox")){
+											OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, false);
+								    		
+										} else {
+											OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
+										}
+							    		
 
 									}
 																	

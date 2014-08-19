@@ -95,12 +95,16 @@ public class LibraryFragment extends Fragment {
 			
 			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
 			gw.setAdapter(mAdapter);
+			gw.setOnItemClickListener(clickListener);
 			
 			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
 			gu.setAdapter(mAdapter);
+			gu.setOnItemClickListener(clickListener);
 			
 			GridView gf = (GridView) rootView.findViewById(R.id.grid_storage_favorites);
 			gf.setAdapter(mAdapter);
+			gf.setOnItemClickListener(clickListener);
+			gf.setOnItemLongClickListener(clickListener);
 			
 			
 			//Set tab host for the view
