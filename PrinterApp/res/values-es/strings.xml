@@ -62,6 +62,7 @@
     <string name="library_menu_search">Buscar modelo</string>
     <string name="library_menu_filter">Filtrar modelos</string>
     <string name="library_menu_list">Vista de lista</string>
+    <string name="library_menu_grid">Vista de cuadrícula</string>
     <string name="library_menu_add">Añadir modelo</string>
     <string name="library_menu_folder">Crear nueva carpeta</string>
     <string name="library_menu_paste">Pegar</string>
