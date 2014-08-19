@@ -123,6 +123,11 @@ public class ModelPrinter {
 		OctoprintConnection.getSettings(this);
 	}
 	
+	public void setNotConfigured(){
+		mStatus = StateUtils.STATE_ADHOC;
+		mMessage = "Not configured";
+	}
+	
 	public void setNotLinked(){	
 		mStatus = StateUtils.STATE_NEW;
 		mMessage = "New";
@@ -142,4 +147,5 @@ public class ModelPrinter {
 	public void setPosition(int pos){	
 		mPosition = pos;
 	}
+
 }

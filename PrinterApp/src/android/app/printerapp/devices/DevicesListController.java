@@ -88,5 +88,35 @@ public class DevicesListController {
 		return -1;
 		
 	}
+	
+	public static boolean checkExisting(ModelPrinter m){
+		
+		boolean exists = false;
+		
+		for (ModelPrinter p : mList){
+			
+			if ((m.getName().equals(p.getName()))||(m.getName().contains(getNetworkId(p.getName())))){
+				
+				exists = true;
+				
+			}
+			
+		}
+		
+		return exists;
+		
+	}
+	
+	//TODO Move elsewhere maybe
+	//Get the Network id key to associate with the service name
+	public static String getNetworkId(String name){
+			
+			String[] parsedString = name.split("\\(");
+			
+			String parsedName = parsedString[1];
+			
+			return parsedName.replaceAll("[^A-Za-z0-9]", "");
+			
+		}
 		
 }

@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/grid_element_tag"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/grid_element_tag"
         android:layout_weight="0.09"
         android:src="@drawable/witbox_icon" />

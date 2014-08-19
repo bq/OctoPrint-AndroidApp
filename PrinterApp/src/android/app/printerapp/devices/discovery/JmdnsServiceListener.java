@@ -114,8 +114,9 @@ public class JmdnsServiceListener implements ServiceListener{
 			//Creates a service with info
 			 Log.i("Model","Service resolved: " + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
-			 //mContext.listHandler(new ModelPrinter(service));
-			 mContext.addElement(new ModelPrinter(service.getName(),service.getInetAddresses()[0].toString(),DevicesListController.searchAvailablePosition()));
+			
+			 mContext.addElement(new ModelPrinter(service.getName(),
+					 service.getInetAddresses()[0].toString(), searchPrinter(DevicesListController.getNetworkId(event.getName()))));
 			 
 		}
 		
@@ -148,8 +149,31 @@ public class JmdnsServiceListener implements ServiceListener{
 		public static void stopListening(){
 			
 			mJmdns.unregisterAllServices();
-			mMulticastLock.release();			
+			mMulticastLock.release();
 			
+			
+		}
+		
+		//Search the printer by the network id and take its position		
+		public int searchPrinter(String name){
+			
+			int pos = DevicesListController.searchAvailablePosition();
+			
+			Log.i("SEARCH","Searching for... " + name);
+			
+			
+			for (ModelPrinter p : DevicesListController.getList()){
+				
+				if (p.getName().contains(name)){
+					
+					Log.i("OUT","Match found!: " + p.getName());
+					pos = p.getPosition();
+					DevicesListController.getList().remove(p);
+				} else Log.i("OUT","Not found!: " + p.getName());
+				
+			}
+			
+			return pos;
 			
 		}
 		
