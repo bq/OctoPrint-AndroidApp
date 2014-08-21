@@ -72,7 +72,11 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's project folder, send stl
 			if (StorageController.isProject(f)){
 				
-				try {
+				//TODO NO STL, show DetailView
+				
+				ItemListActivity.showDetailView(arg2);
+				
+			/*	try {
 					
 					showOptionDialog(f);
 				} catch (NullPointerException e){
@@ -80,7 +84,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
 
 					
-				}
+				}*/
 				
 				
 			} else  {							

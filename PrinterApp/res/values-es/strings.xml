@@ -75,6 +75,11 @@
     <string name="library_tabhost_tab_usb">USB</string>
     <string name="library_tabhost_tab_favorites">Favoritos</string>
     
+    <string name="detailview_description">Descripción: </string>
+    <string name="detailview_notes">Notas: </string>
+    <string name="detailview_description_default">(Sin descripción)</string>
+    <string name="detailview_notes_default">(Sin notas)</string>
+    
     <string name="viewer_menu_open">Abrir fichero</string>
     <string name="viewer_menu_save">Guardar</string>
     <string name="viewer_menu_notes">Notas</string>

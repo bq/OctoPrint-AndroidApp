@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
@@ -333,8 +334,10 @@ public class LibraryFragment extends Fragment {
 	
 	//Add a new project using the viewer file browser
 	public void optionAddLibrary(){		
+		
 		//TODO fix filebrowser parameters
 		FileBrowser.openFileBrowser(getActivity(),FileBrowser.LIBRARY, getString(R.string.library_menu_add), ".stl", "");
+
 	}
 	
 	//Create a single new folder via mkdir
