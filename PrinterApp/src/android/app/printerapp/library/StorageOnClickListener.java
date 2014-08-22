@@ -1,18 +1,13 @@
 package android.app.printerapp.library;
 
 import java.io.File;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
-import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -152,81 +147,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						}
 						
 					} else {
-						ArrayList<ModelPrinter> tempList = DevicesListController.getList();
-						String[] nameList = new String[tempList.size()];
-						
-						//We'll check for checked items (heh) with a boolean array
-						//TODO use this same method with printer discovery
-						final boolean[] checkedItems = new boolean[nameList.length];
-						
-						int i = 0;
-						
-						//New array with names only for the adapter
-						for (ModelPrinter p : tempList){		
-							nameList[i] = p.getName();
-							i++;
-						}
-						
-						AlertDialog.Builder adb2 = new AlertDialog.Builder(mContext.getActivity());
-						adb2.setTitle(R.string.library_select_printer_title);
-						
-						
-						
-						//Show list of available printers
-						//TODO Make a proper adapter
-						adb2.setMultiChoiceItems(nameList, null, new OnMultiChoiceClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-								
-								checkedItems[which]	= isChecked;
-								
-							}
-						});
-						
-						//final AlertDialog	ad2 = adb2.create();
-
-						
-						/*adb2.setAdapter(new ArrayAdapter<String>(mContext.getActivity(), 
-								android.R.layout.simple_list_item_multiple_choice, nameList), null);
-						*/
-						adb2.setPositiveButton(R.string.library_option_print, new OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-					
-								//SparseBooleanArray checked = ad2.getListView().getCheckedItemPositions();;
-								
-								//TODO Multiprint interaction
-								for (int i = 0; i<checkedItems.length ; i++){
-									
-									if (checkedItems[i]){
-										
-										ModelPrinter m = DevicesListController.getList().get(i);
-										
-										if (f.getParent().equals("sd")){
-											OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, true);
-							    			
-										} else if (f.getParent().equals("witbox")){
-											OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, false);
-								    		
-										} else {
-											OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
-										}
-							    		
-
-									}
-																	
-								}
-								
-								
-								
-							}
-						});
-						
-						adb2.setNegativeButton(R.string.cancel, null);
-						
-						adb2.show();
+						DevicesListController.selectPrinter(mContext.getActivity(),f);
 					}
 					
 					
@@ -302,6 +223,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 		adb.show();
 		
 	}
+	
 
 	private void showGcodeList(File f){
 		

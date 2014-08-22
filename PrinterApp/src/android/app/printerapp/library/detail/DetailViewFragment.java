@@ -1,6 +1,10 @@
-package android.app.printerapp.library;
+package android.app.printerapp.library.detail;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class DetailViewFragment extends Fragment {
@@ -20,11 +25,11 @@ public class DetailViewFragment extends Fragment {
 		
 			//Reference to View
 			View rootView = null;
-			
-			Bundle args = getArguments();
-					
+	
 			//If is not new
 			if (savedInstanceState==null){
+				
+				Bundle args = getArguments();
 				
 				//Inflate the fragment
 				rootView = inflater.inflate(R.layout.detailview_layout,
@@ -48,9 +53,23 @@ public class DetailViewFragment extends Fragment {
 				TextView tv = (TextView) rootView.findViewById(R.id.detail_tv_name);
 				tv.setText(f.getName());
 				
+				File[] listFiles = new File(f.getGcodeList()).getParentFile().listFiles();
+				ArrayList<File> arrayFiles = new ArrayList<File>();
 				
-			}
-			else{
+				
+				for (int i = 0; i<listFiles.length; i++){
+					
+					arrayFiles.add(listFiles[i]);
+					
+				}
+				
+				arrayFiles.add(new File(f.getStl()));
+				
+				DetailViewAdapter adapter = new DetailViewAdapter(getActivity(), R.layout.detailview_list_element, arrayFiles, f.getSnapshot());
+				ListView lv = (ListView) rootView.findViewById(R.id.detail_lv);
+				lv.setAdapter(adapter);
+					
+				
 				
 			}
 
