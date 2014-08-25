@@ -3,8 +3,9 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-
+import java.util.Map;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.os.Environment;
@@ -53,6 +54,7 @@ public class StorageController {
 				
 				//If project
 				if (isProject(file)){
+					
 					
 					//Create new project
 					ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
@@ -111,35 +113,19 @@ public class StorageController {
 		}
 	}
 	
-	//TODO change this to database/folder eventually
-	public static ArrayList<ModelFile> getFavorites(){
+	public static void retrieveFavorites(){
 		
+		mFileList.clear();
 		
-		
-		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
-		
-		
-		try{
-			File path = new File(getParentFolder() + "/Files");
+		for (Map.Entry<String, ?> entry : DatabaseController.getFavorites().entrySet()){
 			
-			//temp solution, Files shouldn't be created here
-			path.mkdirs();
-			File[] files = path.listFiles();
+			ModelFile m = new ModelFile(entry.getValue().toString(), "favorite");
+			mFileList.add(m);
 			
-			for (File file : files){				
-				if (isProject(file))tempList.add(new ModelFile(file.getAbsolutePath(), "Internal storage"));
-			}
-		} catch (Exception e){
-			e.printStackTrace();
 		}
-		
-				
-		return tempList;
 		
 	}
 	
-	
-		
 	//Retrieve main folder or create if doesn't exist
 	//TODO: Changed main folder to FILES folder.
 	public static File getParentFolder(){

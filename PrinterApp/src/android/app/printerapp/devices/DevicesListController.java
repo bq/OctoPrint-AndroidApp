@@ -114,6 +114,7 @@ public class DevicesListController {
 		
 	}
 	
+	//Select a printer from all the linked available  and send to print
 public static void selectPrinter(final Context context, final File f){
 		
 		ArrayList<ModelPrinter> tempList = DevicesListController.getList();

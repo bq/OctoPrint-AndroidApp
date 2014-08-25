@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.model.ModelFile;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -17,6 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+/**
+ * This is the adapter for the detail view
+ * @author alberto-baeza
+ *
+ */
 public class DetailViewAdapter extends ArrayAdapter<File> {
 	
 	private Drawable mDrawable;
@@ -49,6 +54,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			//v = convertView;
 		}
 		
+		//UI references
 		TextView tv1 = (TextView) v.findViewById(R.id.detailview_list_tv1);
 		tv1.setText(f.getName());
 		TextView tv2 = (TextView) v.findViewById(R.id.detailview_list_tv2);
@@ -62,6 +68,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			@Override
 			public void onClick(View v) {
 				
+				//In the file list if it's stl open the print panel, else print
 				if (f.getName().contains(".stl")) ItemListActivity.requestOpenFile(f.getAbsolutePath());
 				else DevicesListController.selectPrinter(v.getContext(), f);
 				
