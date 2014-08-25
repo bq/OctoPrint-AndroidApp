@@ -8,7 +8,6 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -38,21 +37,10 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		
-		//Logic for getting file type
-		final File f = StorageController.getFileList().get(arg2);
-		
-		
-		//Only when it's a project
-		if (f.isDirectory()){
-			if (StorageController.isProject(f)){
-				
-				showGcodeList(f);
-				
-			}
-		}
-		
-		
-			return false;
+		File f = StorageController.getFileList().get(arg2);
+		showOptionDialog(f);
+
+		return false;
 	}
 
 	@Override
@@ -67,35 +55,13 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's project folder, send stl
 			if (StorageController.isProject(f)){
 				
-				//TODO NO STL, show DetailView
-				
-				ItemListActivity.showDetailView(arg2);
-				
-			/*	try {
-					
-					showOptionDialog(f);
-				} catch (NullPointerException e){
-					
-					Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
-
-					
-				}*/
-				
+				if (((ModelFile)f).getStl()!=null) ItemListActivity.showDetailView(arg2);
+				else ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
+								
 				
 			} else  {							
 
-				StorageController.reloadFiles(f.getAbsolutePath());
-
-				//if it's not the parent folder, make a back folder
-				/*if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
-
-					//TODO change folder names
-					StorageController.addToList(new File(f.getParentFile().toString()));
-				}
-				
-				
-				mContext.sortAdapter();*/
-				
+				StorageController.reloadFiles(f.getAbsolutePath());				
 				mContext.sortAdapter();
 				
 				
@@ -104,8 +70,14 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's not a folder, just send the file
 		}else {
 			
-			showOptionDialog(f);
-	
+			if (f.getAbsoluteFile().length()>0){
+				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+			} else {
+				
+				Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+
+			}
+
 		}					
 	}
 	
@@ -225,7 +197,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	}
 	
 
-	private void showGcodeList(File f){
+	/*private void showGcodeList(File f){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());
 		adb.setTitle("Files...");
@@ -276,7 +248,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					
 		adb.show();
 		
-	}
+	}*/
 		
 
 }

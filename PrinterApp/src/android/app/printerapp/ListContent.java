@@ -61,7 +61,7 @@ public class ListContent {
 		addItem(new ListItem("1", context.getString(R.string.fragment_devices)));
 		addItem(new ListItem("2", context.getString(R.string.fragment_print)));
 		addItem(new ListItem("3", context.getString(R.string.fragment_models)));
-		addItem(new ListItem("4", context.getString(R.string.fragment_history)));
+		//addItem(new ListItem("4", context.getString(R.string.fragment_history)));
 		addItem(new ListItem("5", context.getString(R.string.fragment_settings)));
 		
 		return ITEMS;

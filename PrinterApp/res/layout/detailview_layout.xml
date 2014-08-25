@@ -6,7 +6,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="309dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
         android:orientation="horizontal" >
 
         <ImageView
@@ -24,98 +25,75 @@
             android:layout_weight="0.4"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/detail_tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1" 
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
             <LinearLayout
-                android:id="@+id/ll_tv1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" 
-                android:orientation="horizontal">
+                android:id="@+id/llv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/detail_tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:text="Filename"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
                     android:id="@+id/detail_tv_description"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:text="@string/detailview_description" />
-
-                <TextView
-                    android:id="@+id/detail_tv_description_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/detailview_description_default" />
-
+                    android:layout_height="wrap_content"
+                    android:text="@string/lorem_ipsum" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_tv2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" 
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/rl_comm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_margin="5dp" >
+
+                    <ImageView
+                        android:id="@+id/detailview_iv_comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_comment" />
+
+                    <TextView
+                        android:id="@+id/detailview_tv_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="0"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/detail_tv_notes"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:text="@string/detailview_notes" />
-
-                 <TextView
-                     android:id="@+id/detail_tv_notes_text"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     android:layout_marginLeft="10dp"
-                     android:text="@string/detailview_notes_default" />
-
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/detailview_notes"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
+            <ListView
+                android:id="@+id/detail_lv_comments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8" >
-
-                <ImageButton
-                    android:id="@+id/detail_ib_print"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/icon_print_pq" />
-
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/icon_share" />
-
-                <ImageButton
-                    android:id="@+id/detail_ib_favorite"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/icon_favorite" />
-
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@drawable/icon_notes" />
-            </LinearLayout>
+                android:layout_weight="1" >
+            </ListView>
         </LinearLayout>
     </LinearLayout>
 
@@ -123,7 +101,7 @@
         android:id="@+id/detail_lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.3" >
+        android:layout_weight="0.6" >
     </ListView>
 
 </LinearLayout>

@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.StorageController;
+import android.app.printerapp.model.ModelComment;
 import android.app.printerapp.model.ModelFile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,6 +26,8 @@ import android.widget.TextView;
  */
 public class DetailViewFragment extends Fragment {
 	
+	private ModelFile mFile;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -37,64 +40,103 @@ public class DetailViewFragment extends Fragment {
 				
 				Bundle args = getArguments();
 				
+				//Show custom option menu
+				setHasOptionsMenu(true);
+				
 				//Inflate the fragment
 				rootView = inflater.inflate(R.layout.detailview_layout,
 						container, false);
+			
 				
-				rootView.findViewById(R.id.detail_ib_print).setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						
-						Log.i("OUT","Print this sheeeeeet");
-						
-					}
-				});
-				
-				final ModelFile f = (ModelFile) StorageController.getFileList().get(args.getInt("index"));
+				mFile = (ModelFile) StorageController.getFileList().get(args.getInt("index"));
 				
 				ImageView iv = (ImageView) rootView.findViewById(R.id.detail_iv_preview);
-				iv.setImageDrawable(f.getSnapshot());
-				
-				rootView.findViewById(R.id.detail_ib_favorite).setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						
-						if (DatabaseController.isFavorite(f.getName())){
-							DatabaseController.handleFavorite(f, false);
-						} else DatabaseController.handleFavorite(f, true);
-						
-					}
-				});
-				
+				iv.setImageDrawable(mFile.getSnapshot());
+								
 				TextView tv = (TextView) rootView.findViewById(R.id.detail_tv_name);
-				tv.setText(f.getName());
+				tv.setText(mFile.getName());
 				
-				
-				//Create a file adapter with every gcode
-				File[] listFiles = new File(f.getGcodeList()).getParentFile().listFiles();
 				ArrayList<File> arrayFiles = new ArrayList<File>();
 				
-				
-				for (int i = 0; i<listFiles.length; i++){
+				//Create a file adapter with every gcode
+				if (mFile.getGcodeList()!=null){
 					
-					arrayFiles.add(listFiles[i]);
+					File[] listFiles = new File(mFile.getGcodeList()).getParentFile().listFiles();
 					
+					
+					
+					for (int i = 0; i<listFiles.length; i++){
+						
+						arrayFiles.add(listFiles[i]);
+						
+					}
 				}
 				
-				//add also de the stl
-				arrayFiles.add(new File(f.getStl()));
 				
-				DetailViewAdapter adapter = new DetailViewAdapter(getActivity(), R.layout.detailview_list_element, arrayFiles, f.getSnapshot());
+				//add also de the stl
+				arrayFiles.add(new File(mFile.getStl()));
+				
+				DetailViewAdapter adapter = new DetailViewAdapter(getActivity(), R.layout.detailview_list_element, arrayFiles, mFile.getSnapshot());
 				ListView lv = (ListView) rootView.findViewById(R.id.detail_lv);
 				lv.setAdapter(adapter);
+				
+				//TODO TEST COMMENTS
+				ArrayList<ModelComment> randomComments = new ArrayList<ModelComment>();
+				randomComments.add(new ModelComment("Alberto Baeza", "OCT 11 1988", "This is a random comment"));
+				randomComments.add(new ModelComment("Jesucristo Superstar", "OCT 12 2389", getString(R.string.lorem_ipsum)));
+				
+				
+				DetailViewCommAdapter commadapter = new DetailViewCommAdapter(getActivity(), R.layout.detailview_list_comment, randomComments);
+				ListView lvc = (ListView) rootView.findViewById(R.id.detail_lv_comments);
+				
+				lvc.setAdapter(commadapter);
+				
+				TextView tvc = (TextView) rootView.findViewById(R.id.detailview_tv_num);
+				tvc.setText(String.valueOf(randomComments.size()));
 					
 				
 				
 			}
 
 		return rootView;
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+
+		inflater.inflate(R.menu.detailview_menu, menu);
+		
+		if (DatabaseController.isFavorite(mFile.getName())){
+			menu.findItem(R.id.menu_favorite).setIcon(android.R.drawable.btn_star_big_on);
+		} else menu.findItem(R.id.menu_favorite).setIcon(android.R.drawable.btn_star_big_off);
+		
+	}
+	
+	//Option menu
+   @Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+	   
+	   switch (item.getItemId()) {
+	   
+	   case R.id.menu_favorite: //Add a new printer
+		  			
+		   if (DatabaseController.isFavorite(mFile.getName())){
+				DatabaseController.handleFavorite(mFile, false);
+				item.setIcon(android.R.drawable.btn_star_big_off);
+			} else {
+				DatabaseController.handleFavorite(mFile, true);
+				item.setIcon(android.R.drawable.btn_star_big_on);
+			}
+		  
+			return true;
+			
+   
+              
+          
+       default:
+           return super.onOptionsItemSelected(item);
+	   }
 	}
 
 

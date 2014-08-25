@@ -57,11 +57,13 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 		//UI references
 		TextView tv1 = (TextView) v.findViewById(R.id.detailview_list_tv1);
 		tv1.setText(f.getName());
-		TextView tv2 = (TextView) v.findViewById(R.id.detailview_list_tv2);
-		tv2.setText(f.getName());
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.detailview_list_iv);
 		iv.setImageDrawable(mDrawable);
+		if (f.getName().contains(".gcode")){
+			
+			v.findViewById(R.id.detailview_gcode).setVisibility(View.VISIBLE);
+		}
 		
 		v.findViewById(R.id.detailview_list_iv2).setOnClickListener(new OnClickListener() {
 			

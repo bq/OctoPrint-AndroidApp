@@ -151,6 +151,11 @@ public class ItemListActivity extends FragmentActivity implements
 
 				} break;
 				
+				case 4:{
+					
+					
+				} break;
+				
 				case 5:{
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Settings")==null){

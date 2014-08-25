@@ -67,6 +67,8 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
+		v.findViewById(R.id.storage_gcode).setVisibility(View.GONE);
+		
 		if (m.isDirectory()){
 			
 			if (StorageController.isProject(m)){
@@ -76,9 +78,13 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 			
 				if (d!=null){
 					iv.setImageDrawable(d);
+					
 				} else {
 					iv.setImageResource(R.drawable.browser_carpeta);
 				}
+				
+				if (((ModelFile)m).getStl()==null) v.findViewById(R.id.storage_gcode).setVisibility(View.VISIBLE); 
+				
 				
 			} else{	
 				
