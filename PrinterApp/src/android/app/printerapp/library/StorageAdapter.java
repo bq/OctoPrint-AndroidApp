@@ -87,18 +87,9 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 				
 				
 			} else{	
-				
-				if (m.getAbsolutePath().equals(StorageController.getCurrentPath().getParentFile().getAbsolutePath())) {
-				
-					tv.setText(R.string.library_parent_folder);
-					iv.setImageResource(R.drawable.arrow_back);
-				
-				} else {
-					iv.setImageResource(R.drawable.browser_carpeta);
-				}
-					
 			
-				
+					iv.setImageResource(R.drawable.browser_carpeta);
+
 			}
 			
 

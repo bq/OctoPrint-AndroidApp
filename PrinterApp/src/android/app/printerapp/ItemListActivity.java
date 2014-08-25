@@ -102,9 +102,15 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			if (mCurrent!=null) {
 				
-				//We have to remove the Detail fragment because we're not using replace
-				if (mCurrent.getTag().equals("Detail")) mTransaction.remove(mCurrent);
-				else mTransaction.hide(mCurrent);
+				try {
+					//We have to remove the Detail fragment because we're not using replace
+					if (mCurrent.getTag().equals("Detail")) mTransaction.remove(mCurrent);
+					else mTransaction.hide(mCurrent);
+				} catch (NullPointerException e){
+					
+					e.printStackTrace();
+				}
+				
 			}
 			
 			ActionModeHandler.modeFinish();			
@@ -232,5 +238,16 @@ public class ItemListActivity extends FragmentActivity implements
 				}	
 			});
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		
+		if (mCurrent == mLibraryFragment){
+			
+			if (!mLibraryFragment.goBack()) super.onBackPressed();
+			
+		} else super.onBackPressed();
+		
 	}
 }

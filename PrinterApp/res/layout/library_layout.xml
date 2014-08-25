@@ -40,7 +40,7 @@
                             android:id="@+id/grid_storage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:numColumns="4" >
+                            android:numColumns="5" >
                         </GridView>
 
                         <ListView
@@ -62,7 +62,7 @@
                         android:id="@+id/grid_storage_witbox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:numColumns="4" >
+                        android:numColumns="5" >
                     </GridView>
                 </LinearLayout>
 
@@ -76,7 +76,7 @@
                         android:id="@+id/grid_storage_usb"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:numColumns="4" >
+                        android:numColumns="5" >
                     </GridView>
                 </LinearLayout>
 
@@ -90,7 +90,7 @@
                         android:id="@+id/grid_storage_favorites"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:numColumns="4" >
+                        android:numColumns="5" >
                     </GridView>
                 </LinearLayout>
             </FrameLayout>

@@ -12,10 +12,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -47,6 +50,7 @@ public class LibraryFragment extends Fragment {
 		
 		//Retain instance to keep the Fragment from destroying itself
 		setRetainInstance(true);
+		
 	}
 	
 	@Override
@@ -65,6 +69,23 @@ public class LibraryFragment extends Fragment {
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.library_layout,
 					container, false);
+			
+			rootView.setFocusableInTouchMode(true);
+			rootView.setOnKeyListener(new OnKeyListener() {
+				
+				@Override
+				public boolean onKey(View v, int keyCode, KeyEvent event) {
+					
+					if( keyCode == KeyEvent.KEYCODE_BACK )
+			        {
+						
+						Log.i("OUT","JHSOTOAIA PUTAO");
+			            return true;
+			        }
+					
+					return false;
+				}
+			});
 			
 			/**
 			 * CUSTOM VIEW METHODS
@@ -453,5 +474,23 @@ public class LibraryFragment extends Fragment {
 		mMoveFile = file;
 		getActivity().invalidateOptionsMenu();
 	}
+	
+	//onBackPressed handler to the file browser
+	public boolean goBack(){
+		
+		if (!StorageController.getCurrentPath().getAbsolutePath().equals(StorageController.getParentFolder().getAbsolutePath())){
+			StorageController.reloadFiles(StorageController.getCurrentPath().getParent());				
+			sortAdapter();
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+	}
+	
+	
+	
 
 }

@@ -193,14 +193,11 @@ public class StorageController {
 			} else {
 				retrieveFiles(new File(path), false);
 				
-				File f = new File(path);
-				
-				//if it's not the parent folder, make a back folder
+				/*File f = new File(path);
 				if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
 
-					//TODO change folder names
 					StorageController.addToList(new File(f.getParentFile().toString()));
-				}
+				}*/
 			}
 			
 			
