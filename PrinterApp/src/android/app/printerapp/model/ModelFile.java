@@ -1,8 +1,6 @@
 package android.app.printerapp.model;
 
 import java.io.File;
-import java.util.ArrayList;
-
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 import android.content.res.Resources;
@@ -28,14 +26,7 @@ public class ModelFile extends File {
 	
 	//Reference to image
 	private Drawable mSnapshot;
-	
-	/**
-	 * External
-	 */
-	
-	private String mDescription;
-	private ArrayList<ModelComment> mComments;
-	
+		
 	public ModelFile(String filename, String storage){
 		super(filename);
 
@@ -70,14 +61,12 @@ public class ModelFile extends File {
 		return mSnapshot;
 	}
 	
-	public String getDescription(){
-		return mDescription;
+	//TODO: Temporary info path
+	public String getInfo(){
+		String infopath = getAbsolutePath() + "/" + getName() + ".info";		
+		return infopath;
 	}
-	
-	public ArrayList<ModelComment> getComments(){
-		return mComments;
-	}
-		
+			
 	/********************
 	 * 	 SETS
 	 * *****************/
@@ -98,14 +87,6 @@ public class ModelFile extends File {
 			mSnapshot = Resources.getSystem().getDrawable(R.drawable.file_icon);
 		}
 		
-	}
-	
-	//TODO Implement comments
-	public void addComment(String comment){
-		
-		mComments.add(new ModelComment("Author", "Date", "Comment"));
-		
-	}
-	
+	}	
 
 }

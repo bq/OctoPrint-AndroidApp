@@ -1,6 +1,10 @@
 package android.app.printerapp.library.detail;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -80,19 +84,44 @@ public class DetailViewFragment extends Fragment {
 				ListView lv = (ListView) rootView.findViewById(R.id.detail_lv);
 				lv.setAdapter(adapter);
 				
-				//TODO TEST COMMENTS
-				ArrayList<ModelComment> randomComments = new ArrayList<ModelComment>();
-				randomComments.add(new ModelComment("Alberto Baeza", "OCT 11 1988", "This is a random comment"));
-				randomComments.add(new ModelComment("Jesucristo Superstar", "OCT 12 2389", getString(R.string.lorem_ipsum)));
 				
 				
-				DetailViewCommAdapter commadapter = new DetailViewCommAdapter(getActivity(), R.layout.detailview_list_comment, randomComments);
+				
+				
+				/***********************************************************************************/
+				
+				TextView tvd = (TextView) rootView.findViewById(R.id.detail_tv_description);
+				ArrayList<ModelComment> commentArray = new ArrayList<ModelComment>();
+				
+				try {
+
+					BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(mFile.getInfo())));
+					
+					tvd.setText(bufferedReader.readLine());
+					
+					String line;
+					
+					while ((line = bufferedReader.readLine()) != null){
+						
+						String[] comment = line.split(";");				
+						commentArray.add(new ModelComment(comment[0], comment[1], comment[2]));
+					}
+					
+					bufferedReader.close();
+					
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				DetailViewCommAdapter commadapter = new DetailViewCommAdapter(getActivity(), R.layout.detailview_list_comment, commentArray);
 				ListView lvc = (ListView) rootView.findViewById(R.id.detail_lv_comments);
 				
 				lvc.setAdapter(commadapter);
 				
 				TextView tvc = (TextView) rootView.findViewById(R.id.detailview_tv_num);
-				tvc.setText(String.valueOf(randomComments.size()));
+				tvc.setText(String.valueOf(commentArray.size()));
 					
 				
 				
@@ -138,6 +167,5 @@ public class DetailViewFragment extends Fragment {
            return super.onOptionsItemSelected(item);
 	   }
 	}
-
-
+   
 }

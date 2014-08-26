@@ -120,7 +120,7 @@ public class PrintNetworkManager {
 
 		         //TODO: Hardcoded parameters for testing
 		         et_ssid.setText(PrintNetworkReceiver.getNetworkList().getItem(which));
-		         et_pass.setText("P3dr0y3ll0b0!");
+		         //et_pass.setText("P3dr0y3ll0b0!");
 		         
 		         ll_dialog.addView(tv_ssid);
 		         ll_dialog.addView(et_ssid);

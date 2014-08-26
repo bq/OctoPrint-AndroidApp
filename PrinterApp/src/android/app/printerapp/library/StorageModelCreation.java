@@ -46,25 +46,36 @@ public class StorageModelCreation {
 			File root = new File(StorageController.getParentFolder().getAbsolutePath() +
 					"/Files/" + mName);
 			
+			File mainFolder;
+			File secondaryFolder;
+			
 			//root folder
 			if (root.mkdirs()){
 				
-				File gcodeFolder = new File(root.getAbsolutePath() + "/_gcode");
-				File stlFolder = new File(root.getAbsolutePath() + "/_stl");
-				
+				if (mName.contains(".stl")){
+					
+					mainFolder = new File(root.getAbsolutePath() + "/_stl");
+					secondaryFolder = new File(root.getAbsolutePath() + "/_gcode");
+					
+				} else {
+					
+					mainFolder = new File(root.getAbsolutePath() + "/_gcode");
+					secondaryFolder = new File(root.getAbsolutePath() + "/_stl");
+					
+				}
 				//gcode folder
-				if (gcodeFolder.mkdir()){
+				if (secondaryFolder.mkdir()){
 					
 					
 					
 				}
 				
 				//stl folder
-				if (stlFolder.mkdir()){
+				if (mainFolder.mkdir()){
 					
 					try{
 					
-						File target = new File(stlFolder.getAbsolutePath() + "/" + source.getName());
+						File target = new File(mainFolder.getAbsolutePath() + "/" + source.getName());
 		
 						
 						if(source.exists()){
