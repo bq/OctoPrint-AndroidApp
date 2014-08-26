@@ -9,6 +9,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.os.Environment;
+import android.util.Log;
 
 
 /**
@@ -159,15 +160,27 @@ public class StorageController {
 	public static String retrieveFile(String name, String type){
 		
 		String result = null;
-		
+		File folder = new File(name + "/" + type + "/");
 		try {
-			File folder = new File(name + "/" + type + "/");
+			
 			String file = folder.listFiles()[0].getName();
 			
 			result = folder + "/" + file; 
 		
-		} catch (ArrayIndexOutOfBoundsException e){
 			
+			//File still in favorites
+		} catch (Exception e){
+			
+			File delete = new File(name);
+			
+			Log.i("OUT", "LOOKING FAVORITE " + delete.getName());
+			
+			if (DatabaseController.isFavorite(delete.getName())){
+				
+				Log.i("OUT", "oh my, IT IS! " + delete.getName());
+				
+				DatabaseController.handleFavorite(delete, false	);
+			}
 		}
 		
 		

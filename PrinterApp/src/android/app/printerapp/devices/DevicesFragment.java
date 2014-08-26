@@ -152,7 +152,7 @@ public class DevicesFragment extends Fragment{
 			
 			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearlayout_storage);
 			
-			new DevicesQuickprint(ll,getActivity());
+			//new DevicesQuickprint(ll,getActivity());
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);

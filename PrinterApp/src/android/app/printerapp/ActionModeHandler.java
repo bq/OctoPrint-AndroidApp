@@ -75,7 +75,7 @@ public class ActionModeHandler {
 	                return true;
 	                
 	            case R.id.menu_cab_settings:
-	            	ItemListFragment.performClick(4);
+	            	//ItemListFragment.performClick(4);
 	            	mode.finish(); // Action picked, so close the CAB
 	            	return true;
 	            default:

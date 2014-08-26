@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -174,6 +176,14 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 
 							deleteFiles(f);
 							StorageController.getFileList().remove(f);
+							
+							if (DatabaseController.isFavorite(f.getName())){
+								
+								Log.i("OUT", "oh my, IT IS! " + f.getName());
+								
+								DatabaseController.handleFavorite(f, false	);
+							}
+							
 							mContext.notifyAdapter();
 							
 						}

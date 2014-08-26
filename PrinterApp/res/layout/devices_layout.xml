@@ -96,11 +96,11 @@
         
             <TextView
                   android:id="@+id/drag_text"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center|top"
-        android:text="@string/devices_quickprint"
-        android:textSize="16sp" />
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:gravity="center|top"
+			        android:text="@string/devices_quickprint"
+			        android:textSize="16sp" />
 
                     <HorizontalScrollView
                         android:id="@+id/scrollview"
@@ -109,7 +109,7 @@
 
                         <LinearLayout
                             android:id="@+id/linearlayout_storage"
-                            android:paddingTop="30dp"
+                            android:paddingTop="20dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"

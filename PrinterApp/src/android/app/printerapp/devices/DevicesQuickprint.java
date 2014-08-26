@@ -79,8 +79,6 @@ public class DevicesQuickprint {
 		 */
 		for (final ModelFile m : mFileList){
 			
-			Log.i("OUT","I'm " + m.getName());
-			
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View v = inflater.inflate(R.layout.storage_main, null);
 			

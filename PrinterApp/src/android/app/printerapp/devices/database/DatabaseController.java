@@ -180,7 +180,10 @@ public class DatabaseController {
 		SharedPreferences prefs = mContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 		Editor editor = prefs.edit();
 		
-		if (!add) editor.remove(f.getName());
+		if (!add) {
+			Log.i("OUT","Removing " + f.getName());
+			editor.remove(f.getName());
+		}
 		else editor.putString(f.getName(), f.getAbsolutePath());
 			
 		editor.commit();
