@@ -1,10 +1,14 @@
 package android.app.printerapp.devices.database;
 
+import java.io.File;
+import java.util.Map;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -12,10 +16,13 @@ import android.util.Log;
 
 /**
  * This class will handle Database interaction on a static way
+ * Also will contain the SharedPreferences to handle Favorites
  * @author alberto-baeza
  *
  */
 public class DatabaseController {
+	
+	private static final String PREFERENCES = "Favorites";
 	
 	static DatabaseHelper mDbHelper;
 	static SQLiteDatabase mDb;
@@ -129,6 +136,58 @@ public class DatabaseController {
 	public static void deleteDB(){
 		//TODO Database deletion for testing
 		mContext.deleteDatabase("Devices.db");
+	}
+	
+	
+	
+	
+	
+	
+	/*****************************************************************************************
+	 * 					SHARED PREFERENCES HANDLER
+	 *****************************************************************************************/
+	
+	/**
+	 * Check if a file is favorite
+	 * @param name
+	 * @return
+	 */
+	public static boolean isFavorite(String name){
+		
+		SharedPreferences prefs = mContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+		
+		if (prefs.contains(name)) return true;		
+		return false;
+		
+	}
+	
+	/**
+	 * Get the list of favorites to add to the file list
+	 * @return
+	 */
+	public static Map<String,?> getFavorites(){
+		SharedPreferences prefs = mContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+		return prefs.getAll();
+	}
+	
+	/**
+	 * Set/remove as favorite using SharedPreferences, can't repeat names
+	 * The type of operation is switched by a boolean
+	 */
+	public static void handleFavorite(File f, boolean add){
+		
+
+		SharedPreferences prefs = mContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		
+		if (!add) {
+			Log.i("OUT","Removing " + f.getName());
+			editor.remove(f.getName());
+		}
+		else editor.putString(f.getName(), f.getAbsolutePath());
+			
+		editor.commit();
+		
 	}
 	
 

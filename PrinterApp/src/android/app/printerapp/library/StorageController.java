@@ -3,11 +3,13 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-
+import java.util.Map;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.os.Environment;
+import android.util.Log;
 
 
 /**
@@ -53,6 +55,7 @@ public class StorageController {
 				
 				//If project
 				if (isProject(file)){
+					
 					
 					//Create new project
 					ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
@@ -111,35 +114,19 @@ public class StorageController {
 		}
 	}
 	
-	//TODO change this to database/folder eventually
-	public static ArrayList<ModelFile> getFavorites(){
+	public static void retrieveFavorites(){
 		
+		mFileList.clear();
 		
-		
-		ArrayList<ModelFile> tempList = new ArrayList<ModelFile>();
-		
-		
-		try{
-			File path = new File(getParentFolder() + "/Files");
+		for (Map.Entry<String, ?> entry : DatabaseController.getFavorites().entrySet()){
 			
-			//temp solution, Files shouldn't be created here
-			path.mkdirs();
-			File[] files = path.listFiles();
+			ModelFile m = new ModelFile(entry.getValue().toString(), "favorite");
+			mFileList.add(m);
 			
-			for (File file : files){				
-				if (isProject(file))tempList.add(new ModelFile(file.getAbsolutePath(), "Internal storage"));
-			}
-		} catch (Exception e){
-			e.printStackTrace();
 		}
-		
-				
-		return tempList;
 		
 	}
 	
-	
-		
 	//Retrieve main folder or create if doesn't exist
 	//TODO: Changed main folder to FILES folder.
 	public static File getParentFolder(){
@@ -173,15 +160,27 @@ public class StorageController {
 	public static String retrieveFile(String name, String type){
 		
 		String result = null;
-		
+		File folder = new File(name + "/" + type + "/");
 		try {
-			File folder = new File(name + "/" + type + "/");
+			
 			String file = folder.listFiles()[0].getName();
 			
 			result = folder + "/" + file; 
 		
-		} catch (ArrayIndexOutOfBoundsException e){
 			
+			//File still in favorites
+		} catch (Exception e){
+			
+			File delete = new File(name);
+			
+			Log.i("OUT", "LOOKING FAVORITE " + delete.getName());
+			
+			if (DatabaseController.isFavorite(delete.getName())){
+				
+				Log.i("OUT", "oh my, IT IS! " + delete.getName());
+				
+				DatabaseController.handleFavorite(delete, false	);
+			}
 		}
 		
 		
@@ -207,14 +206,11 @@ public class StorageController {
 			} else {
 				retrieveFiles(new File(path), false);
 				
-				File f = new File(path);
-				
-				//if it's not the parent folder, make a back folder
+				/*File f = new File(path);
 				if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
 
-					//TODO change folder names
 					StorageController.addToList(new File(f.getParentFile().toString()));
-				}
+				}*/
 			}
 			
 			

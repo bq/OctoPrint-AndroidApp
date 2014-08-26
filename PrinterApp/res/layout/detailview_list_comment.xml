@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/detailview_comment_tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Alberto Baeza"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/detailview_comment_tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OCT 15 2014"
+        android:textColor="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/detailview_comment_tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/lorem_ipsum" />
+
+</LinearLayout>

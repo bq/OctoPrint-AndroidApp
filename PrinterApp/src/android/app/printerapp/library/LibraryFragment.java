@@ -13,10 +13,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -48,6 +50,7 @@ public class LibraryFragment extends Fragment {
 		
 		//Retain instance to keep the Fragment from destroying itself
 		setRetainInstance(true);
+		
 	}
 	
 	@Override
@@ -66,6 +69,23 @@ public class LibraryFragment extends Fragment {
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.library_layout,
 					container, false);
+			
+			rootView.setFocusableInTouchMode(true);
+			rootView.setOnKeyListener(new OnKeyListener() {
+				
+				@Override
+				public boolean onKey(View v, int keyCode, KeyEvent event) {
+					
+					if( keyCode == KeyEvent.KEYCODE_BACK )
+			        {
+						
+						Log.i("OUT","JHSOTOAIA PUTAO");
+			            return true;
+			        }
+					
+					return false;
+				}
+			});
 			
 			/**
 			 * CUSTOM VIEW METHODS
@@ -121,9 +141,7 @@ public class LibraryFragment extends Fragment {
 		super.onCreateOptionsMenu(menu, inflater);
 
 		inflater.inflate(R.menu.library_menu, menu);
-		
-		
-		Log.i("OUT","Derp-de-menu");
+
 		if (mMoveFile!=null) {
 
 			menu.findItem(R.id.library_paste).setVisible(true);
@@ -226,7 +244,8 @@ public class LibraryFragment extends Fragment {
 					break;
 					
 				case 3:		
-						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath() + "/Files");
+						//StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath() + "/Files");
+						StorageController.retrieveFavorites();
 					break;
 
 				default:
@@ -333,8 +352,10 @@ public class LibraryFragment extends Fragment {
 	
 	//Add a new project using the viewer file browser
 	public void optionAddLibrary(){		
+		
 		//TODO fix filebrowser parameters
 		FileBrowser.openFileBrowser(getActivity(),FileBrowser.LIBRARY, getString(R.string.library_menu_add), ".stl", "");
+
 	}
 	
 	//Create a single new folder via mkdir
@@ -453,5 +474,23 @@ public class LibraryFragment extends Fragment {
 		mMoveFile = file;
 		getActivity().invalidateOptionsMenu();
 	}
+	
+	//onBackPressed handler to the file browser
+	public boolean goBack(){
+		
+		if (!StorageController.getCurrentPath().getAbsolutePath().equals(StorageController.getParentFolder().getAbsolutePath())){
+			StorageController.reloadFiles(StorageController.getCurrentPath().getParent());				
+			sortAdapter();
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+	}
+	
+	
+	
 
 }

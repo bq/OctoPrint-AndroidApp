@@ -1,9 +1,11 @@
 package android.app.printerapp.devices;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.content.ClipData;
@@ -37,16 +39,13 @@ public class DevicesQuickprint {
 	//Main thread reference
 	private Context mContext;
 	
-
-	
-	
 	
 	public DevicesQuickprint(LinearLayout ll, Activity context){
 		
 		mLayout = ll;
 		mContext = context;
-		
-		mFileList = StorageController.getFavorites();
+
+		addFiles();
 		displayFiles();
 	}
 	
@@ -56,6 +55,20 @@ public class DevicesQuickprint {
 	 *****************************************************************************************/
 	
 	
+	/**
+	 * TODO: This is the same method as StorageController.retrieveFavorites but this will
+	 * contain History instead of favorites so it shouldn't matter
+	 */
+	private void addFiles(){
+		
+		for (Map.Entry<String, ?> entry : DatabaseController.getFavorites().entrySet()){
+			
+			ModelFile m = new ModelFile(entry.getValue().toString(), "Internal storage");
+			mFileList.add(m);
+			
+		}
+		
+	}
 	
 	
 	//Display them on screen, should be done on an Adapter but we don't have one.
@@ -65,8 +78,6 @@ public class DevicesQuickprint {
 		 * Fill the Layout with the list views
 		 */
 		for (final ModelFile m : mFileList){
-			
-			Log.i("OUT","I'm " + m.getName());
 			
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View v = inflater.inflate(R.layout.storage_main, null);
@@ -140,19 +151,6 @@ public class DevicesQuickprint {
 			
 		}
 		
-	}
-
-	
-	//Refresh file list
-	public void refreshList(){
-		mLayout.removeAllViews();
-		displayFiles();
-	}
-	
-	//Add a new file to the list (OctoprintFiles)
-	public void addToList(ModelFile m){
-		mFileList.add(m);
-	}
-	
+	}	
 		
 }

@@ -5,6 +5,7 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMain;
 import android.content.Intent;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -42,7 +45,9 @@ public class ItemListActivity extends FragmentActivity implements
 	private static ViewerMain mViewerFragment;
 	private SettingsFragment mSettingsFragment;
 	
-	private Fragment mCurrent;
+	private static Fragment mCurrent;
+	
+	private static FragmentManager mManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,7 @@ public class ItemListActivity extends FragmentActivity implements
 		new StorageController();
 		//new ViewerMain();
 		
-		
+		mManager = getSupportFragmentManager();
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
@@ -93,7 +98,21 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			//Switch between list ids
 			
-			if (mCurrent!=null)getSupportFragmentManager().beginTransaction().hide(mCurrent).commit();
+			FragmentTransaction mTransaction = mManager.beginTransaction();
+			
+			if (mCurrent!=null) {
+				
+				try {
+					//We have to remove the Detail fragment because we're not using replace
+					if (mCurrent.getTag().equals("Detail")) mTransaction.remove(mCurrent);
+					else mTransaction.hide(mCurrent);
+				} catch (NullPointerException e){
+					
+					e.printStackTrace();
+				}
+				
+			}
+			
 			ActionModeHandler.modeFinish();			
 						
 			switch (Integer.valueOf(id)){
@@ -103,7 +122,7 @@ public class ItemListActivity extends FragmentActivity implements
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Devices")==null){
 						 mDevicesFragment = new DevicesFragment();
-						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mDevicesFragment, "Devices").commit();	
+						 mTransaction.add(R.id.item_detail_container,mDevicesFragment, "Devices");	
 
 					 }  
 					  
@@ -115,7 +134,7 @@ public class ItemListActivity extends FragmentActivity implements
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Viewer")==null){
 						 mViewerFragment = new ViewerMain();
-						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mViewerFragment, "Viewer").commit();
+						 mTransaction.add(R.id.item_detail_container,mViewerFragment, "Viewer");
 							
 					 } 
 					 
@@ -130,7 +149,7 @@ public class ItemListActivity extends FragmentActivity implements
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Library")==null){
 						 mLibraryFragment = new LibraryFragment();
-						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mLibraryFragment, "Library").commit();
+						 mTransaction.add(R.id.item_detail_container,mLibraryFragment, "Library");
 						 
 					 } 
 						 
@@ -138,11 +157,16 @@ public class ItemListActivity extends FragmentActivity implements
 
 				} break;
 				
+				case 4:{
+					
+					
+				} break;
+				
 				case 5:{
 					//Check if we already created the Fragment to avoid having multiple instances
 					 if (getSupportFragmentManager().findFragmentByTag("Settings")==null){
 						 mSettingsFragment = new SettingsFragment();
-						 getSupportFragmentManager().beginTransaction().add(R.id.item_detail_container,mSettingsFragment, "Settings").commit();
+						 mTransaction.add(R.id.item_detail_container,mSettingsFragment, "Settings");
 
 					 } 
 					 
@@ -167,7 +191,7 @@ public class ItemListActivity extends FragmentActivity implements
 				
 			}
 			
-			if (mCurrent!=null ) getSupportFragmentManager().beginTransaction().show(mCurrent).commit();
+			if (mCurrent!=null ) mTransaction.show(mCurrent).commit();
 			
 		} else {
 			// In single-pane mode, simply start the detail activity
@@ -182,6 +206,20 @@ public class ItemListActivity extends FragmentActivity implements
 	
 	public static void notifyAdapters(){
 		if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
+	}
+	
+	//Add a new custom fragment with detailed view
+	public static void showDetailView(int index){
+		FragmentTransaction mTransaction = mManager.beginTransaction();
+		DetailViewFragment detail = new DetailViewFragment();
+		Bundle args = new Bundle();
+	    args.putInt("index", index);
+	    detail.setArguments(args);
+		mTransaction.hide(mCurrent);
+		mTransaction.add(R.id.item_detail_container, detail, "Detail");
+		mCurrent = detail;
+		mTransaction.show(mCurrent).commit();
+		
 	}
 	
 	//Send a fragment change request to the parent
@@ -200,5 +238,16 @@ public class ItemListActivity extends FragmentActivity implements
 				}	
 			});
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		
+		if (mCurrent == mLibraryFragment){
+			
+			if (!mLibraryFragment.goBack()) super.onBackPressed();
+			
+		} else super.onBackPressed();
+		
 	}
 }

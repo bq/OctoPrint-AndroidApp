@@ -1,12 +1,10 @@
 package android.app.printerapp.model;
 
 import java.io.File;
-
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 /**
  * Model class to define a printable element, with a reference to its STL, GCODE and storage.
@@ -28,7 +26,7 @@ public class ModelFile extends File {
 	
 	//Reference to image
 	private Drawable mSnapshot;
-	
+		
 	public ModelFile(String filename, String storage){
 		super(filename);
 
@@ -62,7 +60,13 @@ public class ModelFile extends File {
 	public Drawable getSnapshot(){
 		return mSnapshot;
 	}
-		
+	
+	//TODO: Temporary info path
+	public String getInfo(){
+		String infopath = getAbsolutePath() + "/" + getName() + ".info";		
+		return infopath;
+	}
+			
 	/********************
 	 * 	 SETS
 	 * *****************/
@@ -83,8 +87,6 @@ public class ModelFile extends File {
 			mSnapshot = Resources.getSystem().getDrawable(R.drawable.file_icon);
 		}
 		
-		Log.i("MODEL","MY DRAWABLE: " + path)	;
-	}
-	
+	}	
 
 }

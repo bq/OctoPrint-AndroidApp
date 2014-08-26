@@ -1,18 +1,14 @@
 package android.app.printerapp.library;
 
 import java.io.File;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
-import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,21 +39,10 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		
-		//Logic for getting file type
-		final File f = StorageController.getFileList().get(arg2);
-		
-		
-		//Only when it's a project
-		if (f.isDirectory()){
-			if (StorageController.isProject(f)){
-				
-				showGcodeList(f);
-				
-			}
-		}
-		
-		
-			return false;
+		File f = StorageController.getFileList().get(arg2);
+		showOptionDialog(f);
+
+		return false;
 	}
 
 	@Override
@@ -72,31 +57,13 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's project folder, send stl
 			if (StorageController.isProject(f)){
 				
-				try {
-					
-					showOptionDialog(f);
-				} catch (NullPointerException e){
-					
-					Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
-
-					
-				}
-				
+				if (((ModelFile)f).getStl()!=null) ItemListActivity.showDetailView(arg2);
+				else ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
+								
 				
 			} else  {							
 
-				StorageController.reloadFiles(f.getAbsolutePath());
-
-				//if it's not the parent folder, make a back folder
-				/*if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
-
-					//TODO change folder names
-					StorageController.addToList(new File(f.getParentFile().toString()));
-				}
-				
-				
-				mContext.sortAdapter();*/
-				
+				StorageController.reloadFiles(f.getAbsolutePath());				
 				mContext.sortAdapter();
 				
 				
@@ -105,8 +72,14 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's not a folder, just send the file
 		}else {
 			
-			showOptionDialog(f);
-	
+			if (f.getAbsoluteFile().length()>0){
+				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+			} else {
+				
+				Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+
+			}
+
 		}					
 	}
 	
@@ -148,81 +121,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						}
 						
 					} else {
-						ArrayList<ModelPrinter> tempList = DevicesListController.getList();
-						String[] nameList = new String[tempList.size()];
-						
-						//We'll check for checked items (heh) with a boolean array
-						//TODO use this same method with printer discovery
-						final boolean[] checkedItems = new boolean[nameList.length];
-						
-						int i = 0;
-						
-						//New array with names only for the adapter
-						for (ModelPrinter p : tempList){		
-							nameList[i] = p.getName();
-							i++;
-						}
-						
-						AlertDialog.Builder adb2 = new AlertDialog.Builder(mContext.getActivity());
-						adb2.setTitle(R.string.library_select_printer_title);
-						
-						
-						
-						//Show list of available printers
-						//TODO Make a proper adapter
-						adb2.setMultiChoiceItems(nameList, null, new OnMultiChoiceClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-								
-								checkedItems[which]	= isChecked;
-								
-							}
-						});
-						
-						//final AlertDialog	ad2 = adb2.create();
-
-						
-						/*adb2.setAdapter(new ArrayAdapter<String>(mContext.getActivity(), 
-								android.R.layout.simple_list_item_multiple_choice, nameList), null);
-						*/
-						adb2.setPositiveButton(R.string.library_option_print, new OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-					
-								//SparseBooleanArray checked = ad2.getListView().getCheckedItemPositions();;
-								
-								//TODO Multiprint interaction
-								for (int i = 0; i<checkedItems.length ; i++){
-									
-									if (checkedItems[i]){
-										
-										ModelPrinter m = DevicesListController.getList().get(i);
-										
-										if (f.getParent().equals("sd")){
-											OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, true);
-							    			
-										} else if (f.getParent().equals("witbox")){
-											OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, false);
-								    		
-										} else {
-											OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
-										}
-							    		
-
-									}
-																	
-								}
-								
-								
-								
-							}
-						});
-						
-						adb2.setNegativeButton(R.string.cancel, null);
-						
-						adb2.show();
+						DevicesListController.selectPrinter(mContext.getActivity(),f);
 					}
 					
 					
@@ -275,8 +174,16 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 
-							f.delete();
+							deleteFiles(f);
 							StorageController.getFileList().remove(f);
+							
+							if (DatabaseController.isFavorite(f.getName())){
+								
+								Log.i("OUT", "oh my, IT IS! " + f.getName());
+								
+								DatabaseController.handleFavorite(f, false	);
+							}
+							
 							mContext.notifyAdapter();
 							
 						}
@@ -298,8 +205,30 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 		adb.show();
 		
 	}
+	
+	/**
+	 * Delete files recursively
+	 * @param file
+	 */
+	public void deleteFiles(File file){
+		
+		
+		if (file.isDirectory()){
+			
+			for (File f : file.listFiles()){
+				
+				deleteFiles(f);
+				
+			}
+			
+		} 
+		
+		file.delete();
+		
+	}
+	
 
-	private void showGcodeList(File f){
+	/*private void showGcodeList(File f){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());
 		adb.setTitle("Files...");
@@ -350,7 +279,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					
 		adb.show();
 		
-	}
+	}*/
 		
 
 }
