@@ -91,7 +91,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        		
 	        		//TODO: This should search for multiple Networks son we can't unregister the receiver.
 	        		//Log.i("Network",s.toString());
-	        		if (s.SSID.contains(NETWORK_NAME)){
+	        		if ((s.SSID.contains(NETWORK_NAME))&&(s.SSID.length()<=7)){
 	        			
 	        			Log.i("Network","New printer found! " + s.SSID);
 	        			//unregister();
