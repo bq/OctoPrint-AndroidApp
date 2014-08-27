@@ -52,7 +52,7 @@ public class StorageModelCreation {
 			//root folder
 			if (root.mkdirs()){
 				
-				if (mName.contains(".stl")){
+				if (source.getName().contains(".stl")){
 					
 					mainFolder = new File(root.getAbsolutePath() + "/_stl");
 					secondaryFolder = new File(root.getAbsolutePath() + "/_gcode");

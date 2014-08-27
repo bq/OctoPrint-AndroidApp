@@ -57,8 +57,11 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's project folder, send stl
 			if (StorageController.isProject(f)){
 				
-				if (((ModelFile)f).getStl()!=null) ItemListActivity.showDetailView(arg2);
-				else ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
+				/*if (((ModelFile)f).getStl()!=null) ItemListActivity.showDetailView(arg2);
+				else ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());*/
+				
+				//Show detail view regardless
+				ItemListActivity.showDetailView(arg2);
 								
 				
 			} else  {							
