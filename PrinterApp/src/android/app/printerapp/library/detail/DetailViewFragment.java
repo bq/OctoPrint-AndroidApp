@@ -77,8 +77,17 @@ public class DetailViewFragment extends Fragment {
 				}
 				
 				
-				//add also de the stl
-				arrayFiles.add(new File(mFile.getStl()));
+				
+				try{
+					
+					//add also de the stl
+					arrayFiles.add(new File(mFile.getStl()));
+					
+				} catch (Exception e){
+					
+					e.printStackTrace();
+				}
+				
 				
 				DetailViewAdapter adapter = new DetailViewAdapter(getActivity(), R.layout.detailview_list_element, arrayFiles, mFile.getSnapshot());
 				ListView lv = (ListView) rootView.findViewById(R.id.detail_lv);
