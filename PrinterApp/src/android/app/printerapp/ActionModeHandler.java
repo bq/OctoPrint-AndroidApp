@@ -1,5 +1,6 @@
 package android.app.printerapp;
 
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.view.ActionMode;
@@ -71,6 +72,8 @@ public class ActionModeHandler {
 	        switch (item.getItemId()) {
 	            case R.id.menu_cab_delete:
 	                DatabaseController.deleteFromDb(mCurrentModel.getName());
+	                DevicesListController.getList().remove(mCurrentModel);
+	                ItemListActivity.notifyAdapters();
 	                mode.finish();
 	                return true;
 	                

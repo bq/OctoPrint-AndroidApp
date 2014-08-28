@@ -35,6 +35,8 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 			
 			if (m.getStatus()!=StateUtils.STATE_NEW)
 			if (m.getVideo().getParent() == null)	{
+				
+				
 				//Create a new linear layout to store the view
 				LinearLayout ll = new LinearLayout(getContext());
 				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

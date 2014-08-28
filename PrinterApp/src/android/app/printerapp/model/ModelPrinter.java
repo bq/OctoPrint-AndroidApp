@@ -13,6 +13,7 @@ import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.camera.MjpegView;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.content.Context;
+import android.util.Log;
 
 public class ModelPrinter {
 	
@@ -44,8 +45,10 @@ public class ModelPrinter {
 		mFileList = new ArrayList<File>();
 		
 		//Set new position according to the position in the DB, or the first available
-		if (position<0) mPosition = DevicesListController.searchAvailablePosition();
+		if ((position<0) || (Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
 		else mPosition = position;
+		
+		Log.i("OUT","Creating service @"+position);
 			
 	}
 	
@@ -101,6 +104,12 @@ public class ModelPrinter {
 			state = status.getJSONObject("state");
 						
 			mStatus = state.getInt("state");
+			
+			if ((Integer.valueOf(mStatus)) == null){
+				Log.i("OUT","STATE IS NULL");
+				mStatus = StateUtils.STATE_NONE;
+			} else Log.i("OUT","STATE IS " + mStatus);
+			
 			mMessage = state.getString("stateString");
 			mJob.updateJob(status);
 			
@@ -133,15 +142,18 @@ public class ModelPrinter {
 		mMessage = "New";
 	}
 	
-	public void setLinked(){
+	public void setLinked(Context context){
 		mStatus = StateUtils.STATE_NONE;
 		mMessage = "";
+		startUpdate();
+		mCam = new CameraHandler(context,mAddress);
+		
 	}
 	
 	//Set video stream from the camera
-	public void setVideoStream(Context context){
+/*	public void setVideoStream(Context context){
 		mCam = new CameraHandler(context,mAddress);
-	}
+	}*/
 	
 	//change position
 	public void setPosition(int pos){	

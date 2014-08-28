@@ -12,10 +12,12 @@ import android.content.ClipData;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -79,30 +81,34 @@ public class DevicesQuickprint {
 		 */
 		for (final ModelFile m : mFileList){
 			
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View v = inflater.inflate(R.layout.storage_main, null);
+			//LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			//View v = inflater.inflate(R.layout.storage_main, null);
+			
+			ImageView v;
 			
 			if ((StorageController.isProject(m))){
-				TextView tv = (TextView) v.findViewById(R.id.storage_label);
-				tv.setText(m.getName());
 				
-				ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
+				//TextView tv = (TextView) v.findViewById(R.id.storage_label);
+				//tv.setText(m.getName());
+				
+				//ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
+				
+				v = new ImageView(mContext);
+				v.setLayoutParams(new LayoutParams(120,120,Gravity.CENTER));
+				v.setPadding(5, 0, 5, 0);
 				
 				if (m.getStorage().equals("Internal storage")){
 					Drawable d;
 					d =m.getSnapshot();
 				
 					if (d!=null){
-						iv.setImageDrawable(d);
+						v.setImageDrawable(d);
 					} else {
-						iv.setImageResource(R.drawable.file_icon);
+						v.setImageResource(R.drawable.file_icon);
 					}
-				} else iv.setImageResource(R.drawable.file_icon);
+				} else v.setImageResource(R.drawable.file_icon);
 			
-			
-			
-				
-			 	
+					 	
 				/*
 				 * On long click we start dragging the item, no need to make it invisible
 				 */

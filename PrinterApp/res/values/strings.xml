@@ -19,7 +19,7 @@
     <string name="fragment_history">History</string>
     <string name="fragment_settings">Settings</string>
     
-    <string name="devices_quickprint">Quickprint</string>
+    <string name="devices_quickprint">&#9552;</string>
     <string name="devices_add_dialog_title">Detected printer(s)</string>
     <string name="devices_add_dialog_message">Select a printer to add it to your panel</string>
     <string name="devices_filter_dialog_title">Show</string>

@@ -25,7 +25,7 @@ import android.widget.TextView;
  */
 public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Filterable{
 	
-	private static final int maxItems = 12;
+	private static final int maxItems = 20;
 	
 	//Original list and current list to be filtered
 	private ArrayList<ModelPrinter> mCurrent;
@@ -71,8 +71,9 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
-		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
+		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
+		
 		
 		
 		
@@ -95,16 +96,16 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			switch(status){
 			
 				case StateUtils.STATE_NONE:{
-					icon.setImageResource(R.drawable.witbox_offline_icon);	
+					icon.setImageResource(R.drawable.icon_printer);	
 				}break;
 				
 				case StateUtils.STATE_NEW:
 				case StateUtils.STATE_ADHOC: {
-					icon.setImageResource(R.drawable.witbox_offline_icon_ghost);
+					icon.setImageResource(R.drawable.icon_detectedprinter);
 				}break;
 				
 				default:{
-					icon.setImageResource(R.drawable.witbox_icon);	
+					icon.setImageResource(R.drawable.icon_selectedprinter);	
 				}break;
 			
 			}
@@ -113,7 +114,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			switch (status){
 			
 				case StateUtils.STATE_OPERATIONAL:{
-					iv.setImageResource(R.drawable.tick_icon_small);
+					//iv.setImageResource(R.drawable.tick_icon_small);
 					iv.setVisibility(View.VISIBLE);
 					pb.setVisibility(View.GONE);
 				} break;
@@ -124,11 +125,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 					Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
 					pb.setProgress(n.intValue());
 					
-					iv.setImageResource(R.drawable.printer_icon);
+					//iv.setImageResource(R.drawable.printer_icon);
 				}break;
 				
 				case StateUtils.STATE_ERROR:{
-					iv.setImageResource(R.drawable.warning_icon);
+					iv.setImageResource(R.drawable.icon_error);
 					iv.setVisibility(View.VISIBLE);
 					pb.setVisibility(View.GONE);
 				}break;
