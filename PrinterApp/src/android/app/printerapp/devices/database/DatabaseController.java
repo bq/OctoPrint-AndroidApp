@@ -60,7 +60,9 @@ public class DatabaseController {
 		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry.DEVICES_NAME + " = '" + name + "'", null);
 		mDb.close();
 		
-		DevicesListController.loadList(mContext);
+		//DevicesListController.loadList(mContext);
+		
+		
 	}
 	
 	//Retrieve the cursor with the elements from the database
@@ -184,7 +186,10 @@ public class DatabaseController {
 			Log.i("OUT","Removing " + f.getName());
 			editor.remove(f.getName());
 		}
-		else editor.putString(f.getName(), f.getAbsolutePath());
+		else {
+			Log.i("OUT","Putting favorite " + f.getName());
+			editor.putString(f.getName(), f.getAbsolutePath());
+		}
 			
 		editor.commit();
 		

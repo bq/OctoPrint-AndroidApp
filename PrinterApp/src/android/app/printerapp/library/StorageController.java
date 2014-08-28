@@ -171,7 +171,7 @@ public class StorageController {
 			//File still in favorites
 		} catch (Exception e){
 			
-			File delete = new File(name);
+			/*File delete = new File(name);
 			
 			Log.i("OUT", "LOOKING FAVORITE " + delete.getName());
 			
@@ -180,7 +180,7 @@ public class StorageController {
 				Log.i("OUT", "oh my, IT IS! " + delete.getName());
 				
 				DatabaseController.handleFavorite(delete, false	);
-			}
+			}*/
 		}
 		
 		

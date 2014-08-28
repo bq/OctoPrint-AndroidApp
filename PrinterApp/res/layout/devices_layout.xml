@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.app.printerapp.devices.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sliding_panel"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+   android:id="@+id/sliding_panel"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
    android:gravity="bottom"
    app:shadowHeight="4dp"
    app:panelHeight="68dp"
@@ -13,7 +13,8 @@
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+         >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                         android:id="@+id/devices_grid"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:numColumns="3"
+                        android:numColumns="5"
                         >
                     </GridView>
                 </LinearLayout>
@@ -92,6 +93,7 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
+        android:background="@android:color/holo_blue_light"
     	android:orientation="vertical" >
         
             <TextView
@@ -100,7 +102,9 @@
 			        android:layout_height="wrap_content"
 			        android:gravity="center|top"
 			        android:text="@string/devices_quickprint"
-			        android:textSize="16sp" />
+			        android:textSize="30sp" 
+			         
+        android:textColor="@android:color/white"/>
 
                     <HorizontalScrollView
                         android:id="@+id/scrollview"

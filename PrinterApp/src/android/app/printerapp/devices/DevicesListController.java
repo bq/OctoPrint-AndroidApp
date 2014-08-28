@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
@@ -56,8 +55,8 @@ public class DevicesListController {
 			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
 			
 			addToList(m);
-			m.startUpdate();
-			if (m.getStatus()!=StateUtils.STATE_NEW) m.setVideoStream(context);
+			
+			m.setLinked(context);
 			
 			c.moveToNext();
 		}
@@ -191,13 +190,20 @@ public static void selectPrinter(final Context context, final File f){
 	//TODO Move elsewhere maybe
 	//Get the Network id key to associate with the service name
 	public static String getNetworkId(String name){
+		
 			
 			String[] parsedString = name.split("\\(");
 			
-			String parsedName = parsedString[1];
+			if (parsedString.length>1){
+				
 			
-			return parsedName.replaceAll("[^A-Za-z0-9]", "");
+				String parsedName = parsedString[1];
+				
+				String finale =  parsedName.replaceAll("[^A-Za-z0-9]", "");
+
+			return finale;
 			
-		}
+		} else return "00000";
+	}
 		
 }

@@ -17,7 +17,7 @@
     <string name="fragment_history">Historial</string>
     <string name="fragment_settings">Ajustes</string>
     
-    <string name="devices_quickprint">Impresión rápida</string>
+    <string name="devices_quickprint">&#9552;</string>
     <string name="devices_add_dialog_title">Impresoras detectadas</string>
     <string name="devices_add_dialog_message">Elige una impresora para añadirla al panel</string>
     <string name="devices_filter_dialog_title">Mostrar</string>

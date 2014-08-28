@@ -14,10 +14,12 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 /**
@@ -47,6 +50,8 @@ public class DevicesFragment extends Fragment{
 	//Controllers and adapters
 	private DevicesGridAdapter mGridAdapter;
 	private DevicesListAdapter mListAdapter;
+	private DevicesCameraAdapter mCameraAdapter;
+	
 	
 	private PrintNetworkManager mNetworkManager;
 	
@@ -142,8 +147,11 @@ public class DevicesFragment extends Fragment{
 					
 			
 			GridView gv = (GridView) rootView.findViewById(R.id.devices_camera);
-			gv.setAdapter(new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList()));
 			
+			mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
+			
+			
+			gv.setAdapter(mCameraAdapter);
 			/*******************************************************************/
 			SlidingUpPanelLayout s = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
 			TextView t = (TextView) rootView.findViewById(R.id.drag_text);
@@ -233,6 +241,13 @@ public class DevicesFragment extends Fragment{
 		 
 		tabs.setCurrentTab(0);
 		
+		tabs.getTabWidget().setBackgroundColor(Color.parseColor("#333333"));
+		for(int i=0;i<tabs.getTabWidget().getChildCount();i++) 
+	    {
+	        TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+	        tv.setTextColor(Color.parseColor("#ffffff"));
+	    } 
+		
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
@@ -250,6 +265,7 @@ public class DevicesFragment extends Fragment{
 			
 			@Override
 			public void run() {
+								
 				if (!DatabaseController.checkExisting(m)){
 					DevicesListController.addToList(m);
 					m.setNotLinked();
@@ -264,8 +280,16 @@ public class DevicesFragment extends Fragment{
 	
 	
 	public void notifyAdapter(){
-		mListAdapter.notifyDataSetChanged();
-		mGridAdapter.notifyDataSetChanged();
+		
+		try{
+			mListAdapter.notifyDataSetChanged();
+			mGridAdapter.notifyDataSetChanged();
+			mCameraAdapter.notifyDataSetChanged();
+		}catch (NullPointerException e){
+			//Random adapter crash
+			e.printStackTrace();
+		}
+		
 		
 		Log.i("DEVICES","I was notified senpai!");
 		
@@ -385,7 +409,9 @@ public class DevicesFragment extends Fragment{
 
 				//m.startUpdate();
 				DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()));	
-				DevicesListController.loadList(getActivity());
+				m.setLinked(getActivity());
+				notifyAdapter();
+				//DevicesListController.loadList(getActivity());
 			}
 		});
 		
@@ -422,11 +448,22 @@ public class DevicesFragment extends Fragment{
 
  					 //show custom dialog
 					 if (m.getStatus()== StateUtils.STATE_ERROR){
-						 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+						 
+						 Toast toast = new Toast(getActivity());
+						 LayoutInflater inflater = getActivity().getLayoutInflater();
+						 View toastView = inflater.inflate(R.layout.toast_layout,null);
+						 TextView tv = (TextView) toastView.findViewById(R.id.toast_text);
+						 tv.setText(m.getMessage());
+						 //toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+						 toast.setDuration(Toast.LENGTH_LONG);
+						 toast.setView(toastView);
+						 toast.show();
+						 
+						 /*AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 						 adb.setTitle(R.string.devices_error_dialog_title);
 						 adb.setMessage(m.getMessage());
 						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
-						 adb.show();
+						 adb.show();*/
 					 }
 					 
 					 if (m.getStatus()== StateUtils.STATE_PRINTING){

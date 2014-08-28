@@ -1,6 +1,7 @@
 package android.app.printerapp;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -92,7 +93,7 @@ public class ItemListFragment extends ListFragment {
 			
 			mCallbacks = sDummyCallbacks;
 		}
-		
+		//view.setBackgroundColor(Color.parseColor("#333333"));
 		mListView = getListView();
 	}
 

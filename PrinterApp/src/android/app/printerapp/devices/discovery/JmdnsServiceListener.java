@@ -161,7 +161,7 @@ public class JmdnsServiceListener implements ServiceListener{
 			
 			Log.i("SEARCH","Searching for... " + name);
 			
-			
+			if ((name.length()==4)&&(name!=null))
 			for (ModelPrinter p : DevicesListController.getList()){
 				
 				if (p.getName().contains(name)){
