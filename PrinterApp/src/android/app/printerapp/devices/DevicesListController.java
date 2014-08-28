@@ -39,6 +39,19 @@ public class DevicesListController {
 		return mList;
 	}
 	
+	//Return a specific printer
+	public static ModelPrinter getPrinter(String name) {
+		
+		for (ModelPrinter p : mList){
+			
+			if (p.getName().equals(name)){
+				return p;
+			}
+		}
+		
+		return null;
+	}
+	
 	//Load device list from the Database
 	public static void loadList(Context context){
 		
@@ -116,7 +129,7 @@ public class DevicesListController {
 	//Select a printer from all the linked available  and send to print
 public static void selectPrinter(final Context context, final File f){
 		
-		ArrayList<ModelPrinter> tempList = DevicesListController.getList();
+		ArrayList<ModelPrinter> tempList = mList;
 		String[] nameList = new String[tempList.size()];
 		
 		//We'll check for checked items (heh) with a boolean array
@@ -160,13 +173,13 @@ public static void selectPrinter(final Context context, final File f){
 					
 					if (checkedItems[i]){
 						
-						ModelPrinter m = DevicesListController.getList().get(i);
+						ModelPrinter m = mList.get(i);
 						
 						if (f.getParent().equals("sd")){
-							OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, true);
+							OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), true);
 			    			
 						} else if (f.getParent().equals("witbox")){
-							OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false, false);
+							OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false);
 				    		
 						} else {
 							OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);

@@ -72,6 +72,8 @@
     <string name="library_menu_paste">Paste</string>
     
     <string name="library_tabhost_tab_all">All the models</string>
+    <string name="library_tabhost_tab_local">Local</string>
+    <string name="library_tabhost_tab_printer">Printer</string>
     <string name="library_tabhost_tab_memory">Witbox memory</string>
     <string name="library_tabhost_tab_usb">USB</string>
     <string name="library_tabhost_tab_favorites">Favorites</string>

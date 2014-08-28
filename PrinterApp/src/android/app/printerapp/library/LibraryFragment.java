@@ -97,6 +97,9 @@ public class LibraryFragment extends Fragment {
 			mSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher_library);
 
 			
+			//Initial file list
+			StorageController.reloadFiles("all");
+			
 			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
 			mListAdapter = new StorageAdapter(getActivity(),R.layout.storage_list_element, StorageController.getFileList());
 			
@@ -119,7 +122,9 @@ public class LibraryFragment extends Fragment {
 			
 			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
 			gu.setAdapter(mAdapter);
-			gu.setOnItemClickListener(clickListener);
+			
+			//New click listener to handle printers, we don't need to view or edit, just load
+			gu.setOnItemClickListener(new StoragePrinterOnClickListener(this));
 			
 			GridView gf = (GridView) rootView.findViewById(R.id.grid_storage_favorites);
 			gf.setAdapter(mAdapter);
@@ -210,13 +215,13 @@ public class LibraryFragment extends Fragment {
 		spec.setContent(R.id.tab1);
 		tabs.addTab(spec);
 		 
-		spec=tabs.newTabSpec("Witbox");
-		spec.setIndicator(getString(R.string.library_tabhost_tab_memory));
+		spec=tabs.newTabSpec("Local");
+		spec.setIndicator(getString(R.string.library_tabhost_tab_local));
 		spec.setContent(R.id.tab2);
 		tabs.addTab(spec);
 		
-		spec=tabs.newTabSpec("Usb");
-		spec.setIndicator(getString(R.string.library_tabhost_tab_usb));
+		spec=tabs.newTabSpec("Printer");
+		spec.setIndicator(getString(R.string.library_tabhost_tab_printer));
 		spec.setContent(R.id.tab3);
 		tabs.addTab(spec);
 		
@@ -234,13 +239,14 @@ public class LibraryFragment extends Fragment {
 
 		    	switch (tabs.getCurrentTab()) {				
 				case 0:
-						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
+						StorageController.reloadFiles("all");
+						//StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
 					break;
 				case 1:
-						StorageController.reloadFiles("witbox");
+						StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());					
 					break; 
 				case 2:
-						StorageController.reloadFiles("sd");
+						StorageController.reloadFiles("printer");
 					break;
 					
 				case 3:		
@@ -388,12 +394,8 @@ public class LibraryFragment extends Fragment {
 	}
 	
 	public void optionSwitchList(){
-		
 
-		//StorageController.reloadFiles("all");
 		mSwitcher.showNext();
-		//mAdapter.clear();
-		//mAdapter  = new StorageAdapter(getActivity(),R.layout.storage_list_element, StorageController.getFileList());		
 		notifyAdapter();
 		
 		
@@ -427,32 +429,35 @@ public class LibraryFragment extends Fragment {
 						
 			public int compare(File arg0, File arg1) {
 				
-				//If it's the back button, always first
-				if (arg0.getAbsolutePath().equals(StorageController.getCurrentPath().getParentFile().getAbsolutePath())) {
-					return -1;
-				}
+				if (arg0.getParent().equals("printer")) return -1;
 				
-				//If both are directories, they may be also projects
-				if ((arg0.isDirectory())&&(arg1.isDirectory())){
+				//Must check all cases, Folders > Projects > Files
+				if (arg0.isDirectory()){
 					
-					int i1 = (StorageController.isProject(arg0)) ? 1: 0;
-					int i2 = (StorageController.isProject(arg1)) ? 1: 0;
-					
-					int result = i1 - i2;
-					
-					//Result will throw true for Files always
-					if (result == 0){
-
-						return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+					if (StorageController.isProject(arg0)){
 						
-					} else	return result;
+						if (StorageController.isProject(arg1)) return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+						else if (arg1.isDirectory() )return 1;
+						else return -1;
+						
+					} else {
+						
+						if (arg1.isDirectory()) {
+							
+							if (StorageController.isProject(arg1)) return -1;
+							else return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+						
+						} else return -1;
+						
+					}
+					
+				} else {
+					
+					if (arg1.isDirectory()) return 1;
+					else return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
 					
 				}
 				
-				//If both are files, lowercase comparison
-				if ((arg0.isFile())&&(arg1.isFile()))return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-				//Everything else
-				return arg0.getAbsoluteFile().compareTo(arg1.getAbsoluteFile());
 		    }
 		});
 		
@@ -479,6 +484,7 @@ public class LibraryFragment extends Fragment {
 	public boolean goBack(){
 		
 		if (!StorageController.getCurrentPath().getAbsolutePath().equals(StorageController.getParentFolder().getAbsolutePath())){
+			Log.i("OUT","This is " + StorageController.getCurrentPath());
 			StorageController.reloadFiles(StorageController.getCurrentPath().getParent());				
 			sortAdapter();
 			

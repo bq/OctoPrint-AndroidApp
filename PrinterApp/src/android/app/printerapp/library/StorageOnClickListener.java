@@ -75,13 +75,13 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's not a folder, just send the file
 		}else {
 			
-			if (f.getAbsoluteFile().length()>0){
-				ItemListActivity.requestOpenFile(f.getAbsolutePath());
-			} else {
+			 if (f.getAbsoluteFile().length()>0){
+					ItemListActivity.requestOpenFile(f.getAbsolutePath());
+				} else {
 				
-				Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+					Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
 
-			}
+				}
 
 		}					
 	}
