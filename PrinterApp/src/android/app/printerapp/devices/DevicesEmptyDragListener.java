@@ -47,17 +47,17 @@ public class DevicesEmptyDragListener implements OnDragListener{
 		    		
 		    		Log.i("DRAG", item.getText().toString());
 		    		
-		    		for (ModelPrinter p : DevicesListController.getList()){
+		    		ModelPrinter p = DevicesListController.getPrinter(item.getText().toString());
+		    		
+		    		if (p!=null){
 		    			
-		    			if (p.getName().equals(item.getText().toString())){
-		    				
-		    				//update position
-		    				p.setPosition(mPosition);
-		    				//update database
-		    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getName(), String.valueOf(mPosition));
-		    				//notify
-		    				ItemListActivity.notifyAdapters();
-		    			}
+	    				//update position
+	    				p.setPosition(mPosition);
+	    				//update database
+	    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getName(), String.valueOf(mPosition));
+	    				//notify
+	    				ItemListActivity.notifyAdapters();
+		    			
 		    			
 		    		}
 		    		

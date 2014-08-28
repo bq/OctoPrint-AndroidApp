@@ -88,7 +88,7 @@ public class OctoprintLoadAndPrint {
 	 * @param flag
 	 * @param sd
 	 */
-	public static void printInternalFile(String url, String file, boolean flag, boolean sd){
+	public static void printInternalFile(String url, String file, boolean sd){
 		
 		RequestParams params = new RequestParams();
 			
@@ -96,15 +96,7 @@ public class OctoprintLoadAndPrint {
 		
 		//If it's sd, we set the param
 		if (sd) params.put("target", "sd");
-		
-		//If Load & Print is enabled
-		if (flag){
-			//booleans must be strings for the server to parse
-			params.put("print", "true");
-		} else {
-			params.put("print", "false");;
-		}
-
+		params.put("print", "false");
 		
 		
 		HttpClientHandler.post(url + POST_FILE, params, new JsonHttpResponseHandler(){
@@ -112,21 +104,7 @@ public class OctoprintLoadAndPrint {
 			@Override
 			public void onProgress(int bytesWritten, int totalSize) {
 			}
-			
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				
-				Log.i("out",response.toString());
-			};
-			
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					String responseString, Throwable throwable) {
 
-				super.onFailure(statusCode, headers, responseString, throwable);
-				
-				Log.i("out", responseString);
-			}
 		});
 		
 	}

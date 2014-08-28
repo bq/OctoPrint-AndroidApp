@@ -71,6 +71,8 @@
     <string name="library_menu_paste">Pegar</string>
     
     <string name="library_tabhost_tab_all">Todos los modelos</string>
+    <string name="library_tabhost_tab_local">Local</string>
+    <string name="library_tabhost_tab_printer">Impresora</string>
     <string name="library_tabhost_tab_memory">Memoria Witbox</string>
     <string name="library_tabhost_tab_usb">USB</string>
     <string name="library_tabhost_tab_favorites">Favoritos</string>

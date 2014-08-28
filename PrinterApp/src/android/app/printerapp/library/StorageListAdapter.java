@@ -74,6 +74,7 @@ public class StorageListAdapter extends ArrayAdapter<File>{
 
 			
 		} else {
+			if (m.getParent().equals("printer")) iv.setImageResource(R.drawable.browser_carpeta);
 			iv.setImageResource(R.drawable.file_icon);
 		}
 		

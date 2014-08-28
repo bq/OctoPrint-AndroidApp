@@ -9,7 +9,6 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.os.Environment;
-import android.util.Log;
 
 
 /**
@@ -43,10 +42,6 @@ public class StorageController {
 	 */
 	public static void retrieveFiles(File path, boolean recursive){
 			
-		/**
-		 * CHANGED FILE LOGIC, NOW RETRIEVES FOLDERS INSTEAD OF FILES, AND PARSES
-		 * INDIVIDUAL ELEMENTS LATER ON.
-		 */
 		File[] files = path.listFiles();
 		for (File file : files){
 			
@@ -93,27 +88,27 @@ public class StorageController {
 		mCurrentPath = path;
 	}
 	
-	//Retrieve only files from the individul printers
-	//TODO filter by printer
+	//Retrieve only files from the individual printers
 	public static void retrievePrinterFiles(String source){
 		
-		for (ModelPrinter p : DevicesListController.getList()){
+		mFileList.clear();
 		
+		if (source!=null){
+		
+			ModelPrinter p = DevicesListController.getPrinter(source);
+
 			for (File f : p.getFiles()){
 				
-				if (source!=null){
+				addToList(f);
 					
-					if (f.getParent().equals(source)) addToList(f);
-					
-				} else addToList(f);
-				
-				
-				
 			}
-			
 		}
+		
+		//Set the current path pointing to a printer so we can go back
+		mCurrentPath = new File("printer/" + source);
 	}
 	
+	//Retrieve favorites
 	public static void retrieveFavorites(){
 		
 		mFileList.clear();
@@ -170,17 +165,7 @@ public class StorageController {
 			
 			//File still in favorites
 		} catch (Exception e){
-			
-			/*File delete = new File(name);
-			
-			Log.i("OUT", "LOOKING FAVORITE " + delete.getName());
-			
-			if (DatabaseController.isFavorite(delete.getName())){
-				
-				Log.i("OUT", "oh my, IT IS! " + delete.getName());
-				
-				DatabaseController.handleFavorite(delete, false	);
-			}*/
+			e.printStackTrace();
 		}
 		
 		
@@ -193,24 +178,26 @@ public class StorageController {
 		
 		mFileList.clear();
 		
+		//Retrieve every single file by recursive search
+		//TODO Not retrieving printers
 		if (path.equals("all")){
 			retrieveFiles(getParentFolder(), true);
-			retrievePrinterFiles(null);
 			mCurrentPath = getParentFolder();
 		} else {
 			
-			if ((path.equals("witbox")) || (path.equals("sd"))){
+			//Retrieve only the printers like folders
+			if ((path.equals("printer"))){
 				
-				retrievePrinterFiles(path);
-				
+				for (ModelPrinter p : DevicesListController.getList()){
+					
+					//we add a printer/ parent to determine inside a printer
+					addToList(new File("printer/" + p.getName()));
+				}
+								
 			} else {
-				retrieveFiles(new File(path), false);
 				
-				/*File f = new File(path);
-				if (!f.getAbsolutePath().equals(StorageController.getParentFolder().toString())) {
-
-					StorageController.addToList(new File(f.getParentFile().toString()));
-				}*/
+				///any other folder will open normally
+				retrieveFiles(new File(path), false);
 			}
 			
 			

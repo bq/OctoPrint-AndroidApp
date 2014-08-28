@@ -59,10 +59,10 @@ public class DevicesDragListener implements OnDragListener {
 	    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
 	    		//TODO: Set the same method for both
 	    		} else if (tag.equals("internal")){
-	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), false, false);
+	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), false);
 		    		
 	    		}else if (tag.equals("internalsd")){
-	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), false, true);
+	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), true);
 			    	
 	    		}
 	    	}

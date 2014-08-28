@@ -67,7 +67,8 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
-		v.findViewById(R.id.storage_gcode).setVisibility(View.GONE);
+		TextView tvg = (TextView) v.findViewById(R.id.storage_gcode);
+		tvg.setVisibility(View.GONE);
 		
 		if (m.isDirectory()){
 			
@@ -87,15 +88,31 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 				
 				
 			} else{	
-			
+							
 					iv.setImageResource(R.drawable.browser_carpeta);
-
 			}
 			
 
 			
 		} else {
-			iv.setImageResource(R.drawable.file_icon);
+			
+			//TODO Handle printer internal files
+			if (m.getParent().equals("printer")) iv.setImageResource(R.drawable.browser_carpeta);
+			else {
+				iv.setImageResource(R.drawable.file_icon);
+				
+				if (m.getParent().equals("sd")) {
+					tvg.setText("sd");
+					tvg.setVisibility(View.VISIBLE);
+				}
+				else if (m.getParent().equals("witbox")){
+					
+					tvg.setText("internal");
+					tvg.setVisibility(View.VISIBLE);
+				}
+			}
+			
+			
 		}
 	
 		return v;
