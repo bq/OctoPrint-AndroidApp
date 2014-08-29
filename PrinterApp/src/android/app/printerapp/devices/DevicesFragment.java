@@ -139,6 +139,7 @@ public class DevicesFragment extends Fragment{
 					R.layout.list_element, DevicesListController.getList());
 			
 			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
+			l.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
 			l.setAdapter(mListAdapter);
 			
 			
@@ -454,16 +455,11 @@ public class DevicesFragment extends Fragment{
 						 View toastView = inflater.inflate(R.layout.toast_layout,null);
 						 TextView tv = (TextView) toastView.findViewById(R.id.toast_text);
 						 tv.setText(m.getMessage());
-						 //toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-						 toast.setDuration(Toast.LENGTH_LONG);
+						 toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.TOP, 0, 50);
+						 toast.setDuration(Toast.LENGTH_SHORT);
 						 toast.setView(toastView);
 						 toast.show();
-						 
-						 /*AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-						 adb.setTitle(R.string.devices_error_dialog_title);
-						 adb.setMessage(m.getMessage());
-						 adb.setIcon(getResources().getDrawable(R.drawable.warning_icon));
-						 adb.show();*/
+
 					 }
 					 
 					 if (m.getStatus()== StateUtils.STATE_PRINTING){
