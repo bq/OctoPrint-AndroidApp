@@ -29,7 +29,6 @@ public class OctoprintControl {
 		//TODO: Change HttpClientHandler to handle POST API keys instead of hardcoding them here
 		params.put("apikey", "5A41D8EC149F406F9F222DCF93304B43");
 		params.put("command", command);
-
 		
 		HttpClientHandler.post(url + POST_LOAD, params, new JsonHttpResponseHandler(){
 			

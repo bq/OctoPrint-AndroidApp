@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 
+	//TODO: REDO ADAPTER EVERYTIME
 	public DevicesCameraAdapter(Context context, int resource,
 			List<ModelPrinter> objects) {
 		super(context, resource, objects);		
@@ -64,5 +65,5 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 
 		return v;
 	}
-
+	
 }

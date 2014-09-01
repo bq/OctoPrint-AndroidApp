@@ -2,7 +2,7 @@ package android.app.printerapp.devices;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.printerapp.ActionModeHandler;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -140,6 +140,7 @@ public class DevicesFragment extends Fragment{
 			
 			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
 			l.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
+			
 			l.setAdapter(mListAdapter);
 			
 			
@@ -184,8 +185,6 @@ public class DevicesFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.menu_add: //Add a new printer
-		  			
-		   optionAdd();
 			return true;
 			
        	case R.id.menu_filter: //Filter grid / list
@@ -221,7 +220,7 @@ public class DevicesFragment extends Fragment{
 	 */
 	public void setTabHost(View v){
 				 
-		TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
+		final TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Map");
@@ -252,9 +251,7 @@ public class DevicesFragment extends Fragment{
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
-		    	
-		    	ActionModeHandler.modeFinish();
-		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
+
 		    }
 		});
 		
@@ -345,19 +342,6 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
-	//This is the actual discovery service
-	//TODO implement the discovery logic here
-	public void optionAdd(){
-		
-		//new DiscoveryOptionController(getActivity());
-		for (ModelPrinter p : DevicesListController.getList()){
-			
-			p.getVideo().setZOrderOnTop(true);
-			
-		}
-		
-	}
-
 	public void setDialogAdapter(ModelPrinter m){
 		
 		 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
@@ -444,9 +428,6 @@ public class DevicesFragment extends Fragment{
 				
 				if (m!=null){
 					
-					//start action mode
-					ActionModeHandler.modeStart(arg1,m);
-
  					 //show custom dialog
 					 if (m.getStatus()== StateUtils.STATE_ERROR){
 						 
@@ -475,6 +456,8 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_ADHOC){
 						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
 					 }
+					 
+					 ItemListActivity.showPrintView(m.getName());
 				} 				
 			}
 		};

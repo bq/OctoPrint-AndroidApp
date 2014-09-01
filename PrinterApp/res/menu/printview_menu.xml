@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+        <item
+        android:id="@+id/printview_info"
+        android:showAsAction="always"
+        android:icon="@drawable/icon_pv_notas"/>
+            
+        <item
+        android:id="@+id/printview_pause"
+        android:showAsAction="always"
+        android:icon="@drawable/icon_pv_pausa" />
+                
+        <item
+        android:id="@+id/printview_stop"
+        android:showAsAction="always"
+        android:icon="@drawable/icon_pv_stop" />
+                
+
+</menu>

@@ -1,7 +1,10 @@
 package android.app.printerapp.settings;
 
 import java.util.List;
+
 import android.app.printerapp.R;
+import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -35,6 +38,16 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.settings_row, null, false);
+			
+			v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					DatabaseController.deleteFromDb(m.getName());
+	                DevicesListController.getList().remove(m);
+	                notifyDataSetChanged();
+				}
+			});
 			
 		} else {
 			//v = convertView;
