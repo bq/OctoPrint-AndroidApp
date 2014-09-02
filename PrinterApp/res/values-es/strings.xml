@@ -55,7 +55,7 @@
     <string name="library_create_dialog_title">Nombre de la nueva carpeta</string>
     <string name="library_select_printer_title">Seleccionar impresora(s)</string>
     <string name="library_option_dialog_title">Opciones del modelo</string>
-    <string name="library_option_print">Imprimir</string>
+    <string name="library_option_print">Enviar a impresora</string>
     <string name="library_option_edit">Editar</string>
     <string name="library_option_move">Mover</string>
     <string name="library_delete_dialog_title">¿Quieres eliminar este fichero?</string>

@@ -127,7 +127,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 					
 					//iv.setImageResource(R.drawable.printer_icon);
 				}break;
-				
+				case StateUtils.STATE_CLOSED:
 				case StateUtils.STATE_ERROR:{
 					iv.setImageResource(R.drawable.icon_error);
 					iv.setVisibility(View.VISIBLE);

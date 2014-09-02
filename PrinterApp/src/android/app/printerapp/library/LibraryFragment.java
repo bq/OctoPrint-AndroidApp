@@ -119,6 +119,7 @@ public class LibraryFragment extends Fragment {
 			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
 			gw.setAdapter(mAdapter);
 			gw.setOnItemClickListener(clickListener);
+			gw.setOnItemLongClickListener(clickListener);
 			
 			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
 			gu.setAdapter(mAdapter);
