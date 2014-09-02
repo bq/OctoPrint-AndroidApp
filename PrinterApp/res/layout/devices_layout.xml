@@ -5,7 +5,7 @@
    android:layout_height="match_parent"
    android:gravity="bottom"
    app:shadowHeight="4dp"
-   app:panelHeight="68dp"
+   app:panelHeight="50dp"
    app:fadeColor="@android:color/transparent" 
    app:anchorPoint="0.2"
    xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp">
@@ -61,6 +61,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" 
                         android:listSelector="@android:color/transparent"
+                        android:clickable="true"
                         >
                     </ListView>
                 </LinearLayout>

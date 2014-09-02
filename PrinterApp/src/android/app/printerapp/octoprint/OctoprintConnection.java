@@ -46,6 +46,7 @@ public class OctoprintConnection {
 		RequestParams params = new RequestParams();
 		params.put("command", "connect"); //Send a connection request
 		
+		
 		HttpClientHandler.post(url + POST_CONNECTION, params, new JsonHttpResponseHandler(){				
 
 			//Override onProgress because it's faulty

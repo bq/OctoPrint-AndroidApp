@@ -85,6 +85,7 @@ public class ModelPrinter {
 	}
 	
 	public MjpegView getVideo(){
+			
 		return mCam.getView();
 	}
 	
@@ -119,7 +120,7 @@ public class ModelPrinter {
 		
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	

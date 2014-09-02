@@ -436,8 +436,10 @@ public class LibraryFragment extends Fragment {
 					
 					if (StorageController.isProject(arg0)){
 						
-						if (StorageController.isProject(arg1)) return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-						else if (arg1.isDirectory() )return 1;
+						if (arg1.isDirectory()){
+							if (StorageController.isProject(arg1)) return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+							else return 1;
+						}				
 						else return -1;
 						
 					} else {

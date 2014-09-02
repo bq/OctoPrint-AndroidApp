@@ -219,6 +219,7 @@ public class StorageController {
 			}
 		};
 		
+		
 		if (file.list(f).length > 0) return true;
 		else return false;
 	}

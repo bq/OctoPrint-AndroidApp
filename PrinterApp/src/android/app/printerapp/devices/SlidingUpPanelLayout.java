@@ -1016,14 +1016,20 @@ public class SlidingUpPanelLayout extends ViewGroup {
 
     @Override
     public void computeScroll() {
-        if (mDragHelper.continueSettling(true)) {
-            if (!isSlidingEnabled()) {
-                mDragHelper.abort();
-                return;
-            }
+    	
+    	try {
+    		if (mDragHelper.continueSettling(true)) {
+                if (!isSlidingEnabled()) {
+                    mDragHelper.abort();
+                    return;
+                }
 
-            ViewCompat.postInvalidateOnAnimation(this);
-        }
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+    	} catch (NullPointerException e){
+    		
+    	}
+        
     }
 
     @Override

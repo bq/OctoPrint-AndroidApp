@@ -2,13 +2,12 @@ package android.app.printerapp.devices;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.printerapp.ActionModeHandler;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
-import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
 import android.content.Context;
@@ -32,7 +31,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -140,6 +138,7 @@ public class DevicesFragment extends Fragment{
 			
 			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
 			l.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
+			
 			l.setAdapter(mListAdapter);
 			
 			
@@ -184,8 +183,6 @@ public class DevicesFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.menu_add: //Add a new printer
-		  			
-		   optionAdd();
 			return true;
 			
        	case R.id.menu_filter: //Filter grid / list
@@ -221,7 +218,7 @@ public class DevicesFragment extends Fragment{
 	 */
 	public void setTabHost(View v){
 				 
-		TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
+		final TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
 		tabs.setup();
 		 
 		TabHost.TabSpec spec=tabs.newTabSpec("Map");
@@ -252,9 +249,7 @@ public class DevicesFragment extends Fragment{
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
-		    	
-		    	ActionModeHandler.modeFinish();
-		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
+
 		    }
 		});
 		
@@ -345,52 +340,6 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
-	//This is the actual discovery service
-	//TODO implement the discovery logic here
-	public void optionAdd(){
-		
-		//new DiscoveryOptionController(getActivity());
-		for (ModelPrinter p : DevicesListController.getList()){
-			
-			p.getVideo().setZOrderOnTop(true);
-			
-		}
-		
-	}
-
-	public void setDialogAdapter(ModelPrinter m){
-		
-		 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		 adb.setTitle(R.string.devices_progress_dialog_title);
-		 adb.setIcon(getResources().getDrawable(R.drawable.printer_icon));
-		 
-		//Inflate the view
-		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.progress_dialog, null, false);
-		
-		ModelJob job = m.getJob();
-		
-		TextView tv1 = (TextView) v.findViewById(R.id.pd_tv1);
-		tv1.setText(job.getFilename());
-		
-		ProgressBar pb = (ProgressBar) v.findViewById(R.id.pd_pb);
-		Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
-		pb.setProgress(n.intValue());
-		
-		TextView tv2 = (TextView) v.findViewById(R.id.pd_tv2);
-		tv2.setText(n.intValue() + "%");
-		
-		TextView tv3= (TextView) v.findViewById(R.id.pd_tv3);
-		tv3.setText("Faltan " + job.getPrintTimeLeft() + " aprox");
-		
-		TextView tv4 = (TextView) v.findViewById(R.id.pd_tv4);
-		tv4.setText(m.getTemperature());
-		
-		 
-		adb.setView(v);
-		
-		adb.show();
-	}
 	
 	public void codeDialog(final ModelPrinter m){
 		
@@ -444,9 +393,6 @@ public class DevicesFragment extends Fragment{
 				
 				if (m!=null){
 					
-					//start action mode
-					ActionModeHandler.modeStart(arg1,m);
-
  					 //show custom dialog
 					 if (m.getStatus()== StateUtils.STATE_ERROR){
 						 
@@ -463,7 +409,7 @@ public class DevicesFragment extends Fragment{
 					 }
 					 
 					 if (m.getStatus()== StateUtils.STATE_PRINTING){
-						setDialogAdapter(m);
+						//setDialogAdapter(m);
 					 }
 					 
 					 if (m.getStatus()==StateUtils.STATE_NEW){
@@ -475,6 +421,8 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_ADHOC){
 						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
 					 }
+					 
+					 ItemListActivity.showPrintView(m.getName());
 				} 				
 			}
 		};

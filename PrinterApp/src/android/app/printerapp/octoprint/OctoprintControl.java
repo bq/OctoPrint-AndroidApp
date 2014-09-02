@@ -3,6 +3,7 @@ package android.app.printerapp.octoprint;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import android.app.printerapp.ItemListActivity;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -29,7 +30,6 @@ public class OctoprintControl {
 		//TODO: Change HttpClientHandler to handle POST API keys instead of hardcoding them here
 		params.put("apikey", "5A41D8EC149F406F9F222DCF93304B43");
 		params.put("command", command);
-
 		
 		HttpClientHandler.post(url + POST_LOAD, params, new JsonHttpResponseHandler(){
 			
@@ -49,7 +49,7 @@ public class OctoprintControl {
 
 				super.onFailure(statusCode, headers, responseString, throwable);
 				
-				Log.i("out", responseString);
+				ItemListActivity.showDialog("Server error: Please load another gcode");
 			}
 		});
 		

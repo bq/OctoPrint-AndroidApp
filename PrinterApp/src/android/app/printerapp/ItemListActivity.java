@@ -3,6 +3,7 @@ package android.app.printerapp;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.library.detail.DetailViewFragment;
@@ -48,6 +49,8 @@ public class ItemListActivity extends FragmentActivity implements
 	private static Fragment mCurrent;
 	
 	private static FragmentManager mManager;
+	
+	private static DialogController mDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class ItemListActivity extends FragmentActivity implements
 		//new ViewerMain();
 		
 		mManager = getSupportFragmentManager();
+		mDialog = new DialogController(this);
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
@@ -104,7 +108,7 @@ public class ItemListActivity extends FragmentActivity implements
 				
 				try {
 					//We have to remove the Detail fragment because we're not using replace
-					if (mCurrent.getTag().equals("Detail")) mTransaction.remove(mCurrent);
+					if (mCurrent.getTag().contains("Detail")) mTransaction.remove(mCurrent);
 					else mTransaction.hide(mCurrent);
 				} catch (NullPointerException e){
 					
@@ -112,8 +116,7 @@ public class ItemListActivity extends FragmentActivity implements
 				}
 				
 			}
-			
-			ActionModeHandler.modeFinish();			
+					
 						
 			switch (Integer.valueOf(id)){
 			
@@ -204,23 +207,41 @@ public class ItemListActivity extends FragmentActivity implements
 	}	
 	
 	
+	//TODO find a better way
 	public static void notifyAdapters(){
 		if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
+		if (mCurrent!=null) if (mCurrent.getTag().equals("Detail Printer")) ((PrintViewFragment) mCurrent).refreshData();
 	}
 	
 	//Add a new custom fragment with detailed view
 	public static void showDetailView(int index){
+		
 		FragmentTransaction mTransaction = mManager.beginTransaction();
 		DetailViewFragment detail = new DetailViewFragment();
 		Bundle args = new Bundle();
 	    args.putInt("index", index);
 	    detail.setArguments(args);
 		mTransaction.hide(mCurrent);
-		mTransaction.add(R.id.item_detail_container, detail, "Detail");
+		mTransaction.add(R.id.item_detail_container, detail, "Detail View");
 		mCurrent = detail;
 		mTransaction.show(mCurrent).commit();
 		
 	}
+	
+	//Add a new custom fragment with detailed view
+		public static void showPrintView(String name){
+			
+			FragmentTransaction mTransaction = mManager.beginTransaction();
+			PrintViewFragment detail = new PrintViewFragment();
+			Bundle args = new Bundle();
+		    args.putString("printer", name);
+		    detail.setArguments(args);
+			mTransaction.hide(mCurrent);
+			mTransaction.add(R.id.item_detail_container, detail, "Detail Printer");
+			mCurrent = detail;
+			mTransaction.show(mCurrent).commit();
+			
+		}
 	
 	//Send a fragment change request to the parent
 	public static void requestOpenFile(final String path){
@@ -250,4 +271,9 @@ public class ItemListActivity extends FragmentActivity implements
 		} else super.onBackPressed();
 		
 	}
+	
+	public static void showDialog(String msg){
+		mDialog.displayDialog(msg);
+	}
+	
 }
