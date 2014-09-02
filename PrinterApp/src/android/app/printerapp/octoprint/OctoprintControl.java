@@ -3,6 +3,7 @@ package android.app.printerapp.octoprint;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import android.app.printerapp.ItemListActivity;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -48,7 +49,7 @@ public class OctoprintControl {
 
 				super.onFailure(statusCode, headers, responseString, throwable);
 				
-				Log.i("out", responseString);
+				ItemListActivity.showDialog("Server error: Please load another gcode");
 			}
 		});
 		

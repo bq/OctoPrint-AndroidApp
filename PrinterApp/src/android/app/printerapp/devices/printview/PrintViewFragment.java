@@ -81,11 +81,18 @@ public class PrintViewFragment extends Fragment{
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.printview_menu, menu);
+		
+		
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		
 		if (!isPrinting){
 			menu.findItem(R.id.printview_pause).setIcon(android.R.drawable.ic_media_play);
 		} else menu.findItem(R.id.printview_pause).setIcon(android.R.drawable.ic_media_pause);
 		
-		
+		super.onPrepareOptionsMenu(menu);
 	}
 	
 	//Option menu
@@ -93,22 +100,13 @@ public class PrintViewFragment extends Fragment{
 		public boolean onOptionsItemSelected(android.view.MenuItem item) {
 		   
 		   switch (item.getItemId()) {
-		   
-		   case R.id.printview_info: 
-			   return true;
-				
+		   				
 	       	case R.id.printview_pause:
 	       		
 	       		if (!isPrinting){
-	       			
 	       			OctoprintControl.sendCommand(mPrinter.getAddress(), "start");
-	       			item.setIcon(android.R.drawable.ic_media_pause);
-	       			isPrinting = true;
-
 	       		} else {
 	       			OctoprintControl.sendCommand(mPrinter.getAddress(), "pause");
-	       			item.setIcon(android.R.drawable.ic_media_play);
-	       			isPrinting = false;
 	       		}
 	
 	       		
@@ -133,7 +131,7 @@ public class PrintViewFragment extends Fragment{
 		try {
 			value = Double.valueOf(p) * 100;			
 		}catch (Exception e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		return String.valueOf((int)value);
@@ -144,8 +142,20 @@ public class PrintViewFragment extends Fragment{
 		tv_printer.setText(mPrinter.getName());
 		tv_file.setText(mPrinter.getJob().getFilename());
 		tv_temp.setText(mPrinter.getTemperature() + "ºC");
-		tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + mPrinter.getJob().getPrintTimeLeft() + " left)");
-				
+			
+		if (mPrinter.getStatus()== StateUtils.STATE_PRINTING){
+			
+			isPrinting = true;
+			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + mPrinter.getJob().getPrintTimeLeft() + " left)");
+			
+			
+		} else {
+			tv_prog.setText(mPrinter.getMessage());
+			isPrinting = false;
+		}
+		
+		getActivity().invalidateOptionsMenu();
+		
 	}
 	
 	@Override

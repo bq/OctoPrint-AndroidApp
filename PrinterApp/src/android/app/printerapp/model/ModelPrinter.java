@@ -14,7 +14,6 @@ import android.app.printerapp.devices.camera.MjpegView;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.content.Context;
 import android.util.Log;
-import android.view.ViewGroup;
 
 public class ModelPrinter {
 	
@@ -121,7 +120,7 @@ public class ModelPrinter {
 		
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	

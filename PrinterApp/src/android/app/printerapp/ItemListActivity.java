@@ -49,6 +49,8 @@ public class ItemListActivity extends FragmentActivity implements
 	private static Fragment mCurrent;
 	
 	private static FragmentManager mManager;
+	
+	private static DialogController mDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class ItemListActivity extends FragmentActivity implements
 		//new ViewerMain();
 		
 		mManager = getSupportFragmentManager();
+		mDialog = new DialogController(this);
 		
 		
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
@@ -268,4 +271,9 @@ public class ItemListActivity extends FragmentActivity implements
 		} else super.onBackPressed();
 		
 	}
+	
+	public static void showDialog(String msg){
+		mDialog.displayDialog(msg);
+	}
+	
 }

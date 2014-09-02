@@ -2,19 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
         <item
-        android:id="@+id/printview_info"
-        android:showAsAction="always"
-        android:icon="@drawable/icon_pv_notas"/>
-            
-        <item
         android:id="@+id/printview_pause"
         android:showAsAction="always"
-        android:icon="@drawable/icon_pv_pausa" />
+        android:icon="@android:drawable/ic_media_pause" />
                 
         <item
         android:id="@+id/printview_stop"
         android:showAsAction="always"
-        android:icon="@drawable/icon_pv_stop" />
+        android:icon="@drawable/ic_media_stop" />
                 
 
 </menu>
