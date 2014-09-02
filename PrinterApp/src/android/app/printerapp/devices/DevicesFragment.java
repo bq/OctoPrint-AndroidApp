@@ -393,36 +393,36 @@ public class DevicesFragment extends Fragment{
 				
 				if (m!=null){
 					
- 					 //show custom dialog
-					 if (m.getStatus()== StateUtils.STATE_ERROR){
-						 
-						 Toast toast = new Toast(getActivity());
-						 LayoutInflater inflater = getActivity().getLayoutInflater();
-						 View toastView = inflater.inflate(R.layout.toast_layout,null);
-						 TextView tv = (TextView) toastView.findViewById(R.id.toast_text);
-						 tv.setText(m.getMessage());
-						 toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.TOP, 0, 50);
-						 toast.setDuration(Toast.LENGTH_SHORT);
-						 toast.setView(toastView);
-						 toast.show();
 
-					 }
-					 
-					 if (m.getStatus()== StateUtils.STATE_PRINTING){
-						//setDialogAdapter(m);
-					 }
-					 
 					 if (m.getStatus()==StateUtils.STATE_NEW){
-						 codeDialog(m);
-						 
-						 
-					 }
-					 
-					 if (m.getStatus()==StateUtils.STATE_ADHOC){
+						 codeDialog(m); 
+					 } else if (m.getStatus()==StateUtils.STATE_ADHOC){
 						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
+					 } else {
+						 
+						 
+						 //show custom dialog
+						 if (m.getStatus()== StateUtils.STATE_ERROR){
+							 
+							 Toast toast = new Toast(getActivity());
+							 LayoutInflater inflater = getActivity().getLayoutInflater();
+							 View toastView = inflater.inflate(R.layout.toast_layout,null);
+							 TextView tv = (TextView) toastView.findViewById(R.id.toast_text);
+							 tv.setText(m.getMessage());
+							 toast.setGravity(Gravity.FILL_HORIZONTAL|Gravity.TOP, 0, 50);
+							 toast.setDuration(Toast.LENGTH_SHORT);
+							 toast.setView(toastView);
+							 toast.show();
+
+						 }
+						 
+						 
+						 
+						 if (m.getStatus()>0) ItemListActivity.showPrintView(m.getName()); 
+						 
 					 }
-					 
-					 ItemListActivity.showPrintView(m.getName());
+					
+ 					
 				} 				
 			}
 		};
