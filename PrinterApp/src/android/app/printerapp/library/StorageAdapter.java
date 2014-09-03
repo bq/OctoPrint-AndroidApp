@@ -68,6 +68,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
 		
 		TextView tvg = (TextView) v.findViewById(R.id.storage_gcode);
+		tvg.setText("gcode");
 		tvg.setVisibility(View.GONE);
 		
 		if (m.isDirectory()){

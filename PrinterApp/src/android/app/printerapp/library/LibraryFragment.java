@@ -115,24 +115,7 @@ public class LibraryFragment extends Fragment {
 			l.setOnItemClickListener(clickListener);
 			l.setOnItemLongClickListener(clickListener);
 			l.setAdapter(mListAdapter);
-			
-			GridView gw = (GridView) rootView.findViewById(R.id.grid_storage_witbox);
-			gw.setAdapter(mAdapter);
-			gw.setOnItemClickListener(clickListener);
-			gw.setOnItemLongClickListener(clickListener);
-			
-			GridView gu = (GridView) rootView.findViewById(R.id.grid_storage_usb);
-			gu.setAdapter(mAdapter);
-			
-			//New click listener to handle printers, we don't need to view or edit, just load
-			gu.setOnItemClickListener(new StoragePrinterOnClickListener(this));
-			
-			GridView gf = (GridView) rootView.findViewById(R.id.grid_storage_favorites);
-			gf.setAdapter(mAdapter);
-			gf.setOnItemClickListener(clickListener);
-			gf.setOnItemLongClickListener(clickListener);
-			
-			
+
 			//Set tab host for the view
 			setTabHost(rootView);
 			
