@@ -39,8 +39,8 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		
-		File f = StorageController.getFileList().get(arg2);
-		showOptionDialog(f);
+		//File f = StorageController.getFileList().get(arg2);
+		showOptionDialog(arg2);
 
 		return false;
 	}
@@ -66,6 +66,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				
 			} else  {							
 
+				//Not a project, open folder
 				StorageController.reloadFiles(f.getAbsolutePath());				
 				mContext.sortAdapter();
 				
@@ -87,11 +88,14 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	}
 	
 	//Show dialog for handling files
-	private void showOptionDialog(final File f){
+	private void showOptionDialog(final int index){
+		
+		//Logic for getting file type
+		final File f = StorageController.getFileList().get(index);
 		
 		String[] mDialogOptions;
 		
-		
+		//Different dialogs for different type of files
 		if (f.getParent().equals("sd")||f.getParent().equals("witbox")){
 			
 			mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print)};
@@ -120,7 +124,8 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					if (f.isDirectory()){
 						if (StorageController.isProject(f)){
 							
-							ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+							ItemListActivity.showDetailView(index);
+							//ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
 						}
 						
 					} else {
@@ -138,7 +143,8 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					if (f.isDirectory()){
 						if (StorageController.isProject(f)){
 							
-							ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+							if (((ModelFile)f).getStl()==null) ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
+							else ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
 						}
 						
 					} else {

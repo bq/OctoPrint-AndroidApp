@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
@@ -185,6 +186,8 @@ public static void selectPrinter(final Context context, final File f){
 							OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
 						}
 			    		
+						if (checkedItems.length==1) ItemListActivity.showPrintView(m.getName());
+						else ItemListFragment.performClick(0);
 
 					}
 													

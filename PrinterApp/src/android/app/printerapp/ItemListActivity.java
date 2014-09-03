@@ -209,8 +209,16 @@ public class ItemListActivity extends FragmentActivity implements
 	
 	//TODO find a better way
 	public static void notifyAdapters(){
-		if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
-		if (mCurrent!=null) if (mCurrent.getTag().equals("Detail Printer")) ((PrintViewFragment) mCurrent).refreshData();
+		
+		try{
+			
+			if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
+			if (mCurrent!=null) if (mCurrent.getTag().equals("Detail Printer")) ((PrintViewFragment) mCurrent).refreshData();
+		
+		}catch (NullPointerException e){
+			
+			e.printStackTrace();
+		}
 	}
 	
 	//Add a new custom fragment with detailed view

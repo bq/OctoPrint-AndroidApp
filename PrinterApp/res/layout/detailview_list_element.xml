@@ -46,7 +46,7 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/detailview_list_iv2"
+        android:id="@+id/detailview_list_iv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"

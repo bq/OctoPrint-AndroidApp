@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -60,12 +61,31 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.detailview_list_iv);
 		iv.setImageDrawable(mDrawable);
+		
+		//Add item viewer to the image 
+		iv.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+				
+			}
+		});
+		
+		ImageButton ib = (ImageButton) v.findViewById(R.id.detailview_list_iv1);
+		
 		if (f.getName().contains(".gcode")){
 			
 			v.findViewById(R.id.detailview_gcode).setVisibility(View.VISIBLE);
+
+		}else {
+			ib.setImageResource(R.drawable.icon_edit_list);
 		}
 		
-		v.findViewById(R.id.detailview_list_iv2).setOnClickListener(new OnClickListener() {
+		
+		//Edit button
+		ib.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
