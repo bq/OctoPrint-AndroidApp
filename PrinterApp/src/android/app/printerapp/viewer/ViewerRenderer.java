@@ -62,6 +62,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
 	
+	private static final float OFFSET = 0.1f;
+
+	
 	private int mState;
 
 	private List<StlObject> mStlObjectList = new ArrayList<StlObject>();
@@ -72,7 +75,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private WitboxFaces mWitboxFaceLeft;
 	private WitboxPlate mInfinitePlane;
 	private List<DataStorage> mDataList;
-	//private DataStorage mData;
 
 			
 	private boolean mShowLeftWitboxFace = true;
@@ -218,6 +220,124 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		}
 		return object;
 	}
+	
+	public void relocate (int objectToFit) {
+		DataStorage data = mDataList.get(objectToFit);
+		float width = data.getMaxX() - data.getMinX();
+		float deep = data.getMaxY() - data.getMinY();
+		
+		float setMinX=Float.MAX_VALUE;
+		int index =-1;
+		
+		float newMaxX;
+		float newMinX;
+		float newMaxY;
+		float newMinY;
+		
+		for (int i=0; i<mDataList.size(); i++) {
+			if (i!= objectToFit) {
+				DataStorage d = mDataList.get(i); 
+				if (d.getMinX()<setMinX) {
+					setMinX = d.getMinX();
+					index = i;
+				}
+				//UP
+				newMaxX = data.getMaxX();
+				newMinX = data.getMinX();
+				newMaxY = data.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + OFFSET;
+				newMinY = data.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) +OFFSET; 
+							
+				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
+					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				}
+				
+				//RIGHT
+				newMaxX = data.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + width + OFFSET;
+				newMinX = data.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + OFFSET;
+				newMaxY = data.getMaxY();
+				newMinY = data.getMinY();	
+						
+				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
+					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				}
+				
+				//DOWN
+				newMaxX = data.getMaxX();
+				newMinX = data.getMinX();
+				newMaxY = data.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + OFFSET);
+				newMinY = data.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + OFFSET); 	
+						
+				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
+					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				} 
+				
+				//LEFT
+				newMaxX = data.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x)+ OFFSET);
+				newMinX = data.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x) + width + OFFSET);
+				newMaxY = data.getMaxY();
+				newMinY = data.getMinY();		
+						
+				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
+					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				} else if (i==mDataList.size()-2) {					
+					newMaxX = setMinX;
+					newMinX = setMinX - width;
+					newMaxY = mDataList.get(index).getMaxY();
+					newMinY = mDataList.get(index).getMinY();	
+					
+					data.setStateObject(OUT);
+					
+					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
+				}	
+				
+						
+			}
+		}
+	}
+	
+	public boolean fits (float newMaxX, float newMinX, float newMaxY, float newMinY, int objectToFit) {
+		boolean overlaps = false; 
+		boolean outOfPlate = false;
+		int k = 0;
+
+		if (newMaxX > WitboxFaces.WITBOX_LONG || newMinX < -WitboxFaces.WITBOX_LONG 
+				|| newMaxY > WitboxFaces.WITBOX_WITDH || newMinY < -WitboxFaces.WITBOX_WITDH) outOfPlate = true;
+			
+		while (!outOfPlate && !overlaps && k <mDataList.size()) {	
+			if (k!=objectToFit) {
+				if (Geometry.overlaps(newMaxX, newMinX, newMaxY, newMinY, mDataList.get(k)))  overlaps = true;
+			}		
+			k++;
+		}
+
+		if (!outOfPlate && !overlaps) 					
+			return true;
+		
+		else return false;
+	}
+	
+	public void refreshFitCoordinates (float newMaxX, float newMinX, float newMaxY, float newMinY, DataStorage d) {		
+		d.setMaxX(newMaxX);
+		d.setMinX(newMinX);
+		d.setMaxY(newMaxY);
+		d.setMinY(newMinY);
+		
+		float newCenterX = newMinX + (newMaxX-newMinX)/2;
+		float newCenterY = newMinY + (newMaxY-newMinY)/2;
+		float newCenterZ = d.getLastCenter().z;
+
+		Point newCenter = new Point (newCenterX, newCenterY, newCenterZ );
+
+		d.setLastCenter(newCenter);
+		
+		float [] modelMatrix = d.getModelMatrix();
+		Matrix.translateM(modelMatrix, 0, newCenterX, newCenterY, newCenterZ);
+		d.setModelMatrix(modelMatrix);
+	}
 		
 	public void dragObject (float x, float y) {
 		Ray ray = convertNormalized2DPointToRay(x, y);
@@ -243,9 +363,34 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		//We change the colour if we are outside Witbox Plate
 		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
 			data.setStateObject(OUT);
-		else data.setStateObject(INSIDE_TOUCHED);
-		
+		else data.setStateObject(INSIDE_TOUCHED);	
+				
     }
+	
+	public void checkIfOverlaps () {		
+		//Check if the model overlaps with another one. If this is the case, the model that is being edited turns grey.
+		//User can move an object that was overlaping another one, so both should change its colour.
+		for (int i=0; i<mDataList.size(); i++) {
+			DataStorage data = mDataList.get(i);
+			
+			float maxX = data.getMaxX();
+			float minX = data.getMinX();
+			float maxY = data.getMaxY();
+			float minY = data.getMinY();
+
+			for (int j=0;j<mDataList.size(); j++) {
+				if (i!=j)
+					if (Geometry.overlaps(maxX, minX, maxY, minY, mDataList.get(j))) {
+						data.setStateObject(OUT);
+						break;
+					}
+					
+					if (i==mObjectPressed) data.setStateObject(INSIDE_TOUCHED);	
+					else data.setStateObject(INSIDE_NOT_TOUCHED);
+					
+			}
+		}
+	}
 	
 	public void scaleObject (float fx, float fy, float fz) {
 		if (Math.abs(fx)>0.1 && Math.abs(fx)<10&& Math.abs(fy)>0.1 && Math.abs(fy)<10 && Math.abs(fz)>0.1 && Math.abs(fz)<10) {	
@@ -268,8 +413,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			float lastScaleFactorY = data.getLastScaleFactorY();
 			float lastScaleFactorZ = data.getLastScaleFactorZ();
 			
-			Log.i("viewer", " ANTES maxX " + maxX + " minX " + minX + " scaleFactorX " + mScaleFactorX);
-
 			maxX = (maxX+(Math.abs(mScaleFactorX)-Math.abs(lastScaleFactorX))*(maxX/Math.abs(lastScaleFactorX)))+lastCenter.x;
 			maxY = (maxY+(mScaleFactorY-lastScaleFactorY)*(maxY/lastScaleFactorY))+lastCenter.y;
 			maxZ = (maxZ+(mScaleFactorZ-lastScaleFactorZ)*(maxZ/lastScaleFactorZ))+lastCenter.z;
@@ -285,9 +428,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			data.setMinX(minX);
 			data.setMinY(minY);
 			data.setMinZ(minZ);
-			
-			Log.i("viewer", " maxX " + maxX + " minX " + minX + " scaleFactorX " + mScaleFactorX);
-						
+									
 			data.setLastScaleFactorX(mScaleFactorX);
 			data.setLastScaleFactorY(mScaleFactorY);
 			data.setLastScaleFactorZ(mScaleFactorZ);
@@ -295,7 +436,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
 					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) data.setStateObject(OUT);
-			else data.setStateObject(INSIDE_TOUCHED);
+			else checkIfOverlaps();
 		}
 	}
 	
@@ -378,8 +519,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				
 				if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
 						|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) data.setStateObject(OUT);
-				else data.setStateObject(INSIDE_TOUCHED);
-			
+				else checkIfOverlaps ();
 				return null;
 			}
 			
@@ -481,12 +621,15 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         mSceneAngleX = -40f;	
 
 		while (!mDataList.get(mDataList.size()-1).isDrawEnabled()) ; //wait	if the last element has not been opened
-		
+	
 		if (mIsStl) {
+			if (mDataList.size()>1) relocate (mDataList.size()-1);
+
 			//First, reset the stl object list
 			for (int i=0; i<mStlObjectList.size(); i++)mStlObjectList.remove(i);
 			//Add the new ones.
 			for (int i=0; i<mDataList.size(); i++) mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
+			
 		} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
 		
 		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
@@ -524,8 +667,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        float dl = (float) (l/ (2*Math.tan(Math.toRadians(45/2))));
 	        float dw = (float) (w/ (2*Math.tan(Math.toRadians(45/2))));
 	        
-	        Log.i(TAG, "WIDTH " +data.getWidth() + " HEIGHT " + data.getHeight() + " LONG " + data.getLong() + " dw " + dw + " dh " + dh + " dl " + dl);
-
 	        if (dw>dh && dw>dl) mCameraZ = OFFSET_BIG_HEIGHT*h;
 	        else if (dh>dl) mCameraZ = OFFSET_HEIGHT*h;
 	        else mCameraZ = OFFSET_BIG_HEIGHT*h;
@@ -643,8 +784,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
     				Matrix.multiplyMM(mvpMatrix, 0,mMVPMatrix, 0, modelMatrix, 0);  
     				
     				Matrix.multiplyMM(mvMatrix, 0,mMVMatrix, 0, modelMatrix, 0);  
-    				//Matrix.invertM(mvMatrix, 0, mvMatrix, 0);
-    		        //Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
     				
     		        Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
     		        Matrix.invertM(mvFinalMatrix, 0, mvFinalMatrix, 0);

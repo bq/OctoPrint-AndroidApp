@@ -167,7 +167,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
 		if (mLockEdition) return false;
 		float x = event.getX();
         float y = event.getY();
@@ -264,7 +263,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 								
 				if(mEdition && mEditionMode==ROTATION_EDITION_MODE) mRenderer.refreshRotatedObjectCoordinates();
-								
+				if(mEdition && mEditionMode==MOVE_EDITION_MODE) mRenderer.checkIfOverlaps();
+
 				touchMode = TOUCH_NONE;
 								
 				break;				
