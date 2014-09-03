@@ -7,6 +7,8 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
+import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
@@ -39,8 +41,15 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		
-		//File f = StorageController.getFileList().get(arg2);
-		showOptionDialog(arg2);
+		File f = StorageController.getFileList().get(arg2);
+		
+		//If it's not IN the printer
+		if ((!f.getParent().contains("printer"))&&
+				(!f.getParent().contains("sd"))&&
+				(!f.getParent().contains("witbox"))){
+
+			showOptionDialog(arg2);
+		}
 
 		return false;
 	}
@@ -56,10 +65,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			
 			//If it's project folder, send stl
 			if (StorageController.isProject(f)){
-				
-				/*if (((ModelFile)f).getStl()!=null) ItemListActivity.showDetailView(arg2);
-				else ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());*/
-				
+								
 				//Show detail view regardless
 				ItemListActivity.showDetailView(arg2);
 								
@@ -76,13 +82,46 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			//If it's not a folder, just send the file
 		}else {
 			
-			 if (f.getAbsoluteFile().length()>0){
-					ItemListActivity.requestOpenFile(f.getAbsolutePath());
-				} else {
+			//it's a printer file
+			if (f.getParent().contains("printer")){
 				
-					Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
-
+				StorageController.retrievePrinterFiles(f.getName());
+				mContext.notifyAdapter();
+				
+				
+			} else {
+				
+				
+				ModelPrinter p = DevicesListController.getPrinter(StorageController.getCurrentPath().getName());
+				
+				//it's a printer folder because there's a printer with the same name
+				if (p!=null) {
+					
+					//either sd or internal
+					if (f.getParent().equals("sd")){
+						OctoprintLoadAndPrint.printInternalFile(p.getAddress(), f.getName(), true);
+					}else OctoprintLoadAndPrint.printInternalFile(p.getAddress(), f.getName(), false);
+				
+					
+					Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getName(), Toast.LENGTH_LONG).show();
+					
 				}
+				else {
+					
+					//it's a raw file
+					 if (f.getAbsoluteFile().length()>0){
+							ItemListActivity.requestOpenFile(f.getAbsolutePath());
+						} else {
+						
+							Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+
+						}
+					 
+				
+			}
+			
+		}
+			
 
 		}					
 	}
