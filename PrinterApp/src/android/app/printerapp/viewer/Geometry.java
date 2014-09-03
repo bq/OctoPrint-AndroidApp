@@ -1,5 +1,7 @@
 package android.app.printerapp.viewer;
 
+import android.util.Log;
+
 public class Geometry {
 	
 	 public static class Point {
@@ -138,5 +140,26 @@ public class Geometry {
 	 	 
 	 	 return new Point (x,y,z);
 	 }
-	  
+	 
+	 public static boolean overlaps (float maxX, float minX, float maxY,  float minY, DataStorage d) {
+		 float maxX2 = d.getMaxX();
+		 float maxY2 = d.getMaxY();
+		 
+		 float minX2 = d.getMinX();
+		 float minY2 = d.getMinY();
+
+		 if (((maxX>=minX2 && maxX<=maxX2) || (minX<=maxX2 && minX>=minX2) || (minX>=minX2 && maxX<=maxX2)) && 				 
+			 ((maxY>=minY2 && maxY<=maxY2) || (minY<=maxY2 && minY>=minY2) || (minY>=minY2 && maxY<=maxY2))) {
+			 return true;
+		 }
+		 
+		 if (((maxX2>=minX && maxX2<=maxX) || (minX2<=maxX && minX2>=minX) || (minX2>=minX && maxX2<=maxX)) && 				 
+			((maxY2>=minY && maxY2<=maxY) || (minY2<=maxY && minY2>=minY) || (minY2>=minY && maxY2<=maxY))) {
+			 return true;
+		 }
+		 
+		 return false;
+
+	 }
+
 }
