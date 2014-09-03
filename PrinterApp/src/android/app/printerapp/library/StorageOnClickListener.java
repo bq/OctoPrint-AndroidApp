@@ -66,6 +66,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 				
 			} else  {							
 
+				//Not a project, open folder
 				StorageController.reloadFiles(f.getAbsolutePath());				
 				mContext.sortAdapter();
 				
@@ -94,7 +95,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 		
 		String[] mDialogOptions;
 		
-		
+		//Different dialogs for different type of files
 		if (f.getParent().equals("sd")||f.getParent().equals("witbox")){
 			
 			mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print)};
