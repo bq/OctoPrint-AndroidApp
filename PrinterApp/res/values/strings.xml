@@ -29,6 +29,7 @@
     <string name="devices_error_dialog_title">Error message</string>
     <string name="devices_setup_title">Set up printer </string>
     <string name="devices_setup_message">Insert printer code or scan the QR located in the back of your device</string>
+    <string name="devices_dialog_loading">Error while loading file: </string>
     
     <string name="devices_menu_add">Add printer</string>
     <string name="devices_menu_filter">Filter devices</string>
@@ -54,7 +55,7 @@
     <string name="library_filter_dialog_remove">Remove filters</string>
         
     <string name="library_create_dialog_title">Name new folder</string>
-    <string name="library_select_printer_title">Select printer(s)</string>
+    <string name="library_select_printer_title">Select available printers</string>
     <string name="library_option_dialog_title">Model options</string>
     <string name="library_option_print">Send to printer</string>
     <string name="library_option_edit">Edit</string>

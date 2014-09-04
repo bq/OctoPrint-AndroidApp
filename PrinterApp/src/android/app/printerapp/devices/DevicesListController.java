@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
@@ -130,7 +131,18 @@ public class DevicesListController {
 	//Select a printer from all the linked available  and send to print
 public static void selectPrinter(final Context context, final File f){
 		
-		ArrayList<ModelPrinter> tempList = mList;
+		ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
+		
+		//Fill the list with operational printers
+		for (ModelPrinter p : mList){
+			
+			if (p.getStatus() == StateUtils.STATE_OPERATIONAL){
+				
+				tempList.add(p);
+				
+			}
+			
+		}
 		String[] nameList = new String[tempList.size()];
 		
 		//We'll check for checked items (heh) with a boolean array

@@ -2,7 +2,6 @@ package android.app.printerapp.devices.database;
 
 import java.io.File;
 import java.util.Map;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ContentValues;

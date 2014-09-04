@@ -97,7 +97,7 @@ public class OctoprintConnection {
 		            	
 		            	
 		            	//Auto-connect if it's online, TODO: should be on server-side maybe
-						if (p.getStatus()==StateUtils.STATE_NONE){
+						if (p.getStatus()==StateUtils.STATE_CLOSED){
 							
 							Log.i("OUT","CONNECTING");
 							startConnection(p.getAddress());

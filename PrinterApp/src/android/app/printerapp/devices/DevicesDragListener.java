@@ -2,6 +2,9 @@ package android.app.printerapp.devices;
 
 import java.io.File;
 
+import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.R;
+import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
 import android.content.ClipData;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.widget.Toast;
 
 /**
  * OnDragListener to handle printing and other possible events
@@ -36,13 +40,13 @@ public class DevicesDragListener implements OnDragListener {
 	    
 	    //If it's a drop
 	    case DragEvent.ACTION_DROP:{
-	    	
+	    		    	
 	    	//If it's not online, don't send to printer		    	
 	    	if (mModel.getAddress().equals("Offline")){	 
 	    		
-	    		Log.i("OUT","Printer offline");
+	    		//ItemListActivity.showDialog("Printer offline");
 	    		
-	    	} else {
+	    	} else if (mModel.getStatus() == StateUtils.STATE_OPERATIONAL){
 	    		
 	    		CharSequence tag = event.getClipData().getDescription().getLabel();
 	    		ClipData.Item item = event.getClipData().getItemAt(0);
@@ -65,10 +69,18 @@ public class DevicesDragListener implements OnDragListener {
 	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), true);
 			    	
 	    		}
+	    		
+	    		Toast.makeText(v.getContext(), "Loading " + item.getText().toString() + 
+	    				" on " + mModel.getName(), Toast.LENGTH_LONG).show();
+	    		
+	    	} else {
+	    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + mModel.getMessage());
 	    	}
 	    	
 	    	//Remove highlight
 	    	v.setBackgroundColor(Resources.getSystem().getColor(android.R.color.transparent));
+	    	
+	    	
 	    	
 	    } break;
 	    
