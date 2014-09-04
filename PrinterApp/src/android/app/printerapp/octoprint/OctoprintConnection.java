@@ -95,20 +95,19 @@ public class OctoprintConnection {
 		            
 		            try {
 		            	
-		            	
-		            	//Auto-connect if it's online, TODO: should be on server-side maybe
-						if (p.getStatus()==StateUtils.STATE_CLOSED){
-							
-							Log.i("OUT","CONNECTING");
-							startConnection(p.getAddress());
-							
-						}
-		            	
 		            	//Get the json string for "current" status
 		            	JSONObject response = new JSONObject(payload).getJSONObject("current");
 		            	
 						//Update job with current status
 						p.updatePrinter(response);
+						
+						//Auto-connect if it's online, TODO: should be on server-side maybe
+						if ((p.getStatus()==StateUtils.STATE_NONE) || (p.getStatus()==StateUtils.STATE_CLOSED)){
+							
+							Log.i("OUT","CONNECTING");
+							startConnection(p.getAddress());
+							
+						}
 						
 						ItemListActivity.notifyAdapters();
 
