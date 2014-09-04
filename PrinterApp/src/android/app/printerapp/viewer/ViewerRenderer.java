@@ -108,7 +108,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	float[] mLightPosInWorldSpace = new float[4];
 	float[] mLightModelMatrix = new float[16];	
 			
-	private boolean mSnapShot = false;
+	private int mMode = 0;
 	
 	private boolean mIsStl;
 	
@@ -132,12 +132,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private final int OUT = 1;
 	private final int INSIDE_TOUCHED = 2;
 			
-	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot, boolean stl) {	
+	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode, boolean stl) {	
 		this.mDataList = dataList;
 		this.mContext = context;
 		this.mState = state;
 		
-		this.mSnapShot = doSnapshot;
+		this.mMode = mode;
 		this.mIsStl = stl;
 	}
 	
@@ -632,7 +632,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 		} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
 		
-		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
+		if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true);
 
 		mWitboxFaceBack = new WitboxFaces (BACK);
 		mWitboxFaceRight = new WitboxFaces (RIGHT);
@@ -654,7 +654,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         // this projection matrix is applied to object coordinates		
         Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, Z_NEAR, Z_FAR);	
         
-        if (mSnapShot) {
+        if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) {
         	DataStorage data = mDataList.get(0);
 	        float h = data.getHeight();
 	        float l = data.getLong();
@@ -794,7 +794,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         	mGcodeObject.draw(mMVPMatrix); 
         
 
-        if (mSnapShot) {
+        if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
         	takeScreenShot(unused);
         } else {

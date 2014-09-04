@@ -36,16 +36,16 @@ public class StlFile {
 	private static ProgressDialog mProgressDialog;
 	private static DataStorage mData;
 	private static Context mContext;
-	private static boolean mDoSnapshot;
+	private static int mMode;
 	static Thread mThread;
 	
 	private static final int COORDS_PER_TRIANGLE = 9;
 		
-	public static void openStlFile (Context context, File file, DataStorage data, boolean doSnapshot) {
-		Log.i(TAG, "Open File");
-		mDoSnapshot = doSnapshot;
+	public static void openStlFile (Context context, File file, DataStorage data, int mode) {
+		Log.i(TAG, "Open STL File");
+		mMode = mode;
 
-		if (!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
+		if (mMode != ViewerMain.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
 		mData = data;
 		mContext = context;
 		mFile = file;
@@ -88,7 +88,6 @@ public class StlFile {
 		InputStream inputStream = null;
 		byte [] arrayBytes = null;
 		try {		
-			Log.i("view", "filepath " + filePath.toString());
 			inputStream = context.getContentResolver().openInputStream(filePath);		
 			arrayBytes = IOUtils.toByteArray(inputStream);
 		} catch (Exception e) {
@@ -133,7 +132,7 @@ public class StlFile {
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.setCancelable(false);
 		
-		if (!mDoSnapshot) progressDialog.show();
+		if (mMode!= ViewerMain.DO_SNAPSHOT) progressDialog.show();
 		
 		return progressDialog;
 	}
@@ -146,7 +145,7 @@ public class StlFile {
 	        @Override
 	        public void handleMessage(Message msg) {
 	    		if (mData.getCoordinateListSize() < 1) {
-	    			if (!mDoSnapshot) mProgressDialog.dismiss();
+	    			if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();
 	    			return;
 	    		}
 	    			
@@ -158,7 +157,7 @@ public class StlFile {
 	    		
 				mData.enableDraw ();	    						
 	    		//ProgressDialog
-				if (!mDoSnapshot) mProgressDialog.dismiss();  
+				if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();  
 				else {
 					try {
 						mThread.sleep(3000);
@@ -181,11 +180,11 @@ public class StlFile {
 					line = line.replaceFirst("vertex ", "").trim();
 					allLines.append(line+"\n");
 					maxLines++;
-					if (maxLines%1000==0 && !mDoSnapshot) mProgressDialog.setMax(maxLines);
+					if (maxLines%1000==0 && mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 				}
 			}
 				
-			if (!mDoSnapshot) mProgressDialog.setMax(maxLines);
+			if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 			
 			countReader.close();
 			
@@ -209,7 +208,7 @@ public class StlFile {
 				lines+=3;
 				
 				if (lines % (maxLines/10) == 0) {
-					if (!mDoSnapshot) mProgressDialog.setProgress(lines);
+					if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setProgress(lines);
 				}
 			}
 			
@@ -263,7 +262,7 @@ public class StlFile {
 	private static void processBinary(byte[] stlBytes) throws Exception {			
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 				
-		if (!mDoSnapshot) mProgressDialog.setMax(vectorSize);
+		if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(vectorSize);
 		for (int i = 0; i < vectorSize; i++) {		
 			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
 			float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
@@ -305,7 +304,7 @@ public class StlFile {
 			
 			
 			if (i % (vectorSize / 10) == 0) {
-				if (!mDoSnapshot) mProgressDialog.setProgress(i);
+				if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setProgress(i);
 			}
 		}
 	}

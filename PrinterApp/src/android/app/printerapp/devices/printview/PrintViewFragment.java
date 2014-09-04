@@ -1,10 +1,19 @@
 package android.app.printerapp.devices.printview;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
+import android.app.printerapp.viewer.DataStorage;
+import android.app.printerapp.viewer.GcodeFile;
+import android.app.printerapp.viewer.ViewerMain;
+import android.app.printerapp.viewer.ViewerSurfaceView;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +21,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -29,8 +39,11 @@ public class PrintViewFragment extends Fragment{
 	private TextView tv_printer;
 	private TextView tv_file;
 	private TextView tv_temp;
-	private TextView tv_prog;
+	private TextView tv_prog;	
 	
+	static DataStorage mDataGcode;
+	static ViewerSurfaceView mSurface;
+		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -55,9 +68,9 @@ public class PrintViewFragment extends Fragment{
 			rootView = inflater.inflate(R.layout.printview_layout,
 					container, false);	
 			
-			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.printview_camera);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-	                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);    
+			RelativeLayout ll = (RelativeLayout) rootView.findViewById(R.id.printview_camera);
+			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+	                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);    
 			if (mPrinter.getVideo().getParent() != null)	{
 				mPrinter.getVideo().stopPlayback();
 				((ViewGroup)mPrinter.getVideo().getParent()).removeAllViews();
@@ -71,7 +84,9 @@ public class PrintViewFragment extends Fragment{
 			tv_prog = (TextView) rootView.findViewById(R.id.printview_time);
 			
 			refreshData();
-		
+			
+			drawPrintPreview("/storage/emulated/0/PrintManager/prueba.gcode", rootView, R.id.view_gcode);
+			
 		}
 		
 		return rootView;
@@ -164,6 +179,32 @@ public class PrintViewFragment extends Fragment{
 		((ViewGroup)mPrinter.getVideo().getParent()).removeAllViews();
 		super.onDestroy();
 	}
+	
+	
+	public void drawPrintPreview (String filePath, View rootView, int frameLayoutId) {
+		Context context = getActivity();
+		FrameLayout layout = (FrameLayout) rootView.findViewById (frameLayoutId);
+		File file = new File (filePath);
 		
-
+		List <DataStorage> gcodeList = new ArrayList <DataStorage> ();
+		mDataGcode = new DataStorage();
+		GcodeFile.openGcodeFile(context, file, mDataGcode,ViewerMain.PRINT_PREVIEW);
+		mDataGcode.setActualLayer(0);
+		gcodeList.add(mDataGcode);
+		mSurface = new ViewerSurfaceView (context, gcodeList, ViewerSurfaceView.LAYERS, ViewerMain.PRINT_PREVIEW, ViewerMain.GCODE);
+		layout.removeAllViews();
+		layout.addView(mSurface, 0);		
+	}
+	
+	public static boolean changeProgress (double percentage) {
+		if (mDataGcode.isDrawEnabled()) {
+			int maxLines =  mDataGcode.getMaxLinesFile();			
+			int progress = (int) percentage*maxLines/100;
+			mDataGcode.setActualLayer(progress);
+	    	if (mSurface!= null) mSurface.requestRender();	
+	    	return true;
+		}
+		
+		return false;
+	}
 }

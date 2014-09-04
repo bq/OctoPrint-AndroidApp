@@ -10,14 +10,21 @@
    app:anchorPoint="0.15"
    xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp" xmlns:android="http://schemas.android.com/apk/res/android">
    
-	<LinearLayout 
+	<RelativeLayout 
 	     android:id="@+id/printview_camera"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:orientation="vertical" >
 	    
+	    <FrameLayout
+	        android:id="@+id/view_gcode"
+	        android:layout_width="256dp"
+	        android:layout_height="256dp"
+	       	android:layout_alignParentBottom="true"
+        	android:layout_alignParentRight="true">
+	    </FrameLayout>
 	
-	</LinearLayout>
+	</RelativeLayout>
 	
 	 <LinearLayout
                     android:id="@+id/storage_layout"
@@ -29,6 +36,8 @@
         android:dividerHeight="0dp"
         android:background="@android:color/holo_blue_light"
     	android:orientation="vertical" >
+    	
+	     
         
             <TextView
                   android:id="@+id/drag_text"

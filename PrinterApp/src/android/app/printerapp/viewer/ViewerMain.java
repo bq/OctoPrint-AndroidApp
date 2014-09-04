@@ -37,8 +37,9 @@ import android.app.printerapp.library.StorageController;
 
 public class ViewerMain extends Fragment {	
 	//Constants 
-	public static final boolean DO_SNAPSHOT = true;
-	public static final boolean DONT_SNAPSHOT = false;
+	public static final int DO_SNAPSHOT = 0;
+	public static final int DONT_SNAPSHOT = 1;
+	public static final int PRINT_PREVIEW = 3;
 	public static final boolean STL = true;
 	public static final boolean GCODE = false;
 	
@@ -371,13 +372,13 @@ public class ViewerMain extends Fragment {
 		//Open the file
 		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) ) {
 			DataStorage dataStl = new DataStorage();
-			StlFile.openStlFile (mContext, mFile, dataStl, false);
+			StlFile.openStlFile (mContext, mFile, dataStl, DONT_SNAPSHOT);
 			mDataStlList.add(dataStl);
 		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE"))) {
 			mDataGcodeList.clear();
 			mDataStlList.clear();
 			DataStorage dataGcode = new DataStorage();
-			GcodeFile.openGcodeFile(mContext, mFile, dataGcode,false);
+			GcodeFile.openGcodeFile(mContext, mFile, dataGcode,DONT_SNAPSHOT);
 			mDataGcodeList.add(dataGcode);
 		}
 		
@@ -463,7 +464,6 @@ public class ViewerMain extends Fragment {
 	}
 	
 	private static void draw (String filePath) {	
-		//String pathSnapshot;
 		setEditionMenuVisibility(View.INVISIBLE);
 
 		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
