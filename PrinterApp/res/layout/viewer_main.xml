@@ -46,33 +46,6 @@
         android:text="@string/viewer_button_right" />
     
     <RadioGroup
-        android:id="@+id/radio_group_rotation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:visibility="visible" >
-
-         <RadioButton
-            android:id="@+id/rotation_x"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/viewer_button_rx" />
-         
-        <RadioButton
-            android:id="@+id/rotation_y"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewer_button_ry" />
-
-        <RadioButton
-            android:id="@+id/rotation_z"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewer_button_rz" />
-    </RadioGroup>
-
-    <RadioGroup
         android:id="@+id/radioGroupMovement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,103 +66,108 @@
             android:text="@string/viewer_button_translation" />
     </RadioGroup>
     
-     <SeekBar
-        android:id="@+id/barLayer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/overhang"
-     />
+    
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/barLayer" 
-        android:layout_above="@+id/right"
-        android:layout_toLeftOf="@+id/radioGroupMovement">
-        
-         <LinearLayout
-	   	 	android:id="@+id/edition_menu"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:orientation="vertical" >
-        
-          <ImageButton
-	        android:id="@+id/move"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/move" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabhost_views"> 
+	         <RadioGroup
+		        android:id="@+id/radio_group_rotation"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:visibility="visible" >
+		
+		         <RadioButton
+		            android:id="@+id/rotation_x"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:checked="true"
+		            android:text="@string/viewer_button_rx" />
+		         
+		        <RadioButton
+		            android:id="@+id/rotation_y"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/viewer_button_ry" />
+		
+		        <RadioButton
+		            android:id="@+id/rotation_z"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/viewer_button_rz" />
+	    	</RadioGroup>
     
-	     <ImageButton
-	        android:id="@+id/rotate"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/rotate" />
-	     
-	      <ImageButton
-	        android:id="@+id/scale"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/scale" />
-	      
-	       <ImageButton
-	        android:id="@+id/mirror"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/mirror" />
-	       
-	        <ImageButton
-	        android:id="@+id/delete"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/delete" />
-	        
-	        <ImageButton
-	        android:id="@+id/exit"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:src="@drawable/exit" />
-		</LinearLayout>
+         
+	        <SeekBar
+		        android:id="@+id/barLayer"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+	     	/>
     </FrameLayout>
 
-    <Button
-        android:id="@+id/normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/viewer_button_normal" />
-    
-    <Button
-        android:id="@+id/overhang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/normal"
-        android:layout_alignParentTop="true"
-        android:text="@string/viewer_button_overhang" />
+    <TabHost
+        android:id="@+id/tabhost_views"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/xray"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/overhang"
-        android:text="@string/viewer_button_xray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/layers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/transparent"
-        android:text="@string/viewer_button_layers" />
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </TabWidget>
 
-    <Button
-        android:id="@+id/transparent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/xray"
-        android:text="@string/viewer_button_transparent" />
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:id="@+id/tab_normal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+     
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_overhang"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_xray"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+                </LinearLayout>
+                
+                 <LinearLayout
+                    android:id="@+id/tab_gcodes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 
 </RelativeLayout>

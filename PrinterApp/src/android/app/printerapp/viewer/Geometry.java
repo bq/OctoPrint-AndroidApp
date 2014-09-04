@@ -1,7 +1,5 @@
 package android.app.printerapp.viewer;
 
-import android.util.Log;
-
 public class Geometry {
 	
 	 public static class Point {
