@@ -43,4 +43,12 @@
         android:layout_marginLeft="90dp"
         android:src="@drawable/icon_error" />
 
+    <ProgressBar
+        android:id="@+id/grid_element_loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/grid_element_icon"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

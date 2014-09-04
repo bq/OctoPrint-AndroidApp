@@ -72,6 +72,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
 		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
+		ProgressBar pl = (ProgressBar) v.findViewById(R.id.grid_element_loading);
 		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
 		
 		
@@ -84,11 +85,15 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			icon.setVisibility(View.INVISIBLE);
 			iv.setVisibility(View.GONE);
 			pb.setVisibility(View.GONE);
+			pl.setVisibility(View.GONE);
 			
 		} else {
 			v.setOnDragListener(new DevicesDragListener(m));
 			tag.setText(m.getName());
 			icon.setVisibility(View.VISIBLE);
+			iv.setVisibility(View.GONE);
+			pb.setVisibility(View.GONE);
+			pl.setVisibility(View.GONE);
 			
 			int status = m.getStatus();
 			
@@ -114,13 +119,12 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			switch (status){
 			
 				case StateUtils.STATE_OPERATIONAL:{
-					//iv.setImageResource(R.drawable.tick_icon_small);
-					iv.setVisibility(View.GONE);
-					pb.setVisibility(View.GONE);
+					//iv.setVisibility(View.GONE);
+					//pb.setVisibility(View.GONE);
 				} break;
 				
 				case StateUtils.STATE_PRINTING:{
-					iv.setVisibility(View.GONE);
+					//iv.setVisibility(View.GONE);
 					pb.setVisibility(View.VISIBLE);
 					Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
 					pb.setProgress(n.intValue());
@@ -131,20 +135,23 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 				case StateUtils.STATE_ERROR:{
 					iv.setImageResource(R.drawable.icon_error);
 					iv.setVisibility(View.VISIBLE);
-					pb.setVisibility(View.GONE);
+					//pb.setVisibility(View.GONE);
 				}break;
 				
+				case StateUtils.STATE_CONNECTING: {
+					pl.setVisibility(View.VISIBLE);
+				} break;
+				
 				default:{
-					iv.setVisibility(View.GONE);
-					pb.setVisibility(View.GONE);
-					Log.i("OUT","INVISIBLE!");
+					//iv.setVisibility(View.GONE);
+					//pb.setVisibility(View.GONE);
+					//Log.i("OUT","INVISIBLE!");
 				}
 				
 			}
-
+						
 			
 		}
-			
 			
 
 		return v;
