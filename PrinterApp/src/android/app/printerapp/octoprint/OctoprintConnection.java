@@ -121,6 +121,10 @@ public class OctoprintConnection {
 		         @Override
 		         public void onClose(int code, String reason) {
 		            Log.i("SOCK", "Connection lost at " + code + " because " + reason);
+		            
+		            
+		            //getSettings(p);
+		            
 		         }
 		      });
 		   } catch (WebSocketException e) {

@@ -48,7 +48,6 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.list_element, null, false);
-			v.setOnClickListener(null);
 			v.setOnDragListener(new DevicesDragListener(m));
 						
 		} else {

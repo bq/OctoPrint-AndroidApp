@@ -138,7 +138,7 @@ public class DevicesFragment extends Fragment{
 			
 			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
 			l.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
-			
+			l.setOnItemClickListener(listClickListener());	
 			l.setAdapter(mListAdapter);
 			
 			
@@ -380,6 +380,31 @@ public class DevicesFragment extends Fragment{
 	}
 	
 	/******************************** click listeners *********************************/
+	
+	public OnItemClickListener listClickListener(){
+		
+		return new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				
+				//avoid header
+				if (arg2 > 0){
+					ModelPrinter m = DevicesListController.getList().get(arg2 - 1);
+					 if (m.getStatus()==StateUtils.STATE_NEW){
+						 codeDialog(m); 
+					 } else if (m.getStatus()==StateUtils.STATE_ADHOC){
+						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
+					 }
+				}
+				
+				
+				
+			}
+		};
+		
+	}
 	
 	//onclick listener will open the action mode
 	public OnItemClickListener gridClickListener(){

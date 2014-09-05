@@ -160,9 +160,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 	public ModelPrinter getItem(int position) {
 					
 		for (ModelPrinter p : mCurrent){
-			if (p.getPosition()==position) return p;		
-			
-			Log.i("OUT","Retrieving item " + p.getName());
+			if (p.getPosition()==position) return p;
 		}
 
 		return null;
