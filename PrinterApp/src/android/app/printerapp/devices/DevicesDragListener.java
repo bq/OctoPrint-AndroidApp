@@ -40,42 +40,52 @@ public class DevicesDragListener implements OnDragListener {
 	    
 	    //If it's a drop
 	    case DragEvent.ACTION_DROP:{
+	    	
+	    	CharSequence tag = event.getClipData().getDescription().getLabel();
+	    	
+	    	if (!tag.equals("printer")){
+	    		
+	    	
 	    		    	
-	    	//If it's not online, don't send to printer		    	
-	    	if (mModel.getAddress().equals("Offline")){	 
-	    		
-	    		//ItemListActivity.showDialog("Printer offline");
-	    		
-	    	} else if (mModel.getStatus() == StateUtils.STATE_OPERATIONAL){
-	    		
-	    		CharSequence tag = event.getClipData().getDescription().getLabel();
-	    		ClipData.Item item = event.getClipData().getItemAt(0);
-                // Gets the item containing the dragged data
-	    		
-	    		//If tag is name, we have a file to drop
-	    		if (tag.equals("name")){
+		    	//If it's not online, don't send to printer		    	
+		    	if (mModel.getAddress().equals("Offline")){	 
 		    		
-		    		//Get parent folder and upload to device
-		    		Log.i("DRAG", item.getText().toString());
-		    		File file = new File(item.getText().toString());
-		    		OctoprintLoadAndPrint.uploadFile(mModel.getAddress(), file, false);
-
-	    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
-	    		//TODO: Set the same method for both
-	    		} else if (tag.equals("internal")){
-	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), false);
+		    		//ItemListActivity.showDialog("Printer offline");
 		    		
-	    		}else if (tag.equals("internalsd")){
-	    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), true);
-			    	
-	    		}
-	    		
-	    		Toast.makeText(v.getContext(), "Loading " + item.getText().toString() + 
-	    				" on " + mModel.getName(), Toast.LENGTH_LONG).show();
-	    		
-	    	} else {
-	    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + mModel.getMessage());
+		    	} else if (mModel.getStatus() == StateUtils.STATE_OPERATIONAL){
+		    		
+		    		
+		    		ClipData.Item item = event.getClipData().getItemAt(0);
+	                // Gets the item containing the dragged data
+		    		
+		    		//If tag is name, we have a file to drop
+		    		if (tag.equals("name")){
+			    		
+			    		//Get parent folder and upload to device
+			    		Log.i("DRAG", item.getText().toString());
+			    		File file = new File(item.getText().toString());
+			    		OctoprintLoadAndPrint.uploadFile(mModel.getAddress(), file, false);
+			    		
+	
+			    		Toast.makeText(v.getContext(), "Loading " + item.getText().toString() + 
+			    				" on " + mModel.getName(), Toast.LENGTH_LONG).show();
+	
+		    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
+		    		//TODO: Set the same method for both
+		    		} else if (tag.equals("internal")){
+		    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), false);
+			    		
+		    		}else if (tag.equals("internalsd")){
+		    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), true);
+				    	
+		    		}
+		    		
+		    		
+		    	} else {
+		    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + mModel.getMessage());
+		    	}
 	    	}
+	    	
 	    	
 	    	//Remove highlight
 	    	v.setBackgroundColor(Resources.getSystem().getColor(android.R.color.transparent));
