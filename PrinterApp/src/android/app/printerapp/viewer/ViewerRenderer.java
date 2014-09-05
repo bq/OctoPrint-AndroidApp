@@ -207,18 +207,27 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		        Box objectBox = new Box (mDataList.get(i).getMinX(), mDataList.get(i).getMaxX(), mDataList.get(i).getMinY(), mDataList.get(i).getMaxY(), mDataList.get(i).getMinZ(), mDataList.get(i).getMaxZ());
 		
 		        // If the ray intersects (if the user touched a part of the screen that
-		        // intersects the stl object's bounding box), then set objectPressed =
-		        // true.		        
-		        if (Geometry.intersects(objectBox, ray) && object==-1) {
+		        // intersects the stl object's bounding box), then set objectPressed 	        
+		        if (Geometry.intersects(objectBox, ray)) {
 		        	object = i;
-		        	setObjectPressed(i);	
-		        	if (mDataList.get(i).getStateObject()==INSIDE_NOT_TOUCHED) mDataList.get(i).setStateObject(INSIDE_TOUCHED);
-		        }	        
-		        
-		        if (object!=i && mDataList.get(i).getStateObject()==INSIDE_TOUCHED) mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);
+		        	break;
+		        }               
 			}       
 		}
+		
+		if (mObjectPressed!=object && object!=-1) {
+        	setObjectPressed(object);	
+			changeTouchedState (object);
+		}
+		
 		return object;
+	}
+	
+	public void changeTouchedState (int object) {
+		for (int i=0;i<mDataList.size(); i++) {
+			if (i==object) mDataList.get(i).setStateObject(INSIDE_TOUCHED);	
+			else mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);	
+		}
 	}
 	
 	public void relocate (int objectToFit) {
@@ -242,10 +251,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 					index = i;
 				}
 				//UP
-				newMaxX = data.getMaxX();
-				newMinX = data.getMinX();
-				newMaxY = data.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + OFFSET;
-				newMinY = data.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) +OFFSET; 
+				newMaxX = d.getMaxX();
+				newMinX = d.getMinX();
+				newMaxY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + OFFSET;
+				newMinY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) +OFFSET; 
 							
 				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
 					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
@@ -253,10 +262,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				}
 				
 				//RIGHT
-				newMaxX = data.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + width + OFFSET;
-				newMinX = data.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + OFFSET;
-				newMaxY = data.getMaxY();
-				newMinY = data.getMinY();	
+				newMaxX = d.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + width + OFFSET;
+				newMinX = d.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + OFFSET;
+				newMaxY = d.getMaxY();
+				newMinY = d.getMinY();	
 						
 				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
 					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
@@ -264,10 +273,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				}
 				
 				//DOWN
-				newMaxX = data.getMaxX();
-				newMinX = data.getMinX();
-				newMaxY = data.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + OFFSET);
-				newMinY = data.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + OFFSET); 	
+				newMaxX = d.getMaxX();
+				newMinX = d.getMinX();
+				newMaxY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + OFFSET);
+				newMinY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + OFFSET); 	
 						
 				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
 					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
@@ -275,10 +284,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				} 
 				
 				//LEFT
-				newMaxX = data.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x)+ OFFSET);
-				newMinX = data.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x) + width + OFFSET);
-				newMaxY = data.getMaxY();
-				newMinY = data.getMinY();		
+				newMaxX = d.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x)+ OFFSET);
+				newMinX = d.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x) + width + OFFSET);
+				newMaxY = d.getMaxY();
+				newMinY = d.getMinY();		
 						
 				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
 					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);

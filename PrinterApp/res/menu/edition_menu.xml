@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+        android:id="@+id/move"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/move"
+        android:title="@string/viewer_menu_move"/>
+      
+    <item
+        android:id="@+id/rotate"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/rotate"
+        android:title="@string/viewer_menu_rotate"/>
+
+ 	<item
+        android:id="@+id/scale"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/scale"
+        android:title="@string/viewer_menu_resize"/>
+      
+    <item
+        android:id="@+id/mirror"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/mirror"
+        android:title="@string/viewer_menu_mirror"/>
+        
+    <item
+        android:id="@+id/delete"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/delete"
+        android:title="@string/viewer_menu_delete"/>
+
+</menu>
+

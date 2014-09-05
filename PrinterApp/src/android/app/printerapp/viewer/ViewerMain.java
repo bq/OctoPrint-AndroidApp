@@ -6,14 +6,17 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -22,20 +25,28 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TabHost.OnTabChangeListener;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 
 public class ViewerMain extends Fragment {	
+	//Tabs
+	private static final int NORMAL = 0;
+	private static final int OVERHANG = 1;
+	private static final int TRANSPARENT = 2;
+	private static final int XRAY = 3;
+	private static final int LAYER = 4; 
+	
 	//Constants 
 	public static final boolean DO_SNAPSHOT = true;
 	public static final boolean DONT_SNAPSHOT = false;
@@ -58,27 +69,17 @@ public class ViewerMain extends Fragment {
 	private Button mRightWitboxFaces;
 	private Button mLeftWitboxFaces;
 	private Button mDownWitboxFaces;
-	private Button mLayers;
-	private Button mXray;
-	private Button mTransparent;
-	private Button mNormal;
 	private static SeekBar mSeekBar;
 	
 	private static List<DataStorage> mDataStlList = new ArrayList<DataStorage>();	
 	private static List<DataStorage> mDataGcodeList= new ArrayList<DataStorage>();
 		
-	//Edition menu variables
-	private static LinearLayout mMenu;
-	private ImageButton mMove;
-	private ImageButton mRotation;
-	private ImageButton mMirror;	
-	private ImageButton mScale;
-	private ImageButton mExit;
-	private ImageButton mDelete;
-	
+	//Edition menu variables	
 	private static ProgressBar mProgress;
 
 	private static Context mContext;
+	private static View mRootView;
+	
 	//Empty constructor
 	public ViewerMain(){}
 	
@@ -94,7 +95,7 @@ public class ViewerMain extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {	
 		//Reference to View
-		View rootView = null;
+		mRootView = null;
 		
 		//If is not new
 		if (savedInstanceState==null){
@@ -103,30 +104,32 @@ public class ViewerMain extends Fragment {
 			setHasOptionsMenu(true);
 			
 			//Inflate the fragment
-			rootView = inflater.inflate(R.layout.viewer_main,
+			mRootView = inflater.inflate(R.layout.viewer_main,
 					container, false);
 			
 			mContext = getActivity();
 											
-			initUIElements (rootView);
-			initEditButtons (rootView);
+			initUIElements ();
+			initEditButtons ();
 			
 			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);						
 		}
 		
-		return rootView;	
+		return mRootView;	
 		
 	}
 	
 	/************************* UI ELEMENTS ********************************/
 	
-	private void initUIElements (View rootView) {
-		mSeekBar = (SeekBar) rootView.findViewById (R.id.barLayer);		
+	private void initUIElements () {
+		setTabHost(mRootView);
+		
+		mSeekBar = (SeekBar) mRootView.findViewById (R.id.barLayer);		
 		mSeekBar.setVisibility(View.INVISIBLE);
 		
-		mLayout = (FrameLayout) rootView.findViewById (R.id.frameLayout);
+		mLayout = (FrameLayout) mRootView.findViewById (R.id.frameLayout);
 
-		mGroupMovement = (RadioGroup) rootView.findViewById (R.id.radioGroupMovement);		
+		mGroupMovement = (RadioGroup) mRootView.findViewById (R.id.radioGroupMovement);		
 		mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener () {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -141,7 +144,7 @@ public class ViewerMain extends Fragment {
 			}			
 		});
 
-		mBackWitboxFaces = (Button) rootView.findViewById(R.id.back);
+		mBackWitboxFaces = (Button) mRootView.findViewById(R.id.back);
 		mBackWitboxFaces.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
@@ -150,7 +153,7 @@ public class ViewerMain extends Fragment {
 			
 		});
 		
-		mRightWitboxFaces = (Button) rootView.findViewById(R.id.right);
+		mRightWitboxFaces = (Button) mRootView.findViewById(R.id.right);
 		mRightWitboxFaces.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
@@ -159,7 +162,7 @@ public class ViewerMain extends Fragment {
 			
 		});
 		
-		mLeftWitboxFaces = (Button) rootView.findViewById(R.id.left);
+		mLeftWitboxFaces = (Button) mRootView.findViewById(R.id.left);
 		mLeftWitboxFaces.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
@@ -168,7 +171,7 @@ public class ViewerMain extends Fragment {
 			
 		});
 		
-		mDownWitboxFaces = (Button) rootView.findViewById(R.id.down);
+		mDownWitboxFaces = (Button) mRootView.findViewById(R.id.down);
 		mDownWitboxFaces.setOnClickListener(new OnClickListener () {
 			@Override
 			public void onClick(View v) {
@@ -176,42 +179,7 @@ public class ViewerMain extends Fragment {
 			}
 			
 		});
-		
-		mNormal = (Button) rootView.findViewById (R.id.normal);		
-		mNormal.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				changeStlViews(ViewerSurfaceView.NORMAL);	
-			} 
-		});
-		
-		mXray = (Button)  rootView.findViewById (R.id.xray);
-		mXray.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				changeStlViews(ViewerSurfaceView.XRAY);	
-			}			
-		});
-		
-		mTransparent = (Button)  rootView.findViewById (R.id.transparent);
-		mTransparent.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				changeStlViews(ViewerSurfaceView.TRANSPARENT);	
-			}			
-		});		
-		
-		mLayers = (Button) rootView.findViewById (R.id.layers);		
-		mLayers.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				if (mFile!=null) {
-					showGcodeFiles ();
-				} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
-			} 
-		});
-		
-		
+
 		mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {       
 			
 		    @Override       
@@ -229,15 +197,12 @@ public class ViewerMain extends Fragment {
 		    }       
 		}); 	
 		
-		mProgress = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+		mProgress = (ProgressBar) mRootView.findViewById(R.id.progress_bar);
 		mProgress.setVisibility(View.GONE);
 	}
 	
-	private void initEditButtons (View rootView) {
-		mMenu = (LinearLayout) rootView.findViewById(R.id.edition_menu);
-		mMenu.setVisibility(View.INVISIBLE);
-		
-		mGroupRotation = (RadioGroup) rootView.findViewById (R.id.radio_group_rotation);	
+	private void initEditButtons () {
+		mGroupRotation = (RadioGroup) mRootView.findViewById (R.id.radio_group_rotation);	
 		mGroupRotation.setVisibility(View.INVISIBLE);
 		mGroupRotation.setOnCheckedChangeListener(new OnCheckedChangeListener () {
 			@Override
@@ -256,61 +221,10 @@ public class ViewerMain extends Fragment {
 				
 			}			
 		});
-		
-		mMove = (ImageButton) rootView.findViewById (R.id.move);		
-		mMove.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
-			} 
-		});
-		
-		mRotation = (ImageButton) rootView.findViewById (R.id.rotate);		
-		mRotation.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
-			} 
-		});
-		
-		mMirror = (ImageButton) rootView.findViewById(R.id.mirror);
-		mMirror.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
-				mSurface.doMirror();
-			} 
-		});
-		
-		mScale = (ImageButton) rootView.findViewById (R.id.scale);		
-		mScale.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
-			} 
-		});
-		
-		mDelete = (ImageButton) rootView.findViewById (R.id.delete);		
-		mDelete.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				mSurface.deleteObject();
-			} 
-		});
-		
-		mExit = (ImageButton) rootView.findViewById (R.id.exit);		
-		mExit.setOnClickListener(new OnClickListener () {
-			@Override
-			public void onClick(View v) {
-				mSurface.exitEditionMode();
-			} 
-		});
 	}
 	
 	public static void setEditionMenuVisibility (int visibility) {
-		mMenu.setVisibility(visibility);
 		mGroupRotation.setVisibility(visibility);
-
 	}
 	
 	public static void initSeekBar (int max) {
@@ -362,7 +276,80 @@ public class ViewerMain extends Fragment {
            return super.onOptionsItemSelected(item);
 	   }
 	}
-	
+   
+   /**
+	 * Constructor for the tab host
+	 * TODO: Should be moved to a View class since it only handles ui.
+	 */
+	public void setTabHost(View v){			 
+		final TabHost tabs=(TabHost) v.findViewById(R.id.tabhost_views);
+		tabs.setup();
+		 
+		TabHost.TabSpec spec=tabs.newTabSpec("Normal");
+		spec.setIndicator(getString(R.string.viewer_button_normal));
+		spec.setContent(R.id.tab_normal);
+		tabs.addTab(spec);
+		 
+		spec=tabs.newTabSpec("Overhang");
+		spec.setIndicator(getString(R.string.viewer_button_overhang));
+		spec.setContent(R.id.tab_overhang);
+		tabs.addTab(spec);
+		
+		spec=tabs.newTabSpec("Transparent");
+		spec.setIndicator(getString(R.string.viewer_button_transparent));
+		spec.setContent(R.id.tab_transparent);
+		tabs.addTab(spec);
+		
+		spec=tabs.newTabSpec("Xray");
+		spec.setIndicator(getString(R.string.viewer_button_xray));
+		spec.setContent(R.id.tab_xray);
+		tabs.addTab(spec);
+		
+		spec=tabs.newTabSpec("Gcode");
+		spec.setIndicator(getString(R.string.viewer_button_layers));
+		spec.setContent(R.id.tab_gcodes);
+		tabs.addTab(spec);
+		 
+		tabs.setCurrentTab(0);
+		
+		tabs.getTabWidget().setBackgroundColor(Color.parseColor("#333333"));
+		for(int i=0; i<tabs.getTabWidget().getChildCount(); i++) {
+	        TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+	        tv.setTextColor(Color.parseColor("#ffffff"));
+	    } 
+		
+		tabs.setOnTabChangedListener(new OnTabChangeListener() {
+		    @Override
+		    public void onTabChanged(String tabId) {
+
+		    	switch (tabs.getCurrentTab()) {				
+				case NORMAL:
+					changeStlViews(ViewerSurfaceView.NORMAL);	
+					break;
+				case OVERHANG:
+					//changeStlViews(ViewerSurfaceView.OVERHANG);						
+					break; 
+				case TRANSPARENT:
+					changeStlViews(ViewerSurfaceView.TRANSPARENT);	
+					break;
+					
+				case XRAY:		
+					changeStlViews(ViewerSurfaceView.XRAY);	
+					break;
+				case LAYER:		
+					if (mFile!=null) {
+						showGcodeFiles ();
+					} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+				break;
+
+				default:
+					break;
+				}		    	
+		    }
+		});
+		
+	}
+
    
    /************************* FILE MANAGEMENT ********************************/
    public static void openFile (String filePath) {
@@ -464,8 +451,6 @@ public class ViewerMain extends Fragment {
 	
 	private static void draw (String filePath) {	
 		//String pathSnapshot;
-		setEditionMenuVisibility(View.INVISIBLE);
-
 		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
 			mSeekBar.setVisibility(View.INVISIBLE);
 			mSurface = new ViewerSurfaceView (mContext, mDataStlList, mState, DONT_SNAPSHOT, STL);
@@ -477,12 +462,8 @@ public class ViewerMain extends Fragment {
 		//Add the view
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);
-		mLayout.addView(mMenu, 1);
-		
-				
-		//TODO CHANGED: Edition menu does not appear on top if we set setZOrderOnTop (true).
-		//Set the surface Z priority to top
-		//mSurface.setZOrderOnTop(true);
+		mLayout.addView(mSeekBar, 1);
+		mLayout.addView(mGroupRotation, 2);
 	}
 		
 	/************************* SAVE FILE ********************************/
@@ -557,4 +538,61 @@ public class ViewerMain extends Fragment {
 			}
 		}		
 	}
+	
+	private static ActionMode mActionMode;
+	
+	/************************* ACTION MODE ********************************/
+	public static void showActionModeBar () {
+		if (mActionMode== null) mActionMode = mRootView.startActionMode(mActionModeCallBack);
+	}
+	
+	public static void hideActionModeBar() {
+		if (mActionMode!=null) mActionMode.finish();
+	}
+		
+	private static ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {		
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			//Inflate a menu resource providing context menu items
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.edition_menu, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false; //do nothing
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			 switch (item.getItemId()) {
+	            case R.id.move:
+	            	mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
+	                return true;
+	            case R.id.rotate: 
+	            	mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
+	            	return true;
+	            case R.id.scale:
+	            	mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
+	            	return true;
+	            case R.id.mirror:
+	            	mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
+					mSurface.doMirror();
+	            	return true;	                
+	            case R.id.delete:
+					mSurface.deleteObject();
+	            	mode.finish(); // Action picked, so close the CAB
+	            	return true;
+	            default:
+	                return false;
+	        }
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mSurface.exitEditionMode();
+			mActionMode = null;
+		}
+	};
 }

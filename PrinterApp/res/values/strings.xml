@@ -106,7 +106,7 @@
     <string name="viewer_button_normal">Normal</string>
     <string name="viewer_button_overhang">Overhang</string>
     <string name="viewer_button_xray">Triangles</string>
-    <string name="viewer_button_layers">Layers</string>
+    <string name="viewer_button_layers">Gcodes</string>
     <string name="viewer_button_transparent">Transparent</string>
     <string name="viewer_button_light">Light</string>
     <string name="viewer_button_rotation">Rotation</string>
@@ -133,5 +133,11 @@
     <string name="proyect_name_not_available">That name exists! Please, choose another name</string>
     <string name="creating_project">Creating project &#8230;</string> 
     <string name="new_project">New project</string> 
+    
+    <string name="viewer_menu_move">Move</string>
+    <string name="viewer_menu_rotate">Rotate</string>
+    <string name="viewer_menu_resize">Resize</string>
+    <string name="viewer_menu_mirror">Mirror</string>
+    <string name="viewer_menu_delete">Delete</string>
     
 </resources>

@@ -18,6 +18,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
 	
+	private boolean mIsStl = false;
+	
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
 	//Touch
@@ -83,6 +85,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
       
         mDataList = data;
 		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
+		mIsStl = stl;
 		setRenderer(mRenderer);
 				
 		// Render the view only when there is a change in the drawing data
@@ -146,8 +149,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	public void deleteObject() {
 		mRenderer.deleteObject(mObjectPressed);
-		exitEditionMode();
-		requestRender();
 	}
 	
 	public void setRotationVector (int mode) {
@@ -199,12 +200,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			case MotionEvent.ACTION_DOWN:
 				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
 					int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
-					if (!mEdition && objPressed!=-1) {
+					if (objPressed!=-1 && mIsStl) {
 						mEdition = true;
 						mObjectPressed=objPressed;
+						ViewerMain.showActionModeBar();
 						ViewerMain.setEditionMenuVisibility(View.VISIBLE);
-					}
-					
+					} 
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();
 					mPreviousY = event.getY();
@@ -280,8 +281,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void exitEditionMode () {
 		mEdition = false;
 		mEditionMode = NONE_EDITION_MODE;
-		//We can exit edition mode at clicking in the menu or at deleting a model. If the model is deleted, it is not necessary to made any
-		//change in its rendering (because we have deleted it). We only call mRenderer. exitEditionMode if the object has not been deleted.
+		//We can exit edition mode at clicking in the menu or at deleting a model. If the model has been deleted, it is possible that
+		//mRenderer.exitEditionModel fails because of the size of the arrays.
 		if (mObjectPressed<mDataList.size()) mRenderer.exitEditionMode(); 
 		mObjectPressed = -1;
 		mRenderer.setObjectPressed(mObjectPressed);

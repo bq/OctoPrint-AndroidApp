@@ -93,7 +93,12 @@ public class ItemListActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onItemSelected(String id) {
-		
+		/**
+		 * Marina
+		 * This is necessary to close the ActionMode edition bar when changing between fragments
+		 */
+		if (Integer.valueOf(id)!=2) ViewerMain.hideActionModeBar();
+			
 		if (mTwoPane) {
 			
 			// In two-pane mode, show the detail view in this activity by
