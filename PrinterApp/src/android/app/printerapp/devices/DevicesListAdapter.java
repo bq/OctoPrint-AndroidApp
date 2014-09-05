@@ -1,5 +1,6 @@
 package android.app.printerapp.devices;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.printerapp.R;
@@ -12,14 +13,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
+	
+	//Original list and current list to be filtered
+		private ArrayList<ModelPrinter> mCurrent;
+		private ArrayList<ModelPrinter> mOriginal;
+		
+		//Filter
+		private GridFilter mFilter;
 
 	public DevicesListAdapter(Context context, int resource,
 			List<ModelPrinter> objects) {
 		super(context, resource, objects);
+		
+		mOriginal = (ArrayList<ModelPrinter>) objects;
+		mCurrent = (ArrayList<ModelPrinter>) objects;
 	}
 	
 	@Override
@@ -104,6 +116,17 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		return v;
 	}
 	
+	@Override
+	public ModelPrinter getItem(int position) {
+		return mCurrent.get(position);
+	}
+	
+	//Retrieve count from current list
+	@Override
+	public int getCount() {
+		return mCurrent.size();
+	}
+	
 	public static String getProgress(String p){
 		
 		double value = 0;
@@ -116,6 +139,89 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		return String.valueOf((int)value);
 	}
+	
+	
+	//TODO: REDUNDANT FILTER
+	//Get filter
+		@Override
+		public Filter getFilter() {
+			
+			if (mFilter == null)
+				mFilter = new GridFilter();
+			
+			return mFilter;
+		}
+			
+			/**
+			 * This class is the custom filter for the Library
+			 * @author alberto-baeza
+			 *
+			 */
+			private class GridFilter extends Filter{
+
+				@Override
+				protected FilterResults performFiltering(CharSequence constraint) {
+					
+					//New filter result object
+		            FilterResults result = new FilterResults();
+		            
+		            if(constraint != null && constraint.toString().length() > 0)
+		            {
+		            	//Temporal list
+		                ArrayList<ModelPrinter> filt = new ArrayList<ModelPrinter>();
+		                
+		             
+		                //TODO Should change filter logic to avoid redundancy
+		                if (!constraint.equals(String.valueOf(StateUtils.STATE_NEW))){
+		                	 //Check if every item from the original list has the constraint
+		                    for (ModelPrinter m : mOriginal){
+		                    	
+		                    	if (m.getStatus() == (Integer.parseInt(constraint.toString()))){
+		                    		filt.add(m);
+		                    	}
+		                    	
+		                    }
+		                } else {
+		                	
+		                	//Check if every item from the original list has the constraint
+		                    for (ModelPrinter m : mOriginal){
+		                    	
+		                    	if (m.getStatus() != (Integer.parseInt(constraint.toString()))){
+		                    		filt.add(m);
+		                    	}
+		                	
+		                    }
+		                }
+		                
+		                
+	                	
+	                	                //New list is filtered list
+		                result.count = filt.size();
+		                result.values = filt;
+		            }
+		            else
+		            {
+		            	//New list is original list (no filter, default)
+		            	result.count = mOriginal.size();
+		                result.values = mOriginal;
+		                
+		            }
+		            return result;
+				}
+
+				@SuppressWarnings("unchecked")
+				@Override
+				protected void publishResults(CharSequence constraint,
+						FilterResults results) {
+		            
+					
+					//If there are results, update list
+					mCurrent = (ArrayList<ModelPrinter>) results.values;
+					notifyDataSetChanged();
+					
+				}
+				
+			}
 	
 	
 
