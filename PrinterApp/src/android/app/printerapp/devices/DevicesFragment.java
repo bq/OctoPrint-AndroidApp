@@ -314,19 +314,25 @@ public class DevicesFragment extends Fragment{
 				
 				case R.id.dv_radio0:{
 					mGridAdapter.getFilter().filter(null);//Show all devices
+					mListAdapter.getFilter().filter(null);//Show all devices
 
 				}break;
 				case R.id.dv_radio1:{
-					mGridAdapter.getFilter().filter("Printing");//Active printers
+					mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
+					mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
+					
 				}break;
 				case R.id.dv_radio2:{
-					mGridAdapter.getFilter().filter("Operational");	//Inactive printers
+					mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));	//Inactive printers
+					mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));	//Inactive printers
+					
 				}break;
 				case R.id.dv_radio3:{
 					mGridAdapter.getFilter().filter(null);	//TODO Groups
 				}break;
 				case R.id.dv_radio4:{
-					mGridAdapter.getFilter().filter("New"); //Linked
+					mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
+					mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
 				}break;
 				
 				}

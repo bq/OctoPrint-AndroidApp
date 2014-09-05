@@ -76,6 +76,10 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
 		
 		
+		iv.setVisibility(View.GONE);
+		pb.setVisibility(View.GONE);
+		pl.setVisibility(View.GONE);
+		
 		
 		
 		//Check if it's an actual printer or just an empty slot
@@ -83,17 +87,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			v.setOnDragListener(new DevicesEmptyDragListener(position));
 			tag.setText("");
 			icon.setVisibility(View.INVISIBLE);
-			iv.setVisibility(View.GONE);
-			pb.setVisibility(View.GONE);
-			pl.setVisibility(View.GONE);
 			
 		} else {
 			v.setOnDragListener(new DevicesDragListener(m));
 			tag.setText(m.getName());
 			icon.setVisibility(View.VISIBLE);
-			iv.setVisibility(View.GONE);
-			pb.setVisibility(View.GONE);
-			pl.setVisibility(View.GONE);
 			
 			int status = m.getStatus();
 			
@@ -206,11 +204,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 	                
 	             
 	                //TODO Should change filter logic to avoid redundancy
-	                if (!constraint.equals("New")){
+	                if (!constraint.equals(String.valueOf(StateUtils.STATE_NEW))){
 	                	 //Check if every item from the original list has the constraint
 	                    for (ModelPrinter m : mOriginal){
 	                    	
-	                    	if (m.getMessage().contains(constraint)){
+	                    	if (m.getStatus() == (Integer.parseInt(constraint.toString()))){
 	                    		filt.add(m);
 	                    	}
 	                    	
@@ -220,7 +218,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 	                	//Check if every item from the original list has the constraint
 	                    for (ModelPrinter m : mOriginal){
 	                    	
-	                    	if (!m.getMessage().contains(constraint)){
+	                    	if (m.getStatus() != (Integer.parseInt(constraint.toString()))){
 	                    		filt.add(m);
 	                    	}
 	                	
