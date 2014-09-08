@@ -6,6 +6,7 @@ import java.io.FileReader;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -26,12 +27,16 @@ public class GcodeFile  {
 
 	private static boolean mDoSnapshot = false;
 	
+	private static boolean mContinueThread = true;
+	
 	public static void openGcodeFile (Context context, File file, DataStorage data, boolean doSnapshot) {
 		mFile = file;		
 		mData = data;
 		mDoSnapshot = doSnapshot;
+		mContinueThread = true;
+
 		if(!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
-		mData.setPathFile(mFile.getName().replace(".", "-"));
+		mData.setPathFile(mFile.getAbsolutePath());
 		
 		mData.initMaxMin();
 		mMaxLayer=-1;
@@ -49,16 +54,16 @@ public class GcodeFile  {
 				try {
 					int maxLines=0;
 					BufferedReader countReader = new BufferedReader(new FileReader(mFile));
-					while ((line = countReader.readLine()) != null) {
+					while ((line = countReader.readLine()) != null && mContinueThread) {
 						allLines.append(line + "\n");
 						maxLines++;
 					}
 					countReader.close();
 					
 					if(!mDoSnapshot) mProgressDialog.setMax(maxLines);
-					processGcode(allLines, maxLines);
+					if (mContinueThread) processGcode(allLines, maxLines);
 
-					mHandler.sendEmptyMessage(0);
+					if (mContinueThread) mHandler.sendEmptyMessage(0);
 								
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -82,6 +87,19 @@ public class GcodeFile  {
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.setCancelable(false);
 		
+		progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		    	mContinueThread = false;
+		    	try {
+					mThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+		    	ViewerMain.resetWhenCancel();
+		    }
+		});
+		
 		progressDialog.show();
 		
 		return progressDialog;
@@ -102,7 +120,7 @@ public class GcodeFile  {
 		int length = 0;
 		int layer = 0;
 		
-		while (lines<maxLines) {	
+		while (lines<maxLines && mContinueThread) {	
 			index = allLines.indexOf("\n", lastIndex);
 			line = allLines.substring(lastIndex, index);
 
@@ -210,6 +228,7 @@ public class GcodeFile  {
     		if(!mDoSnapshot) ViewerMain.initSeekBar(mMaxLayer);
     		
 			mData.enableDraw ();
+			ViewerMain.draw();
 
     		//ProgressDialog
 			if(!mDoSnapshot) mProgressDialog.dismiss();   

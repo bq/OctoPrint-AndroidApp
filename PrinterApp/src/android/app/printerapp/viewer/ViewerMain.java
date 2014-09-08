@@ -53,9 +53,7 @@ public class ViewerMain extends Fragment {
 	public static final boolean STL = true;
 	public static final boolean GCODE = false;
 	
-	//Variables
-	private static int mState;
-			
+	//Variables			
 	private static File mFile;
 
 	private static ViewerSurfaceView mSurface;
@@ -71,8 +69,7 @@ public class ViewerMain extends Fragment {
 	private Button mDownWitboxFaces;
 	private static SeekBar mSeekBar;
 	
-	private static List<DataStorage> mDataStlList = new ArrayList<DataStorage>();	
-	private static List<DataStorage> mDataGcodeList= new ArrayList<DataStorage>();
+	private static List<DataStorage> mDataList = new ArrayList<DataStorage>();	
 		
 	//Edition menu variables	
 	private static ProgressBar mProgress;
@@ -112,11 +109,19 @@ public class ViewerMain extends Fragment {
 			initUIElements ();
 			initEditButtons ();
 			
-			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);						
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);	
+			
+			mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT);
+			draw();
 		}
 		
 		return mRootView;	
 		
+	}
+	
+	public static void resetWhenCancel () {
+		mDataList.remove(mDataList.size()-1);
+		mSurface.requestRender();
 	}
 	
 	/************************* UI ELEMENTS ********************************/
@@ -192,7 +197,7 @@ public class ViewerMain extends Fragment {
 	
 		    @Override       
 		    public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) { 
-		    	mDataGcodeList.get(0).setActualLayer(progress);
+		    	mDataList.get(0).setActualLayer(progress);
 		    	mSurface.requestRender();
 		    }       
 		}); 	
@@ -354,26 +359,21 @@ public class ViewerMain extends Fragment {
    /************************* FILE MANAGEMENT ********************************/
    public static void openFile (String filePath) {
 	   Log.i("viewer", " file path " + filePath);
+	   DataStorage data = null;
 		mFile = new File(filePath);
 		//Open the file
 		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) ) {
-			DataStorage dataStl = new DataStorage();
-			StlFile.openStlFile (mContext, mFile, dataStl, false);
-			mDataStlList.add(dataStl);
+			data = new DataStorage();
+			StlFile.openStlFile (mContext, mFile, data, false);
 		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE"))) {
-			mDataGcodeList.clear();
-			mDataStlList.clear();
-			DataStorage dataGcode = new DataStorage();
-			GcodeFile.openGcodeFile(mContext, mFile, dataGcode,false);
-			mDataGcodeList.add(dataGcode);
+			data = new DataStorage();
+			GcodeFile.openGcodeFile(mContext, mFile, data,false);
 		}
-		
-		draw(filePath);
-	}
+		mDataList.add(data);
+   }
    
 	private void changeStlViews (int state) {
 		if (mFile!=null) {
-			mState = state;
 			if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) 
 				openStlFile ();	
 			else mSurface.configViewMode(state);	
@@ -432,7 +432,6 @@ public class ViewerMain extends Fragment {
 		
 								    //Open desired file
 								    openFile (m.getAbsolutePath());
-									mState = ViewerSurfaceView.LAYERS;
 
 								    ad.dismiss();
 							}
@@ -449,16 +448,32 @@ public class ViewerMain extends Fragment {
 		}							
 	}
 	
-	private static void draw (String filePath) {	
-		//String pathSnapshot;
+	
+	public static void draw () {
+		//Once the file has been opened, we need to refresh the data list. If we are opening a .gcode file, we need to delete the previous files (.stl and .gcode)
+		//If we are opening a .stl file, we need to delete the previous file only if it was a .gcode file.
+		//We have to do this here because user can cancel the opening of the file and the Print Panel would appear empty if we clear the data list.
+				
+		String filePath = "";
+		if (mFile!=null) filePath = mFile.getAbsolutePath();
+
 		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
+			if (mDataList.size()>1) {
+				if (mDataList.get(mDataList.size()-2).getPathFile().endsWith(".gcode") || mDataList.get(mDataList.size()-2).getPathFile().endsWith(".GCODE")) {
+					mDataList.remove(mDataList.size()-2);
+				}
+			}
+			
 			mSeekBar.setVisibility(View.INVISIBLE);
-			mSurface = new ViewerSurfaceView (mContext, mDataStlList, mState, DONT_SNAPSHOT, STL);
 
 		} else if (filePath.endsWith(".gcode") || filePath.endsWith(".GCODE")) {
+			if (mDataList.size()>1) 
+				while (mDataList.size()>1){
+					mDataList.remove(0);
+				}			
 			mSeekBar.setVisibility(View.VISIBLE);
-			mSurface = new ViewerSurfaceView (mContext, mDataGcodeList, mState, DONT_SNAPSHOT, GCODE);
-		}							
+		}		
+		
 		//Add the view
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);
@@ -519,7 +534,7 @@ public class ViewerMain extends Fragment {
 	    @Override
 	    public void onClick(View v) {
 
-	    	if (StlFile.saveModel(mDataStlList, proyectNameText.getText().toString())) dialog.dismiss();
+	    	if (StlFile.saveModel(mDataList, proyectNameText.getText().toString())) dialog.dismiss();
 			else {
 				proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
 			}
