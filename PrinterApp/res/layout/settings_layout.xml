@@ -47,7 +47,7 @@
 					        android:textAppearance="?android:attr/textAppearanceLarge"
 					        android:textColor="#FFF"
 					        android:textStyle="bold"
-					        android:background="@android:color/holo_blue_light"
+					        android:background="#00B800"
 					        android:visibility="visible" />
 
                          <LinearLayout
@@ -87,7 +87,7 @@
 					        android:textAppearance="?android:attr/textAppearanceLarge"
 					        android:textColor="#FFF"
 					        android:textStyle="bold"
-					        android:background="@android:color/holo_blue_light"
+					        android:background="#00B800"
 					        android:visibility="visible" />
 
                         <ListView

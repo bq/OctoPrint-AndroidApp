@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/holo_blue_dark"
+    android:background="#00B800"
     android:orientation="horizontal" >
 
     <TextView
@@ -11,14 +11,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_weight="1"
-        android:text="DISPOSITIVOS"
+        android:text="@string/devices_list_header_1"
         android:textColor="@color/white"
         android:textStyle="bold" />
     
      <View
 		    android:layout_width="1dp"
 		    android:layout_height="fill_parent"
-		    android:background="@android:color/holo_blue_bright"/>
+		    android:background="#09cc09"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_weight="1"
-        android:text="STATUS"
+        android:text="@string/devices_list_header_2"
         android:textColor="@color/white"
         android:textStyle="bold" />
 

@@ -10,6 +10,7 @@ import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -26,6 +27,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.ViewSwitcher;
 
@@ -215,8 +217,15 @@ public class LibraryFragment extends Fragment {
 		spec.setContent(R.id.tab4);
 		tabs.addTab(spec);
 		
-		 
+		
 		tabs.setCurrentTab(0);
+		
+		tabs.getTabWidget().setBackgroundColor(Color.parseColor("#333333"));
+		for(int i=0;i<tabs.getTabWidget().getChildCount();i++) 
+	    {
+	        TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+	        tv.setTextColor(Color.parseColor("#ffffff"));
+	    } 
 		
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override

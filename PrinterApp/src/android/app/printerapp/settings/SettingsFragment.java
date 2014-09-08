@@ -9,6 +9,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -122,6 +123,13 @@ public class SettingsFragment extends Fragment{
 		tabs.addTab(spec);
 		 
 		tabs.setCurrentTab(0);
+		
+		tabs.getTabWidget().setBackgroundColor(Color.parseColor("#333333"));
+		for(int i=0;i<tabs.getTabWidget().getChildCount();i++) 
+	    {
+	        TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+	        tv.setTextColor(Color.parseColor("#ffffff"));
+	    } 
 		
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override

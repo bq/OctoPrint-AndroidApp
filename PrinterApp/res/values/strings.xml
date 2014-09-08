@@ -30,6 +30,8 @@
     <string name="devices_setup_title">Set up printer </string>
     <string name="devices_setup_message">Insert printer code or scan the QR located in the back of your device</string>
     <string name="devices_dialog_loading">Error while loading file: </string>
+    <string name="devices_list_header_1">DEVICES</string>
+    <string name="devices_list_header_2">STATUS</string>
     
     <string name="devices_menu_add">Add printer</string>
     <string name="devices_menu_filter">Filter devices</string>
