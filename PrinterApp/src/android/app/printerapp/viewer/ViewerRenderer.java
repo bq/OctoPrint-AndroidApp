@@ -109,9 +109,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	float[] mLightModelMatrix = new float[16];	
 			
 	private boolean mSnapShot = false;
-	
-	private boolean mIsStl;
-	
+		
 	//Variables Touch events
 	private int mObjectPressed=-1;
 	
@@ -132,13 +130,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private final int OUT = 1;
 	private final int INSIDE_TOUCHED = 2;
 			
-	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot, boolean stl) {	
+	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot) {	
 		this.mDataList = dataList;
 		this.mContext = context;
 		this.mState = state;
 		
 		this.mSnapShot = doSnapshot;
-		this.mIsStl = stl;
 	}
 	
 	public void showBackWitboxFace (boolean draw) {
@@ -196,6 +193,13 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			mStlObjectList.remove(i);
 			mDataList.remove(i);
 		}
+	}
+	
+	private boolean isStl() {
+		if (mDataList.size()>0)
+			if (mDataList.get(0).getPathFile().endsWith(".stl") || mDataList.get(0).getPathFile().endsWith(".STL")) return true;
+		
+		return false;
 	}
 	
 	public int objectPressed (float x, float y) {
@@ -628,19 +632,22 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		Matrix.setIdentityM(mModelMatrix, 0);
 			
         mSceneAngleX = -40f;	
+        
+        if (mDataList.size()>0){
+			if (isStl()) {
+				if (mDataList.size()>1) relocate (mDataList.size()-1);
 
-		while (!mDataList.get(mDataList.size()-1).isDrawEnabled()) ; //wait	if the last element has not been opened
+				//First, reset the stl object list
+				mStlObjectList.clear();
+
+				//Add the new ones.
+				for (int i=0; i<mDataList.size(); i++) {
+					mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
+				}
+				
+			} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
+        }
 	
-		if (mIsStl) {
-			if (mDataList.size()>1) relocate (mDataList.size()-1);
-
-			//First, reset the stl object list
-			for (int i=0; i<mStlObjectList.size(); i++)mStlObjectList.remove(i);
-			//Add the new ones.
-			for (int i=0; i<mDataList.size(); i++) mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
-			
-		} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
-		
 		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
 
 		mWitboxFaceBack = new WitboxFaces (BACK);
@@ -661,7 +668,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         float ratio = (float) width / height;
         	
         // this projection matrix is applied to object coordinates		
-        Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, Z_NEAR, Z_FAR);	
+        Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, Z_NEAR, Z_FAR);
         
         if (mSnapShot) {
         	DataStorage data = mDataList.get(0);
@@ -697,7 +704,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        if (mIsStl) 
+        if (isStl()) 
         	for (int i=0; i<mStlObjectList.size(); i++)
         		setColor(i);
         
@@ -750,57 +757,61 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
       
-        if (mDataList.size()>0 && mObjectPressed!=-1) {
-	        DataStorage data = mDataList.get(mObjectPressed);
-	        Point center = data.getLastCenter();
+        if (mDataList.size()>0) {
+        	if (mObjectPressed!=-1) {
+		        DataStorage data = mDataList.get(mObjectPressed);
+		        Point center = data.getLastCenter();
+		
+		        Matrix.setIdentityM(mTemporaryModel, 0);
+		        Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);  
+		        Matrix.scaleM(mTemporaryModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
+		        
+		        Matrix.translateM(mTemporaryModel, 0, 0, 0, data.getAdjustZ());
+		
+		        //Object rotation  
+		        float [] rotateObjectMatrix = data.getRotationMatrix();
+		        Matrix.rotateM(rotateObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
+		
+		        mDataList.get(mObjectPressed).setRotationMatrix(rotateObjectMatrix);
+		
+		        //Reset angle, we store the rotation in the matrix
+		        mRotateAngle=0;
+		
+		        //Multiply the model by the accumulated rotation
+		        Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);     	
+		        Matrix.multiplyMM(mMVPObjectMatrix, 0,mMVPMatrix, 0, mObjectModel, 0);   
 	
-	        Matrix.setIdentityM(mTemporaryModel, 0);
-	        Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);  
-	        Matrix.scaleM(mTemporaryModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
-	        
-	        Matrix.translateM(mTemporaryModel, 0, 0, 0, data.getAdjustZ());
-	
-	        //Object rotation  
-	        float [] rotateObjectMatrix = data.getRotationMatrix();
-	        Matrix.rotateM(rotateObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
-	
-	        if (mObjectPressed!=-1) mDataList.get(mObjectPressed).setRotationMatrix(rotateObjectMatrix);
-	
-	        //Reset angle, we store the rotation in the matrix
-	        mRotateAngle=0;
-	
-	        //Multiply the model by the accumulated rotation
-	        Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);     	
-	        Matrix.multiplyMM(mMVPObjectMatrix, 0,mMVPMatrix, 0, mObjectModel, 0);   
-
-	        Matrix.multiplyMM(mMVObjectMatrix, 0,mMVMatrix, 0, mObjectModel, 0);   
-	        Matrix.transposeM(mTransInvMVMatrix, 0, mMVObjectMatrix, 0);
-	        Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
-        }
+		        Matrix.multiplyMM(mMVObjectMatrix, 0,mMVMatrix, 0, mObjectModel, 0);   
+		        Matrix.transposeM(mTransInvMVMatrix, 0, mMVObjectMatrix, 0);
+		        Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
+	        }
+        
 	                                                                                              
-        if (mIsStl) 
-    		for (int i=0; i<mStlObjectList.size(); i++) 
-    			if (i==mObjectPressed) {
-    				mDataList.get(i).setModelMatrix(mObjectModel);
-
-    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace);
-    			} else  {
-    				float [] modelMatrix = mDataList.get(i).getModelMatrix();
-    				float [] mvpMatrix = new float[16];
-    				float [] mvMatrix = new float[16];
-    				float [] mvFinalMatrix = new float[16];
-
-    				Matrix.multiplyMM(mvpMatrix, 0,mMVPMatrix, 0, modelMatrix, 0);  
-    				
-    				Matrix.multiplyMM(mvMatrix, 0,mMVMatrix, 0, modelMatrix, 0);  
-    				
-    		        Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
-    		        Matrix.invertM(mvFinalMatrix, 0, mvFinalMatrix, 0);
-    		        
-    				mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace);
-    			}
-        else 
-        	mGcodeObject.draw(mMVPMatrix); 
+	        if (isStl()) 
+	    		for (int i=0; i<mStlObjectList.size(); i++) {
+	    			if (i==mObjectPressed) {
+	    				mDataList.get(i).setModelMatrix(mObjectModel);
+	
+	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace);
+	    			} else  {
+	    				float [] modelMatrix = mDataList.get(i).getModelMatrix();
+	    				float [] mvpMatrix = new float[16];
+	    				float [] mvMatrix = new float[16];
+	    				float [] mvFinalMatrix = new float[16];
+	
+	    				Matrix.multiplyMM(mvpMatrix, 0,mMVPMatrix, 0, modelMatrix, 0);  
+	    				
+	    				Matrix.multiplyMM(mvMatrix, 0,mMVMatrix, 0, modelMatrix, 0);  
+	    				
+	    		        Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
+	    		        Matrix.invertM(mvFinalMatrix, 0, mvFinalMatrix, 0);
+	    		        
+	    				mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace);
+	    			}
+	    		}
+	        else 
+	        	mGcodeObject.draw(mMVPMatrix); 
+        }
         
 
         if (mSnapShot) {

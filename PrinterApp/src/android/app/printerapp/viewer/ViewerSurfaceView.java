@@ -17,9 +17,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int XRAY = 1;
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
-	
-	private boolean mIsStl = false;
-	
+		
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
 	//Touch
@@ -77,19 +75,25 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	    super(context, attrs);
 	}
 		
-	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, boolean doSnapshot, boolean stl) {
+	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, boolean doSnapshot) {
 		super(context);
 		
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
       
         mDataList = data;
-		mRenderer = new ViewerRenderer (data, context, state, doSnapshot, stl);
-		mIsStl = stl;
+		mRenderer = new ViewerRenderer (data, context, state, doSnapshot);
 		setRenderer(mRenderer);
 				
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+	}
+	
+	private boolean isStl() {
+		if (mDataList.size()>0)
+			if (mDataList.get(0).getPathFile().endsWith(".stl") || mDataList.get(0).getPathFile().endsWith(".STL")) return true;
+		
+		return false;
 	}
 	
 	public void configViewMode (int state) {
@@ -200,7 +204,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			case MotionEvent.ACTION_DOWN:
 				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
 					int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
-					if (objPressed!=-1 && mIsStl) {
+					if (objPressed!=-1 && isStl()) {
 						mEdition = true;
 						mObjectPressed=objPressed;
 						ViewerMain.showActionModeBar();

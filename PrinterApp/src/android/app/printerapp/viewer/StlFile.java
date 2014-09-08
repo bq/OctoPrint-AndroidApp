@@ -14,6 +14,7 @@ import com.devsmart.android.IOUtils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.opengl.Matrix;
 import android.os.Handler;
@@ -37,21 +38,24 @@ public class StlFile {
 	private static DataStorage mData;
 	private static Context mContext;
 	private static boolean mDoSnapshot;
-	static Thread mThread;
+	private static Thread mThread;
+	
+	private static boolean mContinueThread = true;
 	
 	private static final int COORDS_PER_TRIANGLE = 9;
 		
 	public static void openStlFile (Context context, File file, DataStorage data, boolean doSnapshot) {
 		Log.i(TAG, "Open File");
 		mDoSnapshot = doSnapshot;
-
+		mContinueThread = true;
+		
 		if (!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
 		mData = data;
 		mContext = context;
 		mFile = file;
 		Uri uri = Uri.fromFile(file);
 		
-		mData.setPathFile(mFile.getName().replace(".", "-"));	
+		mData.setPathFile(mFile.getAbsolutePath());	
 		mData.initMaxMin();
 		
 		startThreadToOpenFile(context, uri);
@@ -66,16 +70,17 @@ public class StlFile {
 				try {
 					if (isText(arrayBytes)) {
 						Log.e(TAG,"trying text... ");
-						processText(mFile);						
+						if(mContinueThread) processText(mFile);						
 					} else {
 						Log.e(TAG,"trying binary...");
-						processBinary(arrayBytes);
+						if(mContinueThread) processBinary(arrayBytes);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
-				mHandler.sendEmptyMessage(0);
+				
+				if(mContinueThread) mHandler.sendEmptyMessage(0);
 			}
 		};	
 		
@@ -132,6 +137,19 @@ public class StlFile {
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.setCancelable(false);
 		
+		progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		    	mContinueThread = false;
+		    	try {
+					mThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+		    	ViewerMain.resetWhenCancel();
+		    }
+		});
+		
 		if (!mDoSnapshot) progressDialog.show();
 		
 		return progressDialog;
@@ -155,7 +173,8 @@ public class StlFile {
 	    		mData.clearNormalList();
 	    		mData.clearVertexList();
 	    		
-				mData.enableDraw ();	    						
+				mData.enableDraw ();	
+				ViewerMain.draw();
 	    		//ProgressDialog
 				if (!mDoSnapshot) mProgressDialog.dismiss();  
 				else {
@@ -175,7 +194,7 @@ public class StlFile {
 			int maxLines=0;
 			StringBuilder allLines = new StringBuilder ("");
 			BufferedReader countReader = new BufferedReader(new FileReader(file));
-			while ((line = countReader.readLine()) != null) {
+			while ((line = countReader.readLine()) != null && mContinueThread) {
 				if (line.trim().startsWith("vertex ")) {
 					line = line.replaceFirst("vertex ", "").trim();
 					allLines.append(line+"\n");
@@ -196,7 +215,7 @@ public class StlFile {
 			int thirdVertexIndex = 0;
 			int initialVertexIndex = -1;
 
-			while (lines < maxLines) {
+			while (lines < maxLines && mContinueThread) {
 				firstVertexIndex =  allLines.indexOf("\n", thirdVertexIndex+1);
 				secondVertexIndex = allLines.indexOf("\n", firstVertexIndex+1);
 				thirdVertexIndex = allLines.indexOf("\n", secondVertexIndex+1);
@@ -263,7 +282,8 @@ public class StlFile {
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 				
 		if (!mDoSnapshot) mProgressDialog.setMax(vectorSize);
-		for (int i = 0; i < vectorSize; i++) {		
+		for (int i = 0; i < vectorSize; i++) {
+			if(!mContinueThread) break;
 			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
 			float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
 			float z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 20));

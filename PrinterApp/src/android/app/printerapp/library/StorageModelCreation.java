@@ -20,7 +20,6 @@ import android.app.printerapp.viewer.ViewerMain;
 import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -140,12 +139,11 @@ public class StorageModelCreation {
 		
 		if(path.endsWith(".stl") || path.endsWith(".STL")) {
 			StlFile.openStlFile (context, file, data, ViewerMain.DO_SNAPSHOT);
-			surface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT, ViewerMain.STL);
+			surface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT);
 
 		} else if (path.endsWith(".gcode") || path.endsWith(".GCODE")) {
-			Log.i("viewer", " hey");
 			GcodeFile.openGcodeFile(context, file, data, ViewerMain.DO_SNAPSHOT);
-			surface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT, ViewerMain.GCODE);
+			surface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT);
 		}
 		
 		list.add(data);
