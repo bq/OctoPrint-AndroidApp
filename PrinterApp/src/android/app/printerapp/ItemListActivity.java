@@ -10,12 +10,18 @@ import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMain;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -51,6 +57,11 @@ public class ItemListActivity extends FragmentActivity implements
 	private static FragmentManager mManager;
 	
 	private static DialogController mDialog;
+	
+	
+	//DRAWER
+	private DrawerLayout mDrawer;
+	private ActionBarDrawerToggle mDrawerToggle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +79,38 @@ public class ItemListActivity extends FragmentActivity implements
 			// 'activated' state when touched.
 			((ItemListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
+			
+			mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+			mDrawer.setScrimColor(Color.TRANSPARENT);
+			
+			 mDrawerToggle = new ActionBarDrawerToggle(
+		                this,                  /* host Activity */
+		                mDrawer,         /* DrawerLayout object */
+		                android.R.drawable.ic_menu_more,  /* nav drawer icon to replace 'Up' caret */
+		                R.string.add,  /* "open drawer" description */
+		                R.string.cancel  /* "close drawer" description */
+		                ) {
+
+		            /** Called when a drawer has settled in a completely closed state. */
+		            public void onDrawerClosed(View view) {
+		                super.onDrawerClosed(view);
+		                
+		            }
+
+		            /** Called when a drawer has settled in a completely open state. */
+		            public void onDrawerOpened(View drawerView) {
+		                super.onDrawerOpened(drawerView);
+		                
+		            }
+		        };
+			
+			
+			// Set the drawer toggle as the DrawerListener
+	        mDrawer.setDrawerListener(mDrawerToggle);
+	        mDrawer.openDrawer(Gravity.START);
+	        
+	        getActionBar().setDisplayHomeAsUpEnabled(true);
+	        getActionBar().setHomeButtonEnabled(true);
 		}
 
 		
@@ -81,11 +124,25 @@ public class ItemListActivity extends FragmentActivity implements
 		mDialog = new DialogController(this);
 		
 		
-		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag("Devices");
-		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag("Library");
-		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag("Viewer");
-		mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag("Settings");
+		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_devices));
+		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
+		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
+		mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
 	}
+	
+	
+	//handle action bar menu open
+	 @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+	    // Pass the event to ActionBarDrawerToggle, if it returns
+	    // true, then it has handled the app icon touch event
+	    if (mDrawerToggle.onOptionsItemSelected(item)) {
+	      return true;
+	    }
+	    // Handle your other action bar items...
+	
+	    return super.onOptionsItemSelected(item);
+    }
 
 	/**
 	 * Callback method from {@link ItemListFragment.Callbacks} indicating that
@@ -128,9 +185,9 @@ public class ItemListActivity extends FragmentActivity implements
 				case 1:{
 					
 					//Check if we already created the Fragment to avoid having multiple instances
-					 if (getSupportFragmentManager().findFragmentByTag("Devices")==null){
+					 if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_devices))==null){
 						 mDevicesFragment = new DevicesFragment();
-						 mTransaction.add(R.id.item_detail_container,mDevicesFragment, "Devices");	
+						 mTransaction.add(R.id.item_detail_container,mDevicesFragment, getString(R.string.fragment_devices));	
 
 					 }  
 					  
@@ -140,9 +197,9 @@ public class ItemListActivity extends FragmentActivity implements
 				case 2:{
 					
 					//Check if we already created the Fragment to avoid having multiple instances
-					 if (getSupportFragmentManager().findFragmentByTag("Viewer")==null){
+					 if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print))==null){
 						 mViewerFragment = new ViewerMain();
-						 mTransaction.add(R.id.item_detail_container,mViewerFragment, "Viewer");
+						 mTransaction.add(R.id.item_detail_container,mViewerFragment, getString(R.string.fragment_print));
 							
 					 } 
 					 
@@ -155,9 +212,9 @@ public class ItemListActivity extends FragmentActivity implements
 				
 				case 3:{
 					//Check if we already created the Fragment to avoid having multiple instances
-					 if (getSupportFragmentManager().findFragmentByTag("Library")==null){
+					 if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models))==null){
 						 mLibraryFragment = new LibraryFragment();
-						 mTransaction.add(R.id.item_detail_container,mLibraryFragment, "Library");
+						 mTransaction.add(R.id.item_detail_container,mLibraryFragment, getString(R.string.fragment_models));
 						 
 					 } 
 						 
@@ -172,9 +229,9 @@ public class ItemListActivity extends FragmentActivity implements
 				
 				case 5:{
 					//Check if we already created the Fragment to avoid having multiple instances
-					 if (getSupportFragmentManager().findFragmentByTag("Settings")==null){
+					 if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings))==null){
 						 mSettingsFragment = new SettingsFragment();
-						 mTransaction.add(R.id.item_detail_container,mSettingsFragment, "Settings");
+						 mTransaction.add(R.id.item_detail_container,mSettingsFragment, getString(R.string.fragment_settings));
 
 					 } 
 					 
@@ -199,7 +256,10 @@ public class ItemListActivity extends FragmentActivity implements
 				
 			}
 			
-			if (mCurrent!=null ) mTransaction.show(mCurrent).commit();
+			if (mCurrent!=null ){
+				mTransaction.show(mCurrent).commit();
+				getActionBar().setTitle(mCurrent.getTag());
+			}
 			
 		} else {
 			// In single-pane mode, simply start the detail activity

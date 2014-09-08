@@ -8,6 +8,7 @@
    app:panelHeight="50dp"
    app:fadeColor="@android:color/transparent" 
    app:anchorPoint="0.2"
+   android:background="@color/white"
    xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp">
 
     <TabHost
