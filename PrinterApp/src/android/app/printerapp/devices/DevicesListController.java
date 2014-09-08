@@ -69,6 +69,10 @@ public class DevicesListController {
 			
 			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
 			
+			
+			//Custom name
+			m.setDisplayName(c.getString(4));
+			
 			addToList(m);
 			
 			m.setLinked(context);
@@ -153,7 +157,7 @@ public static void selectPrinter(final Context context, final File f){
 		
 		//New array with names only for the adapter
 		for (ModelPrinter p : tempList){		
-			nameList[i] = p.getName();
+			nameList[i] = p.getDisplayName();
 			i++;
 		}
 		

@@ -6,7 +6,9 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
+import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -98,7 +100,13 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 		} else {
 			
 			//TODO Handle printer internal files
-			if (m.getParent().equals("printer")) iv.setImageResource(R.drawable.browser_carpeta);
+			if (m.getParent().equals("printer")){
+				iv.setImageResource(R.drawable.browser_carpeta);
+				
+				ModelPrinter p = DevicesListController.getPrinter(m.getName());
+				tv.setText(p.getDisplayName());
+				
+			}
 			else {
 				iv.setImageResource(R.drawable.file_icon);
 				

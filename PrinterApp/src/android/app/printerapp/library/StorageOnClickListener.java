@@ -103,7 +103,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					}else OctoprintLoadAndPrint.printInternalFile(p.getAddress(), f.getName(), false);
 				
 					
-					Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getName(), Toast.LENGTH_LONG).show();
+					Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
 					
 				}
 				else {

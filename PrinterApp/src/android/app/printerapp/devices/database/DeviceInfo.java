@@ -14,6 +14,7 @@ public final class DeviceInfo {
         public static final String DEVICES_NAME = "name";
         public static final String DEVICES_ADDRESS = "address";
         public static final String DEVICES_POSITION = "position";
+        public static final String DEVICES_DISPLAY = "display";
     }
 
 }

@@ -56,7 +56,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.list_column_1_text);
-		tag.setText(m.getName());
+		tag.setText(m.getDisplayName());
 		
 		ImageView icon = (ImageView) v.findViewById(R.id.list_column_1_icon);
 		

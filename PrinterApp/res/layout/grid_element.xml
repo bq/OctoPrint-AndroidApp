@@ -13,7 +13,9 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:singleLine="true"
+        android:text="iMTOOLONGFORTHISWORLD IDONTEVENWOW JAJAJAJAJ JAJAJJAJA" />
 
     <ImageView
         android:id="@+id/grid_element_icon"

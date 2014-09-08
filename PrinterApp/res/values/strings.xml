@@ -94,6 +94,7 @@
     <string name="settings_network">Default network</string>
     <string name="settings_printers">Linked Witbox/Witclon connections</string>
     <string name="settings_add_title">Discover printer(s)</string>
+    <string name="settings_edit_name">Set printer new name</string>
     
     <string name="settings_tabhost_tab_connection">Connection and network</string>
     <string name="settings_tabhost_tab_devices">Devices</string>
