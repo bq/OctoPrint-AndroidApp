@@ -97,6 +97,11 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 					icon.setImageResource(R.drawable.icon_detectedprinter);
 				}break;
 				
+				case StateUtils.STATE_ERROR: {
+					statusText.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_light));
+					statusText.setText(m.getMessage());
+				}break;
+				
 				default:{
 					tag.setTextColor(getContext().getResources().getColor(android.R.color.black));
 					statusText.setTextColor(getContext().getResources().getColor(android.R.color.black));

@@ -1,15 +1,10 @@
 package android.app.printerapp.library.detail;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.StorageController;
-import android.app.printerapp.model.ModelComment;
 import android.app.printerapp.model.ModelFile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -99,6 +94,9 @@ public class DetailViewFragment extends Fragment {
 				
 				/***********************************************************************************/
 				
+				//TODO: COMMENTS ARE DISABLED FOR NOW
+				
+				/*	
 				TextView tvd = (TextView) rootView.findViewById(R.id.detail_tv_description);
 				ArrayList<ModelComment> commentArray = new ArrayList<ModelComment>();
 				
@@ -131,7 +129,7 @@ public class DetailViewFragment extends Fragment {
 				
 				TextView tvc = (TextView) rootView.findViewById(R.id.detailview_tv_num);
 				tvc.setText(String.valueOf(commentArray.size()));
-					
+					*/
 				
 				
 			}

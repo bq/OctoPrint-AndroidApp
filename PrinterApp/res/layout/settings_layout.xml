@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@color/white" >
 
     <TabHost
         android:id="@android:id/tabhost"
@@ -47,7 +48,7 @@
 					        android:textAppearance="?android:attr/textAppearanceLarge"
 					        android:textColor="#FFF"
 					        android:textStyle="bold"
-					        android:background="@android:color/holo_blue_light"
+					        android:background="#00B800"
 					        android:visibility="visible" />
 
                          <LinearLayout
@@ -87,7 +88,7 @@
 					        android:textAppearance="?android:attr/textAppearanceLarge"
 					        android:textColor="#FFF"
 					        android:textStyle="bold"
-					        android:background="@android:color/holo_blue_light"
+					        android:background="#00B800"
 					        android:visibility="visible" />
 
                         <ListView

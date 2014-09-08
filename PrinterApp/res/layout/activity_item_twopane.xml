@@ -11,7 +11,7 @@
            <SurfaceView
         android:layout_width="0px"
         android:layout_height="0px"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <!--
     This layout is a two-pane layout for the Items
@@ -23,19 +23,30 @@
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
+    
+    <android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
-    <fragment
-        android:id="@+id/item_list"
-        android:name="android.app.printerapp.ItemListFragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@android:layout/list_content" />
 
-    <FrameLayout
-        android:id="@+id/item_detail_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3" />
+	    <FrameLayout
+	        android:id="@+id/item_detail_container"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="3"
+	        android:background="@drawable/bq_background" />
+	    
+	    <fragment
+	        android:id="@+id/item_list"
+	        android:name="android.app.printerapp.ItemListFragment"
+	        android:layout_width="340dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:layout_gravity="start"
+	        tools:layout="@android:layout/list_content" />
+	    
+	    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>

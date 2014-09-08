@@ -50,7 +50,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="20dp"
         android:src="@drawable/icon_print_list" />
+    
+     <ImageButton
+        android:id="@+id/detailview_list_iv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/icon_edit_list" />
 
 </LinearLayout>

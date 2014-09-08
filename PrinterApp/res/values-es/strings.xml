@@ -29,6 +29,8 @@
     <string name="devices_setup_title">Configurar impresora </string>
     <string name="devices_setup_message">Introduce el código de la impresora o escanea el QR localizado en la parte trasera de tu dispositivo</string>
     <string name="devices_dialog_loading">Error cargando el modelo: </string>
+    <string name="devices_list_header_1">DISPOSITIVOS</string>
+    <string name="devices_list_header_2">ESTADO</string>
     
     <string name="devices_menu_add">Añadir impresora</string>
     <string name="devices_menu_filter">Filtrar dispositivos</string>

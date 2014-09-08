@@ -61,38 +61,39 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.detailview_list_iv);
 		iv.setImageDrawable(mDrawable);
-		
-		//Add item viewer to the image 
-		iv.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
 				
-				ItemListActivity.requestOpenFile(f.getAbsolutePath());
-				
-			}
-		});
-		
 		ImageButton ib = (ImageButton) v.findViewById(R.id.detailview_list_iv1);
+		ImageButton ibe = (ImageButton) v.findViewById(R.id.detailview_list_iv2);
 		
 		if (f.getName().contains(".gcode")){
 			
 			v.findViewById(R.id.detailview_gcode).setVisibility(View.VISIBLE);
 
 		}else {
-			ib.setImageResource(R.drawable.icon_edit_list);
+			
+			ib.setVisibility(View.GONE);
 		}
 		
 		
-		//Edit button
+		//Print button
 		ib.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				
-				//In the file list if it's stl open the print panel, else print
-				if (f.getName().contains(".stl")) ItemListActivity.requestOpenFile(f.getAbsolutePath());
-				else DevicesListController.selectPrinter(v.getContext(), f);
+				DevicesListController.selectPrinter(v.getContext(), f);
+				
+			}
+		});
+		
+		//Edit button
+		ibe.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+
 				
 			}
 		});

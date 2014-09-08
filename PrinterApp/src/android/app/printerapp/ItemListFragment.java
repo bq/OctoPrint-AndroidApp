@@ -1,6 +1,7 @@
 package android.app.printerapp;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -67,14 +68,14 @@ public class ItemListFragment extends ListFragment {
 	public ItemListFragment() {
 	}
 
-	@Override
+	@Override 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		// TODO: replace with a real list adapter.
 		setListAdapter(new ArrayAdapter<ListContent.ListItem>(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, ListContent.getItemList(getActivity())));
+				R.layout.drawer_list_element,
+				R.id.drawer_text, ListContent.getItemList(getActivity())));
 		
 		
 	}
@@ -92,7 +93,7 @@ public class ItemListFragment extends ListFragment {
 			
 			mCallbacks = sDummyCallbacks;
 		}
-		//view.setBackgroundColor(Color.parseColor("#333333"));
+		view.setBackgroundColor(Color.parseColor("#333333"));
 		mListView = getListView();
 	}
 

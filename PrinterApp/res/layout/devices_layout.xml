@@ -8,6 +8,7 @@
    app:panelHeight="50dp"
    app:fadeColor="@android:color/transparent" 
    app:anchorPoint="0.2"
+   android:background="@color/white"
    xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp">
 
     <TabHost
@@ -93,8 +94,14 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="@android:color/holo_blue_light"
+        android:background="#333333"
     	android:orientation="vertical" >
+        
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="5dp"
+              android:background="#00B800" 
+              android:orientation="vertical" />
         
             <TextView
                   android:id="@+id/drag_text"
@@ -102,9 +109,8 @@
 			        android:layout_height="wrap_content"
 			        android:gravity="center|top"
 			        android:text="@string/devices_quickprint"
-			        android:textSize="30sp" 
-			         
-        android:textColor="@android:color/white"/>
+			        android:textSize="30sp" 			         
+        			android:textColor="#00B800"/>
 
                     <HorizontalScrollView
                         android:id="@+id/scrollview"
