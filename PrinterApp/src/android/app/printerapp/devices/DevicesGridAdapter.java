@@ -7,7 +7,6 @@ import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +89,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			
 		} else {
 			v.setOnDragListener(new DevicesDragListener(m));
-			tag.setText(m.getName());
+			tag.setText(m.getDisplayName());
 			icon.setVisibility(View.VISIBLE);
 			
 			int status = m.getStatus();

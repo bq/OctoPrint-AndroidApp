@@ -59,7 +59,7 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 		}
 		
 		TextView tv = (TextView) v.findViewById(R.id.video_label);
-		tv.setText(m.getName());
+		tv.setText(m.getDisplayName());
 		
 		
 

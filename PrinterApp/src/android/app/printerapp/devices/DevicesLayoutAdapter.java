@@ -66,7 +66,7 @@ public class DevicesLayoutAdapter {
 
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
-		tag.setText(m.getName());
+		tag.setText(m.getDisplayName());
 		
 		MyCustomTouchListener listener = new MyCustomTouchListener(mViewGroup);
 		

@@ -19,6 +19,7 @@ public class ModelPrinter {
 	
 	//Service info
 	private String mName;
+	private String mDisplayName;
 	private String mAddress;
 	private int mStatus = StateUtils.STATE_NONE;
 	
@@ -40,6 +41,7 @@ public class ModelPrinter {
 	public ModelPrinter(String name, String address, int position){
 		
 		mName = name;
+		mDisplayName = name;
 		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
@@ -91,6 +93,10 @@ public class ModelPrinter {
 	
 	public int getPosition(){
 		return mPosition;
+	}
+	
+	public String getDisplayName(){
+		return mDisplayName;
 	}
 	
 	/**********
@@ -159,6 +165,10 @@ public class ModelPrinter {
 	//change position
 	public void setPosition(int pos){	
 		mPosition = pos;
+	}
+	
+	public void setDisplayName(String name){
+		mDisplayName = name;
 	}
 
 }

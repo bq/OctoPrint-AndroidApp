@@ -46,6 +46,7 @@ public class DatabaseController {
 		values.put(FeedEntry.DEVICES_NAME, name);
 		values.put(FeedEntry.DEVICES_ADDRESS, address);
 		values.put(FeedEntry.DEVICES_POSITION, position);
+		values.put(FeedEntry.DEVICES_DISPLAY, name);
 		
 		mDb.insert(FeedEntry.TABLE_NAME, null, values);		
 		mDb.close();

@@ -18,7 +18,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         FeedEntry._ID + " INTEGER PRIMARY KEY," +
         FeedEntry.DEVICES_NAME + TEXT_TYPE + COMMA_SEP +
         FeedEntry.DEVICES_ADDRESS + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_POSITION + TEXT_TYPE +
+        FeedEntry.DEVICES_POSITION + TEXT_TYPE + COMMA_SEP +
+        FeedEntry.DEVICES_DISPLAY + TEXT_TYPE +
         ")";
 
     private static final String SQL_DELETE_ENTRIES =

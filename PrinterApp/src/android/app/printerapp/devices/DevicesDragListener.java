@@ -68,7 +68,7 @@ public class DevicesDragListener implements OnDragListener {
 			    		
 	
 			    		Toast.makeText(v.getContext(), "Loading " + item.getText().toString() + 
-			    				" on " + mModel.getName(), Toast.LENGTH_LONG).show();
+			    				" on " + mModel.getDisplayName(), Toast.LENGTH_LONG).show();
 	
 		    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
 		    		//TODO: Set the same method for both

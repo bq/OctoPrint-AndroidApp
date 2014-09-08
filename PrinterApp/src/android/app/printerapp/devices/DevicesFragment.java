@@ -401,6 +401,7 @@ public class DevicesFragment extends Fragment{
 				
 				
 				
+				
 			}
 		};
 		

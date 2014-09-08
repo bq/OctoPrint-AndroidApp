@@ -92,6 +92,7 @@
     <string name="settings_network">Red por defecto</string>
     <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>
     <string name="settings_add_title">Descubrir impresora(s)</string>
+    <string name="settings_edit_name">Introduzca nuevo nombre para la impresora</string>
      
     <string name="settings_tabhost_tab_connection">Conexión y red</string>
     <string name="settings_tabhost_tab_devices">Dispositivos</string>

@@ -139,7 +139,7 @@ public class PrintViewFragment extends Fragment{
 	
 	public void refreshData(){
 		
-		tv_printer.setText(mPrinter.getName());
+		tv_printer.setText(mPrinter.getDisplayName());
 		tv_file.setText(mPrinter.getJob().getFilename());
 		tv_temp.setText(mPrinter.getTemperature() + "ºC");
 			

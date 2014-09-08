@@ -25,11 +25,19 @@
         android:textColor="#FF000000" />
 
 <ImageButton
+    android:id="@+id/settings_edit"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_margin="5dp"
+    android:src="@android:drawable/ic_menu_edit" />
+
+<ImageButton
     android:id="@+id/settings_delete"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:layout_margin="20dp"
+    android:layout_margin="5dp"
     android:src="@android:drawable/ic_menu_delete" />
 
 </LinearLayout>
