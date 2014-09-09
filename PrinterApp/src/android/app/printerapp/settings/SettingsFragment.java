@@ -1,12 +1,15 @@
 package android.app.printerapp.settings;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
@@ -64,6 +67,19 @@ public class SettingsFragment extends Fragment{
 			/*********************************************************/
 			
 			getNetworkSsid(rootView);
+			
+			//Populate list with linked printers
+			/*ArrayList<ModelPrinter> mTempList = new ArrayList<ModelPrinter>();
+			for (ModelPrinter p : DevicesListController.getList()){
+				
+				if (DatabaseController.checkExisting(p)){
+					
+					mTempList.add(p);
+					
+				}
+				
+			}*/
+			
 			
 			mAdapter = new SettingsListAdapter(getActivity(), R.layout.settings_row, DevicesListController.getList());
 			ListView l = (ListView) rootView.findViewById(R.id.lv_settings);

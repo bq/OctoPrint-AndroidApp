@@ -3,6 +3,7 @@ package android.app.printerapp.settings;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -37,37 +38,46 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 		View v = convertView;
 		final ModelPrinter m = getItem(position);
 		
-		//View not yet created
-		if (v==null){
-
-			//Inflate the view
-			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.settings_row, null, false);
-			
-			v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					DatabaseController.deleteFromDb(m.getName());
-	                DevicesListController.getList().remove(m);
-	                notifyDataSetChanged();
-				}
-			});
-			
-			v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					optionEdit(m);
-				}
-			});
-			
-		} else {
-			//v = convertView;
-		}
 		
-		TextView tv = (TextView) v.findViewById(R.id.settings_text);
-		tv.setText(m.getDisplayName());
+					
+			//View not yet created
+			if (v==null){
+
+				//Inflate the view
+				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = inflater.inflate(R.layout.settings_row, null, false);
+				
+				if (DatabaseController.checkExisting(m)) {
+					
+				
+				
+					v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							DatabaseController.deleteFromDb(m.getName());
+			                DevicesListController.getList().remove(m);
+			                ItemListActivity.notifyAdapters();
+			                notifyDataSetChanged();
+						}
+					});
+					
+					v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							optionEdit(m);
+						}
+					});
+				
+				}
+				
+			} else {
+				//v = convertView;
+			}
+			
+			TextView tv = (TextView) v.findViewById(R.id.settings_text);
+			tv.setText(m.getDisplayName());
 		
 		return v;
 	}
