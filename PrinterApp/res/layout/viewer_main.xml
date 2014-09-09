@@ -74,39 +74,88 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tabhost_views"> 
-	         <RadioGroup
-		        android:id="@+id/radio_group_rotation"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentRight="true"
-		        android:visibility="visible" >
-		
-		         <RadioButton
-		            android:id="@+id/rotation_x"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:checked="true"
-		            android:text="@string/viewer_button_rx" />
-		         
-		        <RadioButton
-		            android:id="@+id/rotation_y"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/viewer_button_ry" />
-		
-		        <RadioButton
-		            android:id="@+id/rotation_z"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/viewer_button_rz" />
-	    	</RadioGroup>
-    
-         
-	        <SeekBar
-		        android:id="@+id/barLayer"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-	     	/>
+      
+        	<RelativeLayout 
+			    android:id="@+id/angle_axis"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal">
+			    
+        	    	<TextView 
+        	    	    android:id="@+id/x_axis"
+        	    	    android:layout_width="wrap_content"
+            			android:layout_height="wrap_content"
+            			android:textSize="30sp"
+                		android:layout_alignParentLeft="true"
+               			android:text="X Axis"/>
+            
+		             <TextView 
+		                android:id="@+id/y_axis"
+		                android:layout_width="wrap_content"
+            			android:layout_height="wrap_content"
+		                android:layout_alignParentLeft="true"
+		                android:textSize="30sp"              
+		                android:layout_below="@+id/x_axis"
+		                android:text="Y Axis"/>
+             
+		              <TextView 
+		                android:id="@+id/z_axis"
+		                android:layout_width="wrap_content"
+            			android:layout_height="wrap_content"
+            			android:textSize="30sp"		
+		                android:layout_alignParentLeft="true"
+		                android:layout_below="@+id/y_axis"  
+		                android:text="Z Axis"/>
+              
+		              <Button 
+		                  android:id="@+id/positive_angle_x"
+		                  android:layout_width="wrap_content"
+            			  android:layout_height="wrap_content"
+		                  android:layout_toRightOf="@+id/x_axis"
+		                  android:text="+15" />
+		              <Button 
+		                  android:id="@+id/negative_angle_x"
+		                  android:layout_width="wrap_content"
+            			  android:layout_height="wrap_content"
+		                  android:layout_toRightOf="@+id/positive_angle_x"
+		                  android:text="-15" />
+		              
+		               <Button 
+		                  android:id="@+id/positive_angle_y"
+		                  android:layout_width="wrap_content"
+            			  android:layout_height="wrap_content"
+		                  android:layout_below="@+id/positive_angle_x"
+		                  android:layout_toRightOf="@+id/y_axis"
+		                  android:text="+15" />
+		              <Button 
+		                  android:id="@+id/negative_angle_y"
+		                  android:layout_width="wrap_content"
+            			  android:layout_height="wrap_content"
+		                  android:layout_below="@+id/negative_angle_x"
+		                  android:layout_toRightOf="@+id/positive_angle_y"	                  
+		                  android:text="-15" />
+		              
+		              <Button 
+		                  android:id="@+id/positive_angle_z"
+		                  android:layout_width="wrap_content"
+            			  android:layout_height="wrap_content"
+		                  android:layout_below="@+id/positive_angle_y"
+		                  android:layout_toRightOf="@+id/z_axis"                  
+		                  android:text="+15" />
+		              <Button 
+		                  android:id="@+id/negative_angle_z"
+		                  android:layout_width="wrap_content"
+            			  android:layout_height="wrap_content"
+		                  android:layout_below="@+id/negative_angle_y"
+		                  android:layout_toRightOf="@+id/positive_angle_z"  
+		                  android:text="-15" />
+           	    </RelativeLayout>
+		              
+			          <SeekBar
+				       	  android:id="@+id/barLayer"
+				          android:layout_width="match_parent"
+				          android:layout_height="wrap_content"/>
+	        
     </FrameLayout>
 
     <TabHost

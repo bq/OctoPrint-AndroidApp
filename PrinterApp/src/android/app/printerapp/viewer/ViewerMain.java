@@ -21,12 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.webkit.WebView.FindListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -53,15 +55,19 @@ public class ViewerMain extends Fragment {
 	public static final boolean STL = true;
 	public static final boolean GCODE = false;
 	
+	private static final float POSITIVE_ANGLE = 15;
+	private static final float NEGATIVE_ANGLE = -15;
+	
 	//Variables			
 	private static File mFile;
 
 	private static ViewerSurfaceView mSurface;
 	private static FrameLayout mLayout;
+	
+	private static RelativeLayout mRotateMenu;
 		
 	//Buttons
 	private RadioGroup mGroupMovement;
-	private static RadioGroup mGroupRotation;
 
 	private Button mBackWitboxFaces;
 	private Button mRightWitboxFaces;
@@ -107,7 +113,7 @@ public class ViewerMain extends Fragment {
 			mContext = getActivity();
 											
 			initUIElements ();
-			initEditButtons ();
+			initRotateButtons ();
 			
 			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);	
 			
@@ -206,30 +212,63 @@ public class ViewerMain extends Fragment {
 		mProgress.setVisibility(View.GONE);
 	}
 	
-	private void initEditButtons () {
-		mGroupRotation = (RadioGroup) mRootView.findViewById (R.id.radio_group_rotation);	
-		mGroupRotation.setVisibility(View.INVISIBLE);
-		mGroupRotation.setOnCheckedChangeListener(new OnCheckedChangeListener () {
+	private void initRotateButtons () {
+		mRotateMenu = (RelativeLayout) mRootView.findViewById(R.id.angle_axis);
+		mRotateMenu.setVisibility(View.INVISIBLE);
+		
+		Button positiveAngleX = (Button) mRootView.findViewById(R.id.positive_angle_x);
+		positiveAngleX.setOnClickListener(new OnClickListener() {
+			
 			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				switch (checkedId) {
-				case R.id.rotation_x:
-					mSurface.setRotationVector (ViewerSurfaceView.ROTATE_X);
-					break;
-				case R.id.rotation_y:
-					mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Y);
-					break;
-				case R.id.rotation_z:
-					mSurface.setRotationVector (ViewerSurfaceView.ROTATE_Z);
-					break;
-				}
-				
-			}			
+			public void onClick(View v) {
+				mSurface.rotateAngleAxisX(POSITIVE_ANGLE);			
+			}
 		});
-	}
-	
-	public static void setEditionMenuVisibility (int visibility) {
-		mGroupRotation.setVisibility(visibility);
+		
+		Button positiveAngleY = (Button) mRootView.findViewById(R.id.positive_angle_y);		
+		positiveAngleY.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mSurface.rotateAngleAxisY(POSITIVE_ANGLE);				
+			}
+		});
+		
+		Button positiveAngleZ = (Button) mRootView.findViewById(R.id.positive_angle_z);
+		positiveAngleZ.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mSurface.rotateAngleAxisZ(POSITIVE_ANGLE);	
+			}
+		});
+		
+		Button negativeAngleX = (Button) mRootView.findViewById(R.id.negative_angle_x);
+		negativeAngleX.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mSurface.rotateAngleAxisX(NEGATIVE_ANGLE);		
+			}
+		});
+		
+		Button negativeAngleY = (Button) mRootView.findViewById(R.id.negative_angle_y);		
+		negativeAngleY.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mSurface.rotateAngleAxisY(NEGATIVE_ANGLE);			
+			}
+		});
+		
+		Button negativeAngleZ = (Button) mRootView.findViewById(R.id.negative_angle_z);
+		negativeAngleZ.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mSurface.rotateAngleAxisZ(NEGATIVE_ANGLE);			
+			}
+		});
 	}
 	
 	public static void initSeekBar (int max) {
@@ -478,7 +517,7 @@ public class ViewerMain extends Fragment {
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);
 		mLayout.addView(mSeekBar, 1);
-		mLayout.addView(mGroupRotation, 2);
+		mLayout.addView(mRotateMenu, 2);
 	}
 		
 	/************************* SAVE FILE ********************************/
@@ -581,11 +620,13 @@ public class ViewerMain extends Fragment {
 
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        	mRotateMenu.setVisibility(View.INVISIBLE);
 			 switch (item.getItemId()) {
 	            case R.id.move:
 	            	mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
 	                return true;
 	            case R.id.rotate: 
+	            	mRotateMenu.setVisibility(View.VISIBLE);
 	            	mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
 	            	return true;
 	            case R.id.scale:
@@ -607,6 +648,8 @@ public class ViewerMain extends Fragment {
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			mSurface.exitEditionMode();
+        	mRotateMenu.setVisibility(View.INVISIBLE);
+
 			mActionMode = null;
 		}
 	};
