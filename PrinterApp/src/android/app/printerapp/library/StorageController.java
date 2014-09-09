@@ -165,7 +165,7 @@ public class StorageController {
 			
 			//File still in favorites
 		} catch (Exception e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		

@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -155,6 +156,9 @@ public class ItemListActivity extends FragmentActivity implements
 		 * This is necessary to close the ActionMode edition bar when changing between fragments
 		 */
 		if (Integer.valueOf(id)!=2) ViewerMain.hideActionModeBar();
+		
+		
+		
 			
 		if (mTwoPane) {
 			
@@ -166,18 +170,23 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			FragmentTransaction mTransaction = mManager.beginTransaction();
 			
+			//Pop backstack to avoid having bad references when coming from a Detail view				
+			mManager.popBackStack();
+			
 			if (mCurrent!=null) {
 				
-				try {
-					//We have to remove the Detail fragment because we're not using replace
-					if (mCurrent.getTag().contains("Detail")) mTransaction.remove(mCurrent);
-					else mTransaction.hide(mCurrent);
+				Log.i("OUT", "Not null " + mCurrent.getTag());
+				
+				try { 
+					
+					mTransaction.hide(mCurrent);
+						
 				} catch (NullPointerException e){
 					
 					e.printStackTrace();
 				}
 				
-			}
+			} else Log.i("OUT", "Current is null");
 					
 						
 			switch (Integer.valueOf(id)){
@@ -294,10 +303,15 @@ public class ItemListActivity extends FragmentActivity implements
 		Bundle args = new Bundle();
 	    args.putInt("index", index);
 	    detail.setArguments(args);
-		mTransaction.hide(mCurrent);
-		mTransaction.add(R.id.item_detail_container, detail, "Detail View");
-		mCurrent = detail;
-		mTransaction.show(mCurrent).commit();
+	    
+		//mTransaction.hide(mCurrent);
+		//mTransaction.add(R.id.item_detail_container, detail, "Detail View");
+		
+		
+		mTransaction.addToBackStack(mCurrent.getTag());
+		//mCurrent = detail;
+		
+		mTransaction.replace(R.id.item_detail_container, detail).commit();
 		
 	}
 	
@@ -309,10 +323,13 @@ public class ItemListActivity extends FragmentActivity implements
 			Bundle args = new Bundle();
 		    args.putString("printer", name);
 		    detail.setArguments(args);
-			mTransaction.hide(mCurrent);
-			mTransaction.add(R.id.item_detail_container, detail, "Detail Printer");
-			mCurrent = detail;
-			mTransaction.show(mCurrent).commit();
+		    
+			//mTransaction.hide(mCurrent);
+			//mTransaction.add(R.id.item_detail_container, detail, "Detail Printer");
+		    mTransaction.addToBackStack(mCurrent.getTag());
+			//mCurrent = detail;
+		    //mTransaction.show(mCurrent).commit();
+		    mTransaction.replace(R.id.item_detail_container, detail).commit();
 			
 		}
 	
