@@ -60,11 +60,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int SCALED_EDITION_MODE = 3;
 	public static final int MIRROR_EDITION_MODE = 4;
 
-
 	public static final int ROTATE_X = 0;
 	public static final int ROTATE_Y = 1;
 	public static final int ROTATE_Z = 2;
-	
+
 	private static boolean mLockEdition=false;
 	private int mObjectPressed = -1;
 	
@@ -158,16 +157,43 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:
+			mRotateMode = ROTATE_X;
 			mRenderer.setRotationVector(new Vector (1,0,0));
 			break;
 		case ROTATE_Y:
+			mRotateMode = ROTATE_Y;
 			mRenderer.setRotationVector(new Vector (0,1,0));
 			break;
 		case ROTATE_Z:
+			mRotateMode = ROTATE_Z;
 			mRenderer.setRotationVector(new Vector (0,0,1));
 			break;
-		}
+		}		
 		mRenderer.resetTotalAngle();
+	}
+		
+	private int mRotateMode;
+	
+	public void rotateAngleAxisX (float angle) {
+		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
+		mRenderer.setAngleRotationObject (angle);	
+		mRenderer.refreshRotatedObjectCoordinates();
+		requestRender();
+
+	}
+	
+	public void rotateAngleAxisY (float angle) {
+		if (mRotateMode!=ROTATE_Y) setRotationVector(ROTATE_Y);
+		mRenderer.setAngleRotationObject (angle);	
+		mRenderer.refreshRotatedObjectCoordinates();
+		requestRender();
+	}
+	
+	public void rotateAngleAxisZ (float angle) {
+		if (mRotateMode!=ROTATE_Z) setRotationVector(ROTATE_Z);
+		mRenderer.setAngleRotationObject (angle);	
+		mRenderer.refreshRotatedObjectCoordinates();
+		requestRender();
 	}
 	
 	@Override
@@ -208,7 +234,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mEdition = true;
 						mObjectPressed=objPressed;
 						ViewerMain.showActionModeBar();
-						ViewerMain.setEditionMenuVisibility(View.VISIBLE);
 					} 
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();
@@ -248,9 +273,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mPreviousX = x;
 					    mPreviousY = y;
 					    
-					    if (mEdition && (mEditionMode == MOVE_EDITION_MODE || mEditionMode == ROTATION_EDITION_MODE)) {
-				    		editionDrag (normalizedX, normalizedY, dx);
-					    } else {
+					    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
+					    	mRenderer.dragObject(x, y);
+					    } else {    
 					    	dragAccordingToMode (x,y,dx,dy);
 					    }				    
 					} 
@@ -267,9 +292,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartPoint.y = 0.0f;
 				}
 								
-				if(mEdition && mEditionMode==ROTATION_EDITION_MODE) mRenderer.refreshRotatedObjectCoordinates();
 				if(mEdition && mEditionMode==MOVE_EDITION_MODE) mRenderer.checkIfOverlaps();
-
 				touchMode = TOUCH_NONE;
 								
 				break;				
@@ -290,23 +313,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		if (mObjectPressed<mDataList.size()) mRenderer.exitEditionMode(); 
 		mObjectPressed = -1;
 		mRenderer.setObjectPressed(mObjectPressed);
-    	ViewerMain.setEditionMenuVisibility(View.INVISIBLE);
     	
     	requestRender();
 	}
-	
-	
-	private void editionDrag (float x, float y, float dx) {			
-		switch (mEditionMode) {
-		case ROTATION_EDITION_MODE:
-			mRenderer.setAngleRotationObject(dx*TOUCH_SCALE_FACTOR_ROTATION);
-			break;
-		case MOVE_EDITION_MODE:
-			mRenderer.dragObject(x, y);
-			break;			
-		}
-	}
-	
+		
 	private void dragAccordingToMode (float x, float y, float dx, float dy) {
 		switch (mMovementMode) {
 		case ROTATION_MODE:

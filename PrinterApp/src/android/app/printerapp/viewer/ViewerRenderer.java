@@ -455,7 +455,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	public void setAngleRotationObject (float angle) {
 		mRotateAngle = angle;
-		mTotalAngle += angle;		
+		mTotalAngle+= angle;
 	}
 	
 	public void resetTotalAngle() {
