@@ -1,5 +1,9 @@
 package android.app.printerapp.octoprint;
 
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +13,7 @@ import com.loopj.android.http.RequestParams;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
+import android.content.Context;
 import android.util.Log;
 
 import de.tavendo.autobahn.WebSocketConnection;
@@ -32,7 +37,7 @@ public class OctoprintConnection {
 	private static final String GET_SOCK = CUSTOM_PORT + "/sockjs/websocket";
 	
 	//Old api url
-	private static final String POST_CONNECTION = CUSTOM_PORT + "/ajax/control/connection";
+	private static final String POST_CONNECTION = CUSTOM_PORT + "/api/connection";
 	
 	/**
 	 * Works on the OLD API.
@@ -41,20 +46,89 @@ public class OctoprintConnection {
 	 * 
 	 * Simulates POST /api/connection on the NEW API.
 	 */
-	public static void startConnection(String url){
+	public static void startConnection(String url, Context context){
 				
 		RequestParams params = new RequestParams();
 		params.put("command", "connect"); //Send a connection request
+		params.put("apikey", "5A41D8EC149F406F9F222DCF93304B43");
+		params.put("Content-Type", "application/json");
 		
+		JSONObject object = new JSONObject();
+		StringEntity entity = null;
+		try {
+			object.put("command","connect");
+			object.put("autoconnect","true");
+			entity = new StringEntity(object.toString(), "UTF-8");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		
-		HttpClientHandler.post(url + POST_CONNECTION, params, new JsonHttpResponseHandler(){				
+		HttpClientHandler.post(context,url + POST_CONNECTION, 
+				entity, "application/json", new JsonHttpResponseHandler()
+		
+		/*HttpClientHandler.post(url + POST_CONNECTION, params, new JsonHttpResponseHandler()*/{				
 
 			//Override onProgress because it's faulty
 			@Override
 			public void onProgress(int bytesWritten, int totalSize) {						
 			}
 			
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					String responseString, Throwable throwable) {
+				
+				
+				Log.i("CONNECTION","Failure because: " + responseString);
+				
+				super.onFailure(statusCode, headers, responseString, throwable);
+			}
+			
 		});	
+		
+		
+		
+	}
+	
+	/**
+	 * Obtains the current state of the machine and issues new connection commands
+	 * @param p
+	 */
+	public static void getConnection(final Context context, final ModelPrinter p){
+		
+		HttpClientHandler.get(p.getAddress() + POST_CONNECTION, null, new JsonHttpResponseHandler(){
+						
+			@Override
+			public void onSuccess(int statusCode, Header[] headers,
+					JSONObject response) {
+				super.onSuccess(statusCode, headers, response);
+				
+				try {
+					JSONObject current = response.getJSONObject("current");
+										
+					if (current.getString("state").contains("Closed")){
+						
+						Log.i("OUT", "Start connection porque " + response);
+						startConnection(p.getAddress(), context);
+						
+					}
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					String responseString, Throwable throwable) {
+				Log.i("OUT","Failure while connecting " + responseString);
+				super.onFailure(statusCode, headers, responseString, throwable);
+			}
+			
+		});
+		
+		
 		
 	}
 	
@@ -68,7 +142,7 @@ public class OctoprintConnection {
 	 * New client implementation uses Websockets to receive status updates from the server
 	 * so we only need to open a new connection and parse the payload.
 	 */
-	public static void getSettings(final ModelPrinter p){
+	public static void getSettings(final ModelPrinter p, final Context context){
 		
 		//Web socket URI
 		final String wsuri = "ws:/" + p.getAddress() + GET_SOCK;
@@ -99,21 +173,19 @@ public class OctoprintConnection {
 		            	JSONObject response = new JSONObject(payload).getJSONObject("current");
 		            	
 						//Update job with current status
-						p.updatePrinter(response);
-						
-						//Auto-connect if it's online, TODO: should be on server-side maybe
-						if ((p.getStatus()==StateUtils.STATE_NONE) || (p.getStatus()==StateUtils.STATE_CLOSED)){
-							
-							Log.i("OUT","CONNECTING");
-							startConnection(p.getAddress());
-							
-						}
-						
-						ItemListActivity.notifyAdapters();
-
-					} catch (JSONException e) {
+		            	//We'll add every single parameter
+						p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
+								response);
+												
+		            } catch (JSONException e) {
+						e.printStackTrace();
 						Log.i("CONNECTION","Invalid JSON");
+												
 					}	
+					
+		            ItemListActivity.notifyAdapters();
+
+					
 		        
   
 		         }
@@ -132,5 +204,28 @@ public class OctoprintConnection {
 		      Log.i("SOCK", e.toString());
 		   }
 
+	}
+	
+	public static int createStatus(JSONObject flags){
+		
+		Log.i("FLAGSSS",flags.toString());
+		
+				try {
+					
+					if (flags.getBoolean("operational")) return StateUtils.STATE_OPERATIONAL;
+					if (flags.getBoolean("error")) return StateUtils.STATE_ERROR;
+					if (flags.getBoolean("paused")) return StateUtils.STATE_PAUSED;
+					if (flags.getBoolean("printing")) return StateUtils.STATE_PRINTING;
+					if (flags.getBoolean("closedOrError")) return StateUtils.STATE_CLOSED;
+					
+					
+					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return StateUtils.STATE_NONE;
+		
 	}
 }

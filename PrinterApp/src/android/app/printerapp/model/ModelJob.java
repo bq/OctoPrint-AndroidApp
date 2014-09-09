@@ -78,10 +78,10 @@ public class ModelJob {
 			//Current job status filesize/filament/estimated print time
 			job = status.getJSONObject("job");
 			
-			mFile = job.getString("filename");
+			mFile = job.getJSONObject("file").getString("name");
 			mFilament = job.getString("filament");
-			mSize = job.getString("filesize");
-			mEstimated = job.getString("estimatedPrintTime");
+			mSize = job.getJSONObject("file").getString("size");
+			mEstimated = job.getString("lastPrintTime");
 			
 			
 			Log.i("MODEL", "Filename: " + mFile + " Filament: " + mFilament + " Estimated: " + mEstimated);
@@ -93,7 +93,7 @@ public class ModelJob {
 			mPrinted = progress.getString("filepos");
 			mPrintTime = progress.getString("printTime");
 			mPrintTimeLeft = progress.getString("printTimeLeft");
-			mProgress = progress.getString("progress");
+			mProgress = progress.getString("completion");
 			
 			Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime + 
 					" Print time left: " + mPrintTimeLeft);

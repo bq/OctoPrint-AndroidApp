@@ -32,12 +32,13 @@ public class HttpClientHandler {
   //POST method for the old API
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
 	  client.post(BASE_URL + url, params, responseHandler);
-	  Log.i("out",	url);
+	  
   }
 
   //POST method for the new API
   public static void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-      client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+	
+	  client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
   private static String getAbsoluteUrl(String relativeUrl) {
