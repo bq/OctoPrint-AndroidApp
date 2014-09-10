@@ -287,7 +287,11 @@ public class ItemListActivity extends FragmentActivity implements
 		try{
 			
 			if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
-			if (mCurrent!=null) if (mCurrent.getTag().equals("Detail Printer")) ((PrintViewFragment) mCurrent).refreshData();
+			
+			//Refresh printview
+			//TODO: Detail hardcoded
+			Fragment fragment = mManager.findFragmentByTag("Detail");
+			if (fragment!=null)((PrintViewFragment) fragment).refreshData();
 		
 		}catch (NullPointerException e){
 			
@@ -328,7 +332,7 @@ public class ItemListActivity extends FragmentActivity implements
 		    mTransaction.addToBackStack(mCurrent.getTag());
 			//mCurrent = detail;
 		    //mTransaction.show(mCurrent).commit();
-		    mTransaction.replace(R.id.item_detail_container, detail).commit();
+		    mTransaction.replace(R.id.item_detail_container, detail, "Detail").commit();
 			
 		}
 	

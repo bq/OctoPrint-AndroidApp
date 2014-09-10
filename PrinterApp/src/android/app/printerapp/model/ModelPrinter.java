@@ -114,11 +114,15 @@ public class ModelPrinter {
 			mJob.updateJob(status);
 			
 			try {
+				//Avoid having empty temperatures
 				JSONArray temperature = status.getJSONArray("temps");
-				mTemperature = temperature.getJSONObject(0).getString("temp");
+				if (temperature.length()>0) mTemperature = temperature.getJSONObject(0).getJSONObject("tool0").getString("actual");
 			} catch (JSONException e) {
-				Log.i("OUT","No temperature");
+				e.printStackTrace();
 			}
+			
+			
+			
 		}
 		
 		
