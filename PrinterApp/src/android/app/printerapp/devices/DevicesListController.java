@@ -3,6 +3,7 @@ package android.app.printerapp.devices;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
@@ -10,7 +11,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -133,6 +134,7 @@ public class DevicesListController {
 	}
 	
 	//Select a printer from all the linked available  and send to print
+@SuppressLint("SdCardPath")
 public static void selectPrinter(final Context context, final File f){
 		
 		ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
@@ -193,13 +195,15 @@ public static void selectPrinter(final Context context, final File f){
 						ModelPrinter m = mList.get(i);
 						
 						if (f.getParent().equals("sd")){
-							OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), true);
+							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/sdcard/");	
+							
 			    			
 						} else if (f.getParent().equals("witbox")){
-							OctoprintLoadAndPrint.printInternalFile(m.getAddress(), f.getName(), false);
+							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/local/");	
+							
 				    		
 						} else {
-							OctoprintLoadAndPrint.uploadFile(m.getAddress(), f, false);
+							OctoprintFiles.uploadFile(context, f, m.getAddress());
 						}
 			    		
 						if (checkedItems.length==1) ItemListActivity.showPrintView(m.getName());

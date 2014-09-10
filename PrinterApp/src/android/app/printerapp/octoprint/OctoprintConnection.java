@@ -8,8 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
@@ -35,24 +33,17 @@ public class OctoprintConnection {
 	//Websockets
 	
 	private static final String GET_SOCK = CUSTOM_PORT + "/sockjs/websocket";
-	
-	//Old api url
+
 	private static final String POST_CONNECTION = CUSTOM_PORT + "/api/connection";
 	
 	/**
-	 * Works on the OLD API.
+	 * 
 	 * Post parameters to handle connection. JSON for the new API is made 
 	 * but never used.
 	 * 
-	 * Simulates POST /api/connection on the NEW API.
 	 */
 	public static void startConnection(String url, Context context){
-				
-		RequestParams params = new RequestParams();
-		params.put("command", "connect"); //Send a connection request
-		params.put("apikey", "5A41D8EC149F406F9F222DCF93304B43");
-		params.put("Content-Type", "application/json");
-		
+					
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
 		try {
@@ -106,6 +97,9 @@ public class OctoprintConnection {
 				
 				try {
 					JSONObject current = response.getJSONObject("current");
+					
+					p.updatePrinter("Operational", StateUtils.STATE_OPERATIONAL,
+							null);
 										
 					if (current.getString("state").contains("Closed")){
 						
@@ -165,7 +159,8 @@ public class OctoprintConnection {
 		         //On message received
 		         @Override
 		         public void onTextMessage(String payload) {
-		            Log.i("SOCK", "Got echo: " + payload);
+		            
+		        	 //Log.i("SOCK", "Got echo: " + payload);
 		            
 		            try {
 		            	

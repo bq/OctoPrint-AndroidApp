@@ -1,6 +1,7 @@
 package android.app.printerapp.library;
 
 import java.io.File;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
@@ -8,7 +9,7 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
@@ -54,6 +55,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 		return false;
 	}
 
+	@SuppressLint("SdCardPath")
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {		
 
@@ -99,8 +101,8 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					
 					//either sd or internal
 					if (f.getParent().equals("sd")){
-						OctoprintLoadAndPrint.printInternalFile(p.getAddress(), f.getName(), true);
-					}else OctoprintLoadAndPrint.printInternalFile(p.getAddress(), f.getName(), false);
+						OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/");	
+					}else OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/");	
 				
 					
 					Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();

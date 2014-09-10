@@ -31,8 +31,8 @@ public class HttpClientHandler {
   
   //POST method for the old API
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-	  client.post(BASE_URL + url, params, responseHandler);
-	  
+	  client.post( getAbsoluteUrl(url), params, responseHandler);
+	  Log.i("FILES", "LEL: " + getAbsoluteUrl(url));
   }
 
   //POST method for the new API

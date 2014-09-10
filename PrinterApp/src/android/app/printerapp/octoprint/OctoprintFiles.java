@@ -1,16 +1,21 @@
 package android.app.printerapp.octoprint;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.model.ModelPrinter;
+import android.content.Context;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 public class OctoprintFiles {
 	
@@ -18,7 +23,7 @@ public class OctoprintFiles {
 	private static final String CUSTOM_PORT = ":5000";
 	
 	//Old api url
-	private static final String GET_FILES = CUSTOM_PORT + "/ajax/gcodefiles";
+	private static final String GET_FILES = CUSTOM_PORT + "/api/files";
 		
 	
 	/**
@@ -41,8 +46,7 @@ public class OctoprintFiles {
 					
 			try {
 				
-				JSONArray json = response.getJSONArray("files");
-					
+				JSONArray json = response.getJSONArray("files");				
   
 				 if (json != null) { 
 					 
@@ -55,7 +59,7 @@ public class OctoprintFiles {
 				     File m;
 				     
 				     //If it has an origin we need to set it for the printer
-				     if (object.has("origin")){
+				     if (!object.getString("origin").equals("local")){
 				    	 
 				    	//Set the storage to sd
 				    	 m = new File("sd/" +object.getString("name"));
@@ -86,6 +90,94 @@ public class OctoprintFiles {
 		
 		});
 		
+		
+	}
+	
+	public static void fileCommand(Context context, String url, String filename, String target){
+		
+		JSONObject object = new JSONObject();
+		StringEntity entity = null;
+		
+		try {
+			object.put("command", "select");
+			entity = new StringEntity(object.toString(), "UTF-8");
+			
+		} catch (JSONException e) {		e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {	e.printStackTrace();
+		}
+				
+
+		//Second request
+		HttpClientHandler.post(context,url + GET_FILES + target + filename, 
+				entity, "application/json", new JsonHttpResponseHandler(){
+			
+			@Override
+			public void onProgress(int bytesWritten,
+					int totalSize) {
+			}
+			
+			@Override
+			public void onSuccess(int statusCode,
+					Header[] headers, JSONObject response) {
+				super.onSuccess(statusCode, headers, response);
+				Log.i("OUT","Upload successful");
+			}
+		});
+						
+		
+		
+	}
+	
+	/**
+	 * Upload a new file to the server using the new API. 
+	 * TODO: Need to patch this later since I don't know how to send Load commands in the multipart form
+	 * 
+	 * Right now it uses two requests, the first to upload the file and another one to load it in the printer.
+	 * @param file
+	 */
+	public static void uploadFile(final Context context, final File file, final String url){
+			
+			RequestParams params = new RequestParams();
+			
+			try {
+				//TODO fix
+				//params.put("select", "true");
+				params.put("file", file);
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			//First request
+			HttpClientHandler.post(url + GET_FILES + "/local", 
+					params, new JsonHttpResponseHandler(){				
+
+				//Override onProgress because it's faulty
+				@Override
+				public void onProgress(int bytesWritten, int totalSize) {						
+				}
+				
+				//If success, the file was uploaded correctly
+				@Override
+				public void onSuccess(int statusCode, Header[] headers,
+						JSONObject response) {
+					super.onSuccess(statusCode, headers, response);
+
+					fileCommand(context, url, file.getName(), "/local/");
+									
+					
+				}
+				
+				@Override
+				public void onFailure(int statusCode, Header[] headers,
+						String responseString, Throwable throwable) {
+					// TODO Auto-generated method stub
+					super.onFailure(statusCode, headers, responseString, throwable);
+					Log.i("RESPONSEFAIL", responseString);
+				}
+				
+			});	
+       
 		
 	}
 	

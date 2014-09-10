@@ -323,7 +323,6 @@ public class ItemListActivity extends FragmentActivity implements
 			Bundle args = new Bundle();
 		    args.putString("printer", name);
 		    detail.setArguments(args);
-		    
 			//mTransaction.hide(mCurrent);
 			//mTransaction.add(R.id.item_detail_container, detail, "Detail Printer");
 		    mTransaction.addToBackStack(mCurrent.getTag());
