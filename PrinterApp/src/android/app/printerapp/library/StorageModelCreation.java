@@ -20,6 +20,7 @@ import android.app.printerapp.viewer.ViewerMain;
 import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -35,6 +36,11 @@ public class StorageModelCreation {
 	
 	static AlertDialog mAlert;
 	static String mName;
+	public static ViewerSurfaceView mSnapshotSurface;
+	public static FrameLayout mSnapshotLayout;
+	
+	private static Handler mHandler = new Handler();
+	private static final int WAIT_TIME = 2000;
 	
 	//Static method to create a folder structure
 	public static void createFolderStructure(Context context, File source){
@@ -109,10 +115,6 @@ public class StorageModelCreation {
 		
 	}	
 	
-	public static void dismissDialog () {
-		mAlert.dismiss();
-	}
-	
 	/**
 	 * Open model to take screenshot
 	 * @param context
@@ -120,7 +122,7 @@ public class StorageModelCreation {
 	 */
 	private static void openModel (final Context context, final String path) {
 		View dialogText = LayoutInflater.from(context).inflate(R.layout.loading_project, null);
-		FrameLayout layout = (FrameLayout) dialogText.findViewById (R.id.framesnapshot);
+		mSnapshotLayout = (FrameLayout) dialogText.findViewById (R.id.framesnapshot);
 
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
    		adb.setView(dialogText)
@@ -135,33 +137,34 @@ public class StorageModelCreation {
 		File file = new File (path);
 		List<DataStorage> list = new ArrayList<DataStorage> ();
 		DataStorage data = new DataStorage();
-		ViewerSurfaceView surface=null;
 		
 		if(path.endsWith(".stl") || path.endsWith(".STL")) {
 			StlFile.openStlFile (context, file, data, ViewerMain.DO_SNAPSHOT);
-			surface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT);
-
 		} else if (path.endsWith(".gcode") || path.endsWith(".GCODE")) {
 			GcodeFile.openGcodeFile(context, file, data, ViewerMain.DO_SNAPSHOT);
-			surface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT);
 		}
 		
+		mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT);
 		list.add(data);
-	
-		surface.setZOrderOnTop(true);
-		layout.addView(surface);	
 	}
 	
 	/**
-	 * Creates the screenShot of the model
+	 * This method is called from STlFile or GcodeFile when data is ready to render. Add the view to the layout.
+	 */
+	public static void takeSnapshot () {		
+		mSnapshotSurface.setZOrderOnTop(true);
+		mSnapshotLayout.addView(mSnapshotSurface);	
+	}
+	
+	/**
+	 * Creates the snapshot of the model
 	 * @param unused
 	 */
-	public static void saveScreenShot (int width, int height,ByteBuffer bb ) {	
-        int screenshotSize = width * height;
-      
+	public static void saveSnapshot (final int width, final int height, final ByteBuffer bb ) {
+		int screenshotSize = width * height;
+	      
         int pixelsBuffer[] = new int[screenshotSize];
         bb.asIntBuffer().get(pixelsBuffer);
-        bb = null;
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         bitmap.setPixels(pixelsBuffer, screenshotSize-width, -width, 0, 0, width, height);
         pixelsBuffer = null;
@@ -185,6 +188,19 @@ public class StorageModelCreation {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }      
+        }  
+        
+        dismissSnapshotAlert ();
+    }	
+	
+	/**
+	 * Dismiss the loading project dialog after a few seconds.
+	 */
+	private static void dismissSnapshotAlert () {
+		mHandler.postDelayed(new Runnable() {
+            public void run() {
+                mAlert.dismiss();
+            }
+        }, WAIT_TIME);
 	}
 }

@@ -224,20 +224,14 @@ public class GcodeFile  {
     		mData.clearVertexList();
     		mData.clearLayerList();
     		mData.clearTypeList();
-    		
-    		if(!mDoSnapshot) ViewerMain.initSeekBar(mMaxLayer);
-    		
-    		ViewerMain.draw();
 
-    		//ProgressDialog
-			if(!mDoSnapshot) mProgressDialog.dismiss();   
-			else {
-				try {
-					mThread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				StorageModelCreation.dismissDialog();
+    		//Finish
+			if(!mDoSnapshot) {
+				ViewerMain.initSeekBar(mMaxLayer);
+	    		ViewerMain.draw();
+				mProgressDialog.dismiss();   
+			} else {
+				StorageModelCreation.takeSnapshot();
 			}	        	
         }
     };

@@ -819,7 +819,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         if (mSnapShot) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
-        	takeScreenShot(unused);
+        	takeSnapshot(unused);
         } else {
         	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mMVPMatrix, mMVMatrix);      
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mMVPMatrix);
@@ -828,7 +828,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         }        
 	}
 	
-	private void takeScreenShot (GL10 unused) {	
+	private void takeSnapshot (GL10 unused) {			
     	Log.i(TAG, "TAKING SNAPSHOT");
 		int minX = 0;
 		int minY = 0; 
@@ -839,8 +839,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
 
         GLES20.glReadPixels(minX, minY, mWidth, mHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
-        StorageModelCreation.saveScreenShot(mWidth, mHeight, bb);
+        StorageModelCreation.saveSnapshot(mWidth, mHeight, bb); 
 	}
+	
 
 	public void setSceneAngleX (float x) {
 		mSceneAngleX += x;	
