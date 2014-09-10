@@ -104,9 +104,9 @@ public class PrintViewFragment extends Fragment{
 	       	case R.id.printview_pause:
 	       		
 	       		if (!isPrinting){
-	       			OctoprintControl.sendCommand(mPrinter.getAddress(), "start");
+	       			OctoprintControl.sendCommand(getActivity(),mPrinter.getAddress(), "start");
 	       		} else {
-	       			OctoprintControl.sendCommand(mPrinter.getAddress(), "pause");
+	       			OctoprintControl.sendCommand(getActivity(),mPrinter.getAddress(), "pause");
 	       		}
 	
 	       		
@@ -114,7 +114,7 @@ public class PrintViewFragment extends Fragment{
 	            
 	       	case R.id.printview_stop:
 	       		
-	       		OctoprintControl.sendCommand(mPrinter.getAddress(), "cancel");
+	       		OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "cancel");
 	       		
 	       		return true;
 	              

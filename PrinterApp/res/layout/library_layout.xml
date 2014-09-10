@@ -75,7 +75,7 @@
                             android:id="@+id/grid_storage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:numColumns="5" >
+                            android:numColumns="6" >
                         </GridView>
 
                         <ListView

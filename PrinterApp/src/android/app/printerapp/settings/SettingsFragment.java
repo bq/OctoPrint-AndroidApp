@@ -1,15 +1,12 @@
 package android.app.printerapp.settings;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;

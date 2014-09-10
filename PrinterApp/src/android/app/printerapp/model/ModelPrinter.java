@@ -103,40 +103,40 @@ public class ModelPrinter {
 	 *  Sets
 	 **********/
 	
-	public void updatePrinter(JSONObject status){
-		
-		JSONObject state;
-		JSONArray temperature;
-		try {
-			state = status.getJSONObject("state");
+	public void updatePrinter(String message, int stateCode, JSONObject status){
 						
-			mStatus = state.getInt("state");
+		mStatus = stateCode;
+		mMessage = message;
+		
+		
+		if (status!=null){
 			
-			if ((Integer.valueOf(mStatus)) == null){
-				Log.i("OUT","STATE IS NULL");
-				mStatus = StateUtils.STATE_NONE;
-			} else Log.i("OUT","STATE IS " + mStatus);
-			
-			mMessage = state.getString("stateString");
 			mJob.updateJob(status);
 			
-			temperature = status.getJSONArray("temperatures");
-			mTemperature = temperature.getJSONObject(0).getString("temp");
+			try {
+				//Avoid having empty temperatures
+				JSONArray temperature = status.getJSONArray("temps");
+				if (temperature.length()>0) mTemperature = temperature.getJSONObject(0).getJSONObject("tool0").getString("actual");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 			
-		
 			
-		} catch (JSONException e) {
-			//e.printStackTrace();
+			
 		}
+		
+		
+
 	}
 	
 	public void updateFiles(File m){
 		mFileList.add(m);
 	}
 	
-	public void startUpdate(){
+	public void startUpdate(Context context){
 		//Initialize web socket connection
-		OctoprintConnection.getSettings(this);
+		OctoprintConnection.getConnection(context, this);
+		OctoprintConnection.getSettings(this,context);
 	}
 	
 	public void setNotConfigured(){
@@ -152,7 +152,7 @@ public class ModelPrinter {
 	public void setLinked(Context context){
 		mStatus = StateUtils.STATE_NONE;
 		mMessage = "";
-		startUpdate();
+		startUpdate(context);
 		mCam = new CameraHandler(context,mAddress);
 		
 	}

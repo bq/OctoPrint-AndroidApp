@@ -6,7 +6,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintLoadAndPrint;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.ClipData;
 import android.content.res.Resources;
 import android.util.Log;
@@ -64,7 +64,7 @@ public class DevicesDragListener implements OnDragListener {
 			    		//Get parent folder and upload to device
 			    		Log.i("DRAG", item.getText().toString());
 			    		File file = new File(item.getText().toString());
-			    		OctoprintLoadAndPrint.uploadFile(mModel.getAddress(), file, false);
+			    		OctoprintFiles.uploadFile(v.getContext(), file, mModel.getAddress());
 			    		
 	
 			    		Toast.makeText(v.getContext(), "Loading " + item.getText().toString() + 
@@ -72,13 +72,7 @@ public class DevicesDragListener implements OnDragListener {
 	
 		    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
 		    		//TODO: Set the same method for both
-		    		} else if (tag.equals("internal")){
-		    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), false);
-			    		
-		    		}else if (tag.equals("internalsd")){
-		    			OctoprintLoadAndPrint.printInternalFile(mModel.getAddress(), item.getText().toString(), true);
-				    	
-		    		}
+		    		} 
 		    		
 		    		
 		    	} else {
