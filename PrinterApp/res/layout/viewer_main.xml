@@ -87,7 +87,7 @@
             			android:layout_height="wrap_content"
             			android:textSize="30sp"
                 		android:layout_alignParentLeft="true"
-               			android:text="X Axis"/>
+               			android:text="@string/viewer_text_rx"/>
             
 		             <TextView 
 		                android:id="@+id/y_axis"
@@ -96,7 +96,7 @@
 		                android:layout_alignParentLeft="true"
 		                android:textSize="30sp"              
 		                android:layout_below="@+id/x_axis"
-		                android:text="Y Axis"/>
+		                android:text="@string/viewer_text_ry"/>
              
 		              <TextView 
 		                android:id="@+id/z_axis"
@@ -105,20 +105,20 @@
             			android:textSize="30sp"		
 		                android:layout_alignParentLeft="true"
 		                android:layout_below="@+id/y_axis"  
-		                android:text="Z Axis"/>
+		                android:text="@string/viewer_text_rz"/>
               
 		              <Button 
 		                  android:id="@+id/positive_angle_x"
 		                  android:layout_width="wrap_content"
             			  android:layout_height="wrap_content"
 		                  android:layout_toRightOf="@+id/x_axis"
-		                  android:text="+15" />
+		                  android:text="@string/viewer_button_rotate_positive_angle" />
 		              <Button 
 		                  android:id="@+id/negative_angle_x"
 		                  android:layout_width="wrap_content"
             			  android:layout_height="wrap_content"
 		                  android:layout_toRightOf="@+id/positive_angle_x"
-		                  android:text="-15" />
+		                  android:text="@string/viewer_button_rotate_negative_angle" />
 		              
 		               <Button 
 		                  android:id="@+id/positive_angle_y"
@@ -126,14 +126,14 @@
             			  android:layout_height="wrap_content"
 		                  android:layout_below="@+id/positive_angle_x"
 		                  android:layout_toRightOf="@+id/y_axis"
-		                  android:text="+15" />
+		                  android:text="@string/viewer_button_rotate_positive_angle" />
 		              <Button 
 		                  android:id="@+id/negative_angle_y"
 		                  android:layout_width="wrap_content"
             			  android:layout_height="wrap_content"
 		                  android:layout_below="@+id/negative_angle_x"
 		                  android:layout_toRightOf="@+id/positive_angle_y"	                  
-		                  android:text="-15" />
+		                  android:text="@string/viewer_button_rotate_negative_angle" />
 		              
 		              <Button 
 		                  android:id="@+id/positive_angle_z"
@@ -141,14 +141,14 @@
             			  android:layout_height="wrap_content"
 		                  android:layout_below="@+id/positive_angle_y"
 		                  android:layout_toRightOf="@+id/z_axis"                  
-		                  android:text="+15" />
+		                  android:text="@string/viewer_button_rotate_positive_angle" />
 		              <Button 
 		                  android:id="@+id/negative_angle_z"
 		                  android:layout_width="wrap_content"
             			  android:layout_height="wrap_content"
 		                  android:layout_below="@+id/negative_angle_y"
 		                  android:layout_toRightOf="@+id/positive_angle_z"  
-		                  android:text="-15" />
+		                  android:text="@string/viewer_button_rotate_negative_angle" />
            	    </RelativeLayout>
 		              
 			          <SeekBar

@@ -117,9 +117,11 @@
     <string name="viewer_button_light">Light</string>
     <string name="viewer_button_rotation">Rotation</string>
     <string name="viewer_button_translation">Translation</string>
-    <string name="viewer_button_rx">Rotation X</string>
-    <string name="viewer_button_ry">Rotation Y</string>
-    <string name="viewer_button_rz">Rotation Z</string>
+    <string name="viewer_button_rotate_positive_angle">+15º</string>
+    <string name="viewer_button_rotate_negative_angle">-15º</string>   
+    <string name="viewer_text_rx">X axis</string>
+    <string name="viewer_text_ry">Y axis</string>
+    <string name="viewer_text_rz">Z axis</string>
     
     
     <string name="choose_file">Choose File</string> 
@@ -140,10 +142,12 @@
     <string name="creating_project">Creating project &#8230;</string> 
     <string name="new_project">New project</string> 
     
-    <string name="viewer_menu_move">Move</string>
-    <string name="viewer_menu_rotate">Rotate</string>
-    <string name="viewer_menu_resize">Resize</string>
-    <string name="viewer_menu_mirror">Mirror</string>
-    <string name="viewer_menu_delete">Delete</string>
+    <string name="edition_menu_move">Move</string>
+    <string name="edition_menu_rotate">Rotate</string>
+    <string name="edition_menu_resize">Resize</string>
+    <string name="edition_menu_mirror">Mirror</string>
+    <string name="edition_menu_delete">Delete</string>
+    <string name="edition_menu_multiply">Multiply</string>
+    
     
 </resources>

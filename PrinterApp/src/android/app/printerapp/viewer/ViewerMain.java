@@ -21,11 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.webkit.WebView.FindListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -408,9 +408,9 @@ public class ViewerMain extends Fragment {
 			data = new DataStorage();
 			GcodeFile.openGcodeFile(mContext, mFile, data,false);
 		}
-		mDataList.add(data);
+		mDataList.add (data);
    }
-   
+     
 	private void changeStlViews (int state) {
 		if (mFile!=null) {
 			if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) 
@@ -432,7 +432,6 @@ public class ViewerMain extends Fragment {
 			Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
 		}	   
 	}
-
 
 	private void showGcodeFiles () {
 		//Logic for getting file type
@@ -492,7 +491,7 @@ public class ViewerMain extends Fragment {
 		//Once the file has been opened, we need to refresh the data list. If we are opening a .gcode file, we need to delete the previous files (.stl and .gcode)
 		//If we are opening a .stl file, we need to delete the previous file only if it was a .gcode file.
 		//We have to do this here because user can cancel the opening of the file and the Print Panel would appear empty if we clear the data list.
-				
+
 		String filePath = "";
 		if (mFile!=null) filePath = mFile.getAbsolutePath();
 
@@ -512,7 +511,7 @@ public class ViewerMain extends Fragment {
 				}			
 			mSeekBar.setVisibility(View.VISIBLE);
 		}		
-		
+
 		//Add the view
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);
@@ -635,7 +634,10 @@ public class ViewerMain extends Fragment {
 	            case R.id.mirror:
 	            	mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
 					mSurface.doMirror();
-	            	return true;	                
+	            	return true;	
+	            case R.id.multiply:
+	            	shoMultiplyDialog();
+	            	return true;
 	            case R.id.delete:
 					mSurface.deleteObject();
 	            	mode.finish(); // Action picked, so close the CAB
@@ -653,4 +655,41 @@ public class ViewerMain extends Fragment {
 			mActionMode = null;
 		}
 	};
+	
+	
+	/************************* MULTIPLY ELEMENTS ********************************/
+
+	public static void shoMultiplyDialog() {	
+		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_copies_dialog, null);
+		final NumberPicker numPicker = (NumberPicker) dialogText.findViewById(R.id.number_copies);
+		numPicker.setMaxValue(10);
+		numPicker.setMinValue(0);
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+   		adb.setView(dialogText)
+			.setTitle(mContext.getString(R.string.project_name))
+			.setCancelable(false)
+   			.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+   				public void onClick(DialogInterface dialog,int id) {
+   					drawCopies(numPicker.getValue());
+   				}
+   			});
+		
+   		adb.show();	
+	}
+	
+	private static void drawCopies (int numCopies) {
+		int model = mSurface.getObjectPresed();		
+		int num = 0;
+		
+		while (num<numCopies) {
+			final DataStorage newData = new DataStorage();
+			newData.copyData(mDataList.get(model));
+			mDataList.add(newData);
+	    	num++;
+		}
+		
+    	draw();
+
+	}
 }

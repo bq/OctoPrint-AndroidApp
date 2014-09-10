@@ -173,7 +173,6 @@ public class StlFile {
 	    		mData.clearNormalList();
 	    		mData.clearVertexList();
 	    		
-				mData.enableDraw ();	
 				ViewerMain.draw();
 	    		//ProgressDialog
 				if (!mDoSnapshot) mProgressDialog.dismiss();  
