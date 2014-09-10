@@ -227,8 +227,7 @@ public class GcodeFile  {
     		
     		if(!mDoSnapshot) ViewerMain.initSeekBar(mMaxLayer);
     		
-			mData.enableDraw ();
-			ViewerMain.draw();
+    		ViewerMain.draw();
 
     		//ProgressDialog
 			if(!mDoSnapshot) mProgressDialog.dismiss();   

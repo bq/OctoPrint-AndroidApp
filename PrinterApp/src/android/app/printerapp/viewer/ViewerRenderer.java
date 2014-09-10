@@ -305,9 +305,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 					data.setStateObject(OUT);
 					
 					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
-				}	
-				
-						
+				}						
 			}
 		}
 	}
@@ -633,20 +631,25 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
         mSceneAngleX = -40f;	
         
-        if (mDataList.size()>0){
+        if (mDataList.size()>0)
 			if (isStl()) {
-				if (mDataList.size()>1) relocate (mDataList.size()-1);
-
+				for (int i=0; i<mDataList.size(); i++) {
+					for (int j=0; j<mDataList.size(); j++) {
+						DataStorage d = mDataList.get(j);
+						if (i!=j && Geometry.overlaps(d.getMaxX(), d.getMinX(), d.getMaxY(), d.getMinY(), mDataList.get(i))) relocate (j);
+					}
+				}
+				
 				//First, reset the stl object list
 				mStlObjectList.clear();
-
+	
 				//Add the new ones.
 				for (int i=0; i<mDataList.size(); i++) {
 					mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
 				}
 				
 			} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
-        }
+        
 	
 		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
 

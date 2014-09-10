@@ -17,9 +17,7 @@ public class DataStorage {
 	private float[] mNormalArray;
 	private int [] mLayerArray;
 	private int[] mTypeArray;
-	
-	private boolean mEnableDraw = false;
-	
+		
 	private int mMaxLayer;
 	private int mActualLayer;
 	
@@ -58,6 +56,42 @@ public class DataStorage {
 	public DataStorage () {
 		Matrix.setIdentityM(mRotationMatrix, 0);
 		Matrix.setIdentityM(mModelMatrix, 0);
+	}
+	
+	public void copyData (DataStorage d) {
+		for (int i=0; i<d.getLineLengthList().size(); i++) mLineLengthList.add(d.getLineLengthList().get(i));
+	
+		mVertexArray = new float[d.getVertexArray().length];
+		for (int i=0; i<d.getVertexArray().length; i++) {
+			mVertexArray[i] = d.getVertexArray()[i];
+		}
+		
+		mNormalArray = new float[d.getNormalArray().length];
+		for (int i=0; i<d.getNormalArray().length; i++) {
+			mNormalArray[i] = d.getNormalArray()[i];
+		}
+
+		for (int i=0; i<d.getModelMatrix().length; i++) mModelMatrix[i] = d.getModelMatrix()[i];
+		for (int i=0; i<d.getRotationMatrix().length; i++) mRotationMatrix[i] = d.getRotationMatrix()[i];
+
+		mMaxLayer = d.getMaxLayer();
+		mActualLayer = d.getActualLayer();
+		mMinX = d.getMinX();
+		mMinY = d.getMinY();
+		mMinZ = d.getMinZ();
+		mMaxX = d.getMaxX();
+		mMaxY = d.getMaxY();
+		mMaxZ = d.getMaxZ();
+
+		mPath = d.getPathFile();
+		mPathSnapshot = d.getPathSnapshot();
+		
+		mLastScaleFactorX = d.getLastScaleFactorX();
+		mLastScaleFactorY = d.getLastScaleFactorY();
+		mLastScaleFactorZ = d.getLastScaleFactorZ();
+		
+		mLastCenter = new Point (d.getLastCenter().x, d.getLastCenter().y, d.getLastCenter().z);
+		mAdjustZ = d.getAdjustZ();
 	}
 	
 	public int getCoordinateListSize () {
@@ -160,6 +194,23 @@ public class DataStorage {
 		}		
 	}
 	
+	public List<Float> getVertexList () {
+		return mVertexList;
+	}
+	
+	public List<Float> getNormalList () {
+		return mNormalList;
+	}
+	
+	public List<Integer> getLayerList () {
+		return mLayerList;
+	}
+	
+	public List<Integer> getTypeList () {
+		return mTypeList;
+	}
+	
+	
 	public float[] getVertexArray () {
 		return mVertexArray;
 	}
@@ -202,15 +253,6 @@ public class DataStorage {
 	
 	public int getTypeListSize () {
 		return mTypeList.size();
-	}
-	
-	public void enableDraw () {
-		mEnableDraw = true;
-	}
-	
-	public boolean isDrawEnabled() {
-		if (mEnableDraw) return true;
-		return false;
 	}
 	
 	public void setActualLayer(int layer) {

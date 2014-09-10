@@ -9,7 +9,6 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 public class ViewerSurfaceView extends GLSurfaceView{
 	//View Modes
@@ -154,6 +153,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.deleteObject(mObjectPressed);
 	}
 	
+	public int getObjectPresed () {
+		return mObjectPressed;
+	}
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:
@@ -274,7 +276,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					    mPreviousY = y;
 					    
 					    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
-					    	mRenderer.dragObject(x, y);
+					    	mRenderer.dragObject(normalizedX, normalizedY);
 					    } else {    
 					    	dragAccordingToMode (x,y,dx,dy);
 					    }				    
