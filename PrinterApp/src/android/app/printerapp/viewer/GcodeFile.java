@@ -10,12 +10,14 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageModelCreation;
 
 public class GcodeFile  {
 	private static final String TAG = "GCodeFile";
 	public static final int COORDS_PER_VERTEX = 3;
+	private static Context mContext;
 	private static File mFile;
 	private static DataStorage mData;
 	
@@ -30,6 +32,7 @@ public class GcodeFile  {
 	private static boolean mContinueThread = true;
 	
 	public static void openGcodeFile (Context context, File file, DataStorage data, boolean doSnapshot) {
+		mContext = context;
 		mFile = file;		
 		mData = data;
 		mDoSnapshot = doSnapshot;
@@ -211,6 +214,8 @@ public class GcodeFile  {
         @Override
         public void handleMessage(Message msg) {
     		if (mData.getCoordinateListSize() < 1) {
+    			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
+    			ViewerMain.resetWhenCancel();
     			if(!mDoSnapshot) mProgressDialog.dismiss();
     			return;
     		}
@@ -232,7 +237,7 @@ public class GcodeFile  {
 				mProgressDialog.dismiss();   
 			} else {
 				StorageModelCreation.takeSnapshot();
-			}	        	
+			}	  
         }
     };
  }

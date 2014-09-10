@@ -194,23 +194,6 @@ public class DataStorage {
 		}		
 	}
 	
-	public List<Float> getVertexList () {
-		return mVertexList;
-	}
-	
-	public List<Float> getNormalList () {
-		return mNormalList;
-	}
-	
-	public List<Integer> getLayerList () {
-		return mLayerList;
-	}
-	
-	public List<Integer> getTypeList () {
-		return mTypeList;
-	}
-	
-	
 	public float[] getVertexArray () {
 		return mVertexArray;
 	}
