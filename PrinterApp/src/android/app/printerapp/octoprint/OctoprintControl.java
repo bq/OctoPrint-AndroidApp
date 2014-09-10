@@ -19,11 +19,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
  *
  */
 public class OctoprintControl {
-	
-	//OCTOPRINT SERVER LISTENING PORT
-	private static final String CUSTOM_PORT = ":5000";
-	
-	private static final String POST_LOAD = CUSTOM_PORT + "/api/job";
+		
+
 	
 	public static void sendCommand(Context context, String url, String command){
 		
@@ -39,7 +36,7 @@ public class OctoprintControl {
 		}
 				
 
-		HttpClientHandler.post(context,url + POST_LOAD, 
+		HttpClientHandler.post(context,url + HttpUtils.URL_CONTROL, 
 				entity, "application/json", new JsonHttpResponseHandler(){
 			
 			@Override

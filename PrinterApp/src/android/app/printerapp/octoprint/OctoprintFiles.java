@@ -18,19 +18,12 @@ import com.loopj.android.http.RequestParams;
 
 public class OctoprintFiles {
 	
-	//OCTOPRINT SERVER LISTENING PORT
-	private static final String CUSTOM_PORT = ":5000";
-	
-	//Old api url
-	private static final String GET_FILES = CUSTOM_PORT + "/api/files";
-		
-	
 	/**
 	 * Get the whole filelist from the server.
 	 */
 	public static void getFiles(final ModelPrinter p){
 				
-		HttpClientHandler.get(p.getAddress() + GET_FILES, null, new JsonHttpResponseHandler(){
+		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_FILES, null, new JsonHttpResponseHandler(){
 			
 		//Override onProgress because it's faulty
 		@Override
@@ -106,7 +99,7 @@ public class OctoprintFiles {
 		}
 				
 
-		HttpClientHandler.post(context,url + GET_FILES + target + filename, 
+		HttpClientHandler.post(context,url + HttpUtils.URL_FILES + target + filename, 
 				entity, "application/json", new JsonHttpResponseHandler(){
 			
 			@Override
@@ -146,7 +139,7 @@ public class OctoprintFiles {
 				e.printStackTrace();
 			} 
 			
-			HttpClientHandler.post(url + GET_FILES + "/local", 
+			HttpClientHandler.post(url + HttpUtils.URL_FILES + "/local", 
 					params, new JsonHttpResponseHandler(){				
 
 				//Override onProgress because it's faulty

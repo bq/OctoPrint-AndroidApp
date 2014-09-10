@@ -25,17 +25,7 @@ import de.tavendo.autobahn.WebSocketHandler;
  *
  */
 public class OctoprintConnection {
-	
-	//OCTOPRINT SERVER LISTENING PORT
-	private static final String CUSTOM_PORT = ":5000";
-	
-	
-	//Websockets
-	
-	private static final String GET_SOCK = CUSTOM_PORT + "/sockjs/websocket";
-
-	private static final String POST_CONNECTION = CUSTOM_PORT + "/api/connection";
-	
+		
 	/**
 	 * 
 	 * Post parameters to handle connection. JSON for the new API is made 
@@ -56,7 +46,7 @@ public class OctoprintConnection {
 			e.printStackTrace();
 		}
 		
-		HttpClientHandler.post(context,url + POST_CONNECTION, 
+		HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION, 
 				entity, "application/json", new JsonHttpResponseHandler()
 		
 		/*HttpClientHandler.post(url + POST_CONNECTION, params, new JsonHttpResponseHandler()*/{				
@@ -88,7 +78,7 @@ public class OctoprintConnection {
 	 */
 	public static void getConnection(final Context context, final ModelPrinter p){
 		
-		HttpClientHandler.get(p.getAddress() + POST_CONNECTION, null, new JsonHttpResponseHandler(){
+		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
 						
 			@Override
 			public void onSuccess(int statusCode, Header[] headers,
@@ -136,7 +126,7 @@ public class OctoprintConnection {
 	public static void getSettings(final ModelPrinter p, final Context context){
 		
 		//Web socket URI
-		final String wsuri = "ws:/" + p.getAddress() + GET_SOCK;
+		final String wsuri = "ws:/" + p.getAddress() + HttpUtils.URL_SOCKET;
 		 
 		   try {
 			   

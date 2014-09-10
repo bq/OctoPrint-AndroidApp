@@ -3,8 +3,6 @@ package android.app.printerapp.octoprint;
 import org.apache.http.HttpEntity;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.loopj.android.http.*;
 
 /**
@@ -13,12 +11,10 @@ import com.loopj.android.http.*;
  *
  */
 public class HttpClientHandler {
-	
+	 
   //Base URL to handle http requests, only needs one slash because services come with another one
   private static final String BASE_URL = "http:/";
-  
-  //TODO: This API key is not used yet since we're putting params on RequestParams instead of entity
-  private static final String API_KEY = "5A41D8EC149F406F9F222DCF93304B43";
+
   private static AsyncHttpClient client = new AsyncHttpClient();
   
   //GET method for both APIs
@@ -27,7 +23,7 @@ public class HttpClientHandler {
 
   }
   
-  //POST method for the old API
+  //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
 	  client.post( getAbsoluteUrl(url), params, responseHandler);
   }
@@ -38,8 +34,7 @@ public class HttpClientHandler {
   }
 
   private static String getAbsoluteUrl(String relativeUrl) {
-	  client.addHeader("X-Api-Key", API_KEY);
-	  Log.i("OUT",BASE_URL + relativeUrl);
+	  client.addHeader("X-Api-Key", HttpUtils.API_KEY);
       return BASE_URL + relativeUrl;
   }
 
