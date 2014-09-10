@@ -75,7 +75,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		
 	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, boolean doSnapshot) {
 		super(context);
-		
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
       

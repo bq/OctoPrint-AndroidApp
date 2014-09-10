@@ -173,16 +173,12 @@ public class StlFile {
 	    		mData.clearNormalList();
 	    		mData.clearVertexList();
 	    		
-				ViewerMain.draw();
-	    		//ProgressDialog
-				if (!mDoSnapshot) mProgressDialog.dismiss();  
-				else {
-					try {
-						mThread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					StorageModelCreation.dismissDialog();
+				//Finish 
+				if (!mDoSnapshot) {
+					ViewerMain.draw();
+					mProgressDialog.dismiss();  
+				} else {
+					StorageModelCreation.takeSnapshot();
 				}  	
 	        }
 	 };

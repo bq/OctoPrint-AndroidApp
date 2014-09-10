@@ -4,30 +4,35 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
     
-	 <FrameLayout
-        android:id="@+id/framesnapshot"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:foreground="@drawable/witbox_icon">      
-	 </FrameLayout>  
-	 
-    <TextView
-        android:id="@+id/creatingproject"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/progressbarProject"
-        android:text="@string/creating_project"/>
-    
 	  <ProgressBar
 	      android:id="@+id/progressbarProject"
 	      style="?android:attr/progressBarStyleHorizontal"
 	      android:layout_width="wrap_content"
 	      android:layout_height="wrap_content"
-	      android:layout_alignParentRight="true"
-	      android:layout_marginRight="15dp"
+	      android:layout_alignParentLeft="true"
 	      android:layout_marginLeft="15dp"
-	      android:layout_toRightOf="@+id/framesnapshot"
+	      android:layout_marginRight="15dp"     
+	      android:layout_alignParentRight="true"
 	      android:layout_below="@+id/creatingproject"
 	      android:indeterminate="true" />
+
+	  <TextView
+	      android:id="@+id/creatingproject"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_alignLeft="@+id/progressbarProject"
+	      android:layout_alignParentTop="true"
+	      android:layout_marginTop="15dp"
+	      android:text="@string/creating_project" />
+
+	  <FrameLayout
+	      android:id="@+id/framesnapshot"
+	      android:layout_width="300dp"
+	      android:layout_height="300dp"
+	      android:layout_alignLeft="@+id/progressbarProject"
+	      android:layout_below="@+id/progressbarProject"
+	      android:layout_marginBottom="15dp"
+	      android:foreground="@drawable/witbox_icon" >
+	  </FrameLayout>
 
 </RelativeLayout>
