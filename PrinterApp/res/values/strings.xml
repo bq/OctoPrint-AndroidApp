@@ -134,8 +134,9 @@
     <string name="loading_gcode">Loading GCode file</string>
     
     <string name="be_patient">Please, be patient. It may take a while</string>
-    
-           
+    <string name="error_opening_invalid_file">Invalid file. Try again.</string>
+    <string name="error_saving_invalid_model">Print Panel is empty. Open and edit a file and try again.</string>
+         
     <string name="ok">OK</string>
     <string name="project_name">Please, insert a new name</string>
     <string name="proyect_name_not_available">That name exists! Please, choose another name</string>

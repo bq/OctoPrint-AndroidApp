@@ -20,6 +20,7 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.library.StorageModelCreation;
@@ -74,12 +75,11 @@ public class StlFile {
 					} else {
 						Log.e(TAG,"trying binary...");
 						if(mContinueThread) processBinary(arrayBytes);
-					}
+					} 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
-				
+
 				if(mContinueThread) mHandler.sendEmptyMessage(0);
 			}
 		};	
@@ -163,10 +163,12 @@ public class StlFile {
 	        @Override
 	        public void handleMessage(Message msg) {
 	    		if (mData.getCoordinateListSize() < 1) {
+	    			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
+	    			ViewerMain.resetWhenCancel();
 	    			if (!mDoSnapshot) mProgressDialog.dismiss();
 	    			return;
 	    		}
-	    			
+	    		
 	    		mData.fillVertexArray();
 	    		mData.fillNormalArray();
 	    		
@@ -179,7 +181,7 @@ public class StlFile {
 					mProgressDialog.dismiss();  
 				} else {
 					StorageModelCreation.takeSnapshot();
-				}  	
+				}    		
 	        }
 	 };
 
@@ -341,10 +343,14 @@ public class StlFile {
 		return result;
 	}
 	
-	public static boolean saveModel (List<DataStorage> dataList, String projectName) {
+	public static boolean checkIfNameExists (String projectName) {
 		File check = new File (StorageController.getParentFolder().getAbsolutePath() + "/Files/" + projectName);
-		if (check.exists()) return false;
+		if (check.exists()) return true;
 		
+		return false;
+	}
+	
+	public static boolean saveModel (List<DataStorage> dataList, String projectName) {		
 		float[] coordinates = null;
 		int coordinateCount = 0;
 		float[] rotationMatrix = new float [16];
@@ -358,6 +364,8 @@ public class StlFile {
 		//Calculating buffer size
 		for (int i=0; i<dataList.size(); i++) coordinateCount+= dataList.get(i).getVertexArray().length;
 				
+		if (coordinateCount==0) return false;
+		
 		int offset=(coordinateCount/COORDS_PER_TRIANGLE)*4; //each triangle needs its normal coords and flag to indicate the end.
 		
 		ByteBuffer bb = ByteBuffer.allocateDirect((coordinateCount+offset) * 4 + 84);

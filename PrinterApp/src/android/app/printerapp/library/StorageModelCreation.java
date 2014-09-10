@@ -106,10 +106,8 @@ public class StorageModelCreation {
 						openModel(context, target.getAbsolutePath());
 					} catch (IOException e){
 						e.printStackTrace();
-					}
-					
-				}
-				
+					}	
+				}				
 			}	
 		}
 		
