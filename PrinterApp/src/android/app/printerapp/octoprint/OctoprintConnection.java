@@ -97,9 +97,6 @@ public class OctoprintConnection {
 				
 				try {
 					JSONObject current = response.getJSONObject("current");
-					
-					p.updatePrinter("Operational", StateUtils.STATE_OPERATIONAL,
-							null);
 										
 					if (current.getString("state").contains("Closed")){
 						
@@ -206,11 +203,10 @@ public class OctoprintConnection {
 		Log.i("FLAGSSS",flags.toString());
 		
 				try {
-					
+					if (flags.getBoolean("printing")) return StateUtils.STATE_PRINTING;
 					if (flags.getBoolean("operational")) return StateUtils.STATE_OPERATIONAL;
 					if (flags.getBoolean("error")) return StateUtils.STATE_ERROR;
 					if (flags.getBoolean("paused")) return StateUtils.STATE_PAUSED;
-					if (flags.getBoolean("printing")) return StateUtils.STATE_PRINTING;
 					if (flags.getBoolean("closedOrError")) return StateUtils.STATE_CLOSED;
 					
 					

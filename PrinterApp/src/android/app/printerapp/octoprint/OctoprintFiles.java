@@ -3,7 +3,6 @@ package android.app.printerapp.octoprint;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
@@ -107,7 +106,6 @@ public class OctoprintFiles {
 		}
 				
 
-		//Second request
 		HttpClientHandler.post(context,url + GET_FILES + target + filename, 
 				entity, "application/json", new JsonHttpResponseHandler(){
 			
@@ -141,14 +139,13 @@ public class OctoprintFiles {
 			
 			try {
 				//TODO fix
-				//params.put("select", "true");
+				//params.put("select", true);
 				params.put("file", file);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}
+			} 
 			
-			//First request
 			HttpClientHandler.post(url + GET_FILES + "/local", 
 					params, new JsonHttpResponseHandler(){				
 
