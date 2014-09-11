@@ -53,7 +53,9 @@ public class DevicesFragment extends Fragment{
 	
 	private PrintNetworkManager mNetworkManager;
 	
-	//private DevicesLayoutAdapter mLayoutAdapter;
+	//Save current filter
+	private int mFilter;
+	
 	
 	//Empty constructor
 	public DevicesFragment(){}
@@ -165,6 +167,9 @@ public class DevicesFragment extends Fragment{
 			//Custom service listener
 			new JmdnsServiceListener(this);
 			mNetworkManager = new PrintNetworkManager(this);	
+			
+			//Default filter
+			mFilter = R.id.dv_radio0;
 		
 		}
 		return rootView;
@@ -174,6 +179,8 @@ public class DevicesFragment extends Fragment{
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.devices_menu, menu);
+		
+		Log.i("OUT","INFLATED!");
 	}
 	
 	//Option menu
@@ -181,10 +188,7 @@ public class DevicesFragment extends Fragment{
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
 	   
 	   switch (item.getItemId()) {
-	   
-	   case R.id.menu_add: //Add a new printer
-			return true;
-			
+	   			
        	case R.id.menu_filter: //Filter grid / list
        		
        		optionFilter();
@@ -302,6 +306,8 @@ public class DevicesFragment extends Fragment{
 		
 		final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
 		
+		rg.check(mFilter);
+				
 		adb.setView(v);
 		
 		adb.setPositiveButton(R.string.filter, new OnClickListener() {
@@ -310,7 +316,6 @@ public class DevicesFragment extends Fragment{
 			public void onClick(DialogInterface dialog, int which) {
 				
 				switch(rg.getCheckedRadioButtonId()){
-				
 				
 				case R.id.dv_radio0:{
 					mGridAdapter.getFilter().filter(null);//Show all devices
@@ -336,6 +341,8 @@ public class DevicesFragment extends Fragment{
 				}break;
 				
 				}
+				
+				mFilter = rg.getCheckedRadioButtonId();
 				
 				
 			}
@@ -398,9 +405,7 @@ public class DevicesFragment extends Fragment{
 						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
 					 }
 				}
-				
-				
-				
+
 				
 			}
 		};
@@ -450,7 +455,7 @@ public class DevicesFragment extends Fragment{
 						 
 						 
 						 
-						 if (m.getStatus()>0) ItemListActivity.showPrintView(m.getName()); 
+						 if (m.getStatus()>0) ItemListActivity.showExtraFragment(1, m.getName()); 
 						 
 					 }
 					

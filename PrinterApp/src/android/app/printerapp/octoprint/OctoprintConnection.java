@@ -147,7 +147,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 		            
-		        	 Log.i("SOCK", "Got echo: " + payload);
+		        	 //Log.i("SOCK", "Got echo: " + payload);
 		            
 		            try {
 		            	
@@ -190,7 +190,7 @@ public class OctoprintConnection {
 	
 	public static int createStatus(JSONObject flags){
 		
-		Log.i("FLAGSSS",flags.toString());
+		//Log.i("FLAGSSS",flags.toString());
 		
 				try {
 					if (flags.getBoolean("printing")) return StateUtils.STATE_PRINTING;

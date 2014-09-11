@@ -287,14 +287,7 @@ public class LibraryFragment extends Fragment {
 					StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
 
 					break;
-				
-				case R.id.lb_radio0:
-					mCurrentFilter = null; //Show all elements with recursive search
-					
-					StorageController.reloadFiles("all");
-
-					break;
-					
+									
 				case R.id.lb_radio1: //Show gcodes only
 					mCurrentFilter = "gcode";
 					

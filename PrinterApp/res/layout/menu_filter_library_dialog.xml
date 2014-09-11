@@ -20,13 +20,6 @@
             android:text="@string/library_filter_dialog_remove" />
 
         <RadioButton
-            android:id="@+id/lb_radio0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/library_filter_dialog_show" />
-
-        <RadioButton
             android:id="@+id/lb_radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
