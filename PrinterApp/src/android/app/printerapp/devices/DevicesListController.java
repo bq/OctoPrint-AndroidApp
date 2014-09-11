@@ -205,9 +205,10 @@ public static void selectPrinter(final Context context, final File f){
 						} else {
 							OctoprintFiles.uploadFile(context, f, m.getAddress());
 						}
-			    		
-						if (checkedItems.length==1) ItemListActivity.showPrintView(m.getName());
-						else ItemListFragment.performClick(0);
+						
+						ItemListFragment.performClick(0);
+						if (checkedItems.length==1) ItemListActivity.showExtraFragment(1, m.getName());
+
 
 					}
 													

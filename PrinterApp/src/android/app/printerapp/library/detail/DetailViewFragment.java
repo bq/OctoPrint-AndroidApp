@@ -8,7 +8,6 @@ import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -167,18 +166,11 @@ public class DetailViewFragment extends Fragment {
 			}
 		  
 			return true;
-			
-   
-              
-          
+
        default:
            return super.onOptionsItemSelected(item);
 	   }
 	}
    
-   @Override
-   public void onDestroy() {
-	Log.i("OUT","DEAD DEAD DEAD!");
-	super.onDestroy();
-   }
+
 }

@@ -3,12 +3,12 @@
     
         <item
         android:id="@+id/printview_pause"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_media_pause" />
                 
         <item
         android:id="@+id/printview_stop"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_media_stop" />
                 
 

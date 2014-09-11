@@ -69,7 +69,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 			if (StorageController.isProject(f)){
 								
 				//Show detail view regardless
-				ItemListActivity.showDetailView(arg2);
+				ItemListActivity.showExtraFragment(0, String.valueOf(arg2));
 								
 				
 			} else  {							
@@ -165,7 +165,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					if (f.isDirectory()){
 						if (StorageController.isProject(f)){
 							
-							ItemListActivity.showDetailView(index);
+							ItemListActivity.showExtraFragment(0, String.valueOf(index));
 							//ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
 						}
 						

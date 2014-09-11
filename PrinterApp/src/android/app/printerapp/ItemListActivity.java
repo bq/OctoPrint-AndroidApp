@@ -157,8 +157,6 @@ public class ItemListActivity extends FragmentActivity implements
 		 */
 		if (Integer.valueOf(id)!=2) ViewerMain.hideActionModeBar();
 		
-		
-		
 			
 		if (mTwoPane) {
 			
@@ -187,7 +185,8 @@ public class ItemListActivity extends FragmentActivity implements
 				}
 				
 			} else Log.i("OUT", "Current is null");
-					
+			
+	
 						
 			switch (Integer.valueOf(id)){
 			
@@ -278,8 +277,54 @@ public class ItemListActivity extends FragmentActivity implements
 			
 
 		}
+		
+		//Run on a new thread because Model loading takes too much time
+		Handler handler = new Handler();
+		handler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				//Close drawer AFTER Fragment was loaded
+				mDrawer.closeDrawers();
+				
+			}
+		});
+		
+		
 	}	
 	
+	//Add an additional fragment to show a special detailed view
+	//TODO Overlapping menu issues
+	public static void showExtraFragment(int type, String extra){
+		
+		FragmentTransaction mTransaction = mManager.beginTransaction();
+		
+		mTransaction.addToBackStack(mCurrent.getTag());
+		mTransaction.hide(mCurrent);
+		
+		switch (type){
+		
+			case 0:
+				
+				DetailViewFragment detail = new DetailViewFragment();
+				Bundle args = new Bundle();
+			    args.putInt("index", Integer.parseInt(extra));
+			    detail.setArguments(args);
+				mTransaction.replace(R.id.item_detail_container, detail, "Detail").commit();
+				break;
+				
+			case 1:
+				
+				PrintViewFragment detailp = new PrintViewFragment();
+				Bundle argsp = new Bundle();
+			    argsp.putString("printer", extra);
+			    detailp.setArguments(argsp);
+				mTransaction.replace(R.id.item_detail_container, detailp, "Printer").commit();
+				break;
+			
+		}	
+	}
 	
 	//TODO find a better way
 	public static void notifyAdapters(){
@@ -290,7 +335,7 @@ public class ItemListActivity extends FragmentActivity implements
 			
 			//Refresh printview
 			//TODO: Detail hardcoded
-			Fragment fragment = mManager.findFragmentByTag("Detail");
+			Fragment fragment = mManager.findFragmentByTag("Printer");
 			if (fragment!=null)((PrintViewFragment) fragment).refreshData();
 		
 		}catch (NullPointerException e){
@@ -298,44 +343,7 @@ public class ItemListActivity extends FragmentActivity implements
 			e.printStackTrace();
 		}
 	}
-	
-	//Add a new custom fragment with detailed view
-	public static void showDetailView(int index){
-		
-		FragmentTransaction mTransaction = mManager.beginTransaction();
-		DetailViewFragment detail = new DetailViewFragment();
-		Bundle args = new Bundle();
-	    args.putInt("index", index);
-	    detail.setArguments(args);
-	    
-		//mTransaction.hide(mCurrent);
-		//mTransaction.add(R.id.item_detail_container, detail, "Detail View");
-		
-		
-		mTransaction.addToBackStack(mCurrent.getTag());
-		//mCurrent = detail;
-		
-		mTransaction.replace(R.id.item_detail_container, detail).commit();
-		
-	}
-	
-	//Add a new custom fragment with detailed view
-		public static void showPrintView(String name){
 			
-			FragmentTransaction mTransaction = mManager.beginTransaction();
-			PrintViewFragment detail = new PrintViewFragment();
-			Bundle args = new Bundle();
-		    args.putString("printer", name);
-		    detail.setArguments(args);
-			//mTransaction.hide(mCurrent);
-			//mTransaction.add(R.id.item_detail_container, detail, "Detail Printer");
-		    mTransaction.addToBackStack(mCurrent.getTag());
-			//mCurrent = detail;
-		    //mTransaction.show(mCurrent).commit();
-		    mTransaction.replace(R.id.item_detail_container, detail, "Detail").commit();
-			
-		}
-	
 	//Send a fragment change request to the parent
 	public static void requestOpenFile(final String path){
 		ItemListFragment.performClick(1);
