@@ -333,6 +333,9 @@ public class ViewerMain extends Fragment {
             return true;
               
     	case R.id.viewer_clean: 
+    		mDataList.clear();
+    		mSeekBar.setVisibility(View.INVISIBLE);
+    		mSurface.requestRender();
             return true;
           
        default:

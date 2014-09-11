@@ -457,7 +457,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			  break;
 		  }
 	  }
-	  
+	  	  
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		// Set the background frame color
@@ -480,7 +480,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 					mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
 				}
 				
-			} else mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
+			} else if (mDataList.size()>0) mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
         
 	
 		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
