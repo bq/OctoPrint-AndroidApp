@@ -123,7 +123,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 				case StateUtils.STATE_PRINTING:{
 					//iv.setVisibility(View.GONE);
 					pb.setVisibility(View.VISIBLE);
-					Double n = Double.valueOf(m.getJob().getProgress() ) * 100;
+					Double n = Double.valueOf(m.getJob().getProgress() );
 					pb.setProgress(n.intValue());
 					
 					//iv.setImageResource(R.drawable.printer_icon);

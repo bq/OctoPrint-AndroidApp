@@ -1,5 +1,10 @@
 package android.app.printerapp.devices.printview;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.DevicesListController;
@@ -129,7 +134,7 @@ public class PrintViewFragment extends Fragment{
 		double value = 0;
 				
 		try {
-			value = Double.valueOf(p) * 100;			
+			value = Double.valueOf(p);			
 		}catch (Exception e){
 			//e.printStackTrace();
 		}
@@ -146,7 +151,7 @@ public class PrintViewFragment extends Fragment{
 		if (mPrinter.getStatus()== StateUtils.STATE_PRINTING){
 			
 			isPrinting = true;
-			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + mPrinter.getJob().getPrintTimeLeft() + " left)");
+			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) + " left)");
 			
 			
 		} else {
@@ -156,6 +161,25 @@ public class PrintViewFragment extends Fragment{
 		
 		getActivity().invalidateOptionsMenu();
 		
+	}
+	
+	
+	//External method to convert seconds to HHmmss
+	private String ConvertSecondToHHMMString(String secondtTime)
+	{
+		String time = "--:--:--";
+		
+		if (!secondtTime.equals("null")){
+			
+			 TimeZone tz = TimeZone.getTimeZone("UTC");
+			  SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss",Locale.US);
+			  df.setTimeZone(tz);
+			  time = df.format(new Date(Integer.parseInt(secondtTime)*1000L));
+		}
+	 
+
+	  return time;
+
 	}
 	
 	@Override
