@@ -494,6 +494,12 @@ public class DevicesFragment extends Fragment{
 		};
 	}
 	
+	@Override
+	public void onDestroyView() {
+		mNetworkManager.destroy();
+		super.onDestroyView();
+	}
+	
 	
 	
 }

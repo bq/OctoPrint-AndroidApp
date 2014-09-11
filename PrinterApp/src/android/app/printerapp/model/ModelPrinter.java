@@ -139,6 +139,10 @@ public class ModelPrinter {
 		OctoprintConnection.getSettings(this,context);
 	}
 	
+	public void setConnecting(){
+		mStatus = StateUtils.STATE_CONNECTING;
+	}
+	
 	public void setNotConfigured(){
 		mStatus = StateUtils.STATE_ADHOC;
 		mMessage = "Not configured";

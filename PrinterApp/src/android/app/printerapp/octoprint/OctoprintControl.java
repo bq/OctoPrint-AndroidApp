@@ -40,6 +40,10 @@ public class OctoprintControl {
 				entity, "application/json", new JsonHttpResponseHandler(){
 			
 			@Override
+					public void onProgress(int bytesWritten, int totalSize) {
+					}
+			
+			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
 

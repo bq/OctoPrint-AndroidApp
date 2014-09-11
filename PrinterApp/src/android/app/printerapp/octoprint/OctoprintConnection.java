@@ -12,6 +12,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import de.tavendo.autobahn.WebSocketConnection;
@@ -125,12 +126,16 @@ public class OctoprintConnection {
 	 */
 	public static void getSettings(final ModelPrinter p, final Context context){
 		
+		p.setConnecting();
+		
 		//Web socket URI
 		final String wsuri = "ws:/" + p.getAddress() + HttpUtils.URL_SOCKET;
+		
+		
 		 
 		   try {
 			   
-			  WebSocketConnection mConnection = new WebSocketConnection();
+			  final WebSocketConnection mConnection = new WebSocketConnection();
 			   
 			   //mConnection is a new websocket connection
 		      mConnection.connect(wsuri, new WebSocketHandler() {
@@ -147,7 +152,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 		            
-		        	 //Log.i("SOCK", "Got echo: " + payload);
+		        	 Log.i("SOCK", "Got echo: " + payload);
 		            
 		            try {
 		            	
@@ -176,8 +181,21 @@ public class OctoprintConnection {
 		         public void onClose(int code, String reason) {
 		            Log.i("SOCK", "Connection lost at " + code + " because " + reason);
 		            
-		            
-		            //getSettings(p);
+		            	mConnection.disconnect();
+		            	
+		            	
+		            	//Timeout for reconnection
+		            	Handler handler = new Handler();
+		            	handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								
+								 p.startUpdate(context);
+								
+							}
+						}, 1000);
+			           
 		            
 		         }
 		      });

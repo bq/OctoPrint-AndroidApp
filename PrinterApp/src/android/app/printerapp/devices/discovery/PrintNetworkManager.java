@@ -280,6 +280,10 @@ public class PrintNetworkManager {
         return mManager.addNetwork(ssid);
 	}	
 	
+	public void destroy(){
+		mReceiver.unregister();
+	}
+	
 	
 	/***********************************************
 	 * 		DIALOG HANDLER
