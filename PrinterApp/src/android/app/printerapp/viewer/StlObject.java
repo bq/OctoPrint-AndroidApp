@@ -66,11 +66,10 @@ public class StlObject {
 	 
 	float mColor [];
 	
-	static float colorNormal[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
-	
-	static float colorSelectedObject[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-	
-	static float colorObjectOut[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	public static float colorNormal[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };	
+	public static float colorSelectedObject[] = { 1.0f, 1.0f, 0.0f, 1.0f };	
+	public static float colorObjectOut[] = {1.0f, 1.0f, 1.0f, 1.0f};	
+	public static float colorObjectOutTouched[] = {1.0f, 0.0f, 0.0f, 1.0f};
 	
 	private final DataStorage mData;
 	

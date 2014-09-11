@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class ViewerSurfaceView extends GLSurfaceView{
@@ -65,7 +66,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int ROTATE_Y = 1;
 	public static final int ROTATE_Z = 2;
 
-	private static boolean mLockEdition=false;
 	private int mObjectPressed = -1;
 	
 	public ViewerSurfaceView(Context context) {
@@ -173,35 +173,30 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			mRenderer.setRotationVector(new Vector (0,0,1));
 			break;
 		}		
-		mRenderer.resetTotalAngle();
 	}
 		
 	
 	public void rotateAngleAxisX (float angle) {
 		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
-		mRenderer.setAngleRotationObject (angle);	
+		mRenderer.setRotationObject (angle);	
 		mRenderer.refreshRotatedObjectCoordinates();
-		requestRender();
 
 	}
 	
 	public void rotateAngleAxisY (float angle) {
 		if (mRotateMode!=ROTATE_Y) setRotationVector(ROTATE_Y);
-		mRenderer.setAngleRotationObject (angle);	
+		mRenderer.setRotationObject (angle);	
 		mRenderer.refreshRotatedObjectCoordinates();
-		requestRender();
 	}
 	
 	public void rotateAngleAxisZ (float angle) {
 		if (mRotateMode!=ROTATE_Z) setRotationVector(ROTATE_Z);
-		mRenderer.setAngleRotationObject (angle);	
+		mRenderer.setRotationObject (angle);	
 		mRenderer.refreshRotatedObjectCoordinates();
-		requestRender();
 	}
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mLockEdition) return false;
 		float x = event.getX();
         float y = event.getY();
                
@@ -278,9 +273,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					    
 					    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
 					    	mRenderer.dragObject(normalizedX, normalizedY);
-					    } else {    
-					    	dragAccordingToMode (x,y,dx,dy);
-					    }				    
+					    } else 	dragAccordingToMode (x,y,dx,dy);
+					    				    
 					} 
 									
 					requestRender();								    
@@ -295,27 +289,24 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartPoint.y = 0.0f;
 				}
 								
-				if(mEdition && mEditionMode==MOVE_EDITION_MODE) mRenderer.checkIfOverlaps();
+				if(mEdition) mRenderer.changeTouchedState();
+
 				touchMode = TOUCH_NONE;
-								
+				requestRender();			
 				break;				
 		}
 		return true;
 	}
 	
-	public static void setLockEditionMode (boolean lock) {
-		mLockEdition = lock;
-	}
-	
-	
+
 	public void exitEditionMode () {
 		mEdition = false;
 		mEditionMode = NONE_EDITION_MODE;
 		//We can exit edition mode at clicking in the menu or at deleting a model. If the model has been deleted, it is possible that
 		//mRenderer.exitEditionModel fails because of the size of the arrays.
-		if (mObjectPressed<mDataList.size()) mRenderer.exitEditionMode(); 
 		mObjectPressed = -1;
 		mRenderer.setObjectPressed(mObjectPressed);
+		mRenderer.changeTouchedState();
     	
     	requestRender();
 	}
@@ -329,7 +320,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			doTranslation (dx,dy);
 			break;
 		}
-
 	}
 	
 	public void doMirror () {

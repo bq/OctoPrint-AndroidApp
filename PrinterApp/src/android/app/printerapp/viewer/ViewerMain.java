@@ -75,6 +75,14 @@ public class ViewerMain extends Fragment {
 	private Button mDownWitboxFaces;
 	private static SeekBar mSeekBar;
 	
+	private static Button mPositiveAngleX;
+	private static Button mPositiveAngleY;
+	private static Button mPositiveAngleZ;
+	
+	private static Button mNegativeAngleX;
+	private static Button mNegativeAngleY;
+	private static Button mNegativeAngleZ;
+	
 	private static List<DataStorage> mDataList = new ArrayList<DataStorage>();	
 		
 	//Edition menu variables	
@@ -211,13 +219,13 @@ public class ViewerMain extends Fragment {
 		mProgress = (ProgressBar) mRootView.findViewById(R.id.progress_bar);
 		mProgress.setVisibility(View.GONE);
 	}
-	
+
 	private void initRotateButtons () {
 		mRotateMenu = (RelativeLayout) mRootView.findViewById(R.id.angle_axis);
 		mRotateMenu.setVisibility(View.INVISIBLE);
 		
-		Button positiveAngleX = (Button) mRootView.findViewById(R.id.positive_angle_x);
-		positiveAngleX.setOnClickListener(new OnClickListener() {
+		mPositiveAngleX = (Button) mRootView.findViewById(R.id.positive_angle_x);
+		mPositiveAngleX.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -225,8 +233,8 @@ public class ViewerMain extends Fragment {
 			}
 		});
 		
-		Button positiveAngleY = (Button) mRootView.findViewById(R.id.positive_angle_y);		
-		positiveAngleY.setOnClickListener(new OnClickListener() {
+		mPositiveAngleY = (Button) mRootView.findViewById(R.id.positive_angle_y);		
+		mPositiveAngleY.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -234,8 +242,8 @@ public class ViewerMain extends Fragment {
 			}
 		});
 		
-		Button positiveAngleZ = (Button) mRootView.findViewById(R.id.positive_angle_z);
-		positiveAngleZ.setOnClickListener(new OnClickListener() {
+		mPositiveAngleZ = (Button) mRootView.findViewById(R.id.positive_angle_z);
+		mPositiveAngleZ.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -243,8 +251,8 @@ public class ViewerMain extends Fragment {
 			}
 		});
 		
-		Button negativeAngleX = (Button) mRootView.findViewById(R.id.negative_angle_x);
-		negativeAngleX.setOnClickListener(new OnClickListener() {
+		mNegativeAngleX = (Button) mRootView.findViewById(R.id.negative_angle_x);
+		mNegativeAngleX.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -252,8 +260,8 @@ public class ViewerMain extends Fragment {
 			}
 		});
 		
-		Button negativeAngleY = (Button) mRootView.findViewById(R.id.negative_angle_y);		
-		negativeAngleY.setOnClickListener(new OnClickListener() {
+		mNegativeAngleY = (Button) mRootView.findViewById(R.id.negative_angle_y);		
+		mNegativeAngleY.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -261,8 +269,8 @@ public class ViewerMain extends Fragment {
 			}
 		});
 		
-		Button negativeAngleZ = (Button) mRootView.findViewById(R.id.negative_angle_z);
-		negativeAngleZ.setOnClickListener(new OnClickListener() {
+		mNegativeAngleZ = (Button) mRootView.findViewById(R.id.negative_angle_z);
+		mNegativeAngleZ.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -281,6 +289,17 @@ public class ViewerMain extends Fragment {
 		else if (v==View.VISIBLE) 	mProgress.bringToFront();
 		
 		mProgress.setVisibility(v);
+	}
+	
+	public static void unlockRotationButtons (boolean lock) {
+		mPositiveAngleX.setEnabled(lock);
+		mPositiveAngleY.setEnabled(lock);
+		mPositiveAngleZ.setEnabled(lock);
+		
+		mNegativeAngleX.setEnabled(lock);
+		mNegativeAngleY.setEnabled(lock);
+		mNegativeAngleZ.setEnabled(lock);
+		
 	}
 		
 	
