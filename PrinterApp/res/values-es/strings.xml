@@ -32,6 +32,8 @@
     <string name="devices_list_header_1">DISPOSITIVOS</string>
     <string name="devices_list_header_2">ESTADO</string>
     
+    <string name="devices_command_waiting">Conectando al servidor</string>
+    
     <string name="devices_menu_add">Añadir impresora</string>
     <string name="devices_menu_filter">Filtrar dispositivos</string>
     <string name="devices_cab_menu_delete">Eliminar impresora</string>
