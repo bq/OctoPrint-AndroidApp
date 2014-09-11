@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.printerapp.viewer.Geometry.Point;
 import android.opengl.Matrix;
-import android.util.Log;
 
 public class DataStorage {		
 	private List<Float> mVertexList = new ArrayList<Float>();

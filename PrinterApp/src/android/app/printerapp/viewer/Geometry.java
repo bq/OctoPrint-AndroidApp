@@ -203,7 +203,7 @@ public class Geometry {
 				newMaxY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + OFFSET;
 				newMinY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) +OFFSET; 
 							
-				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+				if (isValidPosition(newMaxX, newMinX, newMaxY, newMinY, objects, objectToFit)) {
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 					break;
 				}
@@ -214,7 +214,7 @@ public class Geometry {
 				newMaxY = d.getMaxY();
 				newMinY = d.getMinY();	
 						
-				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+				if (isValidPosition(newMaxX, newMinX, newMaxY, newMinY, objects, objectToFit)) {
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 					break;
 				}
@@ -225,7 +225,7 @@ public class Geometry {
 				newMaxY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + OFFSET);
 				newMinY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + OFFSET); 	
 						
-				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+				if (isValidPosition(newMaxX, newMinX, newMaxY, newMinY, objects,  objectToFit)) {
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 					break;
 				} 
@@ -236,7 +236,7 @@ public class Geometry {
 				newMaxY = d.getMaxY();
 				newMinY = d.getMinY();		
 						
-				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+				if (isValidPosition(newMaxX, newMinX, newMaxY, newMinY, objects, objectToFit)) {
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 					break;
 				} else if (i==objects.size()-2) {					
@@ -245,7 +245,7 @@ public class Geometry {
 					newMaxY = objects.get(index).getMaxY();
 					newMinY = objects.get(index).getMinY();	
 					
-					data.setStateObject(ViewerRenderer.OUT);
+					data.setStateObject(ViewerRenderer.OUT_NOT_TOUCHED);
 					
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 				}					
@@ -255,8 +255,7 @@ public class Geometry {
 		return true;
 	 }
 		
-	 public static boolean objectFits (float newMaxX, float newMinX, float newMaxY, float newMinY, List<DataStorage> objects) {
-		 int objectToFit = objects.size()-1;
+	 public static boolean isValidPosition (float newMaxX, float newMinX, float newMaxY, float newMinY, List<DataStorage> objects, int object) {
 		 boolean overlaps = false; 
 		 boolean outOfPlate = false;
 		 int k = 0;
@@ -265,7 +264,7 @@ public class Geometry {
 				|| newMaxY > WitboxFaces.WITBOX_WITDH || newMinY < -WitboxFaces.WITBOX_WITDH) outOfPlate = true;
 			
 		 while (!outOfPlate && !overlaps && k <objects.size()) {	
-			 if (k!=objectToFit) {
+			 if (k!=object) {
 				 if (Geometry.overlaps(newMaxX, newMinX, newMaxY, newMinY, objects.get(k)))  overlaps = true;
 			 }		
 			 k++;

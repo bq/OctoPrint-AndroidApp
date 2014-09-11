@@ -61,9 +61,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public static final int XRAY = 1;
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
-	
 
-	
 	private int mState;
 
 	private List<StlObject> mStlObjectList = new ArrayList<StlObject>();
@@ -122,12 +120,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private float mScaleFactorZ=1.0f;
 	
 	private Vector mVector = new Vector (1,0,0); //default
-	private float mRotateAngle=0;
-	private float mTotalAngle=0;
 	
 	public final static int INSIDE_NOT_TOUCHED = 0;
-	public final static int OUT = 1;
+	public final static int OUT_NOT_TOUCHED = 1;
 	public final static int INSIDE_TOUCHED = 2;
+	public final static int OUT_TOUCHED = 3;
+
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot) {	
 		this.mDataList = dataList;
@@ -218,18 +216,21 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			}       
 		}
 		
-		if (mObjectPressed!=object && object!=-1) {
-        	setObjectPressed(object);	
-			changeTouchedState (object);
-		}
-		
+		if (mObjectPressed!=object && object!=-1) setObjectPressed(object);	
+		changeTouchedState();
 		return object;
 	}
 	
-	public void changeTouchedState (int object) {
-		for (int i=0;i<mDataList.size(); i++) {
-			if (i==object) mDataList.get(i).setStateObject(INSIDE_TOUCHED);	
-			else mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);	
+	public void changeTouchedState () {
+		for (int i=0; i<mDataList.size();i++) {
+			DataStorage d = mDataList.get(i);	
+			if (i==mObjectPressed) {
+				if (!Geometry.isValidPosition(d.getMaxX(), d.getMinX(), d.getMaxY(), d.getMinY(), mDataList, i)) mDataList.get(i).setStateObject(OUT_TOUCHED);
+				else mDataList.get(i).setStateObject(INSIDE_TOUCHED);
+			} else {
+				if (!Geometry.isValidPosition(d.getMaxX(), d.getMinX(), d.getMaxY(), d.getMinY(), mDataList, i)) mDataList.get(i).setStateObject(OUT_NOT_TOUCHED);
+				else mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);	
+			}
 		}
 	}
 	
@@ -254,39 +255,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		data.setMaxX(maxX);
 		data.setMaxY(maxY);
 		data.setMinX(minX);
-		data.setMinY(minY);
-		
-		//We change the colour if we are outside Witbox Plate
-		if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG || maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH) 
-			data.setStateObject(OUT);
-		else data.setStateObject(INSIDE_TOUCHED);	
-				
+		data.setMinY(minY);				
     }
 	
-	public void checkIfOverlaps () {		
-		//Check if the model overlaps with another one. If this is the case, the model that is being edited turns grey.
-		//User can move an object that was overlaping another one, so both should change its colour.
-		for (int i=0; i<mDataList.size(); i++) {
-			DataStorage data = mDataList.get(i);
-			
-			float maxX = data.getMaxX();
-			float minX = data.getMinX();
-			float maxY = data.getMaxY();
-			float minY = data.getMinY();
 
-			for (int j=0;j<mDataList.size(); j++) {
-				if (i!=j)
-					if (Geometry.overlaps(maxX, minX, maxY, minY, mDataList.get(j))) {
-						data.setStateObject(OUT);
-						break;
-					}
-					
-					if (i==mObjectPressed) data.setStateObject(INSIDE_TOUCHED);	
-					else data.setStateObject(INSIDE_NOT_TOUCHED);
-					
-			}
-		}
-	}
 	
 	public void scaleObject (float fx, float fy, float fz) {
 		if (Math.abs(fx)>0.1 && Math.abs(fx)<10&& Math.abs(fy)>0.1 && Math.abs(fy)<10 && Math.abs(fz)>0.1 && Math.abs(fz)<10) {	
@@ -328,29 +300,24 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			data.setLastScaleFactorX(mScaleFactorX);
 			data.setLastScaleFactorY(mScaleFactorY);
 			data.setLastScaleFactorZ(mScaleFactorZ);
-
-			
-			if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
-					|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) data.setStateObject(OUT);
-			else checkIfOverlaps();
 		}
 	}
 	
-	public void setAngleRotationObject (float angle) {
-		mRotateAngle = angle;
-		mTotalAngle+= angle;
+	public void setRotationObject (float angle) {
+		DataStorage data = mDataList.get(mObjectPressed);
+		
+		float [] rotateObjectMatrix = data.getRotationMatrix();
+        Matrix.rotateM(rotateObjectMatrix, 0, angle, mVector.x, mVector.y, mVector.z);
+
+        data.setRotationMatrix(rotateObjectMatrix);		
 	}
-	
-	public void resetTotalAngle() {
-		mTotalAngle = 0;
-	}
-	
+
 	public void refreshRotatedObjectCoordinates () {	
 		final AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
 			protected void onPreExecute() {			
 				ViewerMain.configureProgressState(View.VISIBLE);
-				ViewerSurfaceView.setLockEditionMode(true);
+				ViewerMain.unlockRotationButtons(false);
 			}
 			
 			@Override
@@ -371,7 +338,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 					vector[0] = coordinatesArray[i];
 					vector[1] = coordinatesArray[i+1];
 					vector[2] = coordinatesArray[i+2];
-					
+										
 					Matrix.setIdentityM(aux, 0);
 					Matrix.multiplyMM(aux, 0, rotationMatrix, 0, aux, 0);
 					Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
@@ -388,8 +355,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				float minY = data.getMinY();
 				float maxY = data.getMaxY();
 				float maxZ = data.getMaxZ();
-				float minZ = data.getMinZ();	
-				
+				float minZ = data.getMinZ();
+								
 				Point lastCenter = data.getLastCenter();
 				//We have to introduce the rest of transformations.
 				maxX = maxX*Math.abs(mScaleFactorX)+lastCenter.x;
@@ -397,9 +364,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				maxZ = maxZ*mScaleFactorZ+lastCenter.z;
 				
 				minX = minX*Math.abs(mScaleFactorX)+lastCenter.x;
-				minY = minY*mScaleFactorY+lastCenter.y;
+				minY = minY*mScaleFactorY+lastCenter.y;			
 				minZ = minZ*mScaleFactorZ+lastCenter.z;	
-
+				
 				data.setMaxX(maxX);
 				data.setMaxY(maxY);
 				
@@ -412,20 +379,18 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				data.setAdjustZ(adjustZ);
 				data.setMinZ(data.getMinZ()+adjustZ);			
 				data.setMaxZ(data.getMaxZ()+adjustZ);
-				
-				if (maxX>WitboxFaces.WITBOX_LONG || minX < -WitboxFaces.WITBOX_LONG 
-						|| maxY>WitboxFaces.WITBOX_WITDH || minY<-WitboxFaces.WITBOX_WITDH || maxZ>WitboxFaces.WITBOX_HEIGHT) data.setStateObject(OUT);
-				else checkIfOverlaps ();
+
 				return null;
 			}
 			
 			protected void onPostExecute(final Void unused) {
 				ViewerMain.configureProgressState(View.GONE);
-				ViewerSurfaceView.setLockEditionMode(false);
+				ViewerMain.unlockRotationButtons(true);
+
 			}		
 		};
 		
-		if (mTotalAngle!=0) task.execute();
+		 task.execute();
 			
 	}
 	
@@ -474,21 +439,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	  public float getHeightScreen () {
 		  return mHeight;
 	  }
-	  
-	  public void exitEditionMode () {
-		  DataStorage data = mDataList.get(mObjectPressed);
-
-		  switch (data.getStateObject()) {
-		  case INSIDE_NOT_TOUCHED:
-		  case INSIDE_TOUCHED:
-			  data.setStateObject(INSIDE_NOT_TOUCHED);
-			  break;
-		  case OUT: 
-			  data.setStateObject(OUT);
-			  break;
-		  }
-	  }
-	  
+	    
 	  private void setColor (int object) {
 		  StlObject stl = mStlObjectList.get(object);
 		  switch (mDataList.get(object).getStateObject()) {
@@ -498,8 +449,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		  case INSIDE_TOUCHED:
 			  stl.setColor(StlObject.colorSelectedObject);
 			  break;
-		  case OUT: 
+		  case OUT_NOT_TOUCHED: 
 			  stl.setColor(StlObject.colorObjectOut);
+			  break;
+		  case OUT_TOUCHED: 
+			  stl.setColor(StlObject.colorObjectOutTouched);
 			  break;
 		  }
 	  }
@@ -651,13 +605,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		
 		        //Object rotation  
 		        float [] rotateObjectMatrix = data.getRotationMatrix();
-		        Matrix.rotateM(rotateObjectMatrix, 0, mRotateAngle, mVector.x, mVector.y, mVector.z);
-		
-		        mDataList.get(mObjectPressed).setRotationMatrix(rotateObjectMatrix);
-		
-		        //Reset angle, we store the rotation in the matrix
-		        mRotateAngle=0;
-		
+		     
 		        //Multiply the model by the accumulated rotation
 		        Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);     	
 		        Matrix.multiplyMM(mMVPObjectMatrix, 0,mMVPMatrix, 0, mObjectModel, 0);   
@@ -703,7 +651,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mMVPMatrix);
         	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mMVPMatrix);
         	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mMVPMatrix);
-        }        
+        } 
 	}
 	
 	private void takeSnapshot (GL10 unused) {			
