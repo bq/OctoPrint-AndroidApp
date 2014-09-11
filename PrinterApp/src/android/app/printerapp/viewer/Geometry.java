@@ -1,7 +1,12 @@
 package android.app.printerapp.viewer;
 
+import java.util.List;
+
+import android.opengl.Matrix;
+
 public class Geometry {
-	
+	 private static final float OFFSET = 0.1f;
+
 	 public static class Point {
 		 public final float x, y, z;
 
@@ -159,5 +164,147 @@ public class Geometry {
 		 return false;
 
 	 }
+	 
+	 public static boolean relocateIfOverlaps (List<DataStorage> objects) {
+		 int objectToFit = objects.size()-1;
+		 DataStorage data = objects.get(objectToFit);
+		 boolean overlaps = false;
+		 
+		 for (int i=0;i<objects.size();i++) {
+			 if(i!= objectToFit && Geometry.overlaps(data.getMaxX(), data.getMinX(), data.getMaxY(), data.getMinY(), objects.get(i))) {
+				 overlaps = true;
+				 break;
+			 }
+		 }
 
+		 if (!overlaps) return false;
+		 
+		float width = data.getMaxX() - data.getMinX();
+		float deep = data.getMaxY() - data.getMinY();
+		
+		float setMinX=Float.MAX_VALUE;
+		int index =-1;
+		
+		float newMaxX;
+		float newMinX;
+		float newMaxY;
+		float newMinY;
+		
+		for (int i=0; i<objects.size(); i++) {
+			if (i!= objectToFit) {
+				DataStorage d = objects.get(i); 
+				if (d.getMinX()<setMinX) {
+					setMinX = d.getMinX();
+					index = i;
+				}
+				//UP
+				newMaxX = d.getMaxX();
+				newMinX = d.getMinX();
+				newMaxY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + OFFSET;
+				newMinY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) +OFFSET; 
+							
+				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				}
+				
+				//RIGHT
+				newMaxX = d.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + width + OFFSET;
+				newMinX = d.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + OFFSET;
+				newMaxY = d.getMaxY();
+				newMinY = d.getMinY();	
+						
+				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				}
+				
+				//DOWN
+				newMaxX = d.getMaxX();
+				newMinX = d.getMinX();
+				newMaxY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + OFFSET);
+				newMinY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + OFFSET); 	
+						
+				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				} 
+				
+				//LEFT
+				newMaxX = d.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x)+ OFFSET);
+				newMinX = d.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x) + width + OFFSET);
+				newMaxY = d.getMaxY();
+				newMinY = d.getMinY();		
+						
+				if (objectFits(newMaxX, newMinX, newMaxY, newMinY, objects)) {
+					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
+					break;
+				} else if (i==objects.size()-2) {					
+					newMaxX = setMinX;
+					newMinX = setMinX - width;
+					newMaxY = objects.get(index).getMaxY();
+					newMinY = objects.get(index).getMinY();	
+					
+					data.setStateObject(ViewerRenderer.OUT);
+					
+					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
+				}					
+			}
+		}
+		
+		return true;
+	 }
+		
+	 public static boolean objectFits (float newMaxX, float newMinX, float newMaxY, float newMinY, List<DataStorage> objects) {
+		 int objectToFit = objects.size()-1;
+		 boolean overlaps = false; 
+		 boolean outOfPlate = false;
+		 int k = 0;
+
+		 if (newMaxX > WitboxFaces.WITBOX_LONG || newMinX < -WitboxFaces.WITBOX_LONG 
+				|| newMaxY > WitboxFaces.WITBOX_WITDH || newMinY < -WitboxFaces.WITBOX_WITDH) outOfPlate = true;
+			
+		 while (!outOfPlate && !overlaps && k <objects.size()) {	
+			 if (k!=objectToFit) {
+				 if (Geometry.overlaps(newMaxX, newMinX, newMaxY, newMinY, objects.get(k)))  overlaps = true;
+			 }		
+			 k++;
+		 }
+
+		 if (!outOfPlate && !overlaps) 					
+			 return true;
+		
+		 else return false;
+	 }
+	
+	public static void changeModelToFit (float newMaxX, float newMinX, float newMaxY, float newMinY, DataStorage d) {		
+		d.setMaxX(newMaxX);
+		d.setMinX(newMinX);
+		d.setMaxY(newMaxY);
+		d.setMinY(newMinY);
+				
+		float newCenterX = newMinX + (newMaxX-newMinX)/2;
+		float newCenterY = newMinY + (newMaxY-newMinY)/2;
+		float newCenterZ = d.getLastCenter().z;
+
+		Point newCenter = new Point (newCenterX, newCenterY, newCenterZ );
+
+		d.setLastCenter(newCenter);
+		
+		float [] temporaryModel = new float[16];
+		Matrix.setIdentityM(temporaryModel, 0);
+        Matrix.translateM(temporaryModel, 0, d.getLastCenter().x, d.getLastCenter().y, d.getLastCenter().z);  
+        Matrix.scaleM(temporaryModel, 0, d.getLastScaleFactorX(), d.getLastScaleFactorY(), d.getLastScaleFactorZ());
+        
+        Matrix.translateM(temporaryModel, 0, 0, 0, d.getAdjustZ());
+
+        //Object rotation  
+        float [] rotateObjectMatrix = d.getRotationMatrix();
+
+        //Multiply the model by the accumulated rotation
+		float [] modelMatrix = new float[16];
+
+        Matrix.multiplyMM(modelMatrix, 0, temporaryModel, 0,rotateObjectMatrix, 0); 
+		d.setModelMatrix(modelMatrix);
+	}
 }

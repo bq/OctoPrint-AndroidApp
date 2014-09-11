@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.printerapp.viewer.Geometry.Point;
 import android.opengl.Matrix;
+import android.util.Log;
 
 public class DataStorage {		
 	private List<Float> mVertexList = new ArrayList<Float>();
@@ -71,9 +72,6 @@ public class DataStorage {
 			mNormalArray[i] = d.getNormalArray()[i];
 		}
 
-		for (int i=0; i<d.getModelMatrix().length; i++) mModelMatrix[i] = d.getModelMatrix()[i];
-		for (int i=0; i<d.getRotationMatrix().length; i++) mRotationMatrix[i] = d.getRotationMatrix()[i];
-
 		mMaxLayer = d.getMaxLayer();
 		mActualLayer = d.getActualLayer();
 		mMinX = d.getMinX();
@@ -90,8 +88,12 @@ public class DataStorage {
 		mLastScaleFactorY = d.getLastScaleFactorY();
 		mLastScaleFactorZ = d.getLastScaleFactorZ();
 		
-		mLastCenter = new Point (d.getLastCenter().x, d.getLastCenter().y, d.getLastCenter().z);
 		mAdjustZ = d.getAdjustZ();
+		
+		mLastCenter = new Point (d.getLastCenter().x, d.getLastCenter().y, d.getLastCenter().z);
+		
+	    for (int i=0; i<mRotationMatrix.length; i++) mRotationMatrix[i] = d.getRotationMatrix()[i];	
+	    for (int i=0; i<mModelMatrix.length; i++) mModelMatrix[i] = d.getModelMatrix()[i];	   	       
 	}
 	
 	public int getCoordinateListSize () {

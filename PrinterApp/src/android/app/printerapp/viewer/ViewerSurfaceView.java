@@ -51,6 +51,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	//Edition mode
 	private boolean mEdition = false;
 	private int mEditionMode;
+	private int mRotateMode;
+
 	
 	//Edition modes
 	public static final int NONE_EDITION_MODE = 0;
@@ -155,6 +157,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public int getObjectPresed () {
 		return mObjectPressed;
 	}
+	
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:
@@ -173,7 +176,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.resetTotalAngle();
 	}
 		
-	private int mRotateMode;
 	
 	public void rotateAngleAxisX (float angle) {
 		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
