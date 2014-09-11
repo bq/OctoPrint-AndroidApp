@@ -62,7 +62,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
 	
-	private static final float OFFSET = 0.1f;
 
 	
 	private int mState;
@@ -126,9 +125,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private float mRotateAngle=0;
 	private float mTotalAngle=0;
 	
-	private final int INSIDE_NOT_TOUCHED = 0;
-	private final int OUT = 1;
-	private final int INSIDE_TOUCHED = 2;
+	public final static int INSIDE_NOT_TOUCHED = 0;
+	public final static int OUT = 1;
+	public final static int INSIDE_TOUCHED = 2;
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot) {	
 		this.mDataList = dataList;
@@ -234,121 +233,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		}
 	}
 	
-	public void relocate (int objectToFit) {
-		DataStorage data = mDataList.get(objectToFit);
-		float width = data.getMaxX() - data.getMinX();
-		float deep = data.getMaxY() - data.getMinY();
-		
-		float setMinX=Float.MAX_VALUE;
-		int index =-1;
-		
-		float newMaxX;
-		float newMinX;
-		float newMaxY;
-		float newMinY;
-		
-		for (int i=0; i<mDataList.size(); i++) {
-			if (i!= objectToFit) {
-				DataStorage d = mDataList.get(i); 
-				if (d.getMinX()<setMinX) {
-					setMinX = d.getMinX();
-					index = i;
-				}
-				//UP
-				newMaxX = d.getMaxX();
-				newMinX = d.getMinX();
-				newMaxY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + OFFSET;
-				newMinY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) +OFFSET; 
-							
-				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
-					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
-					break;
-				}
-				
-				//RIGHT
-				newMaxX = d.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + width + OFFSET;
-				newMinX = d.getLastCenter().x + Math.abs(d.getMaxX() - d.getLastCenter().x) + OFFSET;
-				newMaxY = d.getMaxY();
-				newMinY = d.getMinY();	
-						
-				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
-					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
-					break;
-				}
-				
-				//DOWN
-				newMaxX = d.getMaxX();
-				newMinX = d.getMinX();
-				newMaxY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + OFFSET);
-				newMinY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + OFFSET); 	
-						
-				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
-					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
-					break;
-				} 
-				
-				//LEFT
-				newMaxX = d.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x)+ OFFSET);
-				newMinX = d.getLastCenter().x - (Math.abs(d.getMinX() - d.getLastCenter().x) + width + OFFSET);
-				newMaxY = d.getMaxY();
-				newMinY = d.getMinY();		
-						
-				if (fits(newMaxX, newMinX, newMaxY, newMinY, objectToFit)) {
-					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
-					break;
-				} else if (i==mDataList.size()-2) {					
-					newMaxX = setMinX;
-					newMinX = setMinX - width;
-					newMaxY = mDataList.get(index).getMaxY();
-					newMinY = mDataList.get(index).getMinY();	
-					
-					data.setStateObject(OUT);
-					
-					refreshFitCoordinates(newMaxX, newMinX, newMaxY, newMinY, data);
-				}						
-			}
-		}
-	}
 	
-	public boolean fits (float newMaxX, float newMinX, float newMaxY, float newMinY, int objectToFit) {
-		boolean overlaps = false; 
-		boolean outOfPlate = false;
-		int k = 0;
-
-		if (newMaxX > WitboxFaces.WITBOX_LONG || newMinX < -WitboxFaces.WITBOX_LONG 
-				|| newMaxY > WitboxFaces.WITBOX_WITDH || newMinY < -WitboxFaces.WITBOX_WITDH) outOfPlate = true;
-			
-		while (!outOfPlate && !overlaps && k <mDataList.size()) {	
-			if (k!=objectToFit) {
-				if (Geometry.overlaps(newMaxX, newMinX, newMaxY, newMinY, mDataList.get(k)))  overlaps = true;
-			}		
-			k++;
-		}
-
-		if (!outOfPlate && !overlaps) 					
-			return true;
-		
-		else return false;
-	}
-	
-	public void refreshFitCoordinates (float newMaxX, float newMinX, float newMaxY, float newMinY, DataStorage d) {		
-		d.setMaxX(newMaxX);
-		d.setMinX(newMinX);
-		d.setMaxY(newMaxY);
-		d.setMinY(newMinY);
-		
-		float newCenterX = newMinX + (newMaxX-newMinX)/2;
-		float newCenterY = newMinY + (newMaxY-newMinY)/2;
-		float newCenterZ = d.getLastCenter().z;
-
-		Point newCenter = new Point (newCenterX, newCenterY, newCenterZ );
-
-		d.setLastCenter(newCenter);
-		
-		float [] modelMatrix = d.getModelMatrix();
-		Matrix.translateM(modelMatrix, 0, newCenterX, newCenterY, newCenterZ);
-		d.setModelMatrix(modelMatrix);
-	}
 		
 	public void dragObject (float x, float y) {
 		Ray ray = convertNormalized2DPointToRay(x, y);
@@ -633,13 +518,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
         if (mDataList.size()>0)
 			if (isStl()) {
-				for (int i=0; i<mDataList.size(); i++) {
-					for (int j=0; j<mDataList.size(); j++) {
-						DataStorage d = mDataList.get(j);
-						if (i!=j && Geometry.overlaps(d.getMaxX(), d.getMinX(), d.getMaxY(), d.getMinY(), mDataList.get(i))) relocate (j);
-					}
-				}
-				
 				//First, reset the stl object list
 				mStlObjectList.clear();
 	

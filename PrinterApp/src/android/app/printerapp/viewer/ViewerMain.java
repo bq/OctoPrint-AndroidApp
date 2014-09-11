@@ -491,7 +491,7 @@ public class ViewerMain extends Fragment {
 		//Once the file has been opened, we need to refresh the data list. If we are opening a .gcode file, we need to delete the previous files (.stl and .gcode)
 		//If we are opening a .stl file, we need to delete the previous file only if it was a .gcode file.
 		//We have to do this here because user can cancel the opening of the file and the Print Panel would appear empty if we clear the data list.
-
+		
 		String filePath = "";
 		if (mFile!=null) filePath = mFile.getAbsolutePath();
 
@@ -501,7 +501,7 @@ public class ViewerMain extends Fragment {
 					mDataList.remove(mDataList.size()-2);
 				}
 			}
-			
+			Geometry.relocateIfOverlaps(mDataList);
 			mSeekBar.setVisibility(View.INVISIBLE);
 
 		} else if (filePath.endsWith(".gcode") || filePath.endsWith(".GCODE")) {
@@ -516,7 +516,7 @@ public class ViewerMain extends Fragment {
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);
 		mLayout.addView(mSeekBar, 1);
-		mLayout.addView(mRotateMenu, 2);
+		mLayout.addView(mRotateMenu, 2);		
 	}
 		
 	/************************* SAVE FILE ********************************/
@@ -685,15 +685,15 @@ public class ViewerMain extends Fragment {
 	private static void drawCopies (int numCopies) {
 		int model = mSurface.getObjectPresed();		
 		int num = 0;
-		
+				
 		while (num<numCopies) {
 			final DataStorage newData = new DataStorage();
 			newData.copyData(mDataList.get(model));
 			mDataList.add(newData);
+			Geometry.relocateIfOverlaps(mDataList);
 	    	num++;
 		}
 		
     	draw();
-
 	}
 }
