@@ -177,6 +177,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			mStlObjectList.get(i).setXray (xray);
 	}
 	
+	public void setOverhang (boolean overhang) {
+		for (int i=0; i<mStlObjectList.size(); i++) 
+			mStlObjectList.get(i).setOverhang (overhang);
+	}
+	
 	public void setRotationVector (Vector vector) {
 		mVector = vector;
 	}
@@ -620,7 +625,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	    			if (i==mObjectPressed) {
 	    				mDataList.get(i).setModelMatrix(mObjectModel);
 	
-	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace);
+	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
 	    			} else  {
 	    				float [] modelMatrix = mDataList.get(i).getModelMatrix();
 	    				float [] mvpMatrix = new float[16];
@@ -634,7 +639,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	    		        Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
 	    		        Matrix.invertM(mvFinalMatrix, 0, mvFinalMatrix, 0);
 	    		        
-	    				mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace);
+	    				mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace, modelMatrix);
 	    			}
 	    		}
 	        else 

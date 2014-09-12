@@ -394,7 +394,7 @@ public class ViewerMain extends Fragment {
 					changeStlViews(ViewerSurfaceView.NORMAL);	
 					break;
 				case OVERHANG:
-					//changeStlViews(ViewerSurfaceView.OVERHANG);						
+					changeStlViews(ViewerSurfaceView.OVERHANG);						
 					break; 
 				case TRANSPARENT:
 					changeStlViews(ViewerSurfaceView.TRANSPARENT);	
