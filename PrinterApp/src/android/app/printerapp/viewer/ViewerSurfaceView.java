@@ -16,6 +16,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int XRAY = 1;
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
+	public static final int OVERHANG = 4;
+
 		
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
@@ -100,16 +102,24 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void configViewMode (int state) {
 		switch (state) {
 		case (ViewerSurfaceView.NORMAL):
+			setOverhang(false);
 			setXray(false);
 			setTransparent(false);
 			break;			
 		case (ViewerSurfaceView.XRAY):
+			setOverhang(false);
 			setXray(true);
 			setTransparent(false);
 			break;
 		case (ViewerSurfaceView.TRANSPARENT):
+			setOverhang(false);
 			setXray(false);
 			setTransparent(true);
+			break;
+		case (ViewerSurfaceView.OVERHANG):
+			setOverhang(true);
+			setXray(false);
+			setTransparent(false);
 			break;
 		}
 		
@@ -138,6 +148,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		if (mRenderer.getShowDownWitboxFace()) mRenderer.showDownWitboxFace(false);
 		else mRenderer.showDownWitboxFace(true);
 		requestRender();		
+	}
+	
+	public void setOverhang (boolean overhang) {
+		mRenderer.setOverhang(overhang);
 	}
 	
 	public void setTransparent (boolean trans) {
