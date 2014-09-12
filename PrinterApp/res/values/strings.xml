@@ -37,6 +37,10 @@
     <string name="devices_list_header_2">STATUS</string>
    
     <string name="devices_command_waiting">Connecting to server</string>
+    <string name="devices_upload_waiting">Uploading file&#8230;</string>
+    <string name="devices_text_loading">Uploading&#8230;</string>
+    <string name="devices_text_connecting">Connecting&#8230;</string>
+    <string name="devices_text_completed">Finished</string>
     
     <string name="devices_menu_add">Add printer</string>
     <string name="devices_menu_filter">Filter devices</string>
@@ -45,12 +49,14 @@
     
     <string name="devices_filter_dialog_all">All</string>
     <string name="devices_filter_dialog_progress">\'In progress\' printers</string>
-    <string name="devices_filter_dialog_inactive">\'Inactive\' printers</string>
+    <string name="devices_filter_dialog_inactive">\'Available\' printers</string>
     <string name="devices_filter_dialog_groups">As groups</string>
     <string name="devices_filter_dialog_linked">Only linked printers</string>
     
     <string name="devices_toast_no_stl">No .stl found</string>
     <string name="devices_toast_no_gcode">No .gcode found</string>
+    <string name="devices_toast_upload_1">Uploaded&#8230;</string>
+    <string name="devices_toast_upload_2">Failure while uploading&#8230;</string>
     <string name="storage_toast_corrupted">File is corrupted</string>
     <string name="viewer_toast_not_available">This view is not available.</string>
     <string name="viewer_toast_not_available_2">This view is not available. Open a file first</string>

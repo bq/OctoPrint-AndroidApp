@@ -33,6 +33,10 @@
     <string name="devices_list_header_2">ESTADO</string>
     
     <string name="devices_command_waiting">Conectando al servidor</string>
+    <string name="devices_upload_waiting">Subiendo fichero&#8230;</string>
+    <string name="devices_text_loading">Subiendo&#8230;</string>
+    <string name="devices_text_connecting">Conectando&#8230;</string>
+    <string name="devices_text_completed">Finalizado</string>
     
     <string name="devices_menu_add">Añadir impresora</string>
     <string name="devices_menu_filter">Filtrar dispositivos</string>
@@ -41,12 +45,14 @@
     
     <string name="devices_filter_dialog_all">Todos</string>
     <string name="devices_filter_dialog_progress">Impresoras \'en progreso\'</string>
-    <string name="devices_filter_dialog_inactive">Impresoras \'inactivas\'</string>
+    <string name="devices_filter_dialog_inactive">Impresoras \'disponibles\'</string>
     <string name="devices_filter_dialog_groups">Vista de grupos</string>
     <string name="devices_filter_dialog_linked">Solo impresoras enlazadas</string>
     
     <string name="devices_toast_no_gcode">No se ha encontrado .gcode</string>
     <string name="storage_toast_corrupted">El fichero está corrupto</string>
+    <string name="devices_toast_upload_1">Subido&#8230;</string>
+    <string name="devices_toast_upload_2">Error al subir&#8230;</string>
     <string name="viewer_toast_not_available">No hay vista disponible.</string>
     <string name="viewer_toast_not_available_2">No hay vista disponible, abra primero un fichero</string>
     

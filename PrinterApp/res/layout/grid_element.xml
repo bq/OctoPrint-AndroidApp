@@ -46,11 +46,19 @@
 
     <ProgressBar
         android:id="@+id/grid_element_loading"
-        style="?android:attr/progressBarStyleLarge"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/grid_element_icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/grid_text_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grid_element_loading"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/darker_gray"/>
 
 </RelativeLayout>

@@ -69,15 +69,16 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
+		TextView tvl = (TextView) v.findViewById(R.id.grid_text_loading);
 		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
 		ProgressBar pl = (ProgressBar) v.findViewById(R.id.grid_element_loading);
 		ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
 		
-		
+		tvl.setVisibility(View.GONE);
 		iv.setVisibility(View.GONE);
 		pb.setVisibility(View.GONE);
-		pl.setVisibility(View.GONE);
+		pl.setVisibility(View.INVISIBLE);
 		
 		
 		
@@ -116,6 +117,26 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			switch (status){
 			
 				case StateUtils.STATE_OPERATIONAL:{
+
+					if (m.getJob()!=null){
+						Double n = Double.valueOf(m.getJob().getProgress() );
+						if (n.intValue() == 100){
+							pb.setVisibility(View.VISIBLE);
+							pb.setProgress(n.intValue());
+							tvl.setText(R.string.devices_text_completed);
+							tvl.setVisibility(View.VISIBLE);
+						}
+					}
+					
+					//Must put this second because loading has priority over completion
+					
+					if (!m.getLoaded()) {
+						
+						pl.setVisibility(View.VISIBLE);
+						tvl.setText(R.string.devices_text_loading);
+						tvl.setVisibility(View.VISIBLE);
+					}
+					
 					//iv.setVisibility(View.GONE);
 					//pb.setVisibility(View.GONE);
 				} break;
@@ -136,6 +157,8 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 				}break;
 				
 				case StateUtils.STATE_CONNECTING: {
+					tvl.setText(R.string.devices_text_connecting);
+					tvl.setVisibility(View.VISIBLE);
 					pl.setVisibility(View.VISIBLE);
 				} break;
 				

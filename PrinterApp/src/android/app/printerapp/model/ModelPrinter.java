@@ -26,11 +26,13 @@ public class ModelPrinter {
 	//TODO hardcoded string
 	private String mMessage = "Offline";
 	private String mTemperature;
+	private String mTempTarget;
 	
 	private ArrayList<File> mFileList;
 	
 	//Pending job
 	private ModelJob mJob;
+	private boolean mJobLoaded;
 	
 	//Camera
 	private CameraHandler mCam;
@@ -45,6 +47,7 @@ public class ModelPrinter {
 		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
+		mJobLoaded = true;
 		
 		//Set new position according to the position in the DB, or the first available
 		if ((position<0) || (Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
@@ -82,6 +85,10 @@ public class ModelPrinter {
 		return mTemperature;
 	}
 	
+	public String getTempTarget(){
+		return mTempTarget;
+	}
+	
 	public ArrayList<File> getFiles(){
 		return mFileList;
 	}
@@ -97,6 +104,10 @@ public class ModelPrinter {
 	
 	public String getDisplayName(){
 		return mDisplayName;
+	}
+	
+	public boolean getLoaded(){
+		return mJobLoaded;
 	}
 	
 	/**********
@@ -116,7 +127,10 @@ public class ModelPrinter {
 			try {
 				//Avoid having empty temperatures
 				JSONArray temperature = status.getJSONArray("temps");
-				if (temperature.length()>0) mTemperature = temperature.getJSONObject(0).getJSONObject("tool0").getString("actual");
+				if (temperature.length()>0) {
+					mTemperature = temperature.getJSONObject(0).getJSONObject("tool0").getString("actual");
+					mTempTarget = temperature.getJSONObject(0).getJSONObject("tool0").getString("target");
+				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -173,6 +187,10 @@ public class ModelPrinter {
 	
 	public void setDisplayName(String name){
 		mDisplayName = name;
+	}
+	
+	public void setLoaded(boolean load){
+		mJobLoaded = load;
 	}
 
 }
