@@ -9,9 +9,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -126,7 +128,7 @@ public class OctoprintFiles {
 	 * Right now it uses two requests, the first to upload the file and another one to load it in the printer.
 	 * @param file
 	 */
-	public static void uploadFile(final Context context, final File file, final String url){
+	public static void uploadFile(final Context context, final File file, final ModelPrinter p){
 			
 			RequestParams params = new RequestParams();
 			
@@ -138,8 +140,13 @@ public class OctoprintFiles {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} 
+
+    		Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName() 
+    				, Toast.LENGTH_LONG).show();
 			
-			HttpClientHandler.post(url + HttpUtils.URL_FILES + "/local", 
+			p.setLoaded(false);
+			
+			HttpClientHandler.post(p.getAddress() + HttpUtils.URL_FILES + "/local", 
 					params, new JsonHttpResponseHandler(){				
 
 				//Override onProgress because it's faulty
@@ -152,8 +159,10 @@ public class OctoprintFiles {
 				public void onSuccess(int statusCode, Header[] headers,
 						JSONObject response) {
 					super.onSuccess(statusCode, headers, response);
-
-					fileCommand(context, url, file.getName(), "/local/");
+					p.setLoaded(true);
+					fileCommand(context, p.getAddress(), file.getName(), "/local/");
+					
+					Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
 									
 					
 				}
@@ -163,7 +172,11 @@ public class OctoprintFiles {
 						String responseString, Throwable throwable) {
 					// TODO Auto-generated method stub
 					super.onFailure(statusCode, headers, responseString, throwable);
+					p.setLoaded(true);
 					Log.i("RESPONSEFAIL", responseString);
+					
+					Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_2) + file.getName(), Toast.LENGTH_LONG).show();
+					
 				}
 				
 			});	

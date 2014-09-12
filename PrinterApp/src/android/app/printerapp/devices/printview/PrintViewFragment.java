@@ -155,6 +155,8 @@ public class PrintViewFragment extends Fragment{
 			
 			
 		} else {
+			
+			if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
 			tv_prog.setText(mPrinter.getMessage());
 			isPrinting = false;
 		}

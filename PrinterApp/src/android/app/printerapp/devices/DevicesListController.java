@@ -203,7 +203,7 @@ public static void selectPrinter(final Context context, final File f){
 							
 				    		
 						} else {
-							OctoprintFiles.uploadFile(context, f, m.getAddress());
+							OctoprintFiles.uploadFile(context, f, m);
 						}
 						
 						ItemListFragment.performClick(0);

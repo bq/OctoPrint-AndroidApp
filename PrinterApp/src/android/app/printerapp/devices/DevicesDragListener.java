@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
-import android.widget.Toast;
 
 /**
  * OnDragListener to handle printing and other possible events
@@ -64,12 +63,8 @@ public class DevicesDragListener implements OnDragListener {
 			    		//Get parent folder and upload to device
 			    		Log.i("DRAG", item.getText().toString());
 			    		File file = new File(item.getText().toString());
-			    		OctoprintFiles.uploadFile(v.getContext(), file, mModel.getAddress());
-			    		
-	
-			    		Toast.makeText(v.getContext(), "Loading " + item.getText().toString() + 
-			    				" on " + mModel.getDisplayName(), Toast.LENGTH_LONG).show();
-	
+			    		OctoprintFiles.uploadFile(v.getContext(), file, mModel);
+			    			
 		    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
 		    		//TODO: Set the same method for both
 		    		} 

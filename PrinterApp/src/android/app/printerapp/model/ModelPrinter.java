@@ -31,6 +31,7 @@ public class ModelPrinter {
 	
 	//Pending job
 	private ModelJob mJob;
+	private boolean mJobLoaded;
 	
 	//Camera
 	private CameraHandler mCam;
@@ -45,6 +46,7 @@ public class ModelPrinter {
 		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
+		mJobLoaded = true;
 		
 		//Set new position according to the position in the DB, or the first available
 		if ((position<0) || (Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
@@ -97,6 +99,10 @@ public class ModelPrinter {
 	
 	public String getDisplayName(){
 		return mDisplayName;
+	}
+	
+	public boolean getLoaded(){
+		return mJobLoaded;
 	}
 	
 	/**********
@@ -173,6 +179,10 @@ public class ModelPrinter {
 	
 	public void setDisplayName(String name){
 		mDisplayName = name;
+	}
+	
+	public void setLoaded(boolean load){
+		mJobLoaded = load;
 	}
 
 }
