@@ -12,10 +12,11 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.StorageModelCreation;
 
 public class GcodeFile  {
-	private static final String TAG = "GCodeFile";
+	private static final String TAG = "gcode";
 	public static final int COORDS_PER_VERTEX = 3;
 	private static Context mContext;
 	private static File mFile;
@@ -26,21 +27,20 @@ public class GcodeFile  {
 	
 	private static String [] mSplitLine;
 	private static int mMaxLayer;
-
-	private static boolean mDoSnapshot = false;
+	
+	private static int mMode = 0;
 	
 	private static boolean mContinueThread = true;
 	
-	public static void openGcodeFile (Context context, File file, DataStorage data, boolean doSnapshot) {
-		mContext = context;
+	public static void openGcodeFile (Context context, File file, DataStorage data, int mode) {
+		Log.i(TAG, " Open GcodeFile ");
 		mFile = file;		
 		mData = data;
-		mDoSnapshot = doSnapshot;
+		mMode = mode;
 		mContinueThread = true;
+		if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
 
-		if(!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
-		mData.setPathFile(mFile.getAbsolutePath());
-		
+		mData.setPathFile(mFile.getAbsolutePath());		
 		mData.initMaxMin();
 		mMaxLayer=-1;
 		startThreadToOpenFile (context);		
@@ -50,7 +50,6 @@ public class GcodeFile  {
 		mThread = new Thread () {
 			@Override
 			public void run () {
-				Log.i(TAG, "Starting thread to open file");
 				String line;
 				StringBuilder allLines = new StringBuilder ("");
 
@@ -63,7 +62,9 @@ public class GcodeFile  {
 					}
 					countReader.close();
 					
-					if(!mDoSnapshot) mProgressDialog.setMax(maxLines);
+
+					if(mMode== ViewerMain.PRINT_PREVIEW) mData.setMaxLinesFile(maxLines);
+					if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 					if (mContinueThread) processGcode(allLines, maxLines);
 
 					if (mContinueThread) mHandler.sendEmptyMessage(0);
@@ -192,22 +193,22 @@ public class GcodeFile  {
 					
 					 if (start && !end) mData.adjustMaxMin(x,y, z);
 				 }
-				 
+		 
 				 mData.addVertex(x);
 				 mData.addVertex(y);
 				 mData.addVertex(z);
 				 mData.addLayer(layer);
 				 mData.addType(type);
-				 		 
+				 			 		 
 				 if (layer>mMaxLayer) mMaxLayer = layer;
 				 		
 			}
-			
+					
 			 lines++;
 			 lastIndex = index+1;
-				
-			 if (!mDoSnapshot && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);	
-		}			
+
+			 if (mMode!= ViewerMain.DO_SNAPSHOT && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);	
+		}		
 	}
 	
     private static Handler mHandler = new Handler() {
@@ -216,7 +217,7 @@ public class GcodeFile  {
     		if (mData.getCoordinateListSize() < 1) {
     			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
     			ViewerMain.resetWhenCancel();
-    			if(!mDoSnapshot) mProgressDialog.dismiss();
+    			if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();
     			return;
     		}
     		
@@ -230,14 +231,19 @@ public class GcodeFile  {
     		mData.clearLayerList();
     		mData.clearTypeList();
 
-    		//Finish
-			if(!mDoSnapshot) {
-				ViewerMain.initSeekBar(mMaxLayer);
+
+    		if(mMode==ViewerMain.DONT_SNAPSHOT) {
+    			ViewerMain.initSeekBar(mMaxLayer);
+    			ViewerMain.initSeekBar(mMaxLayer);
 	    		ViewerMain.draw();
-				mProgressDialog.dismiss();   
-			} else {
+				mProgressDialog.dismiss();  
+    		} else if(mMode==ViewerMain.PRINT_PREVIEW) {
+    			PrintViewFragment.drawPrintView();
+    			PrintViewFragment.drawPrintView();
+    			mProgressDialog.dismiss();
+    		} else if (mMode==ViewerMain.DO_SNAPSHOT) {
 				StorageModelCreation.takeSnapshot();
-			}	  
+    		}
         }
     };
  }

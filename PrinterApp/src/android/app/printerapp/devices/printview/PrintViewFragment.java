@@ -1,15 +1,23 @@
 package android.app.printerapp.devices.printview;
 
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import android.app.printerapp.R;
 import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
+import android.app.printerapp.viewer.DataStorage;
+import android.app.printerapp.viewer.GcodeFile;
+import android.app.printerapp.viewer.ViewerMain;
+import android.app.printerapp.viewer.ViewerSurfaceView;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,7 +25,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -34,7 +43,14 @@ public class PrintViewFragment extends Fragment{
 	private TextView tv_printer;
 	private TextView tv_file;
 	private TextView tv_temp;
-	private TextView tv_prog;
+	private TextView tv_prog;	
+	
+	private static DataStorage mDataGcode;
+	private static ViewerSurfaceView mSurface;
+	private static FrameLayout mLayout; 
+
+	private static Context mContext;
+	private static int mActualProgress =30;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,9 +76,9 @@ public class PrintViewFragment extends Fragment{
 			rootView = inflater.inflate(R.layout.printview_layout,
 					container, false);	
 			
-			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.printview_camera);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-	                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);    
+			RelativeLayout ll = (RelativeLayout) rootView.findViewById(R.id.printview_camera);
+			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+	                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);    
 			if (mPrinter.getVideo().getParent() != null)	{
 				mPrinter.getVideo().stopPlayback();
 				((ViewGroup)mPrinter.getVideo().getParent()).removeAllViews();
@@ -74,11 +90,13 @@ public class PrintViewFragment extends Fragment{
 			tv_file = (TextView) rootView.findViewById(R.id.printview_file);
 			tv_temp = (TextView) rootView.findViewById(R.id.printview_temp);
 			tv_prog = (TextView) rootView.findViewById(R.id.printview_time);
-			
+			mContext = getActivity();
+
 			refreshData();
-		
+			
+			openGcodePrintView ("/storage/emulated/0/PrintManager/prueba.gcode", rootView, R.id.view_gcode);
+			
 		}
-		
 		return rootView;
 	}
 	
@@ -191,6 +209,33 @@ public class PrintViewFragment extends Fragment{
 		((ViewGroup)mPrinter.getVideo().getParent()).removeAllViews();
 		super.onDestroy();
 	}
+	
+	public void openGcodePrintView (String filePath, View rootView, int frameLayoutId) {
+		Context context = getActivity();
+		mLayout = (FrameLayout) rootView.findViewById (frameLayoutId);
+		File file = new File (filePath);
 		
+		mDataGcode = new DataStorage();
+		GcodeFile.openGcodeFile(context, file, mDataGcode,ViewerMain.PRINT_PREVIEW);
+		mDataGcode.setActualLayer(0);
+	}
+	
+	public static boolean drawPrintView () {
+		List <DataStorage> gcodeList = new ArrayList <DataStorage> ();
+		gcodeList.add(mDataGcode);	
 
+		mSurface = new ViewerSurfaceView (mContext, gcodeList, ViewerSurfaceView.LAYERS, ViewerMain.PRINT_PREVIEW);
+		mLayout.removeAllViews();
+		mLayout.addView(mSurface, 0);	
+		
+		changeProgress(mActualProgress);
+		return true;
+	}
+	
+	public static void changeProgress (double percentage) {
+		int maxLines =  mDataGcode.getMaxLinesFile();			
+		int progress = (int) percentage*maxLines/100;
+		mDataGcode.setActualLayer(progress);
+    	if (mSurface!= null) mSurface.requestRender();	
+	}
 }

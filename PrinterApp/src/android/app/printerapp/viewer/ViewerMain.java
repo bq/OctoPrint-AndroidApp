@@ -50,8 +50,9 @@ public class ViewerMain extends Fragment {
 	private static final int LAYER = 4; 
 	
 	//Constants 
-	public static final boolean DO_SNAPSHOT = true;
-	public static final boolean DONT_SNAPSHOT = false;
+	public static final int DO_SNAPSHOT = 0;
+	public static final int DONT_SNAPSHOT = 1;
+	public static final int PRINT_PREVIEW = 3;
 	public static final boolean STL = true;
 	public static final boolean GCODE = false;
 	
@@ -425,10 +426,10 @@ public class ViewerMain extends Fragment {
 		//Open the file
 		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) ) {
 			data = new DataStorage();
-			StlFile.openStlFile (mContext, mFile, data, false);
+			StlFile.openStlFile (mContext, mFile, data, DONT_SNAPSHOT);
 		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE"))) {
 			data = new DataStorage();
-			GcodeFile.openGcodeFile(mContext, mFile, data,false);
+			GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
 		}
 		mDataList.add (data);
    }
@@ -507,8 +508,7 @@ public class ViewerMain extends Fragment {
 			Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
 		}							
 	}
-	
-	
+
 	public static void draw () {
 		//Once the file has been opened, we need to refresh the data list. If we are opening a .gcode file, we need to delete the previous files (.stl and .gcode)
 		//If we are opening a .stl file, we need to delete the previous file only if it was a .gcode file.

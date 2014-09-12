@@ -20,6 +20,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
 	//Touch
+	private int mMode;
 	private final float TOUCH_SCALE_FACTOR_ROTATION = 90.0f / 320;  //180.0f / 320;
 	private float mPreviousX;
 	private float mPreviousY;
@@ -74,13 +75,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	    super(context, attrs);
 	}
 		
-	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, boolean doSnapshot) {
+
+	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, int mode) {
 		super(context);
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
-      
-        mDataList = data;
-		mRenderer = new ViewerRenderer (data, context, state, doSnapshot);
+
+        this.mMode = mode;
+        this.mDataList = data;
+		this.mRenderer = new ViewerRenderer (data, context, state, mode);
 		setRenderer(mRenderer);
 				
 		// Render the view only when there is a change in the drawing data
@@ -196,6 +199,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if (mMode == ViewerMain.PRINT_PREVIEW) return false;
+
 		float x = event.getX();
         float y = event.getY();
                

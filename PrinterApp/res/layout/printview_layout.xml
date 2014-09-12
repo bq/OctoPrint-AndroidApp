@@ -11,17 +11,24 @@
    android:background="@color/white"
    xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp" xmlns:android="http://schemas.android.com/apk/res/android">
    
-	<LinearLayout 
-	     android:id="@+id/printview_camera"
+	<RelativeLayout 
+	    android:id="@+id/printview_camera"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:orientation="vertical" >
 	    
+	    <FrameLayout
+	        android:id="@+id/view_gcode"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	       	android:layout_alignParentBottom="true"
+        	android:layout_alignParentRight="true">
+	    </FrameLayout>
 	
-	</LinearLayout>
+	</RelativeLayout>
 	
 	 <LinearLayout
-                    android:id="@+id/storage_layout"
+        android:id="@+id/storage_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"

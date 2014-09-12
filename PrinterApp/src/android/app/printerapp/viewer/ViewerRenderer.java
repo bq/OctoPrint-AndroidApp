@@ -105,7 +105,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	float[] mLightPosInWorldSpace = new float[4];
 	float[] mLightModelMatrix = new float[16];	
 			
-	private boolean mSnapShot = false;
+	private int mMode = 0;
 		
 	//Variables Touch events
 	private int mObjectPressed=-1;
@@ -127,12 +127,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public final static int OUT_TOUCHED = 3;
 
 			
-	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, boolean doSnapshot) {	
+	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode) {	
 		this.mDataList = dataList;
 		this.mContext = context;
 		this.mState = state;
 		
-		this.mSnapShot = doSnapshot;
+		this.mMode = mode;
 	}
 	
 	public void showBackWitboxFace (boolean draw) {
@@ -481,9 +481,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				}
 				
 			} else if (mDataList.size()>0) mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
-        
-	
-		if (mSnapShot) mInfinitePlane = new WitboxPlate (mContext, true);
+		
+		if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true);
 
 		mWitboxFaceBack = new WitboxFaces (BACK);
 		mWitboxFaceRight = new WitboxFaces (RIGHT);
@@ -505,7 +504,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         // this projection matrix is applied to object coordinates		
         Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, Z_NEAR, Z_FAR);
         
-        if (mSnapShot) {
+        if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) {
         	DataStorage data = mDataList.get(0);
 	        float h = data.getHeight();
 	        float l = data.getLong();
@@ -643,7 +642,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         }
         
 
-        if (mSnapShot) {
+        if (mMode == ViewerMain.DO_SNAPSHOT) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
         	takeSnapshot(unused);
         } else {

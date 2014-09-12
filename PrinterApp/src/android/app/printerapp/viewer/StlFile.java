@@ -38,19 +38,21 @@ public class StlFile {
 	private static ProgressDialog mProgressDialog;
 	private static DataStorage mData;
 	private static Context mContext;
-	private static boolean mDoSnapshot;
-	private static Thread mThread;
-	
+
+	private static Thread mThread;	
 	private static boolean mContinueThread = true;
 	
-	private static final int COORDS_PER_TRIANGLE = 9;
+	private static final int COORDS_PER_TRIANGLE = 9;		
+	private static int mMode;
+
 		
-	public static void openStlFile (Context context, File file, DataStorage data, boolean doSnapshot) {
-		Log.i(TAG, "Open File");
-		mDoSnapshot = doSnapshot;
+	public static void openStlFile (Context context, File file, DataStorage data, int mode) {
+		Log.i(TAG, "Open STL File");
+		mMode = mode;
 		mContinueThread = true;
-		
-		if (!mDoSnapshot) mProgressDialog = prepareProgressDialog(context);
+
+		if (mMode != ViewerMain.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
+
 		mData = data;
 		mContext = context;
 		mFile = file;
@@ -150,7 +152,7 @@ public class StlFile {
 		    }
 		});
 		
-		if (!mDoSnapshot) progressDialog.show();
+		if (mMode!= ViewerMain.DO_SNAPSHOT) progressDialog.show();
 		
 		return progressDialog;
 	}
@@ -160,29 +162,30 @@ public class StlFile {
 	}
 	
 	 private static Handler mHandler = new Handler() {
-	        @Override
-	        public void handleMessage(Message msg) {
-	    		if (mData.getCoordinateListSize() < 1) {
-	    			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
-	    			ViewerMain.resetWhenCancel();
-	    			if (!mDoSnapshot) mProgressDialog.dismiss();
-	    			return;
-	    		}
-	    		
-	    		mData.fillVertexArray();
-	    		mData.fillNormalArray();
-	    		
-	    		mData.clearNormalList();
-	    		mData.clearVertexList();
-	    		
-				//Finish 
-				if (!mDoSnapshot) {
-					ViewerMain.draw();
-					mProgressDialog.dismiss();  
-				} else {
-					StorageModelCreation.takeSnapshot();
-				}    		
-	        }
+        @Override
+        public void handleMessage(Message msg) {
+    		if (mData.getCoordinateListSize() < 1) {
+    			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
+    			ViewerMain.resetWhenCancel();
+    			if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();
+    			return;
+    		}
+    		
+    		mData.fillVertexArray();
+    		mData.fillNormalArray();
+    		
+    		mData.clearNormalList();
+    		mData.clearVertexList();
+    		  		
+
+    		//Finish
+			if (mMode== ViewerMain.DONT_SNAPSHOT) {
+				ViewerMain.draw();
+				mProgressDialog.dismiss();  
+			} else if (mMode == ViewerMain.DO_SNAPSHOT) {
+				StorageModelCreation.takeSnapshot();
+			}
+        }
 	 };
 
 	private static void processText (File file) {
@@ -196,11 +199,11 @@ public class StlFile {
 					line = line.replaceFirst("vertex ", "").trim();
 					allLines.append(line+"\n");
 					maxLines++;
-					if (maxLines%1000==0 && !mDoSnapshot) mProgressDialog.setMax(maxLines);
+					if (maxLines%1000==0 && mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 				}
 			}
 				
-			if (!mDoSnapshot) mProgressDialog.setMax(maxLines);
+			if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 			
 			countReader.close();
 			
@@ -224,7 +227,7 @@ public class StlFile {
 				lines+=3;
 				
 				if (lines % (maxLines/10) == 0) {
-					if (!mDoSnapshot) mProgressDialog.setProgress(lines);
+					if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setProgress(lines);
 				}
 			}
 			
@@ -278,9 +281,10 @@ public class StlFile {
 	private static void processBinary(byte[] stlBytes) throws Exception {			
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 				
-		if (!mDoSnapshot) mProgressDialog.setMax(vectorSize);
+		if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(vectorSize);
 		for (int i = 0; i < vectorSize; i++) {
 			if(!mContinueThread) break;
+
 			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
 			float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
 			float z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 20));
@@ -321,7 +325,7 @@ public class StlFile {
 			
 			
 			if (i % (vectorSize / 10) == 0) {
-				if (!mDoSnapshot) mProgressDialog.setProgress(i);
+				if (mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setProgress(i);
 			}
 		}
 	}

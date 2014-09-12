@@ -1,7 +1,7 @@
 package android.app.printerapp.viewer;
 
-import java.util.List;
 
+import java.util.List;
 import android.opengl.Matrix;
 
 public class Geometry {

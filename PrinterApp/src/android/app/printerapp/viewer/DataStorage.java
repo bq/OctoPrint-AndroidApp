@@ -20,6 +20,7 @@ public class DataStorage {
 		
 	private int mMaxLayer;
 	private int mActualLayer;
+	private int mMaxLines;
 	
 	private float mMinX;
 	private float mMaxX;
@@ -58,6 +59,7 @@ public class DataStorage {
 		Matrix.setIdentityM(mModelMatrix, 0);
 	}
 	
+
 	public void copyData (DataStorage d) {
 		for (int i=0; i<d.getLineLengthList().size(); i++) mLineLengthList.add(d.getLineLengthList().get(i));
 	
@@ -93,6 +95,14 @@ public class DataStorage {
 		
 	    for (int i=0; i<mRotationMatrix.length; i++) mRotationMatrix[i] = d.getRotationMatrix()[i];	
 	    for (int i=0; i<mModelMatrix.length; i++) mModelMatrix[i] = d.getModelMatrix()[i];	   	       
+	}
+	
+	public void setMaxLinesFile (int maxLines) {
+		mMaxLines = maxLines;
+	}
+	
+	public int getMaxLinesFile () {
+		return mMaxLines;
 	}
 	
 	public int getCoordinateListSize () {
