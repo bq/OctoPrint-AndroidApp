@@ -146,12 +146,13 @@ public class PrintViewFragment extends Fragment{
 		
 		tv_printer.setText(mPrinter.getDisplayName());
 		tv_file.setText(mPrinter.getJob().getFilename());
-		tv_temp.setText(mPrinter.getTemperature() + "ºC");
+		tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
 			
 		if (mPrinter.getStatus()== StateUtils.STATE_PRINTING){
 			
 			isPrinting = true;
-			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) + " left)");
+			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) + 
+					" left / " + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed)");
 			
 			
 		} else {

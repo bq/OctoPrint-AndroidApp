@@ -36,6 +36,7 @@
     <string name="devices_upload_waiting">Subiendo fichero&#8230;</string>
     <string name="devices_text_loading">Subiendo&#8230;</string>
     <string name="devices_text_connecting">Conectando&#8230;</string>
+    <string name="devices_text_completed">Finalizado</string>
     
     <string name="devices_menu_add">Añadir impresora</string>
     <string name="devices_menu_filter">Filtrar dispositivos</string>

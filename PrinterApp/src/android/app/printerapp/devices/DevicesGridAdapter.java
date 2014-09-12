@@ -117,6 +117,18 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			switch (status){
 			
 				case StateUtils.STATE_OPERATIONAL:{
+
+					if (m.getJob()!=null){
+						Double n = Double.valueOf(m.getJob().getProgress() );
+						if (n.intValue() == 100){
+							pb.setVisibility(View.VISIBLE);
+							pb.setProgress(n.intValue());
+							tvl.setText(R.string.devices_text_completed);
+							tvl.setVisibility(View.VISIBLE);
+						}
+					}
+					
+					//Must put this second because loading has priority over completion
 					
 					if (!m.getLoaded()) {
 						
@@ -124,6 +136,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 						tvl.setText(R.string.devices_text_loading);
 						tvl.setVisibility(View.VISIBLE);
 					}
+					
 					//iv.setVisibility(View.GONE);
 					//pb.setVisibility(View.GONE);
 				} break;
