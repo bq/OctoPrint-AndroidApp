@@ -34,6 +34,9 @@ public class ModelPrinter {
 	private ModelJob mJob;
 	private boolean mJobLoaded;
 	
+	//Job path in case it's a local file, else null
+	private String mJobPath;
+	
 	//Camera
 	private CameraHandler mCam;
 	
@@ -48,6 +51,9 @@ public class ModelPrinter {
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
 		mJobLoaded = true;
+		
+		//TODO: Load with db
+		mJobPath = null;
 		
 		//Set new position according to the position in the DB, or the first available
 		if ((position<0) || (Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
@@ -108,6 +114,10 @@ public class ModelPrinter {
 	
 	public boolean getLoaded(){
 		return mJobLoaded;
+	}
+
+	public String getJobPath(){
+		return mJobPath;
 	}
 	
 	/**********
@@ -191,6 +201,10 @@ public class ModelPrinter {
 	
 	public void setLoaded(boolean load){
 		mJobLoaded = load;
+	}
+	
+	public void setJobPath(String path){
+		mJobPath = path;
 	}
 
 }

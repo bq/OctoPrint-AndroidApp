@@ -132,6 +132,9 @@ public class OctoprintFiles {
 			
 			RequestParams params = new RequestParams();
 			
+			//if it's a local file
+			p.setJobPath(file.getAbsolutePath());
+			
 			try {
 				//TODO fix
 				//params.put("select", true);

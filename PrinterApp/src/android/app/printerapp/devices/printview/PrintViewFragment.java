@@ -26,7 +26,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -37,7 +36,7 @@ import android.widget.TextView;
  */
 public class PrintViewFragment extends Fragment{
 	
-	private ModelPrinter mPrinter;
+	private static ModelPrinter mPrinter;
 	private boolean isPrinting = false;
 	
 	private TextView tv_printer;
@@ -48,9 +47,12 @@ public class PrintViewFragment extends Fragment{
 	private static DataStorage mDataGcode;
 	private static ViewerSurfaceView mSurface;
 	private static FrameLayout mLayout; 
-
+	private static FrameLayout mLayoutVideo;
+	
 	private static Context mContext;
-	private static int mActualProgress =30;
+	
+	//TODO: temp variable for initial progress
+	private static int mActualProgress = 0;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,16 +77,20 @@ public class PrintViewFragment extends Fragment{
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.printview_layout,
 					container, false);	
+			if (mPrinter.getJobPath()!=null) openGcodePrintView (mPrinter.getJobPath(), rootView, R.id.view_gcode);
+
 			
-			RelativeLayout ll = (RelativeLayout) rootView.findViewById(R.id.printview_camera);
-			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-	                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);    
+			//mRl = (RelativeLayout) rootView.findViewById(R.id.rlv);
+
+			mLayoutVideo = (FrameLayout) rootView.findViewById(R.id.printview_video);
+			
 			if (mPrinter.getVideo().getParent() != null)	{
 				mPrinter.getVideo().stopPlayback();
 				((ViewGroup)mPrinter.getVideo().getParent()).removeAllViews();
 			} 
 			
-			ll.addView(mPrinter.getVideo(),layoutParams);
+			mLayoutVideo.addView(mPrinter.getVideo());		
+			
 			
 			tv_printer = (TextView) rootView.findViewById(R.id.printview_printer);
 			tv_file = (TextView) rootView.findViewById(R.id.printview_file);
@@ -94,7 +100,6 @@ public class PrintViewFragment extends Fragment{
 
 			refreshData();
 			
-			openGcodePrintView ("/storage/emulated/0/PrintManager/prueba.gcode", rootView, R.id.view_gcode);
 			
 		}
 		return rootView;
@@ -172,7 +177,8 @@ public class PrintViewFragment extends Fragment{
 			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) + 
 					" left / " + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed)");
 			
-			
+		if (mPrinter.getJobPath()!=null) changeProgress(Double.valueOf(mPrinter.getJob().getProgress()));	
+		
 		} else {
 			
 			if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
@@ -210,6 +216,15 @@ public class PrintViewFragment extends Fragment{
 		super.onDestroy();
 	}
 	
+	/*******************************************************************************************
+	 * 
+	 * 					PRINT VIEW PROGRESS HANDLER
+	 * 
+	 * @param filePath
+	 * @param rootView
+	 * @param frameLayoutId
+	 *******************************************************************************************/
+	
 	public void openGcodePrintView (String filePath, View rootView, int frameLayoutId) {
 		Context context = getActivity();
 		mLayout = (FrameLayout) rootView.findViewById (frameLayoutId);
@@ -218,6 +233,7 @@ public class PrintViewFragment extends Fragment{
 		mDataGcode = new DataStorage();
 		GcodeFile.openGcodeFile(context, file, mDataGcode,ViewerMain.PRINT_PREVIEW);
 		mDataGcode.setActualLayer(0);
+		
 	}
 	
 	public static boolean drawPrintView () {
@@ -229,11 +245,13 @@ public class PrintViewFragment extends Fragment{
 		mLayout.addView(mSurface, 0);	
 		
 		changeProgress(mActualProgress);
+	
+
 		return true;
 	}
 	
 	public static void changeProgress (double percentage) {
-		int maxLines =  mDataGcode.getMaxLinesFile();			
+		int maxLines =  mDataGcode.getMaxLayer();	
 		int progress = (int) percentage*maxLines/100;
 		mDataGcode.setActualLayer(progress);
     	if (mSurface!= null) mSurface.requestRender();	
