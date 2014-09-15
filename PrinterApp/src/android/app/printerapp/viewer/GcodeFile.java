@@ -234,11 +234,9 @@ public class GcodeFile  {
 
     		if(mMode==ViewerMain.DONT_SNAPSHOT) {
     			ViewerMain.initSeekBar(mMaxLayer);
-    			ViewerMain.initSeekBar(mMaxLayer);
 	    		ViewerMain.draw();
 				mProgressDialog.dismiss();  
     		} else if(mMode==ViewerMain.PRINT_PREVIEW) {
-    			PrintViewFragment.drawPrintView();
     			PrintViewFragment.drawPrintView();
     			mProgressDialog.dismiss();
     		} else if (mMode==ViewerMain.DO_SNAPSHOT) {
