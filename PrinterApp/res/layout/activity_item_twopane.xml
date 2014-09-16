@@ -30,14 +30,26 @@
     android:layout_height="match_parent"
     >
 
+        
 
 	    <FrameLayout
 	        android:id="@+id/item_detail_container"
 	        android:layout_width="0dp"
 	        android:layout_height="match_parent"
 	        android:layout_weight="3"
-	        android:background="@drawable/octo_splash" 
-	        />
+	        android:background="@drawable/patron" 
+	        >
+	        
+	        <ImageView
+	            android:id="@+id/iv_logo"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/logo"
+	            android:layout_gravity="center" />
+
+	    </FrameLayout>
+	    
+	    
 	    
 	    <fragment
 	        android:id="@+id/item_list"
