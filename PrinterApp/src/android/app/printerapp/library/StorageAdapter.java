@@ -84,7 +84,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 					iv.setImageDrawable(d);
 					
 				} else {
-					iv.setImageResource(R.drawable.browser_carpeta);
+					iv.setImageResource(R.drawable.folder_normal_icon);
 				}
 				
 				if (((ModelFile)m).getStl()==null) v.findViewById(R.id.storage_gcode).setVisibility(View.VISIBLE); 
@@ -92,7 +92,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 				
 			} else{	
 							
-					iv.setImageResource(R.drawable.browser_carpeta);
+					iv.setImageResource(R.drawable.folder_normal_icon);
 			}
 			
 
@@ -101,7 +101,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 			
 			//TODO Handle printer internal files
 			if (m.getParent().equals("printer")){
-				iv.setImageResource(R.drawable.browser_carpeta);
+				iv.setImageResource(R.drawable.folder_internal_icon);
 				
 				ModelPrinter p = DevicesListController.getPrinter(m.getName());
 				tv.setText(p.getDisplayName());
