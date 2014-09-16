@@ -161,6 +161,12 @@ public class Geometry {
 			 return true;
 		 }
 		 
+		 //New cases that were not being considered 
+		 if (((minX>=minX2 && maxX<=maxX2) && (maxY>=maxY2 && minY<=minY2)) ||
+			((minX2>=minX && maxX2<=maxX) && (maxY2>=maxY && minY2<=minY) )) {
+			 return true;
+		 }
+		 
 		 return false;
 
 	 }
@@ -240,10 +246,10 @@ public class Geometry {
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 					break;
 				} else if (i==objects.size()-2) {					
-					newMaxX = setMinX;
-					newMinX = setMinX - width;
-					newMaxY = objects.get(index).getMaxY();
-					newMinY = objects.get(index).getMinY();	
+					newMaxX = setMinX - OFFSET;
+					newMinX = setMinX - (width + OFFSET);
+					newMaxY = objects.get(index).getMaxY()+OFFSET;
+					newMinY = objects.get(index).getMinY()+OFFSET;	
 					
 					data.setStateObject(ViewerRenderer.OUT_NOT_TOUCHED);
 					
