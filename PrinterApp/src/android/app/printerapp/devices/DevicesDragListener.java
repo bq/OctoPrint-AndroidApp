@@ -51,7 +51,8 @@ public class DevicesDragListener implements OnDragListener {
 		    		
 		    		//ItemListActivity.showDialog("Printer offline");
 		    		
-		    	} else if (mModel.getStatus() == StateUtils.STATE_OPERATIONAL){
+		    	} else if ((mModel.getStatus() == StateUtils.STATE_OPERATIONAL) ||
+		    	(mModel.getStatus() == StateUtils.STATE_ERROR)){
 		    		
 		    		
 		    		ClipData.Item item = event.getClipData().getItemAt(0);

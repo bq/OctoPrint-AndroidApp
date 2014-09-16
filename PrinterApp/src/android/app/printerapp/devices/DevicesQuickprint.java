@@ -1,5 +1,6 @@
 package android.app.printerapp.devices;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class DevicesQuickprint {
 	
 	
 	/**************************************************************************************
-	 * 			METHODS
+	 * 		METHODS
 	 *****************************************************************************************/
 	
 	
@@ -82,76 +83,88 @@ public class DevicesQuickprint {
 			//LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			//View v = inflater.inflate(R.layout.storage_main, null);
 			
-			ImageView v;
-			
-			if ((StorageController.isProject(m))){
+			if (m.getGcodeList()!=null){
+				File path = new File(m.getGcodeList());
+				final File[] files = path.getParentFile().listFiles();
 				
-				//TextView tv = (TextView) v.findViewById(R.id.storage_label);
-				//tv.setText(m.getName());
-				
-				//ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
-				
-				v = new ImageView(mContext);
-				v.setLayoutParams(new LayoutParams(120,120,Gravity.CENTER));
-				v.setPadding(5, 0, 5, 0);
-				
-				if (m.getStorage().equals("Internal storage")){
-					Drawable d;
-					d =m.getSnapshot();
-				
-					if (d!=null){
-						v.setImageDrawable(d);
-					} else {
-						v.setImageResource(R.drawable.file_icon);
-					}
-				} else v.setImageResource(R.drawable.file_icon);
-			
-					 	
-				/*
-				 * On long click we start dragging the item, no need to make it invisible
-				 */
-				v.setOnLongClickListener(new OnLongClickListener() {
+				for (int i=0 ; i<files.length; i++){
 					
-					@Override
-					public boolean onLongClick(View v) {
-						
-	
-						String name = m.getGcodeList();
-						
-						
-						/**
-						 * Check if there's a real gcode, 
-						 */
-						if (name!=null){
-							
-							ClipData data = null;
-							
-							if (m.getStorage().equals("Witbox")){
-								 data= ClipData.newPlainText("internal", name);
-							} else if (m.getStorage().equals("sd")){
-								data = ClipData.newPlainText("internalsd", m.getName());
-							}else if (name.substring(name.length() - 6, name.length()).equals(".gcode")){
-								data = ClipData.newPlainText("name", name);	
-							}
-							
-							DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-							v.startDrag(data, shadowBuilder, v, 0);
-							
-							
-							
-						} else 	Toast.makeText(mContext, R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
-	
-						
+				final int current = i;
+								
+				ImageView v;
+				
+				if ((StorageController.isProject(m))){
 					
+					//TextView tv = (TextView) v.findViewById(R.id.storage_label);
+					//tv.setText(m.getName());
+					
+					//ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
+					
+					v = new ImageView(mContext);
+					v.setLayoutParams(new LayoutParams(120,120,Gravity.CENTER));
+					v.setPadding(5, 0, 5, 0);
+					
+					if (m.getStorage().equals("Internal storage")){
+						Drawable d;
+						d =m.getSnapshot();
+					
+						if (d!=null){
+							v.setImageDrawable(d);
+						} else {
+							v.setImageResource(R.drawable.file_icon);
+						}
+					} else v.setImageResource(R.drawable.file_icon);
+				
+						 	
+					/*
+					 * On long click we start dragging the item, no need to make it invisible
+					 */
+					v.setOnLongClickListener(new OnLongClickListener() {
 						
-						return false;
-					}
-				});
+						@Override
+						public boolean onLongClick(View v) {
+							
+		
+							String name = files[current].getAbsolutePath();
+							
+							
+							/**
+							 * Check if there's a real gcode, 
+							 */
+							if (name!=null){
+								
+								ClipData data = null;
+								
+								if (m.getStorage().equals("Witbox")){
+									 data= ClipData.newPlainText("internal", name);
+								} else if (m.getStorage().equals("sd")){
+									data = ClipData.newPlainText("internalsd", m.getName());
+								}else if (name.substring(name.length() - 6, name.length()).equals(".gcode")){
+									data = ClipData.newPlainText("name", name);	
+								}
+								
+								DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+								v.startDrag(data, shadowBuilder, v, 0);
+								
+								
+								
+							} else 	Toast.makeText(mContext, R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
+		
+							
 						
-				if (mLayout!=null){
-					mLayout.addView(v);
-				} else Log.i("out","NULL");
+							
+							return false;
+						}
+					});
+							
+					if (mLayout!=null){
+						mLayout.addView(v);
+					} else Log.i("out","NULL");
+				}
+				
+				}
 			}
+			
 			
 		}
 		
