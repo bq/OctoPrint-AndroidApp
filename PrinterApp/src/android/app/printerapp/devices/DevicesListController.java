@@ -137,7 +137,7 @@ public class DevicesListController {
 @SuppressLint("SdCardPath")
 public static void selectPrinter(final Context context, final File f){
 		
-		ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
+		final ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
 		
 		//Fill the list with operational printers
 		for (ModelPrinter p : mList){
@@ -192,7 +192,7 @@ public static void selectPrinter(final Context context, final File f){
 					
 					if (checkedItems[i]){
 						
-						ModelPrinter m = mList.get(i);
+						ModelPrinter m = tempList.get(i);
 						
 						if (f.getParent().equals("sd")){
 							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/sdcard/");	
