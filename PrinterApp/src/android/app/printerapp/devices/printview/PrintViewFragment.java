@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.SlidingUpPanelLayout;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
@@ -125,8 +126,7 @@ public class PrintViewFragment extends Fragment{
 				
 					
 				}
-				
-				
+
 			}
 
 			
@@ -145,6 +145,14 @@ public class PrintViewFragment extends Fragment{
 			tv_temp = (TextView) rootView.findViewById(R.id.printview_temp);
 			tv_prog = (TextView) rootView.findViewById(R.id.printview_time);
 			
+			
+			/***************** SLIDE PANEL ************************************/
+			
+			//Slide panel setup
+			
+			SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
+			TextView textView = (TextView) rootView.findViewById(R.id.drag_text);
+			slidePanel.setDragView(textView);
 
 			refreshData();
 			
