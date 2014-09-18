@@ -1,5 +1,10 @@
-package android.app.printerapp;
+package android.app.printerapp.octoprint;
 
+/**
+ * Class with the type of states the printers can hold at any moment
+ * @author alberto-baeza
+ *
+ */
 public class StateUtils {
 	public static final int 	STATE_ADHOC = -2;
 	public static final int	STATE_NEW = -1;

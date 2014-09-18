@@ -48,10 +48,13 @@ public class ListContent {
 		}
 	}
 	
-	/**Added method to retrieve list with string values
+	/**
+	 * Added method to retrieve list with string values
 	 * 
 	 * @param context
-	 * @return
+	 * @return List of items with id + name as content
+	 * 
+	 *
 	 */
 	public static List<ListItem> getItemList(Context context){
 		
@@ -61,7 +64,10 @@ public class ListContent {
 		addItem(new ListItem("1", context.getString(R.string.fragment_devices)));
 		addItem(new ListItem("2", context.getString(R.string.fragment_print)));
 		addItem(new ListItem("3", context.getString(R.string.fragment_models)));
+		
+		//TODO: History fragment
 		//addItem(new ListItem("4", context.getString(R.string.fragment_history)));
+		
 		addItem(new ListItem("5", context.getString(R.string.fragment_settings)));
 		
 		return ITEMS;

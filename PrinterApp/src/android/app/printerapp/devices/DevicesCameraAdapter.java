@@ -3,8 +3,8 @@ package android.app.printerapp.devices;
 import java.util.List;
 
 import android.app.printerapp.R;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

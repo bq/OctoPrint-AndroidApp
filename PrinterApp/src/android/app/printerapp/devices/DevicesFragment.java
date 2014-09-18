@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +17,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +37,7 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 /**
- * This is the fragment that will contain the Device VIEW logic
+ * This is the fragment that will contain the Device Grid and functionality
  * @author alberto-baeza
  *
  */
@@ -50,8 +49,12 @@ public class DevicesFragment extends Fragment{
 	private DevicesListAdapter mListAdapter;
 	private DevicesCameraAdapter mCameraAdapter;
 	
-	
+	//Network manager contoller
 	private PrintNetworkManager mNetworkManager;
+	
+	/**
+	 * Additional variables
+	 */
 	
 	//Save current filter
 	private int mFilter;
@@ -74,10 +77,9 @@ public class DevicesFragment extends Fragment{
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-		
-		
-		
+				
 		super.onCreate(savedInstanceState);		
+		
 		//Retain instance to keep the Fragment from destroying itself
 		setRetainInstance(true);
 		
@@ -111,58 +113,55 @@ public class DevicesFragment extends Fragment{
 			
 			//------------------------------- View references -----------------//
 									
-			GridView g = (GridView) rootView.findViewById(R.id.devices_grid);
+			//Grid
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
 					R.layout.grid_element, DevicesListController.getList());
 			
-			//assign click listeners
-			g.setOnItemClickListener(gridClickListener());	
-			g.setOnItemLongClickListener(gridLongClickListener());
-	 
-			g.setAdapter(mGridAdapter);
+			GridView gridView = (GridView) rootView.findViewById(R.id.devices_grid);
+			gridView.setOnItemClickListener(gridClickListener());	
+			gridView.setOnItemLongClickListener(gridLongClickListener());
 			
-			
-			
+			gridView.setAdapter(mGridAdapter);
 			
 			
 			/*******************************************************************/
 			
-			//Reference to the first tab
-			/*ViewGroup mViewGroup = (ViewGroup) rootView.findViewById(R.id.devices_grid);
-			mLayoutAdapter = new DevicesLayoutAdapter(getActivity(), mViewGroup);*/
-			
-			
-			
-			//Reference to the second tab, handled by an adapter
+			//List
+
 			mListAdapter = new DevicesListAdapter(getActivity(), 
 					R.layout.list_element, DevicesListController.getList());
 			
-			ListView l = (ListView) rootView.findViewById(R.id.devices_list);
-			l.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
-			l.setOnItemClickListener(listClickListener());	
-			l.setAdapter(mListAdapter);
+			ListView listView = (ListView) rootView.findViewById(R.id.devices_list);
+			listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
+			listView.setOnItemClickListener(listClickListener());	
+			listView.setAdapter(mListAdapter);
 			
 			
 			
 			/*************** VIDEO HANDLER ****************************/
 					
-			
-			GridView gv = (GridView) rootView.findViewById(R.id.devices_camera);
-			
 			mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
 			
+			GridView cameraView = (GridView) rootView.findViewById(R.id.devices_camera);
+			cameraView.setAdapter(mCameraAdapter);
 			
-			gv.setAdapter(mCameraAdapter);
-			/*******************************************************************/
-			SlidingUpPanelLayout s = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
-			TextView t = (TextView) rootView.findViewById(R.id.drag_text);
-			s.setDragView(t);
 			
+			/***************** SLIDE PANEL ************************************/
+			
+			//Slide panel setup
+			
+			SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
+			TextView textView = (TextView) rootView.findViewById(R.id.drag_text);
+			slidePanel.setDragView(textView);
+			
+			/******************* QUICKPRINT PANEL ************************************/
 			
 			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearlayout_storage);
-			
 			new DevicesQuickprint(ll,getActivity());
+			
+			
+			/***************************************************************/
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
@@ -179,8 +178,6 @@ public class DevicesFragment extends Fragment{
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.devices_menu, menu);
-		
-		Log.i("OUT","INFLATED!");
 	}
 	
 	//Option menu
@@ -216,6 +213,8 @@ public class DevicesFragment extends Fragment{
 		super.onAttach(activity);
 	}
 
+	
+	
 	/**
 	 * Constructor for the tab host
 	 * TODO: Should be moved to a View class since it only handles ui.
@@ -259,6 +258,11 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
+	/**
+	 * Add a new element to the list and notify the adapter
+	 * It's handled on this Fragment to allow dynamic addition
+	 * @param m Printer to add 
+	 */
 	public void addElement(final ModelPrinter m){
 		
 		getActivity().runOnUiThread(new Runnable() {
@@ -267,10 +271,14 @@ public class DevicesFragment extends Fragment{
 			public void run() {
 								
 				if (!DatabaseController.checkExisting(m)){
+					
 					DevicesListController.addToList(m);
+					
+					//TODO Change linked switch
 					m.setNotLinked();
 					notifyAdapter();
-				} else Log.i("DEVICES","Already exists primo");
+					
+				} 
 				
 			}
 		});
@@ -278,7 +286,7 @@ public class DevicesFragment extends Fragment{
 	}
 		
 	
-	
+	//Notify all adapters
 	public void notifyAdapter(){
 		
 		try{
@@ -290,17 +298,20 @@ public class DevicesFragment extends Fragment{
 			e.printStackTrace();
 		}
 		
-		
-		Log.i("DEVICES","I was notified senpai!");
-		
 	}
 	
 	
 	
-	//Filter option for the device list
+	/**
+	 * Filter options
+	 */
+	//TODO check if one adapter is possible
 	public void optionFilter(){
+		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
 		adb.setTitle(R.string.devices_filter_dialog_title);
+		
+		
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
 		
@@ -353,7 +364,10 @@ public class DevicesFragment extends Fragment{
 		
 	}
 	
-	
+	/**
+	 * Dialog for the QR code insertion and sending
+	 * @param m
+	 */
 	public void codeDialog(final ModelPrinter m){
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
@@ -363,18 +377,16 @@ public class DevicesFragment extends Fragment{
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.setup_dialog, null, false);
 		
-		//EditText et = (EditText) v.findViewById(R.id.et_setup);
 
+		//On insertion write the printer onto the database and start updating the socket
 		adb.setPositiveButton(R.string.add, new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
-				//m.startUpdate();
 				DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()));	
 				m.setLinked(getActivity());
 				notifyAdapter();
-				//DevicesListController.loadList(getActivity());
 			}
 		});
 		
@@ -388,6 +400,8 @@ public class DevicesFragment extends Fragment{
 	
 	/******************************** click listeners *********************************/
 	
+	
+	//TODO: Click listeners should be moved to another class
 	public OnItemClickListener listClickListener(){
 		
 		return new OnItemClickListener() {

@@ -6,7 +6,6 @@ import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
@@ -20,9 +19,13 @@ import android.view.View.OnDragListener;
  */
 public class DevicesEmptyDragListener implements OnDragListener{
 	
-	int mPosition;
+	//current position on the grid
+	private int mPosition;
 	
-	//Constructor
+	/**
+	 * Constructor to the listener
+	 * @param pos the position on the grid
+	 */
 	public DevicesEmptyDragListener(int pos){
 
 		mPosition = pos;
@@ -44,9 +47,9 @@ public class DevicesEmptyDragListener implements OnDragListener{
 	    		
 	    		//If it's a printer
 	    		if (tag.equals("printer")){
-		    		
-		    		Log.i("DRAG", item.getText().toString());
-		    		
+		    				    		
+	    			
+	    			//Find a printer from it's name
 		    		ModelPrinter p = DevicesListController.getPrinter(item.getText().toString());
 		    		
 		    		if (p!=null){
@@ -55,10 +58,9 @@ public class DevicesEmptyDragListener implements OnDragListener{
 	    				p.setPosition(mPosition);
 	    				//update database
 	    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getName(), String.valueOf(mPosition));
-	    				//notify
+	    				//static notification of the adapters
 	    				ItemListActivity.notifyAdapters();
-		    			
-		    			
+		    				
 		    		}
 		    		
 	    		}
