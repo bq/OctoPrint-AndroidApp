@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
 import android.app.printerapp.octoprint.StateUtils;
@@ -35,20 +36,24 @@ import android.widget.TextView;
  *
  */
 public class PrintViewFragment extends Fragment{
-	
+		
+	//Current Printer and status
 	private static ModelPrinter mPrinter;
 	private boolean isPrinting = false;
 	
+	//View references
 	private TextView tv_printer;
 	private TextView tv_file;
 	private TextView tv_temp;
 	private TextView tv_prog;	
 	
+	//File references
 	private static DataStorage mDataGcode;
 	private static ViewerSurfaceView mSurface;
 	private static FrameLayout mLayout; 
 	private static FrameLayout mLayoutVideo;
 	
+	//Context needed for file loading
 	private static Context mContext;
 	
 	//TODO: temp variable for initial progress
@@ -65,11 +70,17 @@ public class PrintViewFragment extends Fragment{
 		//If is not new
 		if (savedInstanceState==null){
 			
+			mContext = getActivity();
+			
 			Bundle args = getArguments();
 			mPrinter = DevicesListController.getPrinter(args.getString("printer"));
 			
+			//Check printing status
 			if (mPrinter.getStatus() == StateUtils.STATE_PRINTING) isPrinting = true;
-			else isPrinting = false;
+			else {
+				mActualProgress = 100;
+				isPrinting = false;
+			}
 			
 			//Show custom option menu
 			setHasOptionsMenu(true);
@@ -77,18 +88,55 @@ public class PrintViewFragment extends Fragment{
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.printview_layout,
 					container, false);	
-			if (mPrinter.getJobPath()!=null) openGcodePrintView (mPrinter.getJobPath(), rootView, R.id.view_gcode);
+				
+			/************************************************************************/
+			
+			//Show gcode tracking if there's a current path in the printer/preferences
+			
+			if (mPrinter.getJobPath()!=null) {
+				
+				//getJobPath is lost after app closing
+				//TODO: File doesn't change if switched while in PrintView
+				openGcodePrintView (mPrinter.getJobPath(), rootView, R.id.view_gcode);
+				
+				
+			//No job path
+			} else {
+				
+				//If we have a stored path
+				if (DatabaseController.isPreference("References", mPrinter.getName())){
+					
+					String path = DatabaseController.getPreference("References", mPrinter.getName());
+					
+					File file = new File(path);
+					
+					//If the path is not the same as we thought
+					if (!mPrinter.getJob().getFilename().equals(file.getName())){
+						
+						DatabaseController.handlePreference("References", mPrinter.getName(), null, false);
+						mPrinter.setJobPath(null);
+					
+						//If it's the same, update jobpath
+					} else {
+						
+						openGcodePrintView (path, rootView, R.id.view_gcode);	
+						mPrinter.setJobPath(path);
+					}
+				
+					
+				}
+				
+				
+			}
 
 			
-			//mRl = (RelativeLayout) rootView.findViewById(R.id.rlv);
-
+			//Get video
 			mLayoutVideo = (FrameLayout) rootView.findViewById(R.id.printview_video);
 			
 			if (mPrinter.getVideo().getParent() != null)	{
 				mPrinter.getVideo().stopPlayback();
 				((ViewGroup)mPrinter.getVideo().getParent()).removeAllViews();
 			} 
-			
 			mLayoutVideo.addView(mPrinter.getVideo());		
 			
 			
@@ -96,7 +144,7 @@ public class PrintViewFragment extends Fragment{
 			tv_file = (TextView) rootView.findViewById(R.id.printview_file);
 			tv_temp = (TextView) rootView.findViewById(R.id.printview_temp);
 			tv_prog = (TextView) rootView.findViewById(R.id.printview_time);
-			mContext = getActivity();
+			
 
 			refreshData();
 			
@@ -113,6 +161,7 @@ public class PrintViewFragment extends Fragment{
 		
 	}
 	
+	//Switch menu options if it's printing/paused
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		
@@ -152,6 +201,11 @@ public class PrintViewFragment extends Fragment{
 		   }
 		}
 	
+	   /**
+	    * Convert progress string to percentage
+	    * @param p progress string
+	    * @return converted value
+	    */
 	public String getProgress(String p){
 		
 		double value = 0;
@@ -165,8 +219,12 @@ public class PrintViewFragment extends Fragment{
 		return String.valueOf((int)value);
 	}
 	
+	/**
+	 * Dinamically update progress bar and text from the main activity
+	 */
 	public void refreshData(){
 		
+		//Check around here if files were changed
 		tv_printer.setText(mPrinter.getDisplayName());
 		tv_file.setText(mPrinter.getJob().getFilename());
 		tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
@@ -209,6 +267,7 @@ public class PrintViewFragment extends Fragment{
 
 	}
 	
+	//TODO Properly close the video when destroying the view
 	@Override
 	public void onDestroy() {
 		mPrinter.getVideo().stopPlayback();

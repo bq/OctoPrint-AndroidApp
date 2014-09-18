@@ -49,8 +49,8 @@
     <string name="devices_cab_menu_settings">Printer settings</string>
     
     <string name="devices_filter_dialog_all">All</string>
-    <string name="devices_filter_dialog_progress">\'In progress\' printers</string>
-    <string name="devices_filter_dialog_inactive">\'Available\' printers</string>
+    <string name="devices_filter_dialog_progress">In progress printers</string>
+    <string name="devices_filter_dialog_inactive">Available printers</string>
     <string name="devices_filter_dialog_groups">As groups</string>
     <string name="devices_filter_dialog_linked">Only linked printers</string>
     

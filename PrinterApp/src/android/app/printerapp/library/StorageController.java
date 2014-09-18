@@ -113,7 +113,7 @@ public class StorageController {
 		
 		mFileList.clear();
 		
-		for (Map.Entry<String, ?> entry : DatabaseController.getFavorites().entrySet()){
+		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Favorites").entrySet()){
 			
 			ModelFile m = new ModelFile(entry.getValue().toString(), "favorite");
 			mFileList.add(m);

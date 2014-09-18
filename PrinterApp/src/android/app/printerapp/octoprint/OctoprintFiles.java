@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.util.Log;
@@ -148,6 +149,8 @@ public class OctoprintFiles {
     				, Toast.LENGTH_LONG).show();
 			
 			p.setLoaded(false);
+			
+			DatabaseController.handlePreference("References", p.getName(), p.getJobPath(), true);
 			
 			HttpClientHandler.post(p.getAddress() + HttpUtils.URL_FILES + "/local", 
 					params, new JsonHttpResponseHandler(){				
