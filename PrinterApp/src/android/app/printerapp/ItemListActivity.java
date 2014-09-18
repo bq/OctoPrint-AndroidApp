@@ -19,25 +19,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
 /**
- * An activity representing a list of Items. This activity has different
- * presentations for handset and tablet-size devices. On handsets, the activity
- * presents a list of items, which when touched, lead to a
- * {@link ItemDetailActivity} representing item details. On tablets, the
- * activity presents the list of items and item details side-by-side using two
- * vertical panes.
- * <p>
- * The activity makes heavy use of fragments. The list of items is a
- * {@link ItemListFragment} and the item details (if present) is a
- * {@link ItemDetailFragment}.
- * <p>
- * This activity also implements the required {@link ItemListFragment.Callbacks}
- * interface to listen for item selections.
+ * Main class what will hold the Fragments and make the transition between them
+ * TODO: Since a status hold was required, fragments aren't replaced but hidden
+ * and shown when requested.
+ * 
+ * TODO: Fragments will be made static to access to some methods such as refreshing
+ * or loading views.
  */
 public class ItemListActivity extends FragmentActivity implements
 		ItemListFragment.Callbacks {
@@ -48,22 +40,23 @@ public class ItemListActivity extends FragmentActivity implements
 	 */
 	private boolean mTwoPane;
 	
-	private static DevicesFragment mDevicesFragment;
-	private LibraryFragment mLibraryFragment;
-	private static ViewerMain mViewerFragment;
-	private SettingsFragment mSettingsFragment;
+	//List of Fragments
+	private static DevicesFragment mDevicesFragment; //Devices fragment @static for refresh
+	private LibraryFragment mLibraryFragment; //Storage fragment
+	private static ViewerMain mViewerFragment; //Print panel fragment @static for model load
+	private SettingsFragment mSettingsFragment; //Settings fragment
 	
-	private static Fragment mCurrent;
+	//Class specific variables
+	private static Fragment mCurrent; //The current shown fragment @static
+	private static FragmentManager mManager; //Fragment manager to handle transitions @static
+	private static DialogController mDialog; //Dialog controller @static
 	
-	private static FragmentManager mManager;
-	
-	private static DialogController mDialog;
-	
-	
-	//DRAWER
+	//Drawer handling
 	private DrawerLayout mDrawer;
 	private ActionBarDrawerToggle mDrawerToggle;
 
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,10 +74,15 @@ public class ItemListActivity extends FragmentActivity implements
 			((ItemListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
 			
+			
+			/***************************************************************
+			 *  Drawer declaration
+			 ***************************************************************/
+			
 			mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 			mDrawer.setScrimColor(Color.TRANSPARENT);
 			
-			 mDrawerToggle = new ActionBarDrawerToggle(
+			mDrawerToggle = new ActionBarDrawerToggle(
 		                this,                  /* host Activity */
 		                mDrawer,         /* DrawerLayout object */
 		                android.R.drawable.ic_menu_more,  /* nav drawer icon to replace 'Up' caret */
@@ -96,11 +94,14 @@ public class ItemListActivity extends FragmentActivity implements
 		            public void onDrawerClosed(View view) {
 		                super.onDrawerClosed(view);
 		                
+		                //NYI
 		            }
 
 		            /** Called when a drawer has settled in a completely open state. */
 		            public void onDrawerOpened(View drawerView) {
 		                super.onDrawerOpened(drawerView);
+		                
+		                //NYI
 		                
 		            }
 		        };
@@ -115,16 +116,16 @@ public class ItemListActivity extends FragmentActivity implements
 		}
 
 		
-		//TODO List controllers
+		//Initialize db and lists
 		new DatabaseController(this);
 		DevicesListController.loadList(this);
 		new StorageController();
-		//new ViewerMain();
 		
+		//Initialize variables
 		mManager = getSupportFragmentManager();
 		mDialog = new DialogController(this);
 		
-		
+		//Initialize fragments
 		mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_devices));
 		mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
 		mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
@@ -164,16 +165,15 @@ public class ItemListActivity extends FragmentActivity implements
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			
-			//Switch between list ids
 			
+			//start transaction
 			FragmentTransaction mTransaction = mManager.beginTransaction();
 			
 			//Pop backstack to avoid having bad references when coming from a Detail view				
 			mManager.popBackStack();
 			
+			//If there is a fragment being shown, hide it to show the new one
 			if (mCurrent!=null) {
-				
-				Log.i("OUT", "Not null " + mCurrent.getTag());
 				
 				try { 
 					
@@ -184,10 +184,10 @@ public class ItemListActivity extends FragmentActivity implements
 					e.printStackTrace();
 				}
 				
-			} else Log.i("OUT", "Current is null");
+			}
 			
 	
-						
+			//Select fragment			
 			switch (Integer.valueOf(id)){
 			
 				case 1:{
@@ -210,8 +210,6 @@ public class ItemListActivity extends FragmentActivity implements
 						 mTransaction.add(R.id.item_detail_container,mViewerFragment, getString(R.string.fragment_print));
 							
 					 } 
-					 
-					
 
 					 mCurrent = mViewerFragment;
 						 
@@ -249,12 +247,12 @@ public class ItemListActivity extends FragmentActivity implements
 				
 			}
 			
-			//Set the visibility for the viewer if we're not on the Viewer
-			//TODO bugs with positioning after making it visible again
+			//TODO: Set the visibility for the viewer if we're not on the Viewer
 			if (mViewerFragment!=null) {
 				
 				if (mCurrent!=mViewerFragment){
-					//Make the surface invisible
+					
+					//Make the surface invisible to avoid frame overlapping
 					mViewerFragment.setSurfaceVisibility(0);
 				}
 				else {
@@ -264,6 +262,7 @@ public class ItemListActivity extends FragmentActivity implements
 				
 			}
 			
+			//Show current fragment
 			if (mCurrent!=null ){
 				mTransaction.show(mCurrent).commit();
 				getActionBar().setTitle(mCurrent.getTag());
@@ -272,6 +271,7 @@ public class ItemListActivity extends FragmentActivity implements
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
+			//TODO: NYI
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
 			startActivity(detailIntent);
 			
@@ -294,12 +294,18 @@ public class ItemListActivity extends FragmentActivity implements
 		
 	}	
 	
-	//Add an additional fragment to show a special detailed view
-	//TODO Overlapping menu issues
+	/**
+	 * Method to create a new type of fragment to show special detailed views.
+	 * 
+	 * @param type Type of detailed view 0: DetailView 1: PrintView
+	 * @param extra Extra argument to the fragment DetailView: File index, PrintView: Printer name
+	 */
 	public static void showExtraFragment(int type, String extra){
 		
+		//New transaction
 		FragmentTransaction mTransaction = mManager.beginTransaction();
 		
+		//Add current fragment to the backstack and hide it (will show again later)
 		mTransaction.addToBackStack(mCurrent.getTag());
 		mTransaction.hide(mCurrent);
 		
@@ -307,34 +313,75 @@ public class ItemListActivity extends FragmentActivity implements
 		
 			case 0:
 				
+				//New DetailView with the file as an index
 				DetailViewFragment detail = new DetailViewFragment();
 				Bundle args = new Bundle();
 			    args.putInt("index", Integer.parseInt(extra));
 			    detail.setArguments(args);
-				mTransaction.replace(R.id.item_detail_container, detail, "Detail").commit();
+			    
+			    //Transition is made by replacing instead of hiding to allow backstack navigation
+				
+			    //TODO: Use resource for id tag
+			    
+			    mTransaction.replace(R.id.item_detail_container, detail, "Detail").commit();
 				break;
 				
 			case 1:
 				
+				//New detailview with the printer name as extra
 				PrintViewFragment detailp = new PrintViewFragment();
 				Bundle argsp = new Bundle();
 			    argsp.putString("printer", extra);
 			    detailp.setArguments(argsp);
+			    //Transition is made by replacing instead of hiding to allow backstack navigation
+				
+			    //TODO: Use resource for id tag
 				mTransaction.replace(R.id.item_detail_container, detailp, "Printer").commit();
 				break;
 			
 		}	
 	}
 	
-	//TODO find a better way
+	/**
+	 * Override to allow back navigation on the Storage fragment.
+	 */
+	@Override
+	public void onBackPressed() {
+		
+		if (mCurrent == mLibraryFragment){
+			
+			if (!mLibraryFragment.goBack()) super.onBackPressed();
+			
+		} else super.onBackPressed();
+		
+	}
+	
+	
+	//Show dialog
+	public static void showDialog(String msg){
+		mDialog.displayDialog(msg);
+	}
+	
+	
+	
+	
+	/*****************************
+	 *  Devices Fragment handlers
+	 *****************************/
+	
+	//TODO find a better way maybe?
+	/**
+	 * Static method to refresh the adapters for the fragments with 
+	 * the info from the server socket.
+	 */
 	public static void notifyAdapters(){
 		
 		try{
 			
+			//Refresh the devices fragment with status
 			if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
 			
-			//Refresh printview
-			//TODO: Detail hardcoded
+			//Refresh printview fragment if exists
 			Fragment fragment = mManager.findFragmentByTag("Printer");
 			if (fragment!=null)((PrintViewFragment) fragment).refreshData();
 		
@@ -343,9 +390,20 @@ public class ItemListActivity extends FragmentActivity implements
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	/*****************************
+	 *  Viewer Fragment handlers
+	 *****************************/
 			
-	//Send a fragment change request to the parent
+	/**
+	 * Send a file to the Viewer to display
+	 * @param path File path
+	 */
 	public static void requestOpenFile(final String path){
+		
+		//This method will simulate a click and all its effects
 		ItemListFragment.performClick(1);
 		
 		//Handler will avoid crash
@@ -362,19 +420,8 @@ public class ItemListActivity extends FragmentActivity implements
 
 	}
 
-	@Override
-	public void onBackPressed() {
-		
-		if (mCurrent == mLibraryFragment){
-			
-			if (!mLibraryFragment.goBack()) super.onBackPressed();
-			
-		} else super.onBackPressed();
-		
-	}
 	
-	public static void showDialog(String msg){
-		mDialog.displayDialog(msg);
-	}
+
+	
 	
 }

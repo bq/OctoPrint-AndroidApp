@@ -93,7 +93,11 @@ public class ItemListFragment extends ListFragment {
 			
 			mCallbacks = sDummyCallbacks;
 		}
+		
+		//TODO: Drawer itemlist color
 		view.setBackgroundColor(Color.parseColor("#333333"));
+		
+		//Retrtieve item list to handle item callbacks
 		mListView = getListView();
 	}
 
@@ -149,8 +153,11 @@ public class ItemListFragment extends ListFragment {
 						: ListView.CHOICE_MODE_NONE);
 	}
 
-	
-	//Custom method to perform an item selection from another Fragment.
+		
+	/**
+	 * Custom method to perform an item selection from another Fragment.
+	 * @param position Item to click
+	 */
 	public static void performClick(int position){
 		
 		//Perform an item selection calling the super
@@ -160,6 +167,7 @@ public class ItemListFragment extends ListFragment {
 		setActivatedPosition(position);
 	}
 	
+	//Made static to perform click from another Fragments
 	private static void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
 			mListView.setItemChecked(mActivatedPosition, false);

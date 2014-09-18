@@ -10,6 +10,7 @@
     <string name="search">Buscar</string>
     <string name="create">Crear</string>
     <string name="delete">Eliminar</string>
+    <string name="error">Error</string>
     
     <string name="fragment_devices">Dispositivos</string>
     <string name="fragment_print">Panel de impresión</string>

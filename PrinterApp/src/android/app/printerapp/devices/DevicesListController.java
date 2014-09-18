@@ -8,10 +8,10 @@ import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -169,7 +169,6 @@ public static void selectPrinter(final Context context, final File f){
 		
 		
 		//Show list of available printers
-		//TODO Make a proper adapter
 		adb2.setMultiChoiceItems(nameList, null, new OnMultiChoiceClickListener() {
 			
 			@Override

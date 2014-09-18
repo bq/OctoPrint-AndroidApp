@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import android.app.printerapp.ItemListActivity;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.os.Handler;

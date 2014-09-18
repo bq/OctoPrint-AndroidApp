@@ -4,18 +4,18 @@ import java.io.File;
 
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 
 /**
- * OnDragListener to handle printing and other possible events
+ * OnDragListener to handle printing and other possible events such as
+ * printer positions on the grid
  * @author alberto-baeza
  *
  */
@@ -24,12 +24,22 @@ public class DevicesDragListener implements OnDragListener {
 	//Reference to model
 	private ModelPrinter mModel;
 	
-	//Constructor
+	/**
+	 * Class constructor
+	 * @param model The model currently being dragged on
+	 */
 	public DevicesDragListener(ModelPrinter model){
-
 		mModel = model;
 	}
 
+	
+	/**
+	 * Possible drag event tags:
+	 * 
+	 * printer: Dragging a printer
+	 * name: Dragging a file
+	 * 
+	 */
 	@Override
 	public boolean onDrag(View v, DragEvent event) {
 		
@@ -42,36 +52,27 @@ public class DevicesDragListener implements OnDragListener {
 	    	
 	    	CharSequence tag = event.getClipData().getDescription().getLabel();
 	    	
-	    	if (!tag.equals("printer")){
-	    		
-	    	
-	    		    	
-		    	//If it's not online, don't send to printer		    	
-		    	if (mModel.getAddress().equals("Offline")){	 
-		    		
-		    		//ItemListActivity.showDialog("Printer offline");
-		    		
-		    	} else if ((mModel.getStatus() == StateUtils.STATE_OPERATIONAL) ||
+
+	    	//If it's a file (avoid draggable printers)
+	    	if (tag.equals("name")){
+ 	
+		    	//If it's not online, don't send to printer	
+	    		//Now files can also be uploaded to printers with errors
+		    	if ((mModel.getStatus() == StateUtils.STATE_OPERATIONAL) ||
 		    	(mModel.getStatus() == StateUtils.STATE_ERROR)){
 		    		
-		    		
+		    		// Gets the item containing the dragged data
 		    		ClipData.Item item = event.getClipData().getItemAt(0);
-	                // Gets the item containing the dragged data
 		    		
-		    		//If tag is name, we have a file to drop
-		    		if (tag.equals("name")){
-			    		
-			    		//Get parent folder and upload to device
-			    		Log.i("DRAG", item.getText().toString());
-			    		File file = new File(item.getText().toString());
-			    		OctoprintFiles.uploadFile(v.getContext(), file, mModel);
-			    			
-		    		//Check if it's on internal storage plus if it's sd or not, since we don't need to upload.	
-		    		//TODO: Set the same method for both
-		    		} 
+		    		//Get parent folder and upload to device
+		    		File file = new File(item.getText().toString());
 		    		
+		    		//Call to the static method to upload
+		    		OctoprintFiles.uploadFile(v.getContext(), file, mModel);	    		
 		    		
 		    	} else {
+		    		
+		    		//Error dialog
 		    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + mModel.getMessage());
 		    	}
 	    	}

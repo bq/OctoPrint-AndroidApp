@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.printerapp.R;
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,11 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Adapter for the listview mode, has reduced functionality and status text added
+ * @author alberto-baeza
+ *
+ */
 public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 	
 	//Original list and current list to be filtered
@@ -41,6 +45,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		final ModelPrinter m = getItem(position);
 		
 		
+		//TODO Holder for the list adapter
 		//View not yet created
 		if (v==null){
 			
@@ -113,7 +118,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 			}
 			
 		}catch (NullPointerException e){
-			Log.i("DEVICES", "No job");
+
 		}
 		
 		
@@ -136,7 +141,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
 		double value = 0;
 				
 		try {
-			value = Double.valueOf(p) * 100;			
+			value = Double.valueOf(p);			
 		}catch (NullPointerException e){
 			e.printStackTrace();
 		}

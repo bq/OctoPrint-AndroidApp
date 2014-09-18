@@ -7,11 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.printerapp.StateUtils;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.camera.MjpegView;
 import android.app.printerapp.octoprint.OctoprintConnection;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.util.Log;
 
