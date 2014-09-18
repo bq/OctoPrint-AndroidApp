@@ -62,7 +62,7 @@ public class DevicesQuickprint {
 	 */
 	private void addFiles(){
 		
-		for (Map.Entry<String, ?> entry : DatabaseController.getFavorites().entrySet()){
+		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Favorites").entrySet()){
 			
 			ModelFile m = new ModelFile(entry.getValue().toString(), "Internal storage");
 			mFileList.add(m);

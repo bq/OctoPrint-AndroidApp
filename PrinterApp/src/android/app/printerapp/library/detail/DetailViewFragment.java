@@ -143,7 +143,7 @@ public class DetailViewFragment extends Fragment {
 
 		inflater.inflate(R.menu.detailview_menu, menu);
 		
-		if (DatabaseController.isFavorite(mFile.getName())){
+		if (DatabaseController.isPreference("Favorites",mFile.getName())){
 			menu.findItem(R.id.menu_favorite).setIcon(android.R.drawable.btn_star_big_on);
 		} else menu.findItem(R.id.menu_favorite).setIcon(android.R.drawable.btn_star_big_off);
 		
@@ -157,11 +157,11 @@ public class DetailViewFragment extends Fragment {
 	   
 	   case R.id.menu_favorite: //Add a new printer
 		  			
-		   if (DatabaseController.isFavorite(mFile.getName())){
-				DatabaseController.handleFavorite(mFile, false);
+		   if (DatabaseController.isPreference("Favorites",mFile.getName())){
+			    DatabaseController.handlePreference("Favorites", mFile.getName(), null, false);
 				item.setIcon(android.R.drawable.btn_star_big_off);
 			} else {
-				DatabaseController.handleFavorite(mFile, true);
+				DatabaseController.handlePreference("Favorites", mFile.getName(), mFile.getAbsolutePath(), true);
 				item.setIcon(android.R.drawable.btn_star_big_on);
 			}
 		  

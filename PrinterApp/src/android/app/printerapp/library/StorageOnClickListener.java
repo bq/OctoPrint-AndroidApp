@@ -227,11 +227,11 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 							deleteFiles(f);
 							StorageController.getFileList().remove(f);
 							
-							if (DatabaseController.isFavorite(f.getName())){
+							if (DatabaseController.isPreference("Favorites",f.getName())){
 								
 								Log.i("OUT", "oh my, IT IS! " + f.getName());
 								
-								DatabaseController.handleFavorite(f, false	);
+								DatabaseController.handlePreference("Favorites", f.getName(), null, false);
 							}
 							
 							mContext.notifyAdapter();

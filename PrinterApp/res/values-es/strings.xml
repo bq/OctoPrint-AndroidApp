@@ -45,8 +45,8 @@
     <string name="devices_cab_menu_settings">Opciones de impresora</string>
     
     <string name="devices_filter_dialog_all">Todos</string>
-    <string name="devices_filter_dialog_progress">Impresoras \'en progreso\'</string>
-    <string name="devices_filter_dialog_inactive">Impresoras \'disponibles\'</string>
+    <string name="devices_filter_dialog_progress">Impresoras en progreso</string>
+    <string name="devices_filter_dialog_inactive">Impresoras disponibles</string>
     <string name="devices_filter_dialog_groups">Vista de grupos</string>
     <string name="devices_filter_dialog_linked">Solo impresoras enlazadas</string>
     
