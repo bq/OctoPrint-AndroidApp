@@ -348,11 +348,14 @@ public class ItemListActivity extends FragmentActivity implements
 	@Override
 	public void onBackPressed() {
 		
-		if (mCurrent == mLibraryFragment){
+		if (mCurrent!=null)
+			if (mCurrent == mLibraryFragment){
 			
-			if (!mLibraryFragment.goBack()) super.onBackPressed();
+				if (!mLibraryFragment.goBack()) super.onBackPressed();
 			
-		} else super.onBackPressed();
+			} 
+		
+		super.onBackPressed();
 		
 	}
 	

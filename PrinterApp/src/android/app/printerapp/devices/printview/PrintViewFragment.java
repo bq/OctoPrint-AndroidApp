@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.SlidingUpPanelLayout;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
@@ -25,7 +26,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -70,14 +73,18 @@ public class PrintViewFragment extends Fragment{
 		//If is not new
 		if (savedInstanceState==null){
 			
+			//Necessary for gcode tracking
 			mContext = getActivity();
 			
+			//Get the printer from the list
 			Bundle args = getArguments();
 			mPrinter = DevicesListController.getPrinter(args.getString("printer"));
 			
 			//Check printing status
 			if (mPrinter.getStatus() == StateUtils.STATE_PRINTING) isPrinting = true;
 			else {
+				
+				//TODO Set print status as 100% if it's not printing
 				mActualProgress = 100;
 				isPrinting = false;
 			}
@@ -125,8 +132,7 @@ public class PrintViewFragment extends Fragment{
 				
 					
 				}
-				
-				
+
 			}
 
 			
@@ -140,11 +146,95 @@ public class PrintViewFragment extends Fragment{
 			mLayoutVideo.addView(mPrinter.getVideo());		
 			
 			
+			/***************************************************************************/
+			
+			
+			//UI references
 			tv_printer = (TextView) rootView.findViewById(R.id.printview_printer);
 			tv_file = (TextView) rootView.findViewById(R.id.printview_file);
 			tv_temp = (TextView) rootView.findViewById(R.id.printview_temp);
 			tv_prog = (TextView) rootView.findViewById(R.id.printview_time);
 			
+			final EditText et_am = (EditText) rootView.findViewById(R.id.et_amount);
+			
+			rootView.findViewById(R.id.button_xy_down).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", Integer.parseInt(et_am.getText().toString()));
+					
+				}
+			});
+			
+			rootView.findViewById(R.id.button_xy_up).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", - Integer.parseInt(et_am.getText().toString()));
+					
+				}
+			});
+			
+			rootView.findViewById(R.id.button_xy_left).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", - Integer.parseInt(et_am.getText().toString()));
+					
+				}
+			});
+			
+			rootView.findViewById(R.id.button_xy_right).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", Integer.parseInt(et_am.getText().toString()));
+					
+				}
+			});
+			
+			rootView.findViewById(R.id.button_z_down).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", - Integer.parseInt(et_am.getText().toString()));
+					
+				}
+			});
+			
+			rootView.findViewById(R.id.button_z_up).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", Integer.parseInt(et_am.getText().toString()));
+					
+				}
+			});
+			
+			rootView.findViewById(R.id.button_z_home).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "home", null, 0);
+					
+				}
+			});
+			
+			
+			/***************** SLIDE PANEL ************************************/
+			
+			//Slide panel setup
+			
+			SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
+			TextView textView = (TextView) rootView.findViewById(R.id.drag_text);
+			slidePanel.setDragView(textView);
 
 			refreshData();
 			
