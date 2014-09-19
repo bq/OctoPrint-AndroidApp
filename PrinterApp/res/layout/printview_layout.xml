@@ -8,7 +8,7 @@
     android:gravity="bottom"
     app:anchorPoint="0.15"
     app:fadeColor="@android:color/transparent"
-    app:panelHeight="80dp"
+    app:panelHeight="50dp"
     app:shadowHeight="4dp" >
 
     <LinearLayout

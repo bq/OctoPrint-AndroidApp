@@ -225,10 +225,13 @@
                     android:orientation="horizontal" >
 
                     <EditText
-                        android:id="@+id/editText1"
+                        android:id="@+id/et_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3" >
+                        android:layout_weight="0.3"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:text="10" >
 
                         <requestFocus />
                     </EditText>
