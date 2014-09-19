@@ -77,7 +77,13 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	    super(context, attrs);
 	}
 		
-
+	/**
+	 * 
+	 * @param context Context
+	 * @param data Data to render
+	 * @param state Type of rendering: normal, triangle, overhang, layers
+	 * @param mode Mode of rendering: do snapshot (take picture for library), dont snapshot (normal) and print_preview (gcode preview in print progress)  
+	 */
 	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, int mode) {
 		super(context);
 		// Create an OpenGL ES 2.0 context.
@@ -92,6 +98,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
 	
+	/**
+	 * Check if it is an stl model.
+	 * @return
+	 */
 	private boolean isStl() {
 		if (mDataList.size()>0)
 			if (mDataList.get(0).getPathFile().endsWith(".stl") || mDataList.get(0).getPathFile().endsWith(".STL")) return true;
@@ -99,6 +109,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		return false;
 	}
 	
+	/**
+	 * Set the view options depending on the model
+	 * @param state
+	 */
 	public void configViewMode (int state) {
 		switch (state) {
 		case (ViewerSurfaceView.NORMAL):
@@ -126,6 +140,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		requestRender();
 	}
 		
+	/**
+	 * Show/Hide back Witbox Face 
+	 */
 	public void showBackWitboxFace () {
 		if (mRenderer.getShowBackWitboxFace()) mRenderer.showBackWitboxFace(false);
 		else mRenderer.showBackWitboxFace(true);	
@@ -150,30 +167,57 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		requestRender();		
 	}
 	
+	/**
+	 * Tells the render if overhang is activated or not
+	 * @param overhang 
+	 */
 	public void setOverhang (boolean overhang) {
 		mRenderer.setOverhang(overhang);
 	}
 	
+	/**
+	 * Tell the render if transparent view is activated or not
+	 * @param trans
+	 */
 	public void setTransparent (boolean trans) {
 		mRenderer.setTransparent(trans);
 	}
 	
+	/**
+	 * Tells render if xray view (triangles view) is activated or not
+	 * @param xray
+	 */
 	public void setXray (boolean xray) {
 		mRenderer.setXray(xray);
 	}
 	
+	/**
+	 * Set edition mode
+	 * @param mode MOVE_EDITION_MODE, ROTATION_EDITION_MODE, SCALED_EDITION_MODE, MIRROR_EDITION_MODE
+	 */
 	public void setEditionMode (int mode) {
 		mEditionMode = mode;
 	}
 	
+	/**
+	 * Delete selected object
+	 */
 	public void deleteObject() {
 		mRenderer.deleteObject(mObjectPressed);
 	}
 	
+	/**
+	 * Get the object that has been pressed
+	 * @return mObjectPressed 
+	 */
 	public int getObjectPresed () {
 		return mObjectPressed;
 	}
 	
+	/**
+	 * Set the rotation axis
+	 * @param mode ROTATION_X, ROTATION_Y, ROTATION_Z
+	 */
 	public void setRotationVector (int mode) {
 		switch (mode) {
 		case ROTATE_X:
@@ -191,7 +235,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		}		
 	}
 		
-	
+	/**
+	 * Rotate the object in the X axis
+	 * @param angle angle to rotate
+	 */
 	public void rotateAngleAxisX (float angle) {
 		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
 		mRenderer.setRotationObject (angle);	
@@ -199,18 +246,29 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 	}
 	
+	/**
+	 * Rotate the object in the Y axis
+	 * @param angle angle to rotate
+	 */
 	public void rotateAngleAxisY (float angle) {
 		if (mRotateMode!=ROTATE_Y) setRotationVector(ROTATE_Y);
 		mRenderer.setRotationObject (angle);	
 		mRenderer.refreshRotatedObjectCoordinates();
 	}
 	
+	/**
+	 * Rotate the object in the Z axis
+	 * @param angle angle to rotate
+	 */
 	public void rotateAngleAxisZ (float angle) {
 		if (mRotateMode!=ROTATE_Z) setRotationVector(ROTATE_Z);
 		mRenderer.setRotationObject (angle);	
 		mRenderer.refreshRotatedObjectCoordinates();
 	}
 	
+	/**
+	 * On touch events
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (mMode == ViewerMain.PRINT_PREVIEW) return false;
@@ -291,7 +349,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					    
 					    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
 					    	mRenderer.dragObject(normalizedX, normalizedY);
-					    } else 	dragAccordingToMode (x,y,dx,dy);
+					    } else 	dragAccordingToMode (dx,dy);
 					    				    
 					} 
 									
@@ -316,7 +374,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		return true;
 	}
 	
-
+	/**
+	 * Exit edition mode.
+	 * Set object pressed to -1 (no object pressed)
+	 * Set mEditionMode to NONE_EDITION_MODE
+	 * Change state of the object (which means the colour of the models in the plate will probably change)
+	 */
 	public void exitEditionMode () {
 		mEdition = false;
 		mEditionMode = NONE_EDITION_MODE;
@@ -329,7 +392,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
     	requestRender();
 	}
 		
-	private void dragAccordingToMode (float x, float y, float dx, float dy) {
+	/**
+	 * It rotates the plate (ROTATION or TRANSLATION) 
+	 * @param dx movement on x axis
+	 * @param dy movement on y axis
+	 */
+	private void dragAccordingToMode (float dx, float dy) {
 		switch (mMovementMode) {
 		case ROTATION_MODE:
 			doRotation (dx,dy);
@@ -340,6 +408,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		}
 	}
 	
+	/**
+	 * Mirror option
+	 */
 	public void doMirror () {
 		float fx = mDataList.get(mObjectPressed).getLastScaleFactorX();
 		float fy = mDataList.get(mObjectPressed).getLastScaleFactorY();
@@ -349,20 +420,39 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		requestRender();
 	}
 	
+	/**
+	 * Do rotation (plate rotation, not model rotation)
+	 * @param dx movement on x axis
+	 * @param dy movement on y axis
+	 */
 	private void doRotation (float dx, float dy) {              
         mRenderer.setSceneAngleX(dx*TOUCH_SCALE_FACTOR_ROTATION);
         mRenderer.setSceneAngleY(dy*TOUCH_SCALE_FACTOR_ROTATION);		
 	} 
 	
+	/**
+	 * Do rotation (plate rotation, not model rotation)
+	 * @param dx movement on x axis
+	 * @param dy movement on y axis
+	 */
 	private void doTranslation(float dx, float dy) {
 		mRenderer.setCenterX(-dx);
 		mRenderer.setCenterZ(dy); //
 	}
 	
+	/**
+	 * Movement mode (plate)
+	 * @param mode
+	 */
 	public void setMovementMode (int mode) {
 		mMovementMode = mode;
 	}
 	
+	/**
+	 * Get distanced pinched
+	 * @param event
+	 * @return
+	 */
 	private float getPinchDistance(MotionEvent event) {
 		float x = event.getX(0) - event.getX(1);
 		float y = event.getY(0) - event.getY(1);
@@ -371,7 +461,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 	
 	/**
-	 * 
+	 * Get center point
 	 * @param event
 	 * @param pt pinched point
 	 */

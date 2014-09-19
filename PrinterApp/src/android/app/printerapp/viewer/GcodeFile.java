@@ -163,7 +163,7 @@ public class GcodeFile  {
 			if (line.startsWith("G0") || line.startsWith("G1")) {
 				mSplitLine = line.split(" ");
 				
-				//Get the coord from the line					
+				//Get the coord of the line					
 				for (int i=0; i<mSplitLine.length; i++) {
 					if (mSplitLine[i].length()<=1) continue;
 					if (mSplitLine[i].startsWith("X")) {

@@ -370,14 +370,19 @@ public class StlFile {
 				
 		if (coordinateCount==0) return false;
 		
-		int offset=(coordinateCount/COORDS_PER_TRIANGLE)*4; //each triangle needs its normal coords and flag to indicate the end.
+		//Each triangle has 3 vertex with 3 coordinates each. COORDS_PER_TRIANGLE = 9
+		int normals=(coordinateCount/COORDS_PER_TRIANGLE)*3; //number of normals coordinates in the file
 		
-		ByteBuffer bb = ByteBuffer.allocateDirect((coordinateCount+offset) * 4 + 84);
+		//The file consists of the header, the vertex and normal coordinates (4 bytes per component) and 
+		//a flag (2 bytes per triangle) to indicate the final of the triangle.
+		ByteBuffer bb = ByteBuffer.allocateDirect(84+(coordinateCount+normals) * 4 + coordinateCount * 2);
 	    bb.order(ByteOrder.LITTLE_ENDIAN);
 	    
 	    //Header
 	    byte[] header = new byte[80];
 	    bb.put(header);
+	   
+	    //Number of triangles
 	    bb.putInt(coordinateCount/COORDS_PER_TRIANGLE);
 	    
 		for (int i=0;i<dataList.size(); i++) {
@@ -412,7 +417,7 @@ public class StlFile {
 		    	bb.putFloat(vector[1]);
 		    	bb.putFloat(vector[2]);
 				
-		    	bb.putShort((short)0); // end of triangle		    	
+		    	bb.putShort((short)0); // end of triangle
 		    }
 		}
 		

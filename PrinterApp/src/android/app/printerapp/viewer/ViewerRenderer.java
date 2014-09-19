@@ -89,7 +89,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private final float[] mViewMatrix = new float[16];
 	private final float[] mRotationMatrix = new float[16];
 	private final float[] mTemporaryMatrix = new float [16];
-    private final static float[] invertedVPMatrix = new float[16];
+    private final static float[] invertedMVPMatrix = new float[16];
     
 	float[] mMVMatrix = new float[16];
 	float[] mMVPMatrix = new float[16];	
@@ -412,8 +412,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        final float[] farPointWorld = new float[4];
 	        
 	        
-	        Matrix.multiplyMV(nearPointWorld, 0, invertedVPMatrix, 0, nearPointNdc, 0);
-	        Matrix.multiplyMV(farPointWorld, 0, invertedVPMatrix, 0, farPointNdc, 0);
+	        Matrix.multiplyMV(nearPointWorld, 0, invertedMVPMatrix, 0, nearPointNdc, 0);
+	        Matrix.multiplyMV(farPointWorld, 0, invertedMVPMatrix, 0, farPointNdc, 0);
 
 	        // Why are we dividing by W? We multiplied our vector by an inverse
 	        // matrix, so the W value that we end up is actually the *inverse* of
@@ -574,20 +574,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         //Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
         Matrix.multiplyMM(mTemporaryMatrix, 0, mRotationMatrix, 0, mModelMatrix, 0);
         System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
-        
-        // Rotate the object taking the overall rotation into account.
-        
-        // Combine the rotation matrix with the projection and camera view
-        // Note that the mMVPMatrix factor *must be first* in order
-        // for the matrix multiplication product to be correct.
-  
-        // Combine the rotation matrix with the projection and camera view
-        // Note that the mMVPMatrix factor *must be first* in order
-        // for the matrix multiplication product to be correct.
+                
         Matrix.multiplyMM(mMVPMatrix, 0,mVPMatrix, 0, mModelMatrix, 0);  
         Matrix.multiplyMM(mMVMatrix, 0,mViewMatrix, 0, mModelMatrix, 0);         
         
-        Matrix.invertM(invertedVPMatrix, 0, mMVPMatrix, 0);
+        //invertedMVPMatrix is used to detect clicks
+        Matrix.invertM(invertedMVPMatrix, 0, mMVPMatrix, 0);
         
         //Set Light direction  
         Matrix.setIdentityM(mLightModelMatrix, 0);
