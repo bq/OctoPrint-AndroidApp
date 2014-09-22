@@ -1,0 +1,330 @@
+package android.app.printerapp.devices.discovery;
+
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.app.printerapp.R;
+import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintNetwork;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+
+public class PrintNetworkManagerOctoprint {
+	
+		//This should contain the static generic password to the ad-hoc network
+		private static final String PASS = "OctoPrint";
+		
+
+		
+		private static DevicesFragment mController;
+		
+		//Wifi network manager
+		private static WifiManager mManager;
+		
+		private static ProgressDialog mDialog;
+		
+		private boolean isOffline = false;
+				
+		public PrintNetworkManagerOctoprint(DevicesFragment context){
+			
+			mController = context;
+			
+			//Create a new Network Receiver
+			new PrintNetworkReceiver(this);
+			
+			
+			
+		}
+		
+		public void setupNetwork(final DevicesFragment context, final String ssid, final ModelPrinter p){
+			
+			//Get connection parameters
+			WifiConfiguration conf = new WifiConfiguration();
+			conf.SSID = "\"" + ssid + "\"";  
+			conf.preSharedKey = "\""+ PASS +"\"";
+			
+			//Add the new network
+			mManager = (WifiManager)context.getActivity().getSystemService(Context.WIFI_SERVICE); 
+			final int nId = mManager.addNetwork(conf);	
+			
+			//Create new wifi configuration for target network
+			//target = new WifiConfiguration();			
+			
+			isOffline = true;
+			//When found, disconnect to the current network and reconnect to the new
+	         mManager.disconnect();
+	         mManager.enableNetwork(nId, true);
+	         mManager.reconnect();
+	               
+	         createNetworkDialog("WARNING!!! Connecting to printer network.");
+	         
+	         
+	         
+	         
+	         
+		}
+		
+		/**
+		 * Reverse an array of bytes to get the actual IP address
+		 * @param array
+		 */
+		 public static void reverse(byte[] array) {
+		      if (array == null) {
+		          return;
+		      }
+		      int i = 0;
+		      int j = array.length - 1;
+		      byte tmp;
+		      while (j > i) {
+		          tmp = array[j];
+		          array[j] = array[i];
+		          array[i] = tmp;
+		          j--;
+		          i++;
+		      }
+		  }
+		 
+		 /*******************************************************************
+		  * NETWORK HANDLING
+		  *******************************************************************/
+		 
+		 /**
+		  * Get the network list from the server and select one to connect
+		  * @param response list with the networks
+		  */
+		 public void selectNetworkPrinter(JSONObject response, final String url){
+			 
+		 
+			 try {
+					JSONArray wifis = response.getJSONArray("wifis");
+					
+					final ArrayAdapter<String> networkList = new ArrayAdapter<String>(getContext(), android.R.layout.select_dialog_singlechoice);
+					for (int i = 0 ; i < wifis.length(); i++){
+						
+						networkList.add(wifis.getJSONObject(i).getString("ssid"));
+						
+					}
+										
+					//Custom Dialog to insert network parameters.
+			         AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+			         adb.setTitle("Configuring Network " + mManager.getConnectionInfo().getSSID());
+			                 
+			         //Get an adapter with the Network list retrieved from the main controller
+			         adb.setAdapter(networkList, new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {    
+							
+							Log.i("OUT","Selected " + networkList.getItem(which));
+							
+							AlertDialog.Builder adb_net = new AlertDialog.Builder(getContext());
+							LayoutInflater inflater = mController.getActivity().getLayoutInflater();
+							View v = inflater.inflate(R.layout.alertdialog_network, null);
+							
+							final EditText et_ssid = (EditText)v.findViewById(R.id.adb_et1);
+					        final EditText et_pass = (EditText)v.findViewById(R.id.adb_et2);
+					        
+					        et_ssid.setText(networkList.getItem(which));
+					        
+					        adb_net.setView(v);
+					        adb_net.setPositiveButton(R.string.ok, new OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									
+									final String ssid = et_ssid.getText().toString();
+									String psk = et_pass.getText().toString();
+																								
+									
+									/**
+									 * SAVE PARAMETERS
+									 */
+									
+									//Target network for both the client and the device
+									
+									final WifiConfiguration target = new WifiConfiguration();
+									//Set the parameters for the target network
+									target.SSID = "\"" + ssid + "\"";
+									target.preSharedKey = "\"" + psk + "\"";
+									
+									createNetworkDialog("Configuring " +  mManager.getConnectionInfo().getSSID() + " network, this may take a while. \n\n" +
+											"New device discovery is currently down until the configuration finishes.");
+									
+								
+									
+									OctoprintNetwork.configureNetwork(getContext(), ssid, psk, url);
+									
+									Handler handler = new Handler();
+							        handler.postDelayed((new Runnable() {
+										
+										@Override
+										public void run() {
+											
+
+											Log.i("NETWORK","DISCONNECTING");
+											isOffline = true;
+								         	mManager.disconnect();
+											mManager.disableNetwork(mManager.getConnectionInfo().getNetworkId());
+											mManager.removeNetwork(mManager.getConnectionInfo().getNetworkId());
+											
+											//Clear existing networks TODO: search for existing instead
+											//clearNetwork(target.SSID);
+											mManager.enableNetwork(searchNetwork(target), true);
+											
+											
+											
+											Handler postHandler = new Handler();
+											postHandler.postDelayed(new Runnable() {
+												
+												@Override
+												public void run() {
+												
+													Log.i("MANAGER","Registering again with " + target.SSID + "!");
+																								
+													//Remove ad-hoc network
+													clearNetwork(ssid);							        
+													
+													//postCheck(p);		
+													dismissNetworkDialog();
+													
+												}
+											}, 10000);	
+											
+										}
+									}), 5000);
+								
+								}
+					        });
+					        
+					        adb_net.setNegativeButton(R.string.cancel, null);
+					        adb_net.show();
+						}
+					});
+
+			         adb.show(); 
+			         
+			 } catch (JSONException e) {
+					e.printStackTrace();
+				}
+		 }
+		 
+		 
+		 /*********************************************************************
+		  * DIALOG HANDLING
+		  ********************************************************************/
+		 
+		 /**
+		  * Create Network Dialog while connecting to the Printer
+		  * @param message
+		  */
+		 public void createNetworkDialog(String message){
+				
+				//Configure Progress Dialog
+				mDialog = new ProgressDialog(mController.getActivity());
+				mDialog.setIcon(R.drawable.error_icon);
+				mDialog.setTitle("Wait...");
+				mDialog.setMessage(message);
+				mDialog.show();
+			}
+			
+		 /**
+		  * Called when the Network is established, should open a Dialog with the network list from the server
+		  *	only will be called if there's a Network available (Dialog won't be null)
+		  *
+		  */
+			public void dismissNetworkDialog(){
+				
+				if (isOffline)	{
+					isOffline = false;
+					mDialog.dismiss();
+					byte[] ipAddress = BigInteger.valueOf(mManager.getDhcpInfo().gateway).toByteArray();
+					reverse(ipAddress);
+					InetAddress myaddr;
+					try {
+						myaddr = InetAddress.getByAddress(ipAddress);
+						String hostaddr = myaddr.getHostAddress(); 
+						Log.i("OUT","Numerito_ " +hostaddr);
+					
+					
+					OctoprintNetwork.getNetworkList(this, "/" + hostaddr);
+					
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
+				
+			}
+			
+			/**
+			 * This method will clear the existing Networks with the same name as the new inserted
+			 * @param ssid
+			 */
+			private static void clearNetwork(String ssid){
+					
+					List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
+			        for (WifiConfiguration c: configs){
+			        	Log.i("NETWORK", c.SSID + " is clearly not " + ssid);
+			        	if (c.SSID.contains(ssid)){
+			        		Log.i("out","Removed");
+			        		mManager.removeNetwork(c.networkId);
+		        		}
+			        }
+				}
+			
+			private static int searchNetwork(WifiConfiguration ssid){
+				
+				List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
+		        for (WifiConfiguration c: configs){
+		        	if (c.SSID.equals(ssid.SSID)){
+		        		
+		        		Log.i("Network","No need to add a new network bitch");
+		        		return c.networkId;
+		        		
+		    		}
+		        }
+		        
+		        return mManager.addNetwork(ssid);
+			}
+			
+			
+		
+	/**
+	 * Add a new Printer calling to the Controller
+	 * @param p
+	 */
+	public void addElementController(ModelPrinter p){
+		
+		mController.addElement(p);
+		p.setNotConfigured();
+		
+	}
+	
+	/**
+	 * Get Device context
+	 * @return
+	 */
+	public Context getContext(){
+		return mController.getActivity();
+	}
+
+}

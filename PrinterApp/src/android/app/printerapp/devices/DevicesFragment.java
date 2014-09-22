@@ -6,7 +6,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
-import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.discovery.PrintNetworkManagerOctoprint;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
@@ -50,7 +50,7 @@ public class DevicesFragment extends Fragment{
 	private DevicesCameraAdapter mCameraAdapter;
 	
 	//Network manager contoller
-	private PrintNetworkManager mNetworkManager;
+	private PrintNetworkManagerOctoprint mNetworkManager;
 	
 	/**
 	 * Additional variables
@@ -165,7 +165,7 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
-			mNetworkManager = new PrintNetworkManager(this);	
+			mNetworkManager = new PrintNetworkManagerOctoprint(this);	
 			
 			//Default filter
 			mFilter = R.id.dv_radio0;
@@ -510,7 +510,7 @@ public class DevicesFragment extends Fragment{
 	
 	@Override
 	public void onDestroyView() {
-		mNetworkManager.destroy();
+		//mNetworkManager.destroy();
 		super.onDestroyView();
 	}
 	

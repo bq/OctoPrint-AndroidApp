@@ -3,7 +3,6 @@ package android.app.printerapp.devices.discovery;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.BroadcastReceiver;
@@ -26,28 +25,30 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	
 	//TODO: Hardcoded Network name for testing
 	//Filter to search for when scanning networks
-	private static final String NETWORK_NAME = "bq_";
+	private static final String NETWORK_NAME = "OctoPi";
 	
 	private WifiManager mWifiManager;
-	private DevicesFragment mController;
+	private PrintNetworkManagerOctoprint mController;
+	private Context mContext;
 	private IntentFilter mFilter;
 	private ConnectivityManager cm;
 	private static  ArrayAdapter<String> mNetworkList;
 	
 	
 	//Constructor
-	public PrintNetworkReceiver(DevicesFragment controller){
-		
-		this.mWifiManager = (WifiManager)controller.getActivity().getSystemService(Context.WIFI_SERVICE);
+	public PrintNetworkReceiver(PrintNetworkManagerOctoprint controller){
+
+		this.mContext = controller.getContext();
+		this.mWifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
 		this.mController = controller;
 		
 		//Network list
 		//TODO: Don't make it permanent
-		mNetworkList = new ArrayAdapter<String>(mController.getActivity(), android.R.layout.select_dialog_singlechoice);
+		mNetworkList = new ArrayAdapter<String>(mContext, android.R.layout.select_dialog_singlechoice);
 
 		
 		
-		cm = (ConnectivityManager)controller.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+		cm = (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		
 		mFilter = new IntentFilter();
 		mFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -70,10 +71,12 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 		 */
 		if (intent.getAction() == ConnectivityManager.CONNECTIVITY_ACTION){
 			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
+			
 			 if (activeNetwork!=null){
-				 Log.d("app","Network connectivity change " + activeNetwork.getState());
-				 PrintNetworkManager.dismissNetworkDialog();	
+				 
+				 Log.i("NETWORK","Network connectivity change " + activeNetwork.getState());
+				 mController.dismissNetworkDialog();	
+				 
 			 }
 		}
 
@@ -91,18 +94,16 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        		
 	        		//TODO: This should search for multiple Networks son we can't unregister the receiver.
 	        		//Log.i("Network",s.toString());
-	        		if ((s.SSID.contains(NETWORK_NAME))&&(s.SSID.length()<=7)){
+	        		if (s.SSID.contains(NETWORK_NAME)){
 	        			
 	        			Log.i("Network","New printer found! " + s.SSID);
 	        			//unregister();
 	        			
-	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.0.0.1",DevicesListController.searchAvailablePosition());
-	        			        			
+	        			ModelPrinter m = new ModelPrinter(s.SSID,"/octopi-dev.local",DevicesListController.searchAvailablePosition());
+	        			
 	        			//Check if network is already on the list
 	        			if (!DevicesListController.checkExisting(m)){
-	        				
-	        				mController.addElement(m);
-	        				m.setNotConfigured();
+	        				mController.addElementController(m);
 	        			}
 	        			else Log.i("OUT","QUe existo ya coño");
 	       			 
@@ -121,12 +122,12 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	}
 	
 	public void register(){
-		mController.getActivity().registerReceiver(this, mFilter);
+		mContext.registerReceiver(this, mFilter);
 		startScan();
 	}
 	
 	public void unregister(){
-		mController.getActivity().unregisterReceiver(this);
+		mContext.unregisterReceiver(this);
 	}
 	
 	/**

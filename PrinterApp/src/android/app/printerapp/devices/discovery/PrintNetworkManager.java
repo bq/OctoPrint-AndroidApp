@@ -37,7 +37,7 @@ public class PrintNetworkManager {
 	
 	
 	//This should contain the static generic password to the ad-hoc network
-	private static final String PASS = "raspberry";
+	private static final String PASS = "OctoPrint";
 	
 	//Parent Network to connect if errors are found
 	//private static int parent;
@@ -58,7 +58,7 @@ public class PrintNetworkManager {
 	public PrintNetworkManager(DevicesFragment context){
 		
 		mController = context;
-		mReceiver = new PrintNetworkReceiver(context);
+		//mReceiver = new PrintNetworkReceiver(context);
 		
 	}
 		
@@ -88,10 +88,14 @@ public class PrintNetworkManager {
          mManager.enableNetwork(nId, true);
          mManager.reconnect();
          
+         /*******************************************************************
+          * PASAR A OCTOPRINTNETWORK
+          ******************************************************************************/
+         
          //Custom Dialog to insert network parameters.
          AlertDialog.Builder adb = new AlertDialog.Builder(context.getActivity());
          adb.setTitle("Configure " + ssid);
-         
+                 
          //Get an adapter with the Network list retrieved from the main controller
          adb.setAdapter(PrintNetworkReceiver.getNetworkList(), new OnClickListener() {
 			
@@ -120,13 +124,12 @@ public class PrintNetworkManager {
 
 		         //TODO: Hardcoded parameters for testing
 		         et_ssid.setText(PrintNetworkReceiver.getNetworkList().getItem(which));
-		         //et_pass.setText("P3dr0y3ll0b0!");
+
 		         
 		         ll_dialog.addView(tv_ssid);
 		         ll_dialog.addView(et_ssid);
 		         ll_dialog.addView(tv_pass);
 		         ll_dialog.addView(et_pass);
-		         
 		         adb_net.setView(ll_dialog);
 		         adb_net.setPositiveButton("Ok", new OnClickListener() {
 						
@@ -223,7 +226,7 @@ public class PrintNetworkManager {
 			         adb_net.show();
 			       
 			         
-			         
+			         /******************************************************************************/
 				
 			}
 		});

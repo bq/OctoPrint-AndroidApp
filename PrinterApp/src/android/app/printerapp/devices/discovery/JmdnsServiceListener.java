@@ -68,6 +68,7 @@ public class JmdnsServiceListener implements ServiceListener{
 		
 		private void setUp() {
 			
+			try{
 			//We need to get our device IP address to bind it when creating JmDNS since we want to address it to a specific network interface
 	        WifiManager wifi = (WifiManager) mContext.getActivity().getSystemService(Context.WIFI_SERVICE);
 	        final InetAddress deviceIpAddress = getDeviceIpAddress(wifi);
@@ -78,14 +79,15 @@ public class JmdnsServiceListener implements ServiceListener{
 	        mMulticastLock.acquire();
 	        
 	        Log.i("Model", "Starting JmDNS Service Listener...." + deviceIpAddress.toString());
-
-	        try {	
+	
 				mJmdns = JmDNS.create(deviceIpAddress, null); //Creating an instance of JmDNS			
 				//Search for an specific service type
 	            mJmdns.addServiceListener("_ipp3._tcp.local.", this);
 	            
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (NullPointerException n){
+				n.printStackTrace();
 			}
 
 	           
