@@ -7,8 +7,7 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.printerapp.ItemListActivity;
-import android.app.printerapp.devices.discovery.PrintNetworkManagerOctoprint;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.content.Context;
 import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -21,7 +20,7 @@ public class OctoprintNetwork {
 	 * @param context
 	 * @param url current printer
 	 */
-	public static void getNetworkList(final PrintNetworkManagerOctoprint controller, final String url){
+	public static void getNetworkList(final PrintNetworkManager controller, final String url){
 		
 		HttpClientHandler.get(url + HttpUtils.URL_NETWORK, null, new JsonHttpResponseHandler(){
 			
@@ -35,6 +34,7 @@ public class OctoprintNetwork {
 					JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
 				
+				//Send the network list to the Network manager
 				controller.selectNetworkPrinter(response,url);
 				
 				Log.i("OUT",response.toString());

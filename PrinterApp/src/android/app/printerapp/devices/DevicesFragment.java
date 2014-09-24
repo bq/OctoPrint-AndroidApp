@@ -6,7 +6,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
-import android.app.printerapp.devices.discovery.PrintNetworkManagerOctoprint;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
@@ -50,7 +50,7 @@ public class DevicesFragment extends Fragment{
 	private DevicesCameraAdapter mCameraAdapter;
 	
 	//Network manager contoller
-	private PrintNetworkManagerOctoprint mNetworkManager;
+	private PrintNetworkManager mNetworkManager;
 	
 	/**
 	 * Additional variables
@@ -165,7 +165,7 @@ public class DevicesFragment extends Fragment{
 			
 			//Custom service listener
 			new JmdnsServiceListener(this);
-			mNetworkManager = new PrintNetworkManagerOctoprint(this);	
+			mNetworkManager = new PrintNetworkManager(this);	
 			
 			//Default filter
 			mFilter = R.id.dv_radio0;
@@ -416,7 +416,7 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_NEW){
 						 codeDialog(m); 
 					 } else if (m.getStatus()==StateUtils.STATE_ADHOC){
-						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
+						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName());
 					 }
 				}
 
@@ -448,7 +448,8 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_NEW){
 						 codeDialog(m); 
 					 } else if (m.getStatus()==StateUtils.STATE_ADHOC){
-						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
+						 
+						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName());
 					 } else {
 						 
 						 

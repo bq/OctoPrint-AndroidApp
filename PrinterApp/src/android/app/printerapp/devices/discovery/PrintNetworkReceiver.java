@@ -28,7 +28,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	private static final String NETWORK_NAME = "OctoPi";
 	
 	private WifiManager mWifiManager;
-	private PrintNetworkManagerOctoprint mController;
+	private PrintNetworkManager mController;
 	private Context mContext;
 	private IntentFilter mFilter;
 	private ConnectivityManager cm;
@@ -36,7 +36,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	
 	
 	//Constructor
-	public PrintNetworkReceiver(PrintNetworkManagerOctoprint controller){
+	public PrintNetworkReceiver(PrintNetworkManager controller){
 
 		this.mContext = controller.getContext();
 		this.mWifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
