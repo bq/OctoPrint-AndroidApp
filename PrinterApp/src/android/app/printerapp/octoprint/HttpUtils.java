@@ -18,4 +18,5 @@ public class HttpUtils {
 	  public static final String URL_SOCKET = CUSTOM_PORT + "/sockjs/websocket"; //Socket handling
 	  public static final String URL_CONNECTION = CUSTOM_PORT + "/api/connection"; //Connection handling
 	  public static final String URL_PRINTHEAD = CUSTOM_PORT + "/api/printer/printhead"; //Send print head commands
+	  public static final String URL_NETWORK = CUSTOM_PORT + "/api/plugin/netconnectd"; //Network config
 }

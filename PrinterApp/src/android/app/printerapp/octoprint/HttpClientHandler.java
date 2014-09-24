@@ -3,6 +3,8 @@ package android.app.printerapp.octoprint;
 import org.apache.http.HttpEntity;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.loopj.android.http.*;
 
 /**
@@ -35,6 +37,7 @@ public class HttpClientHandler {
 
   private static String getAbsoluteUrl(String relativeUrl) {
 	  client.addHeader("X-Api-Key", HttpUtils.API_KEY);
+	  Log.i("OUT","Http resuqekjlraj " +BASE_URL + relativeUrl);
       return BASE_URL + relativeUrl;
   }
 

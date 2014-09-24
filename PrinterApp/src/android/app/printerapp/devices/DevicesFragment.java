@@ -416,7 +416,7 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_NEW){
 						 codeDialog(m); 
 					 } else if (m.getStatus()==StateUtils.STATE_ADHOC){
-						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
+						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName());
 					 }
 				}
 
@@ -448,7 +448,8 @@ public class DevicesFragment extends Fragment{
 					 if (m.getStatus()==StateUtils.STATE_NEW){
 						 codeDialog(m); 
 					 } else if (m.getStatus()==StateUtils.STATE_ADHOC){
-						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), m);
+						 
+						 mNetworkManager.setupNetwork(DevicesFragment.this, m.getName());
 					 } else {
 						 
 						 
@@ -510,7 +511,7 @@ public class DevicesFragment extends Fragment{
 	
 	@Override
 	public void onDestroyView() {
-		mNetworkManager.destroy();
+		//mNetworkManager.destroy();
 		super.onDestroyView();
 	}
 	
