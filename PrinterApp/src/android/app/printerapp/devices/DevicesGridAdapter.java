@@ -98,7 +98,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			
 			//intialize visual parameters
 			v.setOnDragListener(new DevicesDragListener(m));
-			tag.setText(m.getDisplayName());
+			tag.setText(m.getDisplayName() + "\n" + m.getAddress().replace("/", "@"));
 			icon.setVisibility(View.VISIBLE);
 			
 			int status = m.getStatus();
