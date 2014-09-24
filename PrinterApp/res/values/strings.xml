@@ -42,6 +42,7 @@
     <string name="devices_text_loading">Uploading&#8230;</string>
     <string name="devices_text_connecting">Connecting&#8230;</string>
     <string name="devices_text_completed">Finished</string>
+    <string name="devices_text_paused">Paused</string>
     
     <string name="devices_menu_add">Add printer</string>
     <string name="devices_menu_filter">Filter devices</string>
