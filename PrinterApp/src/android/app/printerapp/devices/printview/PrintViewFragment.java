@@ -315,11 +315,12 @@ public class PrintViewFragment extends Fragment{
 	public void refreshData(){
 		
 		//Check around here if files were changed
-		tv_printer.setText(mPrinter.getDisplayName());
+		tv_printer.setText(mPrinter.getDisplayName() + " : "+mPrinter.getMessage());
 		tv_file.setText(mPrinter.getJob().getFilename());
 		tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
 			
-		if (mPrinter.getStatus()== StateUtils.STATE_PRINTING){
+		if ((mPrinter.getStatus()== StateUtils.STATE_PRINTING)||
+				(mPrinter.getStatus()== StateUtils.STATE_PAUSED)){
 			
 			isPrinting = true;
 			tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) + 

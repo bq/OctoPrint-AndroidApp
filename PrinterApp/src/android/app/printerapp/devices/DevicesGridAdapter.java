@@ -163,6 +163,15 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 					
 				}break;
 				
+				case StateUtils.STATE_PAUSED:{
+					pb.setVisibility(View.VISIBLE);
+					Double n = Double.valueOf(m.getJob().getProgress() );
+					pb.setProgress(n.intValue());
+					tvl.setText(R.string.devices_text_paused);
+					tvl.setVisibility(View.VISIBLE);
+					
+				}break;
+				
 				//when closed or error, show error icon
 				case StateUtils.STATE_CLOSED:
 				case StateUtils.STATE_ERROR:{

@@ -210,6 +210,7 @@ public class OctoprintConnection {
 		//Log.i("FLAGSSS",flags.toString());
 		
 				try {
+					if (flags.getBoolean("paused")) return StateUtils.STATE_PAUSED;
 					if (flags.getBoolean("printing")) return StateUtils.STATE_PRINTING;
 					if (flags.getBoolean("operational")) return StateUtils.STATE_OPERATIONAL;
 					if (flags.getBoolean("error")) return StateUtils.STATE_ERROR;
