@@ -241,5 +241,28 @@ public static void selectPrinter(final Context context, final File f){
 			
 		} else return "00000";
 	}
+	
+	
+	/**
+	 * check if there's already the printer listed filtered by ip
+	 * @param ip
+	 * @return
+	 */
+	public static boolean checkExisting(String ip){
+		
+		for (ModelPrinter p : mList){
+			
+			if (p.getAddress().equals(ip)){
+				
+				Log.i("OUT","Printer " + ip + " already added.");
+				
+				return true;
+			}
+			
+		}
+		
+		return false;
+		
+	}
 		
 }
