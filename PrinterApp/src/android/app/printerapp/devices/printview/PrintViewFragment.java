@@ -75,10 +75,11 @@ public class PrintViewFragment extends Fragment{
 			
 			//Necessary for gcode tracking
 			mContext = getActivity();
-			
+	
 			//Get the printer from the list
 			Bundle args = getArguments();
 			mPrinter = DevicesListController.getPrinter(args.getString("printer"));
+			getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
 			
 			//Check printing status
 			if (mPrinter.getStatus() == StateUtils.STATE_PRINTING) isPrinting = true;
@@ -117,18 +118,23 @@ public class PrintViewFragment extends Fragment{
 					
 					File file = new File(path);
 					
-					//If the path is not the same as we thought
-					if (!mPrinter.getJob().getFilename().equals(file.getName())){
+					try{
+						//If the path is not the same as we thought
+						if (!mPrinter.getJob().getFilename().equals(file.getName())){
+							
+							DatabaseController.handlePreference("References", mPrinter.getName(), null, false);
+							mPrinter.setJobPath(null);
 						
-						DatabaseController.handlePreference("References", mPrinter.getName(), null, false);
-						mPrinter.setJobPath(null);
-					
-						//If it's the same, update jobpath
-					} else {
-						
-						openGcodePrintView (path, rootView, R.id.view_gcode);	
-						mPrinter.setJobPath(path);
+							//If it's the same, update jobpath
+						} else {
+							
+							openGcodePrintView (path, rootView, R.id.view_gcode);	
+							mPrinter.setJobPath(path);
+						}
+					} catch (NullPointerException e){
+						e.printStackTrace();
 					}
+					
 				
 					
 				}

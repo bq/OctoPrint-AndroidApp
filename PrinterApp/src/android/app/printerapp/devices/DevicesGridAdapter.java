@@ -61,7 +61,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.grid_element, null, false);
+			v = inflater.inflate(R.layout.linear_grid_element, null, false);
 			
 			
 		} else {
@@ -72,6 +72,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 		
 		//Printer tag reference
 		TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
+		TextView ip = (TextView) v.findViewById(R.id.grid_element_ip);
 		TextView tvl = (TextView) v.findViewById(R.id.grid_text_loading);
 		ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
@@ -91,6 +92,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			//Empty slot is an invisible printer on the current position
 			v.setOnDragListener(new DevicesEmptyDragListener(position));
 			tag.setText("");
+			ip.setText("");
 			icon.setVisibility(View.INVISIBLE);
 			
 			//it's a printer
@@ -98,7 +100,8 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			
 			//intialize visual parameters
 			v.setOnDragListener(new DevicesDragListener(m));
-			tag.setText(m.getDisplayName() + "\n" + m.getAddress().replace("/", "@"));
+			tag.setText(m.getDisplayName());
+			ip.setText(m.getAddress().replace("/", ""));
 			icon.setVisibility(View.VISIBLE);
 			
 			int status = m.getStatus();

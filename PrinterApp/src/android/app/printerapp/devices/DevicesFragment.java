@@ -116,7 +116,7 @@ public class DevicesFragment extends Fragment{
 			//Grid
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
-					R.layout.grid_element, DevicesListController.getList());
+					R.layout.linear_grid_element, DevicesListController.getList());
 			
 			GridView gridView = (GridView) rootView.findViewById(R.id.devices_grid);
 			gridView.setOnItemClickListener(gridClickListener());	
