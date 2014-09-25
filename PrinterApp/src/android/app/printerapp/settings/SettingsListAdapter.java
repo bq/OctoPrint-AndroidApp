@@ -77,7 +77,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 			}
 			
 			TextView tv = (TextView) v.findViewById(R.id.settings_text);
-			tv.setText(m.getDisplayName());
+			tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") +"]");
 		
 		return v;
 	}

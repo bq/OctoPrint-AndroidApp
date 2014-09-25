@@ -270,7 +270,7 @@ public class DevicesFragment extends Fragment{
 			@Override
 			public void run() {
 								
-				if (!DatabaseController.checkExisting(m)){
+				if (!DevicesListController.checkExisting(m.getAddress())){
 					
 					DevicesListController.addToList(m);
 					
