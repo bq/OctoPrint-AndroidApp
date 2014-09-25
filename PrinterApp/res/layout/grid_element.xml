@@ -13,8 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:singleLine="true"/>
+        android:layout_marginTop="10dp"/>
 
     <ImageView
         android:id="@+id/grid_element_icon"
@@ -33,7 +32,7 @@
         android:layout_width="110dp"
         android:layout_height="10dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="180dp"
         android:visibility="visible" />
 
     <ImageView
