@@ -32,7 +32,7 @@
 	      android:layout_alignLeft="@+id/progressbarProject"
 	      android:layout_below="@+id/progressbarProject"
 	      android:layout_marginBottom="15dp"
-	      android:foreground="@drawable/witbox_icon" >
+	      android:foreground="@drawable/random" >
 	  </FrameLayout>
 
 </RelativeLayout>

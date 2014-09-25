@@ -21,6 +21,7 @@ import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -54,6 +55,8 @@ public class StorageModelCreation {
 			File mainFolder;
 			File secondaryFolder;
 			
+			Log.i("OUT","File " + root.getAbsolutePath() + " source " + source.getName());
+			
 			//root folder
 			if (root.mkdirs()){
 				
@@ -63,7 +66,7 @@ public class StorageModelCreation {
 					secondaryFolder = new File(root.getAbsolutePath() + "/_gcode");
 					
 				} else {
-					
+					Log.i("OUT","I DONT EVEN " + source.getName());
 					mainFolder = new File(root.getAbsolutePath() + "/_gcode");
 					secondaryFolder = new File(root.getAbsolutePath() + "/_stl");
 					

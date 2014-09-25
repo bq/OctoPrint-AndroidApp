@@ -593,14 +593,28 @@ public class ViewerMain extends Fragment {
 	    }
 	    @Override
 	    public void onClick(View v) {
-	    	if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
-	    	else {	    	
-		    	if (StlFile.saveModel(mDataList, proyectNameText.getText().toString())) dialog.dismiss();
-				else {
-					Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
-					dialog.dismiss();
-				}
-	    	}
+	    	
+	    	/**
+	    	 * Added filename check for .stl files.
+	    	 * 
+	    	 *  Alberto
+	    	 */
+	    	if ((proyectNameText.getText().toString().contains(".stl"))||
+	    	(proyectNameText.getText().toString().contains(".STL"))){
+	    		
+	    	
+		    	if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
+		    	else {	    	
+			    	if (StlFile.saveModel(mDataList, proyectNameText.getText().toString())) dialog.dismiss();
+					else {
+						Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+						dialog.dismiss();
+					}
+		    	}
+	    	} else {
+				Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+				dialog.dismiss();
+			}
 
 	    }
 	}
