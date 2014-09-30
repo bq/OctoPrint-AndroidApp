@@ -9,10 +9,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -54,7 +58,7 @@ public class OctoprintFiles {
 				     File m;
 				     
 				     //If it has an origin we need to set it for the printer
-				     if (!object.getString("origin").equals("local")){
+				     if (object.has("origin")){
 				    	 
 				    	//Set the storage to sd
 				    	 m = new File("sd/" +object.getString("name"));
@@ -129,7 +133,7 @@ public class OctoprintFiles {
 	 * Right now it uses two requests, the first to upload the file and another one to load it in the printer.
 	 * @param file
 	 */
-	public static void uploadFile(final Context context, final File file, final ModelPrinter p){
+	public static void uploadFile(final Context context, final File file, final ModelPrinter p, final boolean slice){
 			
 			RequestParams params = new RequestParams();
 			
@@ -165,11 +169,24 @@ public class OctoprintFiles {
 				public void onSuccess(int statusCode, Header[] headers,
 						JSONObject response) {
 					super.onSuccess(statusCode, headers, response);
-					p.setLoaded(true);
-					fileCommand(context, p.getAddress(), file.getName(), "/local/");
 					
-					Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
-									
+					if (slice){
+						
+						OctoprintSlicing.sliceCommand(context, p.getAddress(), file, "/local/");
+						
+						
+					}else {
+						
+						p.setLoaded(true);
+						fileCommand(context, p.getAddress(), file.getName(), "/local/");
+						
+						Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
+							
+						
+					}
+					
+					
+				
 					
 				}
 				
@@ -188,6 +205,38 @@ public class OctoprintFiles {
 			});	
        
 		
+	}
+	
+	/**
+	 * This method will create a Download Manager to retrieve gcode files from the server.
+	 * Files will be saved in the gcode folder for the current project.
+	 * 
+	 * @param context
+	 * @param url download reference
+	 * @param path local folder to store the file
+	 * @param filename
+	 */
+	public static void downloadFile(Context context, String url, String path, String filename){
+		
+		Log.i("OUT","DOWNLOADAN  " + url + filename + " INTO  " + StorageController.getParentFolder().getName() + "/Files/" + 
+				path + "/_gcode/" + filename);
+		
+		DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http:/" + url + filename));
+	
+		// in order for this if to run, you must use the android 3.2 to compile your app
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		    request.allowScanningByMediaScanner();
+		    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+		}
+		
+		
+		
+		request.setDestinationUri(Uri.parse("file://" + path + filename));
+		//request.setDestinationInExternalPublicDir(path, filename);
+
+		// get download service and enqueue file
+		DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+		manager.enqueue(request);
 	}
 	
 

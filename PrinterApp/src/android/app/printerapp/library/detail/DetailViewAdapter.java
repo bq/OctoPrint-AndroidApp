@@ -6,6 +6,8 @@ import java.util.List;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.library.StorageController;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -61,17 +63,18 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 		
 		ImageView iv = (ImageView) v.findViewById(R.id.detailview_list_iv);
 		iv.setImageDrawable(mDrawable);
-				
+						
 		ImageButton ib = (ImageButton) v.findViewById(R.id.detailview_list_iv1);
 		ImageButton ibe = (ImageButton) v.findViewById(R.id.detailview_list_iv2);
 		
-		if (f.getName().contains(".gcode")){
+		if ((StorageController.hasExtension(1, f.getName()))){
 			
 			v.findViewById(R.id.detailview_gcode).setVisibility(View.VISIBLE);
 
+			//it's an stl
 		}else {
 			
-			ib.setVisibility(View.GONE);
+			//ib.setVisibility(View.GONE);
 		}
 		
 		
@@ -82,6 +85,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			public void onClick(View v) {
 				
 				DevicesListController.selectPrinter(v.getContext(), f);
+				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");
 				
 			}
 		});

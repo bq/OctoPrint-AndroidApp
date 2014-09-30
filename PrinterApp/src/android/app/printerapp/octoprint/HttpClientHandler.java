@@ -34,6 +34,12 @@ public class HttpClientHandler {
   public static void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
 	  client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
+  
+  //PUT method for the new API
+  public static void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
+	  client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+  }
+  
 
   private static String getAbsoluteUrl(String relativeUrl) {
 	  client.addHeader("X-Api-Key", HttpUtils.API_KEY);

@@ -1,5 +1,6 @@
 package android.app.printerapp.octoprint;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.Header;
@@ -8,9 +9,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+
+import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.util.Log;
 
@@ -152,16 +159,78 @@ public class OctoprintConnection {
 		         public void onTextMessage(String payload) {
 		            
 		        	 Log.i("SOCK", "Got echo: " + payload);
-		            
-		            try {
-		            	
+		        	 
+		        	  try {
+		        		  
+		        	 JSONObject object = new JSONObject(payload);
+		            		          
 		            	//Get the json string for "current" status
-		            	JSONObject response = new JSONObject(payload).getJSONObject("current");
+		            	if (object.has("current")){
+		            		
+		            		JSONObject response = new JSONObject(payload).getJSONObject("current");
+			            	
+							//Update job with current status
+			            	//We'll add every single parameter
+							p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
+									response);
+		            	}
 		            	
-						//Update job with current status
-		            	//We'll add every single parameter
-						p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
-								response);
+		            	if (object.has("event")){
+		            			            		
+		            		JSONObject response = new JSONObject(payload).getJSONObject("event");
+		            		
+		            		if (response.getString("type").equals("SlicingDone")){
+		            			
+		            			final JSONObject slicingPayload = response.getJSONObject("payload");
+		            			
+		            			if (DatabaseController.isPreference("Slicing", slicingPayload.getString("gcode"))){
+
+		            				
+		            				final String path = DatabaseController.getPreference("Slicing", slicingPayload.getString("gcode"));
+									
+		            				
+		            				AlertDialog.Builder adb = new AlertDialog.Builder(context);
+			            			adb.setTitle("Slicing done...");
+			            			adb.setMessage("Wanna save : " + slicingPayload.getString("gcode") + "?");
+			            			adb.setPositiveButton(R.string.ok, new OnClickListener() {
+										
+										@Override
+										public void onClick(DialogInterface dialog, int which) {
+											
+													Log.i("OUT","PRINTING " + path);
+
+														//OctoprintFiles.fileCommand(context, p.getAddress(), slicingPayload.getString("gcode"), "/local/");
+														File f = new File(path);
+														
+														try {
+															
+															OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES , 
+																	f.getParentFile().getParent() + "/_gcode/", slicingPayload.getString("gcode"));
+														} catch (JSONException e) {
+															// TODO Auto-generated catch block
+															e.printStackTrace();
+														}
+													
+
+										}
+									});
+			            			
+			            			adb.show();
+			            			DatabaseController.handlePreference("Slicing", slicingPayload.getString("stl"), null, false);
+			            			
+									
+			            			}
+		            			
+		            			
+		            		}
+		            		
+		            		
+		            		
+		            	//{"event": {"type": "SlicingDone", "payload": {"stl": "coin.stl", "gcode": "coin.gco", "time": 24.528998136520386}}}
+
+		            		
+		            	}
+		            
 												
 		            } catch (JSONException e) {
 						e.printStackTrace();

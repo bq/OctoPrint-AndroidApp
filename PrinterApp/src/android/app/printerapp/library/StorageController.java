@@ -3,7 +3,10 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
+import android.annotation.SuppressLint;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
@@ -17,6 +20,7 @@ import android.os.Environment;
  * @author alberto-baeza
  *
  */
+@SuppressLint("DefaultLocale")
 public class StorageController {
 	
 	private static ArrayList<File> mFileList = new ArrayList<File>();
@@ -74,8 +78,7 @@ public class StorageController {
 			} else {
 				
 				//Add only stl and gcode
-				//TODO usb lists .gco
-				if ((file.getName().contains(".gcode")) || (file.getName().contains(".stl"))){
+				if ((hasExtension(0, file.getName())) || (hasExtension(1, file.getName()))){
 					addToList(file);
 				}
 				
@@ -222,6 +225,26 @@ public class StorageController {
 		
 		if (file.list(f).length > 0) return true;
 		else return false;
+	}
+	
+	/**
+	 * Method to check if a file is a proper .gcode or .stl
+	 * @param type 0 for .stl 1 for .gcode
+	 * @param name name of the file
+	 * @return true if it's the desired type
+	 */
+
+	public static boolean hasExtension(int type, String name){
+		
+		switch (type){
+			
+		case 0: if (name.toLowerCase().endsWith(".stl"))  return true;
+			break;
+		case 1: if ((name.toLowerCase().endsWith(".gcode")) || (name.toLowerCase().endsWith(".gco"))) return true;
+			break;
+		}
+		
+		return false;
 	}
 	
 	public static void addToList(File m ){

@@ -139,9 +139,9 @@ public class StorageModelCreation {
 		List<DataStorage> list = new ArrayList<DataStorage> ();
 		DataStorage data = new DataStorage();
 		
-		if(path.endsWith(".stl") || path.endsWith(".STL")) {
+		if(StorageController.hasExtension(0, path)) {
 			StlFile.openStlFile (context, file, data, ViewerMain.DO_SNAPSHOT);
-		} else if (path.endsWith(".gcode") || path.endsWith(".GCODE")) {
+		} else if (StorageController.hasExtension(1, path)) {
 			GcodeFile.openGcodeFile(context, file, data, ViewerMain.DO_SNAPSHOT);
 		}
 		

@@ -9,8 +9,10 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
+import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -192,6 +194,12 @@ public static void selectPrinter(final Context context, final File f){
 					if (checkedItems[i]){
 						
 						ModelPrinter m = tempList.get(i);
+
+						
+						//OctoprintSlicing.retrieveProfiles(m.getAddress());
+						OctoprintSlicing.sliceCommand(context, m.getAddress(), f, "/local/");
+						
+						//TODO Yolo Temp
 						
 						if (f.getParent().equals("sd")){
 							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/sdcard/");	
@@ -202,11 +210,20 @@ public static void selectPrinter(final Context context, final File f){
 							
 				    		
 						} else {
-							OctoprintFiles.uploadFile(context, f, m);
+							
+							if (StorageController.hasExtension(1, f.getName())) OctoprintFiles.uploadFile(context, f, m, false);
+							else if (StorageController.hasExtension(0, f.getName())) OctoprintFiles.uploadFile(context, f, m, true);
+							
 						}
+						if (StorageController.hasExtension(1, f.getName())){
+							ItemListFragment.performClick(0);
+							if (checkedItems.length==1) ItemListActivity.showExtraFragment(1, m.getName());
+						}
+							
+					
 						
-						ItemListFragment.performClick(0);
-						if (checkedItems.length==1) ItemListActivity.showExtraFragment(1, m.getName());
+						
+						
 
 
 					}

@@ -349,9 +349,11 @@ public class ItemListActivity extends FragmentActivity implements
 	public void onBackPressed() {
 		
 		if (mCurrent!=null)
+			
 			if (mCurrent == mLibraryFragment){
 			
 				if (!mLibraryFragment.goBack()) super.onBackPressed();
+				
 				else return;
 			}  
 		
