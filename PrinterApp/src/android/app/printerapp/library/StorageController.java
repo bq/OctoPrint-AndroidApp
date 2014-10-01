@@ -3,8 +3,6 @@ package android.app.printerapp.library;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.Map;
 import android.annotation.SuppressLint;
 import android.app.printerapp.devices.DevicesListController;

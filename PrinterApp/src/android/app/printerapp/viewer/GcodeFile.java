@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -109,6 +110,7 @@ public class GcodeFile  {
 		return progressDialog;
 	}
 	
+	@SuppressLint("DefaultLocale")
 	public static void processGcode(StringBuilder allLines, int maxLines) {
 		int index=0;
 		int lastIndex = 0;
@@ -130,7 +132,8 @@ public class GcodeFile  {
 
 			if (line.contains("END GCODE")) end = true;
 			
-			if (line.contains("end of START GCODE")) start = true;
+			//if (line.contains("end of START GCODE")) start = true;
+			if (line.toLowerCase().contains("layer count")) start = true;
 			
 			if(line.contains("MOVE")) {
 	        	 type = DataStorage.MOVE;

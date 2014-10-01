@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.Uri;
@@ -218,9 +217,6 @@ public class OctoprintFiles {
 	 */
 	public static void downloadFile(Context context, String url, String path, String filename){
 		
-		Log.i("OUT","DOWNLOADAN  " + url + filename + " INTO  " + StorageController.getParentFolder().getName() + "/Files/" + 
-				path + "/_gcode/" + filename);
-		
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http:/" + url + filename));
 	
 		// in order for this if to run, you must use the android 3.2 to compile your app
@@ -232,7 +228,6 @@ public class OctoprintFiles {
 		
 		
 		request.setDestinationUri(Uri.parse("file://" + path + filename));
-		//request.setDestinationInExternalPublicDir(path, filename);
 
 		// get download service and enqueue file
 		DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);

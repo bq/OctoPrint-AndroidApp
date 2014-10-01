@@ -519,7 +519,7 @@ public class ViewerMain extends Fragment {
 
 		if (StorageController.hasExtension(0, filePath)) {
 			if (mDataList.size()>1) {
-				if (mDataList.get(mDataList.size()-2).getPathFile().endsWith(".gcode") || mDataList.get(mDataList.size()-2).getPathFile().endsWith(".GCODE")) {
+				if (StorageController.hasExtension(1, mDataList.get(mDataList.size()-2).getPathFile())) {
 					mDataList.remove(mDataList.size()-2);
 				}
 			}

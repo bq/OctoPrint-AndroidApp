@@ -181,46 +181,9 @@ public class OctoprintConnection {
 		            		
 		            		if (response.getString("type").equals("SlicingDone")){
 		            			
-		            			final JSONObject slicingPayload = response.getJSONObject("payload");
-		            			
-		            			if (DatabaseController.isPreference("Slicing", slicingPayload.getString("gcode"))){
+		            			JSONObject slicingPayload = response.getJSONObject("payload");
 
-		            				
-		            				final String path = DatabaseController.getPreference("Slicing", slicingPayload.getString("gcode"));
-									
-		            				
-		            				AlertDialog.Builder adb = new AlertDialog.Builder(context);
-			            			adb.setTitle("Slicing done...");
-			            			adb.setMessage("Wanna save : " + slicingPayload.getString("gcode") + "?");
-			            			adb.setPositiveButton(R.string.ok, new OnClickListener() {
-										
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											
-													Log.i("OUT","PRINTING " + path);
-
-														//OctoprintFiles.fileCommand(context, p.getAddress(), slicingPayload.getString("gcode"), "/local/");
-														File f = new File(path);
-														
-														try {
-															
-															OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES , 
-																	f.getParentFile().getParent() + "/_gcode/", slicingPayload.getString("gcode"));
-														} catch (JSONException e) {
-															// TODO Auto-generated catch block
-															e.printStackTrace();
-														}
-													
-
-										}
-									});
-			            			
-			            			adb.show();
-			            			DatabaseController.handlePreference("Slicing", slicingPayload.getString("stl"), null, false);
-			            			
-									
-			            			}
-		            			
+		            			createSliceDialog(context, slicingPayload,p.getAddress());
 		            			
 		            		}
 		            		
@@ -294,6 +257,64 @@ public class OctoprintConnection {
 				}
 				
 				return StateUtils.STATE_NONE;
+		
+	}
+	
+	/**
+	 * This method will create a dialog to handle the sliced file from the server.
+	 * @param context
+	 * @param payload sliced file data from the server
+	 * @param url server address
+	 */
+	private static void createSliceDialog(final Context context, final JSONObject payload, final String url){
+		
+		
+		
+		try {
+			
+			//Search for files waiting for slice
+			if (DatabaseController.isPreference("Slicing", payload.getString("gcode"))){
+
+				final String path = DatabaseController.getPreference("Slicing", payload.getString("gcode"));
+					
+				AlertDialog.Builder adb = new AlertDialog.Builder(context);
+				adb.setTitle("Slicing done...");
+				adb.setMessage("Download: " + payload.getString("gcode") + " into project folder?");
+				adb.setPositiveButton(R.string.ok, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+									File f = new File(path);
+									
+									try {
+										
+										OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES , 
+												f.getParentFile().getParent() + "/_gcode/", payload.getString("gcode"));
+									
+									
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								
+
+					}
+				});
+				
+				adb.setNegativeButton(R.string.cancel, null);
+				
+				adb.show();
+				
+				//Delete file from preferences
+				DatabaseController.handlePreference("Slicing", payload.getString("gcode"), null, false);
+				
+				
+				
+				}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }
