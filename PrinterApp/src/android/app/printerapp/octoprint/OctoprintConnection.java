@@ -1,5 +1,6 @@
 package android.app.printerapp.octoprint;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.Header;
@@ -8,9 +9,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+
+import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.util.Log;
 
@@ -152,16 +159,41 @@ public class OctoprintConnection {
 		         public void onTextMessage(String payload) {
 		            
 		        	 Log.i("SOCK", "Got echo: " + payload);
-		            
-		            try {
-		            	
+		        	 
+		        	  try {
+		        		  
+		        	 JSONObject object = new JSONObject(payload);
+		            		          
 		            	//Get the json string for "current" status
-		            	JSONObject response = new JSONObject(payload).getJSONObject("current");
+		            	if (object.has("current")){
+		            		
+		            		JSONObject response = new JSONObject(payload).getJSONObject("current");
+			            	
+							//Update job with current status
+			            	//We'll add every single parameter
+							p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
+									response);
+		            	}
 		            	
-						//Update job with current status
-		            	//We'll add every single parameter
-						p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
-								response);
+		            	if (object.has("event")){
+		            			            		
+		            		JSONObject response = new JSONObject(payload).getJSONObject("event");
+		            		
+		            		if (response.getString("type").equals("SlicingDone")){
+		            			
+		            			JSONObject slicingPayload = response.getJSONObject("payload");
+
+		            			createSliceDialog(context, slicingPayload,p.getAddress());
+		            			
+		            		}
+		            		
+		            		
+		            		
+		            	//{"event": {"type": "SlicingDone", "payload": {"stl": "coin.stl", "gcode": "coin.gco", "time": 24.528998136520386}}}
+
+		            		
+		            	}
+		            
 												
 		            } catch (JSONException e) {
 						e.printStackTrace();
@@ -225,6 +257,64 @@ public class OctoprintConnection {
 				}
 				
 				return StateUtils.STATE_NONE;
+		
+	}
+	
+	/**
+	 * This method will create a dialog to handle the sliced file from the server.
+	 * @param context
+	 * @param payload sliced file data from the server
+	 * @param url server address
+	 */
+	private static void createSliceDialog(final Context context, final JSONObject payload, final String url){
+		
+		
+		
+		try {
+			
+			//Search for files waiting for slice
+			if (DatabaseController.isPreference("Slicing", payload.getString("gcode"))){
+
+				final String path = DatabaseController.getPreference("Slicing", payload.getString("gcode"));
+					
+				AlertDialog.Builder adb = new AlertDialog.Builder(context);
+				adb.setTitle(payload.getString("gcode") + ": " + context.getString(R.string.slicing_title) + " " + String.format("%.2f", (Double.parseDouble(payload.getString("time")))) + "s");
+				adb.setMessage(context.getString(R.string.slicing_download));
+				adb.setPositiveButton(R.string.ok, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+									File f = new File(path);
+									
+									try {
+										
+										OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES , 
+												f.getParentFile().getParent() + "/_gcode/", payload.getString("gcode"));
+									
+									
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								
+
+					}
+				});
+				
+				adb.setNegativeButton(R.string.cancel, null);
+				
+				adb.show();
+				
+				//Delete file from preferences
+				DatabaseController.handlePreference("Slicing", payload.getString("gcode"), null, false);
+				
+				
+				
+				}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }

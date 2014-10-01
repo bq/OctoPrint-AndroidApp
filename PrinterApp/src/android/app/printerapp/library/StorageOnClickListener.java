@@ -101,7 +101,10 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					
 					//either sd or internal
 					if (f.getParent().equals("sd")){
+						 
 						OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/");	
+						//OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
+					
 					}else OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/");	
 				
 					

@@ -424,10 +424,10 @@ public class ViewerMain extends Fragment {
 	   DataStorage data = null;
 		mFile = new File(filePath);
 		//Open the file
-		if ((filePath.endsWith(".stl")|| filePath.endsWith(".STL")) ) {
+		if (StorageController.hasExtension(0, filePath)) {
 			data = new DataStorage();
 			StlFile.openStlFile (mContext, mFile, data, DONT_SNAPSHOT);
-		} else if ((filePath.endsWith(".gcode")|| filePath.endsWith(".GCODE"))) {
+		} else if (StorageController.hasExtension(1, filePath)) {
 			data = new DataStorage();
 			GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
 		}
@@ -517,16 +517,16 @@ public class ViewerMain extends Fragment {
 		String filePath = "";
 		if (mFile!=null) filePath = mFile.getAbsolutePath();
 
-		if (filePath.endsWith(".stl") || filePath.endsWith(".STL") ) {
+		if (StorageController.hasExtension(0, filePath)) {
 			if (mDataList.size()>1) {
-				if (mDataList.get(mDataList.size()-2).getPathFile().endsWith(".gcode") || mDataList.get(mDataList.size()-2).getPathFile().endsWith(".GCODE")) {
+				if (StorageController.hasExtension(1, mDataList.get(mDataList.size()-2).getPathFile())) {
 					mDataList.remove(mDataList.size()-2);
 				}
 			}
 			Geometry.relocateIfOverlaps(mDataList);
 			mSeekBar.setVisibility(View.INVISIBLE);
 
-		} else if (filePath.endsWith(".gcode") || filePath.endsWith(".GCODE")) {
+		} else if (StorageController.hasExtension(1, filePath)) {
 			if (mDataList.size()>1) 
 				while (mDataList.size()>1){
 					mDataList.remove(0);
@@ -599,8 +599,8 @@ public class ViewerMain extends Fragment {
 	    	 * 
 	    	 *  Alberto
 	    	 */
-	    	if ((proyectNameText.getText().toString().contains(".stl"))||
-	    	(proyectNameText.getText().toString().contains(".STL"))){
+	    	//if ((proyectNameText.getText().toString().contains(".stl"))||
+	    	//(proyectNameText.getText().toString().contains(".STL"))){
 	    		
 	    	
 		    	if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
@@ -611,10 +611,10 @@ public class ViewerMain extends Fragment {
 						dialog.dismiss();
 					}
 		    	}
-	    	} else {
-				Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-				dialog.dismiss();
-			}
+	    	//} else {
+			//	Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+			//	dialog.dismiss();
+			//}
 
 	    }
 	}

@@ -141,6 +141,9 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 								pb.setProgress(n.intValue());
 								tvl.setText(R.string.devices_text_completed);
 								tvl.setVisibility(View.VISIBLE);
+								
+								
+								//DevicesFragment.playMusic();
 							}
 						}
 						

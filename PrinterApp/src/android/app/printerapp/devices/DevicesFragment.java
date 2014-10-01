@@ -14,9 +14,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,6 +52,11 @@ public class DevicesFragment extends Fragment{
 	private DevicesGridAdapter mGridAdapter;
 	private DevicesListAdapter mListAdapter;
 	private DevicesCameraAdapter mCameraAdapter;
+	
+	//MUSIC!!!11!!1
+	private static	 SoundPool mSoundPool;
+	private static	 int mSoundMusic;
+	private static boolean mSoundIsLoaded = false;
 	
 	//Network manager contoller
 	private PrintNetworkManager mNetworkManager;
@@ -169,6 +178,12 @@ public class DevicesFragment extends Fragment{
 			
 			//Default filter
 			mFilter = R.id.dv_radio0;
+			
+			/**
+			 * MUSIC!!!
+			 */
+			
+			loadMusic();
 		
 		}
 		return rootView;
@@ -515,6 +530,25 @@ public class DevicesFragment extends Fragment{
 		super.onDestroyView();
 	}
 	
+	/******************************************
+	 * 			PLAY MUSIC!
+	 ******************************************/
 	
+	public void loadMusic(){
+		mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		mSoundMusic = mSoundPool.load(getActivity(), R.raw.finish, 1);
+		mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+		    public void onLoadComplete(SoundPool soundPool, int sampleId,int status) {
+		       mSoundIsLoaded = true;
+		    }
+		});
+	}
+	
+	public static void playMusic(){
+		if (mSoundIsLoaded){
+			Log.i("out","PLAYING MUSIC");
+			mSoundPool.play(mSoundMusic, 1, 1, 1, 0, 1);
+		}
+	}
 	
 }

@@ -139,7 +139,7 @@ public class DevicesQuickprint {
 									 data= ClipData.newPlainText("internal", name);
 								} else if (m.getStorage().equals("sd")){
 									data = ClipData.newPlainText("internalsd", m.getName());
-								}else if (name.substring(name.length() - 6, name.length()).equals(".gcode")){
+								}else if (StorageController.hasExtension(1, name)){
 									data = ClipData.newPlainText("name", name);	
 								}
 								

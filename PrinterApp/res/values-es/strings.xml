@@ -58,6 +58,8 @@
     <string name="viewer_toast_not_available">No hay vista disponible.</string>
     <string name="viewer_toast_not_available_2">No hay vista disponible, abra primero un fichero</string>
     
+    <string name="slicing_title">Laminado completado en </string>
+    <string name="slicing_download">¿Descargar el archivo a la carpeta del proyecto?</string>
     
     <string name="library_search_dialog_title">Palabra a buscar</string>
     <string name="library_filter_dialog_show">Mostrar todo</string>
