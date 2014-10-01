@@ -599,8 +599,8 @@ public class ViewerMain extends Fragment {
 	    	 * 
 	    	 *  Alberto
 	    	 */
-	    	if ((proyectNameText.getText().toString().contains(".stl"))||
-	    	(proyectNameText.getText().toString().contains(".STL"))){
+	    	//if ((proyectNameText.getText().toString().contains(".stl"))||
+	    	//(proyectNameText.getText().toString().contains(".STL"))){
 	    		
 	    	
 		    	if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
@@ -611,10 +611,10 @@ public class ViewerMain extends Fragment {
 						dialog.dismiss();
 					}
 		    	}
-	    	} else {
-				Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-				dialog.dismiss();
-			}
+	    	//} else {
+			//	Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+			//	dialog.dismiss();
+			//}
 
 	    }
 	}

@@ -278,8 +278,8 @@ public class OctoprintConnection {
 				final String path = DatabaseController.getPreference("Slicing", payload.getString("gcode"));
 					
 				AlertDialog.Builder adb = new AlertDialog.Builder(context);
-				adb.setTitle("Slicing done...");
-				adb.setMessage("Download: " + payload.getString("gcode") + " into project folder?");
+				adb.setTitle(payload.getString("gcode") + ": " + context.getString(R.string.slicing_title) + " " + String.format("%.2f", (Double.parseDouble(payload.getString("time")))) + "s");
+				adb.setMessage(context.getString(R.string.slicing_download));
 				adb.setPositiveButton(R.string.ok, new OnClickListener() {
 					
 					@Override
