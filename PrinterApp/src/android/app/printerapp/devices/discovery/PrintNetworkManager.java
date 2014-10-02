@@ -50,6 +50,8 @@ public class PrintNetworkManager {
 		
 		//Check if the network is currently being configured
 		private boolean isOffline = false;
+		
+		private PrintNetworkReceiver mReceiver;
 				
 		
 		//Constructor
@@ -58,7 +60,7 @@ public class PrintNetworkManager {
 			mController = context;
 			
 			//Create a new Network Receiver
-			new PrintNetworkReceiver(this);
+			mReceiver = new PrintNetworkReceiver(this);
 			
 			
 			
@@ -189,8 +191,10 @@ public class PrintNetworkManager {
 									OctoprintNetwork.configureNetwork(getContext(), ssid, psk, url);
 									
 									
-									//From this point on we need a delay to the configuration to ensure a clear connection
+									mReceiver.unregister();
 									
+									//From this point on we need a delay to the configuration to ensure a clear connection
+								
 									/**
 									 * TODO Need a handler for this?
 									 * Remove AP from the network list and connect to the Target network
@@ -223,9 +227,9 @@ public class PrintNetworkManager {
 													Log.i("MANAGER","Registering again with " + target.SSID + "!");
 																								
 													//Remove ad-hoc network
-													clearNetwork(ssid);							        
+													clearNetwork("OctoPi-Dev");							        
 													
-													//postCheck(p);		
+													mReceiver.register();		
 													dismissNetworkDialog();
 													
 												}
@@ -296,6 +300,13 @@ public class PrintNetworkManager {
 				
 				
 				
+			}
+			
+			private void postCheck(){
+
+					mReceiver.register();
+					Log.i("out","Next try");
+
 			}
 			
 			/**

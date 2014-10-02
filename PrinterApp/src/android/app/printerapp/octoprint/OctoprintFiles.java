@@ -85,8 +85,35 @@ public class OctoprintFiles {
 			
 		}
 		
+		@Override
+			public void onFailure(int statusCode, Header[] headers,
+					String responseString, Throwable throwable) {
+				
+				super.onFailure(statusCode, headers, responseString, throwable);
+				
+				Log.i("OUT","PEDAZO DE FAIL " + responseString);
+			}
+		@Override
+			public void onFailure(int statusCode, Header[] headers,
+					Throwable throwable, JSONArray errorResponse) {
+				// TODO Auto-generated method stub
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+				
+				Log.i("OUT","PEDAZO DE FAIL 2" + errorResponse.toString());
+			}
+		@Override
+			public void onFailure(int statusCode, Header[] headers,
+					Throwable throwable, JSONObject errorResponse) {
+				// TODO Auto-generated method stub
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+				
+				Log.i("OUT","PEDAZO DE FAIL 3" + errorResponse.toString());
+			}
+		
 		
 		});
+		
+		
 		
 		
 	}
