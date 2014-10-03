@@ -40,6 +40,11 @@ public class HttpClientHandler {
 	  client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
   
+  //DELETE method
+  public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+	  client.delete(context, getAbsoluteUrl(url), responseHandler);
+  }
+  
 
   private static String getAbsoluteUrl(String relativeUrl) {
 	  client.addHeader("X-Api-Key", HttpUtils.API_KEY);

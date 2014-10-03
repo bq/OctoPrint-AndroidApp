@@ -218,6 +218,12 @@ public class GcodeFile  {
         @Override
         public void handleMessage(Message msg) {
     		if (mData.getCoordinateListSize() < 1) {
+    			
+    			/**
+    			 * If there is an invalid gcode, breaks here for some reason.
+    			 * 
+    			 * Alberto
+    			 */
     			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
     			ViewerMain.resetWhenCancel();
     			if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();

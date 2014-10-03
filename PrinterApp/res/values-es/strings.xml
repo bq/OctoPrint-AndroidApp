@@ -60,6 +60,10 @@
     
     <string name="slicing_title">Laminado completado en </string>
     <string name="slicing_download">¿Descargar el archivo a la carpeta del proyecto?</string>
+    <string name="finish_dialog_title">Impresión finalizada: </string>
+    <string name="finish_dialog_text"> se ha imprimido, asegúrate de que retiras la pieza del plato antes de poner a imprimir la siguiente. ¿Quieres borrar el fichero del servidor?</string>
+    <string name="finish_dialog_remove">Borrar</string>
+    <string name="finish_dialog_notremove">No borrar</string>
     
     <string name="library_search_dialog_title">Palabra a buscar</string>
     <string name="library_filter_dialog_show">Mostrar todo</string>

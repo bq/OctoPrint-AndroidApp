@@ -65,6 +65,10 @@
     
     <string name="slicing_title">Slicing done in </string>
     <string name="slicing_download">Download file into project folder?</string>
+    <string name="finish_dialog_title">Print finished: </string>
+    <string name="finish_dialog_text"> has been printed, make sure you remove the piece from the plate before printing a new one. Do you want to remove the file from the server?</string>
+    <string name="finish_dialog_remove">Remove</string>
+    <string name="finish_dialog_notremove">Don\'t remove</string>
     
     <string name="library_search_dialog_title">Search keyword</string>
     <string name="library_filter_dialog_show">Show everything</string>

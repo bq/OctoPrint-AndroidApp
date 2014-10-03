@@ -26,6 +26,8 @@ public class ModelJob {
 	private String mPrinted;
 	private String mProgress = "0";
 	
+	private boolean mFinished = false;
+	
 	public ModelJob(){
 				
 	}
@@ -95,6 +97,12 @@ public class ModelJob {
 			mPrintTimeLeft = progress.getString("printTimeLeft");
 			mProgress = progress.getString("completion");
 			
+			if (!mProgress.equals("null")){
+				Double n = Double.parseDouble(mProgress);
+				if (n.intValue() == 100) mFinished = true;
+				else mFinished = false;
+			}
+
 			Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime + 
 					" Print time left: " + mPrintTimeLeft);
 			
@@ -103,6 +111,20 @@ public class ModelJob {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Finish job
+	 */
+	
+	public boolean getFinished(){
+		return mFinished;
+	}
+	
+	public void setFinished(){
+		
+		mFinished = true;
+				
 	}
 
 }
