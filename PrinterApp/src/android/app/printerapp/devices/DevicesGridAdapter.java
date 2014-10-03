@@ -7,6 +7,8 @@ import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,16 +137,29 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 						
 						//Currently finished means operational + file loaded with 100% progress
 						if (!m.getJob().getProgress().equals("null")){
-							Double n = Double.parseDouble(m.getJob().getProgress() );
+							
+							if (m.getJob().getFinished()){
+								pb.setVisibility(View.VISIBLE);
+								pb.setProgress(100);
+								pb.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
+								tvl.setText(R.string.devices_text_completed);
+								tvl.setVisibility(View.VISIBLE);
+							}
+							
+							/*Double n = Double.parseDouble(m.getJob().getProgress() );
+							
 							if (n.intValue() == 100){
+								
+								
 								pb.setVisibility(View.VISIBLE);
 								pb.setProgress(n.intValue());
+								pb.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
 								tvl.setText(R.string.devices_text_completed);
 								tvl.setVisibility(View.VISIBLE);
 								
 								
 								//DevicesFragment.playMusic();
-							}
+							}*/
 						}
 						
 					}

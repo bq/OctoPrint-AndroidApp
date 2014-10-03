@@ -118,7 +118,19 @@ public class OctoprintFiles {
 		
 	}
 	
-	public static void fileCommand(Context context, String url, String filename, String target){
+	
+	/**
+	 * This method will send a select command to the server to load the file into the printer
+	 * If a select command is sent when the file is 100% printed, the progress will reset
+	 * If a delete command is also issued, the file will be unselected and then deleted from the server
+	 * 
+	 * @param context
+	 * @param url
+	 * @param filename
+	 * @param target
+	 * @param delete
+	 */
+	public static void fileCommand(final Context context, final String url, final String filename, final String target, final boolean delete){
 		
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
@@ -145,6 +157,12 @@ public class OctoprintFiles {
 					Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
 				Log.i("OUT","Upload successful");
+				
+				if (delete){
+					
+					deleteFile(context, url, filename, target);
+					
+				}
 			}
 		});
 						
@@ -196,6 +214,9 @@ public class OctoprintFiles {
 						JSONObject response) {
 					super.onSuccess(statusCode, headers, response);
 					
+
+					Log.i("SUCCESS", response.toString());
+					
 					if (slice){
 						
 						OctoprintSlicing.sliceCommand(context, p.getAddress(), file, "/local/");
@@ -203,8 +224,8 @@ public class OctoprintFiles {
 						
 					}else {
 						
-						p.setLoaded(true);
-						fileCommand(context, p.getAddress(), file.getName(), "/local/");
+						//p.setLoaded(true);
+						fileCommand(context, p.getAddress(), file.getName(), "/local/", false);
 						
 						Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
 							
@@ -215,7 +236,7 @@ public class OctoprintFiles {
 				
 					
 				}
-				
+
 				@Override
 				public void onFailure(int statusCode, Header[] headers,
 						String responseString, Throwable throwable) {
@@ -230,6 +251,49 @@ public class OctoprintFiles {
 				
 			});	
        
+		
+	}
+	
+	/**
+	 * Method to delete a file on the server remotely after it was printed. 
+	 * @param context
+	 * @param url
+	 * @param filename
+	 * @param target
+	 */
+	public static void deleteFile(Context context, String url, String filename, String target){
+		
+		HttpClientHandler.delete(context, url + HttpUtils.URL_FILES + "/local/" + filename, 
+				new JsonHttpResponseHandler(){				
+
+			//Override onProgress because it's faulty
+			@Override
+			public void onProgress(int bytesWritten, int totalSize) {						
+			}
+			
+			//If success, the file was uploaded correctly
+			@Override
+			public void onSuccess(int statusCode, Header[] headers,
+					JSONObject response) {
+				super.onSuccess(statusCode, headers, response);
+				
+				
+				Log.i("SUCCESS", response.toString());
+
+			}
+			
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					String responseString, Throwable throwable) {
+				// TODO Auto-generated method stub
+				super.onFailure(statusCode, headers, responseString, throwable);
+				
+				Log.i("RESPONSEFAIL", responseString);
+
+			}
+			
+		});	
+   
 		
 	}
 	

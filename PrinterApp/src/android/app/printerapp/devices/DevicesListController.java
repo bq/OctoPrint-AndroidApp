@@ -202,11 +202,11 @@ public static void selectPrinter(final Context context, final File f){
 						//TODO Yolo Temp
 						
 						if (f.getParent().equals("sd")){
-							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/sdcard/");	
+							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/sdcard/", false);	
 							
 			    			
 						} else if (f.getParent().equals("witbox")){
-							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/local/");	
+							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/local/", false);	
 							
 				    		
 						} else {

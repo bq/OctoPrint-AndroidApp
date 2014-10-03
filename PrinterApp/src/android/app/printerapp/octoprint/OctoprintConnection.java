@@ -187,6 +187,12 @@ public class OctoprintConnection {
 		            			
 		            		}
 		            		
+		            		if (response.getString("type").equals("Upload")){
+		            			
+		            			p.setLoaded(true);
+		            			
+		            		}
+		            		
 		            		
 		            		
 		            	//{"event": {"type": "SlicingDone", "payload": {"stl": "coin.stl", "gcode": "coin.gco", "time": 24.528998136520386}}}

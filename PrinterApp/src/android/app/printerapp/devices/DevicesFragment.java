@@ -8,6 +8,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
 import android.content.Context;
@@ -484,8 +485,20 @@ public class DevicesFragment extends Fragment{
 						 }
 						 
 						 
-						 
-						 if (m.getStatus()>0) ItemListActivity.showExtraFragment(1, m.getName()); 
+						 //Check if the Job has finished, and create a dialog to remove the file / send a new one
+						 if (m.getStatus()>0) {
+							 
+							 //if job finished, create dialog
+							 if (m.getJob().getFinished()){
+								 createFinishDialog(m);
+								 
+							//if not finished, normal behavior
+							 } else {
+								 ItemListActivity.showExtraFragment(1, m.getName()); 
+							 }
+							 
+							 
+						 }
 						 
 					 }
 					
@@ -549,6 +562,44 @@ public class DevicesFragment extends Fragment{
 			Log.i("out","PLAYING MUSIC");
 			mSoundPool.play(mSoundMusic, 1, 1, 1, 0, 1);
 		}
+	}
+	
+	/********************************************
+	 * 			FINISH DIALOG
+	 ********************************************/
+	
+	//TODO OUT OF HERE!
+	public void createFinishDialog(final ModelPrinter m){
+		
+		//Constructor
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		adb.setTitle(getActivity().getString(R.string.finish_dialog_title) + m.getJob().getFilename());
+		adb.setMessage(R.string.finish_dialog_text);
+		
+		adb.setPositiveButton(R.string.finish_dialog_remove, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				m.setJobPath(null);
+				
+				//Remove file from server
+				OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true);
+				}
+		});
+		
+		adb.setNegativeButton(R.string.finish_dialog_notremove, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				//Select the same file again to reset progress
+				OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false);
+						
+			}
+		});
+		
+		adb.show();
 	}
 	
 }
