@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.content.Context;
 import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -17,7 +18,7 @@ public class OctoprintNetwork {
 	/**
 	 * Obtain the network list available to the server to configure one
 	 * TODO Somehow there are a lot of calls instead of one
-	 * @param context
+	 * @param controller
 	 * @param url current printer
 	 */
 	public static void getNetworkList(final PrintNetworkManager controller, final String url){
@@ -70,8 +71,8 @@ public class OctoprintNetwork {
 	 * @param psk
 	 * @param url
 	 */
-	public static void configureNetwork(Context context, String ssid, String psk, String url){
-		
+	public static void configureNetwork(final PrintNetworkReceiver pr, Context context, String ssid, String psk, String url){
+
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
 		
@@ -98,6 +99,7 @@ public class OctoprintNetwork {
 				super.onSuccess(statusCode, headers, response);
 				
 				Log.i("OUT",response.toString());
+                pr.register();
 			}
 			
 			@Override
@@ -105,8 +107,8 @@ public class OctoprintNetwork {
 					String responseString, Throwable throwable) {
 
 				super.onFailure(statusCode, headers, responseString, throwable);
-				
-				
+
+                pr.register();
 				Log.i("OUT",responseString);
 
 			}
@@ -118,7 +120,7 @@ public class OctoprintNetwork {
 					Throwable throwable, JSONObject errorResponse) {
 				
 				super.onFailure(statusCode, headers, throwable, errorResponse);
-				
+                pr.register();
 				Log.i("OUT","Failure while connecting " + statusCode);
 			}
 		});

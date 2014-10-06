@@ -41,6 +41,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
+import java.util.ArrayList;
+
 /**
  * This is the fragment that will contain the Device Grid and functionality
  * @author alberto-baeza
@@ -126,7 +128,7 @@ public class DevicesFragment extends Fragment{
 			//Grid
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
-					R.layout.linear_grid_element, DevicesListController.getList());
+					R.layout.devices_grid_element, DevicesListController.getList());
 			
 			GridView gridView = (GridView) rootView.findViewById(R.id.devices_grid);
 			gridView.setOnItemClickListener(gridClickListener());	
@@ -140,7 +142,7 @@ public class DevicesFragment extends Fragment{
 			//List
 
 			mListAdapter = new DevicesListAdapter(getActivity(), 
-					R.layout.list_element, DevicesListController.getList());
+					R.layout.devices_list_element, DevicesListController.getList());
 			
 			ListView listView = (ListView) rootView.findViewById(R.id.devices_list);
 			listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
@@ -150,8 +152,19 @@ public class DevicesFragment extends Fragment{
 			
 			
 			/*************** VIDEO HANDLER ****************************/
-					
-			mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
+
+
+            //Create a new list with only the configured printers
+            ArrayList<ModelPrinter> mVideoList = new ArrayList<ModelPrinter>();
+
+            for (ModelPrinter m : DevicesListController.getList()){
+
+                if ((m.getStatus()!=StateUtils.STATE_ADHOC)&&(m.getStatus()!=StateUtils.STATE_NEW))
+                    mVideoList.add(m);
+
+            }
+
+			mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, mVideoList);
 			
 			GridView cameraView = (GridView) rootView.findViewById(R.id.devices_camera);
 			cameraView.setAdapter(mCameraAdapter);
@@ -329,7 +342,7 @@ public class DevicesFragment extends Fragment{
 		
 		
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
+		View v = inflater.inflate(R.layout.devices_menu_filter_dialog, null, false);
 		
 		final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
 		

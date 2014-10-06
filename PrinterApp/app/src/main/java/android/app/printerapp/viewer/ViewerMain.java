@@ -543,7 +543,7 @@ public class ViewerMain extends Fragment {
 		
 	/************************* SAVE FILE ********************************/
 	private void saveNewProyect () {
-		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_proyect_name_dialog, null);
+		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_project_name_dialog, null);
 		final EditText proyectNameText = (EditText) dialogText.findViewById(R.id.proyect_name);
 
 		proyectNameText.addTextChangedListener(new TextWatcher() {

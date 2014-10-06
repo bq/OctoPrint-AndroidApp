@@ -1,5 +1,7 @@
 package android.app.printerapp.devices.discovery;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,6 +17,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintNetwork;
 import android.content.Context;
@@ -65,7 +68,6 @@ public class PrintNetworkManager {
 		public PrintNetworkManager(DevicesFragment context){
 			
 			mController = context;
-			
 			//Create a new Network Receiver
 			mReceiver = new PrintNetworkReceiver(this);
 			
@@ -77,7 +79,7 @@ public class PrintNetworkManager {
 		 * Method to connect to the AP
 		 * @param context
 		 * @param ssid
-		 * @param p
+		 * @param position
 		 */
 		public void setupNetwork(final DevicesFragment context, final String ssid, int position){
 			
@@ -103,7 +105,7 @@ public class PrintNetworkManager {
 	         
 	         /****************************NOPENOPENOPENOPENOPE*****************************/
 	         
-	             
+	        /*
 	         Log.i("OUT","UNREGISTER COJONES");
 	     	mReceiver.unregister();
 	       //Remove ad-hoc network
@@ -113,7 +115,9 @@ public class PrintNetworkManager {
 			ItemListActivity.notifyAdapters();
 			
 			 Log.i("OUT","CLEAN COJONES");
-				clearNetwork("OctoPi-Dev");		
+				clearNetwork("OctoPi-Dev");
+
+				*/
 				
 			/******************************************************************************/
 	         
@@ -213,7 +217,7 @@ public class PrintNetworkManager {
 									
 								
 									//Send a network configuration request to the server
-									OctoprintNetwork.configureNetwork(getContext(), ssid, psk, url);
+									OctoprintNetwork.configureNetwork(mReceiver, getContext(), ssid, psk, url);
 									
 									
 									mReceiver.unregister();
@@ -251,12 +255,14 @@ public class PrintNetworkManager {
 												
 													Log.i("MANAGER","Registering again with " + target.SSID + "!");
 																								
-													//Remove ad-hoc network
-													clearNetwork("OctoPi-Dev");		
+
 													DevicesListController.getList().remove(mPosition);
+                                                    //Remove ad-hoc network
+                                                    clearNetwork("OctoPi-Dev");
 													mPosition = -1;
-													
-													mReceiver.register();		
+
+                                                    ItemListActivity.notifyAdapters();
+                                                   // mReceiver.register();
 													dismissNetworkDialog();
 													
 												}
@@ -380,5 +386,6 @@ public class PrintNetworkManager {
 	public Context getContext(){
 		return mController.getActivity();
 	}
+
 
 }
