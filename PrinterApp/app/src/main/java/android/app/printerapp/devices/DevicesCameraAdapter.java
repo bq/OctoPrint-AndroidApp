@@ -34,18 +34,18 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflater.inflate(R.layout.video_view, null, false);
 			
-			if (m.getStatus()!=StateUtils.STATE_NEW)
+			if ((m.getStatus()!=StateUtils.STATE_NEW)&&(m.getStatus()!=StateUtils.STATE_ADHOC))
 			if (m.getVideo().getParent() == null)	{
-				
-				
+
+
 				//Create a new linear layout to store the view
 				LinearLayout ll = new LinearLayout(getContext());
 				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-		                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);    
-				
-				
+		                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+
+
 				ll.addView(m.getVideo(), layoutParams);
-				
+
 				LinearLayout layout = (LinearLayout) v.findViewById(R.id.video_layout);
 				//Remove all previous views (refresh icon)
 				layout.removeAllViews();

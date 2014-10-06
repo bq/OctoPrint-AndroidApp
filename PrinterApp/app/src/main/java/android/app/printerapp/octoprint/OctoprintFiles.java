@@ -93,23 +93,6 @@ public class OctoprintFiles {
 				
 				Log.i("OUT","PEDAZO DE FAIL " + responseString);
 			}
-		@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONArray errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				
-				Log.i("OUT","PEDAZO DE FAIL 2" + errorResponse.toString());
-			}
-		@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				
-				Log.i("OUT","PEDAZO DE FAIL 3" + errorResponse.toString());
-			}
-		
 		
 		});
 		
@@ -298,6 +281,7 @@ public class OctoprintFiles {
 	}
 	
 	/**
+	 * TODO CHANGE TO BACKGROUND DOWNLOAD
 	 * This method will create a Download Manager to retrieve gcode files from the server.
 	 * Files will be saved in the gcode folder for the current project.
 	 * 

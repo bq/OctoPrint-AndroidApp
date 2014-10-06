@@ -79,7 +79,7 @@ public class PrintViewFragment extends Fragment{
 			//Get the printer from the list
 			Bundle args = getArguments();
 			mPrinter = DevicesListController.getPrinter(args.getString("printer"));
-			getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
+			//getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
 			
 			//Check printing status
 			if (mPrinter.getStatus() == StateUtils.STATE_PRINTING) isPrinting = true;

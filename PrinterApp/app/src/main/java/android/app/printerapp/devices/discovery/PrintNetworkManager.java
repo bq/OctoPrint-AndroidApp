@@ -11,8 +11,10 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintNetwork;
 import android.content.Context;
@@ -52,6 +54,11 @@ public class PrintNetworkManager {
 		private boolean isOffline = false;
 		
 		private PrintNetworkReceiver mReceiver;
+		
+		//TODO TENTATIVE CHANGES!!!!!!1111!!ONEONE
+		
+		//position for the current printer being selected
+		private int mPosition = -1;
 				
 		
 		//Constructor
@@ -72,12 +79,14 @@ public class PrintNetworkManager {
 		 * @param ssid
 		 * @param p
 		 */
-		public void setupNetwork(final DevicesFragment context, final String ssid){
+		public void setupNetwork(final DevicesFragment context, final String ssid, int position){
 			
 			//Get connection parameters
 			WifiConfiguration conf = new WifiConfiguration();
 			conf.SSID = "\"" + ssid + "\"";  
 			conf.preSharedKey = "\""+ PASS +"\"";
+			
+			mPosition = position;
 			
 			//Add the new network
 			mManager = (WifiManager)context.getActivity().getSystemService(Context.WIFI_SERVICE); 
@@ -91,7 +100,23 @@ public class PrintNetworkManager {
 	         mManager.disconnect();
 	         mManager.enableNetwork(nId, true);
 	         mManager.reconnect();
+	         
+	         /****************************NOPENOPENOPENOPENOPE*****************************/
+	         
 	             
+	         Log.i("OUT","UNREGISTER COJONES");
+	     	mReceiver.unregister();
+	       //Remove ad-hoc network
+	     	 Log.i("OUT","REMOVE " + mPosition + " COJONES");
+	     	DevicesListController.getList().remove(mPosition);
+			mPosition = -1;
+			ItemListActivity.notifyAdapters();
+			
+			 Log.i("OUT","CLEAN COJONES");
+				clearNetwork("OctoPi-Dev");		
+				
+			/******************************************************************************/
+	         
 	         //TODO hardcoded dialog
 	         createNetworkDialog("WARNING!!! Connecting to printer network.");
     
@@ -227,7 +252,9 @@ public class PrintNetworkManager {
 													Log.i("MANAGER","Registering again with " + target.SSID + "!");
 																								
 													//Remove ad-hoc network
-													clearNetwork("OctoPi-Dev");							        
+													clearNetwork("OctoPi-Dev");		
+													DevicesListController.getList().remove(mPosition);
+													mPosition = -1;
 													
 													mReceiver.register();		
 													dismissNetworkDialog();
@@ -301,14 +328,7 @@ public class PrintNetworkManager {
 				
 				
 			}
-			
-			private void postCheck(){
-
-					mReceiver.register();
-					Log.i("out","Next try");
-
-			}
-			
+						
 			/**
 			 * This method will clear the existing Networks with the same name as the new inserted
 			 * @param ssid
