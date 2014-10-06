@@ -103,8 +103,8 @@ public class LibraryFragment extends Fragment {
 			//Initial file list
 			StorageController.reloadFiles("all");
 			
-			mAdapter = new StorageAdapter(getActivity(), R.layout.storage_main, StorageController.getFileList());
-			mListAdapter = new StorageAdapter(getActivity(),R.layout.storage_list_element, StorageController.getFileList());
+			mAdapter = new StorageAdapter(getActivity(), R.layout.library_grid_element, StorageController.getFileList());
+			mListAdapter = new StorageAdapter(getActivity(),R.layout.library_list_element, StorageController.getFileList());
 			
 			GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
 			
@@ -268,7 +268,7 @@ public class LibraryFragment extends Fragment {
 		adb.setTitle(R.string.filter);
 		
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.menu_filter_library_dialog, null, false);
+		View v = inflater.inflate(R.layout.libray_menu_filter_dialog, null, false);
 		
 		final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_library);
 		

@@ -81,7 +81,7 @@ public class DevicesQuickprint {
 		for (final ModelFile m : mFileList){
 			
 			//LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			//View v = inflater.inflate(R.layout.storage_main, null);
+			//View v = inflater.inflate(R.layout.library_grid_element, null);
 			
 			if (m.getGcodeList()!=null){
 				File path = new File(m.getGcodeList());
