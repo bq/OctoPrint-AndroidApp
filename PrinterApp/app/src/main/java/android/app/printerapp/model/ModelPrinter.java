@@ -164,7 +164,7 @@ public class ModelPrinter {
 	}
 	
 	public void setConnecting(){
-		mStatus = StateUtils.STATE_CONNECTING;
+		mStatus = StateUtils.STATE_NONE;
 	}
 	
 	public void setNotConfigured(){

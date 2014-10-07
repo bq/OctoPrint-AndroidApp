@@ -122,7 +122,7 @@ public class PrintNetworkManager {
 			/******************************************************************************/
 	         
 	         //TODO hardcoded dialog
-	         createNetworkDialog("WARNING!!! Connecting to printer network.");
+	         createNetworkDialog(getContext().getString(R.string.devices_discovery_connect));
     
 		}
 		
@@ -212,8 +212,7 @@ public class PrintNetworkManager {
 									target.SSID = "\"" + ssid + "\"";
 									target.preSharedKey = "\"" + psk + "\"";
 									
-									createNetworkDialog("Configuring " +  mManager.getConnectionInfo().getSSID() + " network, this may take a while. \n\n" +
-											"New device discovery is currently down until the configuration finishes.");
+									createNetworkDialog(getContext().getString(R.string.devices_discovery_config));
 									
 								
 									//Send a network configuration request to the server
@@ -299,8 +298,8 @@ public class PrintNetworkManager {
 				
 				//Configure Progress Dialog
 				mDialog = new ProgressDialog(mController.getActivity());
-				mDialog.setIcon(R.drawable.error_icon);
-				mDialog.setTitle("Wait...");
+				mDialog.setIcon(android.R.drawable.ic_dialog_alert);
+				mDialog.setTitle(getContext().getString(R.string.devices_discovery_title));
 				mDialog.setMessage(message);
 				mDialog.show();
 			}

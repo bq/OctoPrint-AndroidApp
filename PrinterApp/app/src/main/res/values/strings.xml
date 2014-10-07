@@ -46,6 +46,7 @@
     
     <string name="devices_menu_add">Add printer</string>
     <string name="devices_menu_filter">Filter devices</string>
+    <string name="devices_menu_reload">Reload devices</string>
     <string name="devices_cab_menu_delete">Delete printer</string>
     <string name="devices_cab_menu_settings">Printer settings</string>
     
@@ -54,7 +55,12 @@
     <string name="devices_filter_dialog_inactive">Available printers</string>
     <string name="devices_filter_dialog_groups">As groups</string>
     <string name="devices_filter_dialog_linked">Only linked printers</string>
-    
+
+    <string name="devices_discovery_connect">Connecting to printer network, this should take a moment.\nIf it takes too long, there may be a problem with the access point.</string>
+    <string name="devices_discovery_config">Configuring network parameters, this may take a while. \nNew device discovery is currently down until the configuration finishes.</string>
+    <string name="devices_discovery_title">Configuring new printer</string>
+
+
     <string name="devices_toast_no_stl">No .stl found</string>
     <string name="devices_toast_no_gcode">No .gcode found</string>
     <string name="devices_toast_upload_1">Uploaded&#8230;</string>

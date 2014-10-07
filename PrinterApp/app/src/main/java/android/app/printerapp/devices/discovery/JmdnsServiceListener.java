@@ -41,7 +41,7 @@ public class JmdnsServiceListener implements ServiceListener{
 		
 		/*****************
 		 * Main constructor
-		 * @param controller
+		 * @param context
 		 *****************/
 		
 		public JmdnsServiceListener(DevicesFragment context){
@@ -144,14 +144,19 @@ public class JmdnsServiceListener implements ServiceListener{
 			   }
 			   return result;
 		}
-		
-		
-		
-		
-		public static void stopListening(){
-			
+
+
+    /**
+     * Reload the service discovery by registering the service again in case it's not detected automatically
+     */
+		public void reloadListening(){
+
 			mJmdns.unregisterAllServices();
 			mMulticastLock.release();
+
+            mMulticastLock.acquire();
+            //Search for an specific service type
+            mJmdns.addServiceListener("_ipp3._tcp.local.", this);
 			
 			
 		}
