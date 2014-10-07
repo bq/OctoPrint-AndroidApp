@@ -112,7 +112,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			switch(status){
 			
 				case StateUtils.STATE_NONE:{
-					icon.setImageResource(R.drawable.icon_printer);	
+					icon.setImageResource(R.drawable.icon_printer);
 				}break;
 				
 				case StateUtils.STATE_NEW:
@@ -206,6 +206,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 					tvl.setVisibility(View.VISIBLE);
 					pl.setVisibility(View.VISIBLE);
 				} break;
+
+                case StateUtils.STATE_NONE:
+                    tvl.setText("Offline");
+                    tvl.setVisibility(View.VISIBLE);
+                    break;
 				
 				default:{
 				}

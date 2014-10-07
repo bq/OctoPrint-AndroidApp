@@ -51,7 +51,11 @@
     <string name="devices_filter_dialog_inactive">Impresoras disponibles</string>
     <string name="devices_filter_dialog_groups">Vista de grupos</string>
     <string name="devices_filter_dialog_linked">Solo impresoras enlazadas</string>
-    
+
+    <string name="devices_discovery_connect">Conectando a la red de la impresora, sólo tardará un momento.\nSi tarda demasiado, podría haber un problema con el punto de acceso.</string>
+    <string name="devices_discovery_config">Configurando los parámetros de red, puede tardar un rato. \nEl servicio de descubrimiento de nuevas redes está detenido hasta que termine la configuración.</string>
+    <string name="devices_discovery_title">Configurando nueva impresora</string>
+
     <string name="devices_toast_no_gcode">No se ha encontrado .gcode</string>
     <string name="storage_toast_corrupted">El fichero está corrupto</string>
     <string name="devices_toast_upload_1">Subido&#8230;</string>
