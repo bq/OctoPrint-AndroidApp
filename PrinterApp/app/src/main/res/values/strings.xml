@@ -46,6 +46,7 @@
     
     <string name="devices_menu_add">Add printer</string>
     <string name="devices_menu_filter">Filter devices</string>
+    <string name="devices_menu_reload">Reload devices</string>
     <string name="devices_cab_menu_delete">Delete printer</string>
     <string name="devices_cab_menu_settings">Printer settings</string>
     

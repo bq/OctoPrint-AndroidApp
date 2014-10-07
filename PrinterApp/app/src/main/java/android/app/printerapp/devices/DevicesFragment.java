@@ -63,6 +63,7 @@ public class DevicesFragment extends Fragment{
 	
 	//Network manager contoller
 	private PrintNetworkManager mNetworkManager;
+    private JmdnsServiceListener mServiceListener;
 	
 	/**
 	 * Additional variables
@@ -128,7 +129,7 @@ public class DevicesFragment extends Fragment{
 			//Grid
 
 			mGridAdapter = new DevicesGridAdapter(getActivity(),
-					R.layout.devices_grid_element, DevicesListController.getList());
+					R.layout.grid_element, DevicesListController.getList());
 			
 			GridView gridView = (GridView) rootView.findViewById(R.id.devices_grid);
 			gridView.setOnItemClickListener(gridClickListener());	
@@ -142,7 +143,7 @@ public class DevicesFragment extends Fragment{
 			//List
 
 			mListAdapter = new DevicesListAdapter(getActivity(), 
-					R.layout.devices_list_element, DevicesListController.getList());
+					R.layout.list_element, DevicesListController.getList());
 			
 			ListView listView = (ListView) rootView.findViewById(R.id.devices_list);
 			listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
@@ -187,7 +188,7 @@ public class DevicesFragment extends Fragment{
 			/***************************************************************/
 			
 			//Custom service listener
-			new JmdnsServiceListener(this);
+			mServiceListener = new JmdnsServiceListener(this);
 			mNetworkManager = new PrintNetworkManager(this);	
 			
 			//Default filter
@@ -219,6 +220,11 @@ public class DevicesFragment extends Fragment{
        		
        		optionFilter();
             return true;
+
+           case R.id.menu_reload: //reload service discovery
+
+               optionReload();
+               return true;
               
           
        default:
@@ -342,7 +348,7 @@ public class DevicesFragment extends Fragment{
 		
 		
 		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.devices_menu_filter_dialog, null, false);
+		View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
 		
 		final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
 		
@@ -392,6 +398,15 @@ public class DevicesFragment extends Fragment{
 		adb.show();
 		
 	}
+
+    /**
+     * Method to reload the service discovery and reload the devices
+      */
+    public void optionReload(){
+
+        mServiceListener.reloadListening();
+
+    }
 	
 	/**
 	 * Dialog for the QR code insertion and sending

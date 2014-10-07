@@ -5,6 +5,12 @@
         android:showAsAction="ifRoom"
         android:icon="@drawable/icon_filtro"
         android:title="@string/devices_menu_filter"/>
+
+    <item
+        android:id="@+id/menu_reload"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/stat_notify_sync"
+        android:title="@string/devices_menu_filter"/>
  
   
 </menu>

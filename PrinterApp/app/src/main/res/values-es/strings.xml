@@ -42,6 +42,7 @@
     
     <string name="devices_menu_add">Añadir impresora</string>
     <string name="devices_menu_filter">Filtrar dispositivos</string>
+    <string name="devices_menu_reload">Recargar dispositivos</string>
     <string name="devices_cab_menu_delete">Eliminar impresora</string>
     <string name="devices_cab_menu_settings">Opciones de impresora</string>
     

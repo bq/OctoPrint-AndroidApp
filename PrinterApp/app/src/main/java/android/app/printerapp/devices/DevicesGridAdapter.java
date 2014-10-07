@@ -63,7 +63,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 			
 			//Inflate the view
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.devices_grid_element, null, false);
+			v = inflater.inflate(R.layout.linear_grid_element, null, false);
 			
 			
 		} else {
