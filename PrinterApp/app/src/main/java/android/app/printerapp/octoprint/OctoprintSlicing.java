@@ -24,7 +24,6 @@ public class OctoprintSlicing {
 	 * Send a command to the server to start/pause/stop a job
 	 * @param context
 	 * @param url
-	 * @param command
 	 */
 	public static void sendProfile(Context context, String url){
 		

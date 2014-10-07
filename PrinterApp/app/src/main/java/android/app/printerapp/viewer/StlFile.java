@@ -430,7 +430,11 @@ public class StlFile {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }     
+        }
+
+        SlicingHandler sh = new SlicingHandler(mContext);
+        sh.setData(data);
+        sh.sendTimer();
 	    
 	    File file = new File (path);
 	    StorageModelCreation.createFolderStructure(mContext, file);

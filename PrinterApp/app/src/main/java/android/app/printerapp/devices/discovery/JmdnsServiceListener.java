@@ -151,12 +151,15 @@ public class JmdnsServiceListener implements ServiceListener{
      */
 		public void reloadListening(){
 
-			mJmdns.unregisterAllServices();
-			mMulticastLock.release();
+            if (mJmdns!=null){
+                mJmdns.unregisterAllServices();
+                mMulticastLock.release();
 
-            mMulticastLock.acquire();
-            //Search for an specific service type
-            mJmdns.addServiceListener("_ipp3._tcp.local.", this);
+                mMulticastLock.acquire();
+                //Search for an specific service type
+                mJmdns.addServiceListener("_ipp3._tcp.local.", this);
+            }
+
 			
 			
 		}

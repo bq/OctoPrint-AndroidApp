@@ -197,7 +197,7 @@ public static void selectPrinter(final Context context, final File f){
 
 						
 						//OctoprintSlicing.retrieveProfiles(m.getAddress());
-						OctoprintSlicing.sliceCommand(context, m.getAddress(), f, "/local/");
+						//OctoprintSlicing.sliceCommand(context, m.getAddress(), f, "/local/");
 						
 						//TODO Yolo Temp
 						

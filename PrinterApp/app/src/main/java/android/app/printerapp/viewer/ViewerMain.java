@@ -322,7 +322,7 @@ public class ViewerMain extends Fragment {
 			return true;
 			
        	case R.id.viewer_save: 
-       		saveNewProyect ();		
+       		saveNewProject();
             return true;
             
     	case R.id.viewer_notes: 
@@ -542,7 +542,7 @@ public class ViewerMain extends Fragment {
 	}
 		
 	/************************* SAVE FILE ********************************/
-	private void saveNewProyect () {
+	private void saveNewProject() {
 		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_proyect_name_dialog, null);
 		final EditText proyectNameText = (EditText) dialogText.findViewById(R.id.proyect_name);
 
@@ -693,6 +693,10 @@ public class ViewerMain extends Fragment {
         	mRotateMenu.setVisibility(View.INVISIBLE);
 
 			mActionMode = null;
+
+
+
+
 		}
 	};
 	
