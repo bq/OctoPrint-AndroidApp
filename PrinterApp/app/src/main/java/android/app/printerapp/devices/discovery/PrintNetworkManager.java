@@ -26,10 +26,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 /**
@@ -190,6 +193,22 @@ public class PrintNetworkManager {
 					        final EditText et_pass = (EditText)v.findViewById(R.id.adb_et2);
 					        
 					        et_ssid.setText(networkList.getItem(which));
+
+                            //Add check box to show/hide the password
+                            final CheckBox showPasswordCheckbox = (CheckBox) v.findViewById(R.id.show_password_cb);
+                            showPasswordCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                    // Use this for store the current cursor mPosition of the edit text
+                                    int start = et_pass.getSelectionStart();
+                                    int end = et_pass.getSelectionEnd();
+
+                                    if (isChecked) et_pass.setTransformationMethod(null);
+                                    else et_pass.setTransformationMethod(new PasswordTransformationMethod());
+
+                                    et_pass.setSelection(start, end);
+                                }
+                            });
 					        
 					        adb_net.setView(v);
 					        adb_net.setPositiveButton(R.string.ok, new OnClickListener() {
