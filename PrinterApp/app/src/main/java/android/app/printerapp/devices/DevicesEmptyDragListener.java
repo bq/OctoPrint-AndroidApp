@@ -6,6 +6,7 @@ import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
@@ -53,13 +54,16 @@ public class DevicesEmptyDragListener implements OnDragListener{
 		    		ModelPrinter p = DevicesListController.getPrinter(item.getText().toString());
 		    		
 		    		if (p!=null){
-		    			
+
+                        Log.i("ACTION", "Printer " + p.getDisplayName() + " was moved from " + p.getPosition() + " to " + mPosition);
 	    				//update position
 	    				p.setPosition(mPosition);
 	    				//update database
 	    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getName(), String.valueOf(mPosition));
 	    				//static notification of the adapters
 	    				ItemListActivity.notifyAdapters();
+
+
 		    				
 		    		}
 		    		

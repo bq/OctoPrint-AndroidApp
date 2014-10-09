@@ -154,8 +154,7 @@ public class OctoprintFiles {
 	}
 	
 	/**
-	 * Upload a new file to the server using the new API. 
-	 * TODO: Need to patch this later since I don't know how to send Load commands in the multipart form
+	 * Upload a new file to the server using the new API.
 	 * 
 	 * Right now it uses two requests, the first to upload the file and another one to load it in the printer.
 	 * @param file
@@ -176,7 +175,7 @@ public class OctoprintFiles {
 				e.printStackTrace();
 			} 
 
-    		Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName() 
+    		Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName()
     				, Toast.LENGTH_LONG).show();
 			
 			p.setLoaded(false);
@@ -203,6 +202,14 @@ public class OctoprintFiles {
 					if (slice){
 						
 						OctoprintSlicing.sliceCommand(context, p.getAddress(), file, "/local/");
+
+
+                        // TODO FUCKED UP
+                          // if (file.delete()){
+
+                                Log.i("OUT","   and deleted yooooo");
+
+//                            } else   Log.i("OUT","deleted NOPE");
 						
 						
 					}else {
@@ -214,16 +221,12 @@ public class OctoprintFiles {
 							
 						
 					}
-					
-					
-				
-					
+
 				}
 
 				@Override
 				public void onFailure(int statusCode, Header[] headers,
 						String responseString, Throwable throwable) {
-					// TODO Auto-generated method stub
 					super.onFailure(statusCode, headers, responseString, throwable);
 					p.setLoaded(true);
 					Log.i("RESPONSEFAIL", responseString);
@@ -299,10 +302,17 @@ public class OctoprintFiles {
 		    request.allowScanningByMediaScanner();
 		    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 		}
-		
-		
+
+
+        //Delete duplicated files
+		File extra = new File( path + filename);
+        if (extra.exists()){
+            extra.delete();
+        }
 		
 		request.setDestinationUri(Uri.parse("file://" + path + filename));
+
+
 
 		// get download service and enqueue file
 		DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);

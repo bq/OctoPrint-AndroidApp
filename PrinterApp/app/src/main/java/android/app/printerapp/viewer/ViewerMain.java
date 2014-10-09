@@ -91,6 +91,10 @@ public class ViewerMain extends Fragment {
 
 	private static Context mContext;
 	private static View mRootView;
+
+
+    /********************************************************************************/
+    private static SlicingHandler mSlicingHandler;
 	
 	//Empty constructor
 	public ViewerMain(){}
@@ -120,7 +124,10 @@ public class ViewerMain extends Fragment {
 					container, false);
 			
 			mContext = getActivity();
-											
+
+			//Create slicing handler
+            mSlicingHandler = new SlicingHandler(getActivity());
+
 			initUIElements ();
 			initRotateButtons ();
 			
@@ -403,10 +410,18 @@ public class ViewerMain extends Fragment {
 				case XRAY:		
 					changeStlViews(ViewerSurfaceView.XRAY);	
 					break;
-				case LAYER:		
-					if (mFile!=null) {
+				case LAYER:
+
+
+                    //TODO  what the fuck did i do here
+                    File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
+                    if (tempFile.exists()){
+                        //Open desired file
+                        openFile (tempFile.getAbsolutePath());
+                    } else Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+					/*if (mFile!=null) {
 						showGcodeFiles ();
-					} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+					} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();*/
 				break;
 
 				default:
@@ -444,16 +459,33 @@ public class ViewerMain extends Fragment {
    
    private void openStlFile () {
 		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-		String pathStl = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
-		
-		File f = new File (pathStl);
+        String pathStl;
 
-		//Only when it's a project
-		if (f.isDirectory() && f.list().length>0){
-			openFile (pathStl+ f.list()[0]);
-		} else {
-			Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-		}	   
+
+
+       //TODO   still fucking up stuff
+
+       if (mSlicingHandler.getLastReference()!=null){
+
+           pathStl = mSlicingHandler.getLastReference();
+           openFile(pathStl);
+       }else {
+
+
+           pathStl = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
+           File f = new File (pathStl);
+
+           Log.i("OUT","trying to open " + pathStl);
+
+           //Only when it's a project
+           if (f.isDirectory() && f.list().length>0){
+               openFile (pathStl+ f.list()[0]);
+           } else {
+               Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+           }
+       }
+		
+
 	}
 
 	private void showGcodeFiles () {
@@ -605,7 +637,7 @@ public class ViewerMain extends Fragment {
 	    	
 		    	if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
 		    	else {	    	
-			    	if (StlFile.saveModel(mDataList, proyectNameText.getText().toString())) dialog.dismiss();
+			    	if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null)) dialog.dismiss();
 					else {
 						Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
 						dialog.dismiss();
@@ -693,6 +725,8 @@ public class ViewerMain extends Fragment {
         	mRotateMenu.setVisibility(View.INVISIBLE);
 
 			mActionMode = null;
+
+            StlFile.saveModel(mDataList, null, mSlicingHandler);
 
 
 

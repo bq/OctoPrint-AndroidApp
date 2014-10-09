@@ -113,6 +113,7 @@ public class OctoprintSlicing {
 		try {
 			object.put("command", "slice");
 			object.put("slicer", "cura");
+            object.put("gcode", "temp.gco");
 			entity = new StringEntity(object.toString(), "UTF-8");
 			
 		} catch (JSONException e) {		e.printStackTrace();
@@ -135,7 +136,7 @@ public class OctoprintSlicing {
 				
 				Log.i("OUT","Slicing @" + response.toString());
 			
-				Toast.makeText(context, "Slicing...", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Slicing..." + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
 ;
 				try {
 					

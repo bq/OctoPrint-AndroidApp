@@ -1,5 +1,6 @@
 package android.app.printerapp.viewer;
 
+import android.app.Activity;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by alberto-baeza on 10/7/14.
@@ -24,15 +27,25 @@ public class SlicingHandler {
     private byte[] mData = null;
 
 
-    private Context mContext;
+    private Activity mActivity;
+
+
+    //timer to upload files
+    private Timer mTimer;
+
+    //Check if there is a pending timer
+    private boolean isRunning;
+
+    //Last reference to the temp file
+    private String mLastReference = null;
 
     //Default URL to slice models
     private String mUrl;
 
-    public SlicingHandler(Context context){
+    public SlicingHandler(Activity activity){
 
-        mContext = context;
-
+        mActivity = activity;
+        isRunning = false;
     }
 
 
@@ -50,34 +63,60 @@ public class SlicingHandler {
 
         try {
 
-            tempFile = File.createTempFile("tmp",".stl", StorageController.getParentFolder());
+            File tempPath =  new File(StorageController.getParentFolder().getAbsolutePath() + "/temp");
+
+            tempPath.mkdir();
+
+            tempFile = File.createTempFile("tmp",".stl", tempPath);
             tempFile.deleteOnExit();
+
+            //delete previous file
+            try{
+                File lastFile = new File(mLastReference);
+                lastFile.delete();
+            } catch (NullPointerException e){
+
+                e.printStackTrace();
+                Log.i("OUT","FUCKING FILE DIDNT EXIST FUKLASJDLKASJD");
+            }
+
+
+            mLastReference = tempFile.getAbsolutePath();
+
 
             FileOutputStream fos = new FileOutputStream(tempFile);
             fos.write(mData);
             fos.close();
 
-
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.i("OUT", "FIle created nasdijalskdjldaj");
+        if (tempFile != null )Log.i("OUT", "FIle created nasdijalskdjldaj as fucking name " + tempFile.getName());
+        else Log.i("OUT","ERROR CREATING TEMP FILASIDÑLAISDÑ  ");
 
         return  tempFile;
 
     }
 
+    //TODO implementation with timers, should change to ScheduledThreadPoolExecutor maybe
     public void sendTimer(){
 
-        //countdown
+        //Reset timer in case it was on progress
+        if (isRunning) {
+            mTimer.cancel();
+            mTimer.purge();
 
-        //if new file refresh countdown
+            Log.i("OUT","TIMER RESETING HIJO DE PUTA" );
+            isRunning = false;
+        }
 
-        //countdown ends
-        //OctoprintSlicing.sliceCommand(mContext, selectAvailablePrinter(), createTempFile(), "/local/");
-        OctoprintFiles.uploadFile(mContext, createTempFile(), selectAvailablePrinter(), true);
+        Log.i("OUT","Creating EL TIMER" );
+        //Reschedule task
+        mTimer = new Timer();
+        mTimer.schedule(new SliceTask(),5000);
+        isRunning = true;
+
     }
 
 
@@ -95,7 +134,38 @@ public class SlicingHandler {
 
     }
 
+    //returns last .stl reference
+    public String getLastReference(){
+        return mLastReference;
+    }
+
+    private class SliceTask extends TimerTask {
+
+        @Override
+        public void run() {
 
 
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i("OUT","TASKEANDO" );
+
+                    ModelPrinter p = selectAvailablePrinter();
+
+                    if (p!=null){
+                        OctoprintFiles.uploadFile(mActivity,createTempFile(),selectAvailablePrinter(),true);
+                    } else {
+
+                        Log.i("OUT", "No available printers for slicing");
+
+                    }
+                }
+            });
+
+
+
+
+        }
+    }
 
 }

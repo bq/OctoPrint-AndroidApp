@@ -14,12 +14,14 @@ import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -158,7 +160,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 		            
-		        	 Log.i("SOCK", "Got echo: " + payload);
+		        	// Log.i("SOCK", "Got echo: " + payload);
 		        	 
 		        	  try {
 		        		  
@@ -193,9 +195,6 @@ public class OctoprintConnection {
 		            			
 		            		}
 		            		
-		            		
-		            		
-		            	//{"event": {"type": "SlicingDone", "payload": {"stl": "coin.stl", "gcode": "coin.gco", "time": 24.528998136520386}}}
 
 		            		
 		            	}
@@ -277,46 +276,59 @@ public class OctoprintConnection {
 		
 		
 		try {
-			
-			//Search for files waiting for slice
-			if (DatabaseController.isPreference("Slicing", payload.getString("gcode"))){
 
-				final String path = DatabaseController.getPreference("Slicing", payload.getString("gcode"));
-					
-				AlertDialog.Builder adb = new AlertDialog.Builder(context);
-				adb.setTitle(payload.getString("gcode") + ": " + context.getString(R.string.slicing_title) + " " + String.format("%.2f", (Double.parseDouble(payload.getString("time")))) + "s");
-				adb.setMessage(context.getString(R.string.slicing_download));
-				adb.setPositiveButton(R.string.ok, new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
+            //Search for files waiting for slice
+            if (DatabaseController.isPreference("Slicing", payload.getString("gcode"))) {
 
-									File f = new File(path);
-									
-									try {
-										
-										OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES , 
-												f.getParentFile().getParent() + "/_gcode/", payload.getString("gcode"));
-									
-									
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-								
+                final String path = DatabaseController.getPreference("Slicing", payload.getString("gcode"));
 
-					}
-				});
-				
-				adb.setNegativeButton(R.string.cancel, null);
-				
-				adb.show();
-				
-				//Delete file from preferences
-				DatabaseController.handlePreference("Slicing", payload.getString("gcode"), null, false);
-				
-				
-				
-				}
+                if (!path.contains("temp")) {
+
+
+                    AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                    adb.setTitle(payload.getString("gcode") + ": " + context.getString(R.string.slicing_title) + " " + String.format("%.2f", (Double.parseDouble(payload.getString("time")))) + "s");
+                    adb.setMessage(context.getString(R.string.slicing_download));
+                    adb.setPositiveButton(R.string.ok, new OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            File f = new File(path);
+
+                            try {
+
+                                OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
+                                        f.getParentFile().getParent() + "/_gcode/", payload.getString("gcode"));
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    });
+
+                    adb.setNegativeButton(R.string.cancel, null);
+
+                    adb.show();
+
+                    //Delete file from preferences
+                    DatabaseController.handlePreference("Slicing", payload.getString("gcode"), null, false);
+                } else {
+
+
+                    OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
+                            StorageController.getParentFolder() + "/temp/", payload.getString("gcode"));
+
+                    Toast.makeText(context,"Slice done", Toast.LENGTH_SHORT);
+
+
+                }
+
+
+            }
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
