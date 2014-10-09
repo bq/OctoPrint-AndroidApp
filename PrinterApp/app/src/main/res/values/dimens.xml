@@ -1,0 +1,32 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
+         https://developer.android.com/design/patterns/navigation-drawer.html -->
+    <dimen name="navigation_drawer_width">280dp</dimen>
+    <dimen name="navigation_drawer_divider_height">8dp</dimen>
+    <dimen name="navigation_drawer_margin">16dp</dimen>
+    <dimen name="navigation_drawer_item_height">48dp</dimen>
+
+    <!-- Floating action button dimens -->
+    <dimen name="fab_diameter_big">56dp</dimen>
+    <dimen name="fab_radious_big">28dp</dimen>
+    <dimen name="fab_padding_big">32dp</dimen>
+    <dimen name="fab_diameter_small">18dp</dimen>
+    <dimen name="fab_radious_small">9dp</dimen>
+    <dimen name="fab_padding_small">9dp</dimen>
+
+    <!-- Slide up panel dimens-->
+    <dimen name="slide_panel_collapsed_height">66dp</dimen>
+    <dimen name="slide_panel_expanded_height">175dp</dimen>
+    <dimen name="slide_panel_shadow_height">8dp</dimen>
+    <dimen name="slide_panel_error_height">62dp</dimen>
+
+    <!--Action Bar Height-->
+    <dimen name="action_bar_height">56dp</dimen>
+
+    <dimen name="dropdown_list_divider_height">8dp</dimen>
+    <dimen name="card_radius">3dp</dimen>
+</resources>

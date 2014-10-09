@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.app.printerapp.devices.SlidingUpPanelLayout xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp"
+<android.app.printerapp.devices.SlidingUpPanelLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:gravity="bottom"
-    app:anchorPoint="0.15"
+    app:anchorPoint="1"
     app:fadeColor="@android:color/transparent"
-    app:panelHeight="50dp"
+    app:collapsedPanelHeight="@dimen/slide_panel_collapsed_height"
+    app:expandedPanelHeight="@dimen/slide_panel_expanded_height"
     app:shadowHeight="4dp" >
 
     <LinearLayout

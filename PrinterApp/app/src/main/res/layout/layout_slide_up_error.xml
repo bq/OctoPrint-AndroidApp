@@ -1,0 +1,34 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/error_red"
+    android:paddingLeft="16dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp">
+
+    <TextView
+        android:id="@+id/slide_up_error_text_view"
+        android:textColor="@color/body_text_1_inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:id="@+id/close_error_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

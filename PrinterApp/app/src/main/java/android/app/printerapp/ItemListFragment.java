@@ -1,7 +1,6 @@
 package android.app.printerapp;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.ListView;
  * A list fragment representing a list of Items. This fragment also supports
  * tablet devices by allowing list items to be given an 'activated' state upon
  * selection. This helps indicate which item is currently being viewed in a
- * {@link ItemDetailFragment}.
+ * {@link android.app.printerapp.ItemDetailActivity}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
@@ -72,12 +71,10 @@ public class ItemListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO: replace with a real list adapter.
+		// TODO: replace with a real list adapter. AÑADIR AQUÍ LOS ICONOS
 		setListAdapter(new ArrayAdapter<ListContent.ListItem>(getActivity(),
 				R.layout.drawer_list_element,
-				R.id.drawer_text, ListContent.getItemList(getActivity())));
-		
-		
+				R.id.drawer_item, ListContent.getItemList(getActivity())));
 	}
 
 	@Override
@@ -93,9 +90,10 @@ public class ItemListFragment extends ListFragment {
 			
 			mCallbacks = sDummyCallbacks;
 		}
-		
+
 		//TODO: Drawer itemlist color
-		view.setBackgroundColor(Color.parseColor("#333333"));
+		view.setBackgroundColor(getResources().getColor(R.color.white));
+
 		
 		//Retrtieve item list to handle item callbacks
 		mListView = getListView();
@@ -162,7 +160,8 @@ public class ItemListFragment extends ListFragment {
 		
 		//Perform an item selection calling the super
 		mCallbacks.onItemSelected(ListContent.ITEMS.get(position).id);
-		
+
+        //TODO Higlight the selected item in the drawer
 		//Highlight selected item
 		setActivatedPosition(position);
 	}
@@ -173,9 +172,7 @@ public class ItemListFragment extends ListFragment {
 			mListView.setItemChecked(mActivatedPosition, false);
 		} else {
 			mListView.setItemChecked(position, true);
-
 		}
-
 		mActivatedPosition = position;
 	}
 }
