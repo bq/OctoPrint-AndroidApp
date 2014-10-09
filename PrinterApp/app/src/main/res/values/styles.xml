@@ -1,20 +1,23 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="NavigationDrawer">
+        <item name="android:layout_width">@dimen/navigation_drawer_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/almost_white</item>
+        <item name="android:divider">@color/transparent</item>
+        <item name="android:dividerHeight">@dimen/navigation_drawer_divider_height</item>
+        <item name="android:layout_gravity">start</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="NavigationDrawerItem" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/navigation_drawer_item_height</item>
+        <item name="android:paddingLeft">@dimen/navigation_drawer_margin</item>
+        <item name="android:paddingRight">@dimen/navigation_drawer_margin</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
 </resources>

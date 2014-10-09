@@ -378,14 +378,16 @@ public class ViewerMain extends Fragment {
 		tabs.addTab(spec);
 		 
 		tabs.setCurrentTab(0);
-		
-		tabs.getTabWidget().setBackgroundColor(Color.parseColor("#333333"));
-		for(int i=0; i<tabs.getTabWidget().getChildCount(); i++) {
-	        TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-	        tv.setTextColor(Color.parseColor("#ffffff"));
-	    } 
-		
-		tabs.setOnTabChangedListener(new OnTabChangeListener() {
+
+        //Set style for the tab widget
+        for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
+            final View tab = tabs.getTabWidget().getChildTabViewAt(i);
+            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
+            TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(getResources().getColor(R.color.body_text_2));
+        }
+
+        tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
 

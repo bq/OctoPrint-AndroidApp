@@ -1,139 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.app.printerapp.devices.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:id="@+id/sliding_panel"
-   android:layout_width="match_parent"
-   android:layout_height="match_parent"
-   android:gravity="bottom"
-   app:shadowHeight="4dp"
-   app:panelHeight="50dp"
-   app:fadeColor="@android:color/transparent" 
-   app:anchorPoint="0.2"
-   android:background="@color/white"
-   xmlns:app="http://schemas.android.com/apk/res/android.app.printerapp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_panel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="bottom"
+    app:anchorPoint="1"
+    app:fadeColor="@android:color/transparent"
+    app:collapsedPanelHeight="@dimen/slide_panel_collapsed_height"
+    app:expandedPanelHeight="@dimen/slide_panel_expanded_height"
+    app:shadowHeight="@dimen/slide_panel_shadow_height">
 
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </TabWidget>
+                android:layout_height="wrap_content"></TabWidget>
 
             <FrameLayout
+
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <GridView
                         android:id="@+id/devices_grid"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:numColumns="5"
-                        >
-                    </GridView>
+                        android:numColumns="5"></GridView>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:baselineAligned="false" >
-                    
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
 
                     <ListView
                         android:id="@+id/devices_list"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" 
-                        android:listSelector="@android:color/transparent"
-                        >
-                    </ListView>
+                        android:layout_weight="1"
+                        android:listSelector="@android:color/transparent"></ListView>
                 </LinearLayout>
-                
+
                 <LinearLayout
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <GridView
                         android:id="@+id/devices_camera"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:numColumns="3"
-                        >
-                    </GridView>
+                        android:numColumns="3"></GridView>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
-    
 
-    
-    <LinearLayout
-                    android:id="@+id/storage_layout"
+    <FrameLayout
+        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#333333"
-    	android:orientation="vertical" >
-        
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="5dp"
-              android:background="#00B800" 
-              android:orientation="vertical" />
-        
-            <TextView
-                  android:id="@+id/drag_text"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:gravity="center|top"
-			        android:text="@string/devices_quickprint"
-			        android:textSize="30sp" 			         
-        			android:textColor="#00B800"/>
+        android:background="@android:color/transparent">
 
-                    <HorizontalScrollView
-                        android:id="@+id/scrollview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
+        <FrameLayout
+            android:id="@+id/storage_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/fab_radious_big"
+            android:background="@color/gray_background"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:orientation="vertical">
 
-                        <LinearLayout
-                            android:id="@+id/linearlayout_storage"
-                            android:paddingTop="20dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                             android:baselineAligned="false" >
+            <include
+                android:id="@+id/slide_up_error"
+                layout="@layout/layout_slide_up_error"
+                android:visibility="gone"></include>
 
-                            <ListView
-                                android:id="@+id/listView1"
-                                android:layout_width="0dip"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1" >
-                            </ListView>
-                        </LinearLayout>
-                    </HorizontalScrollView>
+            <android.app.printerapp.devices.HorizontalListView
+                android:layout_marginTop="@dimen/fab_radious_big"
+                android:id="@+id/quickprint_horizontal_list_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-                </LinearLayout>
-    
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/expand_button"
+            android:layout_width="@dimen/fab_diameter_big"
+            android:layout_height="@dimen/fab_diameter_big"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/floating_action_button"
+            android:src="@drawable/ic_expand_more" />
+    </FrameLayout>
+
 </android.app.printerapp.devices.SlidingUpPanelLayout>

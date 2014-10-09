@@ -16,6 +16,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -28,17 +29,17 @@ import com.nineoldandroids.view.animation.AnimatorProxy;
 
 public class SlidingUpPanelLayout extends ViewGroup {
 
-    //private static final String TAG = SlidingUpPanelLayout.class.getSimpleName();
+    private static final String TAG = "SlidingUpPanelLayout";
 
     /**
      * Default peeking out panel height
      */
-    private static final int DEFAULT_PANEL_HEIGHT = 68; // dp;
+    private static final int DEFAULT_PANEL_HEIGHT = 50; // dp;
 
     /**
      * Default height of the shadow above the peeking out panel
      */
-    private static final int DEFAULT_SHADOW_HEIGHT = 4; // dp;
+    private static final int DEFAULT_SHADOW_HEIGHT = 50; // dp;
 
     /**
      * If no fade color is given by default it will fade to 80% gray.
@@ -238,18 +239,23 @@ public class SlidingUpPanelLayout extends ViewGroup {
     public static class SimplePanelSlideListener implements PanelSlideListener {
         @Override
         public void onPanelSlide(View panel, float slideOffset) {
+            Log.d(TAG, "onPanelSlide");
         }
         @Override
         public void onPanelCollapsed(View panel) {
+            Log.d(TAG, "onPanelCollapsed");
         }
         @Override
         public void onPanelExpanded(View panel) {
+            Log.d(TAG, "onPanelExpanded");
         }
         @Override
         public void onPanelAnchored(View panel) {
+            Log.d(TAG, "onPanelAnchored");
         }
         @Override
         public void onPanelHidden(View panel) {
+            Log.d(TAG, "onPanelHidden");
         }
     }
 
@@ -287,9 +293,11 @@ public class SlidingUpPanelLayout extends ViewGroup {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingUpPanelLayout);
 
             if (ta != null) {
-                mPanelHeight = ta.getDimensionPixelSize(R.styleable.SlidingUpPanelLayout_panelHeight, -1);
+                mPanelHeight = ta.getDimensionPixelSize(R.styleable.SlidingUpPanelLayout_collapsedPanelHeight, -1);
                 mShadowHeight = ta.getDimensionPixelSize(R.styleable.SlidingUpPanelLayout_shadowHeight, -1);
                 mParallaxOffset = ta.getDimensionPixelSize(R.styleable.SlidingUpPanelLayout_paralaxOffset, -1);
+
+                mSlideRange = ta.getDimensionPixelSize(R.styleable.SlidingUpPanelLayout_expandedPanelHeight, -1);
 
                 mMinFlingVelocity = ta.getInt(R.styleable.SlidingUpPanelLayout_flingVelocity, DEFAULT_MIN_FLING_VELOCITY);
                 mCoveredFadeColor = ta.getColor(R.styleable.SlidingUpPanelLayout_fadeColor, DEFAULT_FADE_COLOR);
@@ -596,9 +604,9 @@ public class SlidingUpPanelLayout extends ViewGroup {
                 height -= mPanelHeight;
             }
 
-            if (child == mSlideableView) {
-                mSlideRange = height - mPanelHeight;
-            }
+//            if (child == mSlideableView) {
+//                mSlideRange = height - mPanelHeight;
+//            }
 
             int childWidthSpec;
             if (lp.width == LayoutParams.WRAP_CONTENT) {
@@ -879,7 +887,9 @@ public class SlidingUpPanelLayout extends ViewGroup {
      * @return true if the pane was slideable and is now expanded/in the process of expading
      */
     public boolean expandPanel() {
-        return expandPanel(1.0f);
+        //FIXME Modified to avoid the panel will be expanded to the full screen
+        //return expandPanel(1.0f);
+        return expandPanel(mAnchorPoint);
     }
 
     /**
@@ -1062,7 +1072,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
     /**
      * Tests scrollability within child views of v given a delta of dx.
      *
-     * @param v View to test for horizontal scrollability
+     * @param v View to layout_slide_up_error for horizontal scrollability
      * @param checkV Whether the view v passed should itself be checked for scrollability (true),
      *               or just its children (false).
      * @param dx Delta scrolled in pixels

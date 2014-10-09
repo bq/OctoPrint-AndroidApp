@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import android.annotation.TargetApi;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -115,7 +117,7 @@ public class SettingsFragment extends Fragment{
 	 * Constructor for the tab host
 	 * TODO: Should be moved to a View class since it only handles ui.
 	 */
-	public void setTabHost(View v){
+    public void setTabHost(View v){
 				 
 		TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
 		tabs.setup();
@@ -136,15 +138,17 @@ public class SettingsFragment extends Fragment{
 		tabs.addTab(spec);
 		 
 		tabs.setCurrentTab(0);
-		
-		tabs.getTabWidget().setBackgroundColor(Color.parseColor("#333333"));
-		for(int i=0;i<tabs.getTabWidget().getChildCount();i++) 
-	    {
-	        TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-	        tv.setTextColor(Color.parseColor("#ffffff"));
-	    } 
-		
-		tabs.setOnTabChangedListener(new OnTabChangeListener() {
+
+        //Set style for the tab widget
+        for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
+            final View tab = tabs.getTabWidget().getChildTabViewAt(i);
+            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
+            TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(getResources().getColor(R.color.body_text_2));
+        }
+
+
+        tabs.setOnTabChangedListener(new OnTabChangeListener() {
 		    @Override
 		    public void onTabChanged(String tabId) {
 		    	
