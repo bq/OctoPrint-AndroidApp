@@ -11,7 +11,7 @@
 
     <style name="NavigationDrawerItem" parent="android:TextAppearance">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:textColor">@color/navdrawer_text_color</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/navigation_drawer_item_height</item>

@@ -10,12 +10,14 @@ import android.graphics.drawable.Drawable;
 public class QuickPrintModel extends ModelFile {
 
     private Drawable mModelImageDrawable; //Image id of the model
+    private String mModelAbsolutePath;
     private String mModelName;
     private String mModelDescription;
 
-    public QuickPrintModel(String fileName, String storage, Drawable modelImageId, String modelName, String modelDescription) {
+    public QuickPrintModel(String fileName, String storage, Drawable modelImageId, String modelAbsolutePath, String modelName, String modelDescription) {
         super(fileName, storage);
         this.mModelImageDrawable = modelImageId;
+        this.mModelAbsolutePath = modelAbsolutePath;
         this.mModelName = modelName;
         this.mModelDescription = modelDescription;
     }
@@ -26,6 +28,14 @@ public class QuickPrintModel extends ModelFile {
 
     public void setModelImageDrawable(Drawable mModelImageDrawable) {
         this.mModelImageDrawable = mModelImageDrawable;
+    }
+
+    public String getModelAbsolutePath() {
+        return mModelAbsolutePath;
+    }
+
+    public void setModelAbsolutePath(String mModelAbsolutePath) {
+        this.mModelAbsolutePath = mModelAbsolutePath;
     }
 
     public String getModelName() {
@@ -48,6 +58,7 @@ public class QuickPrintModel extends ModelFile {
     public String toString() {
         return "QuickPrintModel{" +
                 "mModelImageDrawable=" + mModelImageDrawable +
+                ", mModelAbsolutePath='" + mModelAbsolutePath + '\'' +
                 ", mModelName='" + mModelName + '\'' +
                 ", mModelDescription='" + mModelDescription + '\'' +
                 '}';

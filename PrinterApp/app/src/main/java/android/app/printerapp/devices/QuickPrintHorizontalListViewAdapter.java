@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class QuickPrintHorizontalListViewAdapter extends BaseAdapter{
+public class QuickPrintHorizontalListViewAdapter extends BaseAdapter {
 
     private static String TAG = "QuickPrintHorizontalListViewAdapter";
 
@@ -54,7 +54,7 @@ public class QuickPrintHorizontalListViewAdapter extends BaseAdapter{
         ViewHolder holder;
         if (convertView == null) {
             //Create a custom card view with the info of the model
-            convertView = mInflater.inflate(R.layout.item_card_view_model, null);
+            convertView = mInflater.inflate(R.layout.list_item_card_view_model, null);
             holder = new ViewHolder();
             holder.modelImage = (ImageView) convertView.findViewById(R.id.model_image_view);
             holder.modelName = (TextView) convertView.findViewById(R.id.model_name_text_view);
@@ -64,10 +64,12 @@ public class QuickPrintHorizontalListViewAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
+        final QuickPrintModel quickPrintModel = mModelList.get(position);
+
         //Set the info of the model
-        holder.modelImage.setImageDrawable(mModelList.get(position).getModelImageDrawable());
-        holder.modelName.setText(mModelList.get(position).getModelName());
-        holder.modelDescription.setText(mModelList.get(position).getModelDescription());
+        holder.modelImage.setImageDrawable(quickPrintModel.getModelImageDrawable());
+        holder.modelName.setText(quickPrintModel.getModelName());
+        holder.modelDescription.setText(quickPrintModel.getModelDescription());
 
         return convertView;
     }

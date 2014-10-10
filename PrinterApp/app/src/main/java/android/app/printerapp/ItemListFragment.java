@@ -1,11 +1,13 @@
 package android.app.printerapp;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 /**
@@ -37,6 +39,11 @@ public class ItemListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private static int mActivatedPosition = ListView.INVALID_POSITION;
+
+    /**
+     * Adapter that creates the items of the drawer, with a name and an descriptive icon
+     */
+    private static DrawerListAdapter mDrawerListAdapter;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -70,11 +77,9 @@ public class ItemListFragment extends ListFragment {
 	@Override 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// TODO: replace with a real list adapter. AÑADIR AQUÍ LOS ICONOS
-		setListAdapter(new ArrayAdapter<ListContent.ListItem>(getActivity(),
-				R.layout.drawer_list_element,
-				R.id.drawer_item, ListContent.getItemList(getActivity())));
+        //Add the items to the drawer
+        mDrawerListAdapter = new DrawerListAdapter(getActivity(), ListContent.getItemList(getActivity()));
+        setListAdapter(mDrawerListAdapter);
 	}
 
 	@Override
@@ -92,8 +97,7 @@ public class ItemListFragment extends ListFragment {
 		}
 
 		//TODO: Drawer itemlist color
-		view.setBackgroundColor(getResources().getColor(R.color.white));
-
+		view.setBackgroundColor(getResources().getColor(R.color.navdrawer_background));
 		
 		//Retrtieve item list to handle item callbacks
 		mListView = getListView();
@@ -128,6 +132,8 @@ public class ItemListFragment extends ListFragment {
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
 		mCallbacks.onItemSelected(ListContent.ITEMS.get(position).id);
+        //Set the new activated position
+        setActivatedPosition(position);
 	}
 
 	@Override
@@ -174,5 +180,7 @@ public class ItemListFragment extends ListFragment {
 			mListView.setItemChecked(position, true);
 		}
 		mActivatedPosition = position;
+        mDrawerListAdapter.setActivatedPosition(mActivatedPosition);
+        mDrawerListAdapter.notifyDataSetChanged();
 	}
 }

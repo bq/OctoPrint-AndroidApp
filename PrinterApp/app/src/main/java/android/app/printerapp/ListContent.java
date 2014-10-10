@@ -18,14 +18,14 @@ public class ListContent {
 	/**
 	 * An array of sample (dummy) items.
 	 */
-	public static List<ListItem> ITEMS = new ArrayList<ListItem>();
+	public static List<DrawerListItem> ITEMS = new ArrayList<DrawerListItem>();
 
 	/**
 	 * A map of sample (dummy) items, by ID.
 	 */
-	public static Map<String, ListItem> ITEM_MAP = new HashMap<String, ListItem>();
+	public static Map<String, DrawerListItem> ITEM_MAP = new HashMap<String, DrawerListItem>();
 
-	private static void addItem(ListItem item) {
+	private static void addItem(DrawerListItem item) {
 		ITEMS.add(item);
 		ITEM_MAP.put(item.id, item);
 	}
@@ -33,13 +33,15 @@ public class ListContent {
 	/**
 	 * A dummy item representing a piece of content.
 	 */
-	public static class ListItem {
+	public static class DrawerListItem {
 		public String id;
 		public String content;
+        public int iconId;
 
-		public ListItem(String id, String content) {
+		public DrawerListItem(String id, String content, int iconId) {
 			this.id = id;
 			this.content = content;
+            this.iconId = iconId;
 		}
 
 		@Override
@@ -56,19 +58,19 @@ public class ListContent {
 	 * 
 	 *
 	 */
-	public static List<ListItem> getItemList(Context context){
+	public static List<DrawerListItem> getItemList(Context context){
 		
 		//We need to clear the list before adding elements to avoid multiple insertion
 		ITEMS.clear();
 		
-		addItem(new ListItem("1", context.getString(R.string.fragment_devices)));
-		addItem(new ListItem("2", context.getString(R.string.fragment_print)));
-		addItem(new ListItem("3", context.getString(R.string.fragment_models)));
+		addItem(new DrawerListItem("1", context.getString(R.string.fragment_devices), R.drawable.ic_drawer_devices));
+		addItem(new DrawerListItem("2", context.getString(R.string.fragment_print), R.drawable.ic_drawer_printpanel));
+		addItem(new DrawerListItem("3", context.getString(R.string.fragment_models), R.drawable.ic_drawer_models));
 		
 		//TODO: History fragment
-		//addItem(new ListItem("4", context.getString(R.string.fragment_history)));
+//		addItem(new DrawerListItem("4", context.getString(R.string.fragment_history), R.drawable.ic_drawer_history));
 		
-		addItem(new ListItem("5", context.getString(R.string.fragment_settings)));
+		addItem(new DrawerListItem("5", context.getString(R.string.fragment_settings), R.drawable.ic_drawer_settings));
 		
 		return ITEMS;
 	

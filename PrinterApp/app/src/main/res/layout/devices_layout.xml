@@ -101,11 +101,19 @@
                 layout="@layout/layout_slide_up_error"
                 android:visibility="gone"></include>
 
-            <android.app.printerapp.devices.HorizontalListView
-                android:layout_marginTop="@dimen/fab_radious_big"
+            <!--<android.app.printerapp.devices.HorizontalListView-->
+                <!--android:layout_marginTop="@dimen/fab_radious_big"-->
+                <!--android:id="@+id/quickprint_horizontal_list_view"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content" />-->
+
+            <it.sephiroth.android.library.widget.HListView
                 android:id="@+id/quickprint_horizontal_list_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_marginTop="@dimen/fab_radious_big"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:choiceMode="singleChoice"/>
 
         </FrameLayout>
 

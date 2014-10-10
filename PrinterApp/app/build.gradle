@@ -29,5 +29,6 @@ dependencies {
     compile files('libs/devsmartlib.jar')
     compile files('libs/jmdns.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
+    compile project(':horizontallistlibrary')
     compile 'com.android.support:cardview-v7:+'
 }
