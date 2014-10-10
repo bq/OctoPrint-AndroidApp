@@ -1,6 +1,5 @@
 package android.app.printerapp.devices;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
@@ -15,11 +14,9 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -36,7 +33,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
@@ -44,7 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
-import java.util.ArrayList;
+import it.sephiroth.android.library.widget.HListView;
 
 /**
  * This is the fragment that will contain the Device Grid and functionality
@@ -144,7 +140,7 @@ import java.util.ArrayList;
             //List
 
             mListAdapter = new DevicesListAdapter(getActivity(),
-                    R.layout.list_element, DevicesListController.getList());
+                    R.layout.list_item_drawer, DevicesListController.getList());
 
             ListView listView = (ListView) rootView.findViewById(R.id.devices_list);
             listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
@@ -171,7 +167,7 @@ import java.util.ArrayList;
 
             /******************* QUICKPRINT PANEL ************************************/
 
-            HorizontalListView quickprintHorizontalListView = (HorizontalListView) rootView.findViewById(R.id.quickprint_horizontal_list_view);
+            HListView quickprintHorizontalListView = (HListView) rootView.findViewById(R.id.quickprint_horizontal_list_view);
             new DevicesQuickprint(getActivity(), quickprintHorizontalListView);
 
             /***************************************************************/

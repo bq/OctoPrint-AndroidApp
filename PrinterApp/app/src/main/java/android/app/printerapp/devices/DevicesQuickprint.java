@@ -9,9 +9,16 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
+import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import it.sephiroth.android.library.widget.AdapterView;
+import it.sephiroth.android.library.widget.HListView;
 
 /**
  * This will be the Controller to handle the taskbar storage engine.
@@ -22,30 +29,34 @@ import android.util.Log;
  */
 public class DevicesQuickprint {
 
+    private static String TAG = "DevicesQuickprint";
+
     //List to store every file
     private ArrayList<ModelFile> mFileList = new ArrayList<ModelFile>();
     private ArrayList<QuickPrintModel> mModelList = new ArrayList<QuickPrintModel>();
 
     //Horizontal list view that contains the models
-    private HorizontalListView mHorizontalListView;
+    private HListView mHorizontalListView;
     private QuickPrintHorizontalListViewAdapter mQuickPrintAdapter;
 
     //Main thread reference
     private Context mContext;
 
 
-    public DevicesQuickprint(Activity context, HorizontalListView quickprintHorizontalListView) {
+    public DevicesQuickprint(Activity context, HListView quickprintHorizontalListView) {
         mContext = context;
         mHorizontalListView = quickprintHorizontalListView;
         mQuickPrintAdapter = new QuickPrintHorizontalListViewAdapter(mContext, mModelList);
+        mHorizontalListView.setOnItemLongClickListener(onItemLongClickListener);
+        mHorizontalListView.setSelector(mContext.getResources().getDrawable(R.drawable.quick_print_model_selector));
         mHorizontalListView.setAdapter(mQuickPrintAdapter);
+
         //Show the models in the horizontal list view
         addFiles();
         displayFiles();
     }
 
-
-    /**************************************************************************************
+   /**************************************************************************************
      * 		METHODS
      *****************************************************************************************/
 
@@ -72,6 +83,7 @@ public class DevicesQuickprint {
         for (final ModelFile m : mFileList) {
 
             Drawable modelImage;
+            String modelAbsolutePath;
             String modelName;
             String modelDescription;
 
@@ -97,55 +109,56 @@ public class DevicesQuickprint {
                             modelImage = mContext.getResources().getDrawable(R.drawable.file_icon);
                         }
 
+                        modelAbsolutePath = files[current].getAbsolutePath();
                         modelName = files[current].getName();
                         modelDescription = m.getInfo();
 
                         if (mHorizontalListView != null) {
-                            QuickPrintModel quickPrintModel = new QuickPrintModel(m.getName(), m.getStorage(), modelImage, modelName, modelDescription);
-                            Log.i("out", "Add quick print model to the horizontal list [" + quickPrintModel.toString() + "]");
+                            QuickPrintModel quickPrintModel = new QuickPrintModel(m.getName(), m.getStorage(), modelImage, modelAbsolutePath, modelName, modelDescription);
+                            Log.d(TAG, "Add quick print model to the horizontal list [" + quickPrintModel.toString() + "]");
                             mModelList.add(quickPrintModel);
                             mQuickPrintAdapter.notifyDataSetChanged();
                         } else {
-                            Log.i("out", "NULL");
+                            Log.d(TAG, "NULL");
                         }
-                    /*
-                     * TODO Adapt to the new horizontal list view
-
-					 * On long click we start dragging the item, no need to make it invisible
-					 */
-//                        v.setOnLongClickListener(new OnLongClickListener() {
-//
-//                            @Override
-//                            public boolean onLongClick(View v) {
-//
-//                                String name = files[current].getAbsolutePath();
-//
-//                                /**
-//                                 * Check if there's a real gcode,
-//                                 */
-//                                if (name != null) {
-//
-//                                    ClipData data = null;
-//
-//                                    if (m.getStorage().equals("Witbox")) {
-//                                        data = ClipData.newPlainText("internal", name);
-//                                    } else if (m.getStorage().equals("sd")) {
-//                                        data = ClipData.newPlainText("internalsd", m.getName());
-//                                    } else if (StorageController.hasExtension(1, name)) {
-//                                        data = ClipData.newPlainText("name", name);
-//                                    }
-//
-//                                    DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-//                                    v.startDrag(data, shadowBuilder, v, 0);
-//                                } else
-//                                    Toast.makeText(mContext, R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
-//
-//                                return false;
-//                            }
-//                        });
                     }
                 }
             }
         }
     }
+
+    AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            QuickPrintModel quickPrintModel = mModelList.get(position);
+            if(quickPrintModel!=null) {
+                Log.d(TAG, "On long click in quick print model [" + quickPrintModel.toString() + "]");
+                String name = quickPrintModel.getModelAbsolutePath();
+
+                //Check if there's a real gcode,
+                if (name != null) {
+
+                    ClipData data = null;
+
+                    if (quickPrintModel.getStorage().equals("Witbox")) {
+                        data = ClipData.newPlainText("internal", name);
+                    } else if (quickPrintModel.getStorage().equals("sd")) {
+                        data = ClipData.newPlainText("internalsd", quickPrintModel.getName());
+                    } else if (StorageController.hasExtension(1, name)) {
+                        data = ClipData.newPlainText("name", name);
+                    }
+
+                    QuickPrintObjectDragShadowBuilder shadowBuilder = new QuickPrintObjectDragShadowBuilder(mContext, view);
+                    view.startDrag(data, shadowBuilder, view, 0);
+
+                } else {
+                    Toast.makeText(mContext, R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
+                }
+            }
+            return false;
+        }
+    };
+
+
+
 }

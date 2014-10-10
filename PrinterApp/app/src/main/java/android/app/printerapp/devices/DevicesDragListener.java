@@ -8,6 +8,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.res.Resources;
 import android.view.DragEvent;
 import android.view.View;
@@ -20,16 +21,19 @@ import android.view.View.OnDragListener;
  *
  */
 public class DevicesDragListener implements OnDragListener {
-		
+
+    private Context mContext;
+
 	//Reference to model
-	private ModelPrinter mModel;
+    private ModelPrinter mModel;
 	
 	/**
 	 * Class constructor
 	 * @param model The model currently being dragged on
 	 */
-	public DevicesDragListener(ModelPrinter model){
-		mModel = model;
+	public DevicesDragListener(Context context, ModelPrinter model){
+		mContext = context;
+        mModel = model;
 	}
 
 	
@@ -38,7 +42,6 @@ public class DevicesDragListener implements OnDragListener {
 	 * 
 	 * printer: Dragging a printer
 	 * name: Dragging a file
-	 * 
 	 */
 	@Override
 	public boolean onDrag(View v, DragEvent event) {
@@ -71,28 +74,22 @@ public class DevicesDragListener implements OnDragListener {
 		    		OctoprintFiles.uploadFile(v.getContext(), file, mModel, false);	    		
 		    		
 		    	} else {
-		    		
 		    		//Error dialog
 		    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + mModel.getMessage());
 		    	}
 	    	}
-	    	
-	    	
+
 	    	//Remove highlight
 	    	v.setBackgroundColor(Resources.getSystem().getColor(android.R.color.transparent));
-	    	
-	    	
-	    	
+
 	    } break;
 	    
 	    case DragEvent.ACTION_DRAG_ENTERED:{
-	    	
 	    	//Highlight on hover
-	    	v.setBackgroundColor(Resources.getSystem().getColor(android.R.color.holo_blue_light));
-	    	
+	    	v.setBackgroundColor(mContext.getResources().getColor(R.color.drag_and_drop_hover_background));
+
 	    }break;
 	    case DragEvent.ACTION_DRAG_EXITED:{
-	    	
 	    	//Remove highlight
 	    	v.setBackgroundColor(Resources.getSystem().getColor(android.R.color.transparent));
 	    	

@@ -18,220 +18,216 @@ import android.widget.TextView;
 
 /**
  * Adapter for the listview mode, has reduced functionality and status text added
- * @author alberto-baeza
  *
+ * @author alberto-baeza
  */
-public class DevicesListAdapter extends ArrayAdapter<ModelPrinter>{
-	
-	//Original list and current list to be filtered
-		private ArrayList<ModelPrinter> mCurrent;
-		private ArrayList<ModelPrinter> mOriginal;
-		
-		//Filter
-		private GridFilter mFilter;
+public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
 
-	public DevicesListAdapter(Context context, int resource,
-			List<ModelPrinter> objects) {
-		super(context, resource, objects);
-		
-		mOriginal = (ArrayList<ModelPrinter>) objects;
-		mCurrent = (ArrayList<ModelPrinter>) objects;
-	}
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		
-		View v = convertView;
-		final ModelPrinter m = getItem(position);
-		
-		
-		//TODO Holder for the list adapter
-		//View not yet created
-		if (v==null){
-			
-			
-			//Inflate the view
-			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.list_element, null, false);
-			v.setOnDragListener(new DevicesDragListener(m));
-						
-		} else {
-			//v = convertView;
-		}
-		
-		//Printer tag reference
-		TextView tag = (TextView) v.findViewById(R.id.list_column_1_text);
-		tag.setText(m.getDisplayName());
-		
-		ImageView icon = (ImageView) v.findViewById(R.id.list_column_1_icon);
-		
-		ModelJob job = m.getJob();
-		
-		
-		
-		
-		
-		//Job references, if there's no job, don't update anything
-		//TODO: Remove null option
-		try{
-			
-			
-			TextView statusText = (TextView) v.findViewById(R.id.list_column_3);	
-			
-			int status = m.getStatus();
-			
-			
-			
+    private Context mContext;
 
-			if (status==StateUtils.STATE_PRINTING){
-				statusText.setText(getProgress(job.getProgress()) + "% (" + job.getPrintTimeLeft() + " left)");
-				
-			} else //Witbox icon
-			switch(status){
-			
-				case StateUtils.STATE_NONE:{
-					icon.setImageResource(R.drawable.icon_printer);	
-				}break;
-				
-				case StateUtils.STATE_NEW:
-				case StateUtils.STATE_ADHOC: {
-					tag.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
-					statusText.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
-					
-					statusText.setText(R.string.devices_add_dialog_title);
-					icon.setImageResource(R.drawable.icon_detectedprinter);
-				}break;
-				
-				case StateUtils.STATE_ERROR: {
-					statusText.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_light));
-					statusText.setText(m.getMessage());
-				}break;
-				
-				default:{
-					tag.setTextColor(getContext().getResources().getColor(android.R.color.black));
-					statusText.setTextColor(getContext().getResources().getColor(android.R.color.black));
-					
-					statusText.setText(m.getMessage());
-					icon.setImageResource(R.drawable.icon_selectedprinter);	
-				}break;
-			
-			}
-			
-		}catch (NullPointerException e){
+    //Original list and current list to be filtered
+    private ArrayList<ModelPrinter> mCurrent;
+    private ArrayList<ModelPrinter> mOriginal;
 
-		}
-		
-		
-		return v;
-	}
-	
-	@Override
-	public ModelPrinter getItem(int position) {
-		return mCurrent.get(position);
-	}
-	
-	//Retrieve count from current list
-	@Override
-	public int getCount() {
-		return mCurrent.size();
-	}
-	
-	public static String getProgress(String p){
-		
-		double value = 0;
-				
-		try {
-			value = Double.valueOf(p);			
-		}catch (NullPointerException e){
-			e.printStackTrace();
-		}
-		
-		return String.valueOf((int)value);
-	}
-	
-	
-	//TODO: REDUNDANT FILTER
-	//Get filter
-		@Override
-		public Filter getFilter() {
-			
-			if (mFilter == null)
-				mFilter = new GridFilter();
-			
-			return mFilter;
-		}
-			
-			/**
-			 * This class is the custom filter for the Library
-			 * @author alberto-baeza
-			 *
-			 */
-			private class GridFilter extends Filter{
+    //Filter
+    private GridFilter mFilter;
 
-				@Override
-				protected FilterResults performFiltering(CharSequence constraint) {
-					
-					//New filter result object
-		            FilterResults result = new FilterResults();
-		            
-		            if(constraint != null && constraint.toString().length() > 0)
-		            {
-		            	//Temporal list
-		                ArrayList<ModelPrinter> filt = new ArrayList<ModelPrinter>();
-		                
-		             
-		                //TODO Should change filter logic to avoid redundancy
-		                if (!constraint.equals(String.valueOf(StateUtils.STATE_NEW))){
-		                	 //Check if every item from the original list has the constraint
-		                    for (ModelPrinter m : mOriginal){
-		                    	
-		                    	if (m.getStatus() == (Integer.parseInt(constraint.toString()))){
-		                    		filt.add(m);
-		                    	}
-		                    	
-		                    }
-		                } else {
-		                	
-		                	//Check if every item from the original list has the constraint
-		                    for (ModelPrinter m : mOriginal){
-		                    	
-		                    	if (m.getStatus() != (Integer.parseInt(constraint.toString()))){
-		                    		filt.add(m);
-		                    	}
-		                	
-		                    }
-		                }
-		                
-		                
-	                	
-	                	                //New list is filtered list
-		                result.count = filt.size();
-		                result.values = filt;
-		            }
-		            else
-		            {
-		            	//New list is original list (no filter, default)
-		            	result.count = mOriginal.size();
-		                result.values = mOriginal;
-		                
-		            }
-		            return result;
-				}
+    public DevicesListAdapter(Context context, int resource,
+                              List<ModelPrinter> objects) {
+        super(context, resource, objects);
+        mContext = context;
+        mOriginal = (ArrayList<ModelPrinter>) objects;
+        mCurrent = (ArrayList<ModelPrinter>) objects;
+    }
 
-				@SuppressWarnings("unchecked")
-				@Override
-				protected void publishResults(CharSequence constraint,
-						FilterResults results) {
-		            
-					
-					//If there are results, update list
-					mCurrent = (ArrayList<ModelPrinter>) results.values;
-					notifyDataSetChanged();
-					
-				}
-				
-			}
-	
-	
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View v = convertView;
+        final ModelPrinter m = getItem(position);
+
+
+        //TODO Holder for the list adapter
+        //View not yet created
+        if (v == null) {
+
+
+            //Inflate the view
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.list_item_drawer, null, false);
+            v.setOnDragListener(new DevicesDragListener(mContext, m));
+
+        } else {
+            //v = convertView;
+        }
+
+        //Printer tag reference
+        TextView tag = (TextView) v.findViewById(R.id.list_column_1_text);
+        tag.setText(m.getDisplayName());
+
+        ImageView icon = (ImageView) v.findViewById(R.id.list_column_1_icon);
+
+        ModelJob job = m.getJob();
+
+
+        //Job references, if there's no job, don't update anything
+        //TODO: Remove null option
+        try {
+
+
+            TextView statusText = (TextView) v.findViewById(R.id.list_column_3);
+
+            int status = m.getStatus();
+
+
+            if (status == StateUtils.STATE_PRINTING) {
+                statusText.setText(getProgress(job.getProgress()) + "% (" + job.getPrintTimeLeft() + " left)");
+
+            } else //Witbox icon
+                switch (status) {
+
+                    case StateUtils.STATE_NONE: {
+                        icon.setImageResource(R.drawable.icon_printer);
+                    }
+                    break;
+
+                    case StateUtils.STATE_NEW:
+                    case StateUtils.STATE_ADHOC: {
+                        tag.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
+                        statusText.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
+
+                        statusText.setText(R.string.devices_add_dialog_title);
+                        icon.setImageResource(R.drawable.icon_detectedprinter);
+                    }
+                    break;
+
+                    case StateUtils.STATE_ERROR: {
+                        statusText.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_light));
+                        statusText.setText(m.getMessage());
+                    }
+                    break;
+
+                    default: {
+                        tag.setTextColor(getContext().getResources().getColor(android.R.color.black));
+                        statusText.setTextColor(getContext().getResources().getColor(android.R.color.black));
+
+                        statusText.setText(m.getMessage());
+                        icon.setImageResource(R.drawable.icon_selectedprinter);
+                    }
+                    break;
+
+                }
+
+        } catch (NullPointerException e) {
+
+        }
+
+
+        return v;
+    }
+
+    @Override
+    public ModelPrinter getItem(int position) {
+        return mCurrent.get(position);
+    }
+
+    //Retrieve count from current list
+    @Override
+    public int getCount() {
+        return mCurrent.size();
+    }
+
+    public static String getProgress(String p) {
+
+        double value = 0;
+
+        try {
+            value = Double.valueOf(p);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return String.valueOf((int) value);
+    }
+
+
+    //TODO: REDUNDANT FILTER
+    //Get filter
+    @Override
+    public Filter getFilter() {
+
+        if (mFilter == null)
+            mFilter = new GridFilter();
+
+        return mFilter;
+    }
+
+    /**
+     * This class is the custom filter for the Library
+     *
+     * @author alberto-baeza
+     */
+    private class GridFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            //New filter result object
+            FilterResults result = new FilterResults();
+
+            if (constraint != null && constraint.toString().length() > 0) {
+                //Temporal list
+                ArrayList<ModelPrinter> filt = new ArrayList<ModelPrinter>();
+
+
+                //TODO Should change filter logic to avoid redundancy
+                if (!constraint.equals(String.valueOf(StateUtils.STATE_NEW))) {
+                    //Check if every item from the original list has the constraint
+                    for (ModelPrinter m : mOriginal) {
+
+                        if (m.getStatus() == (Integer.parseInt(constraint.toString()))) {
+                            filt.add(m);
+                        }
+
+                    }
+                } else {
+
+                    //Check if every item from the original list has the constraint
+                    for (ModelPrinter m : mOriginal) {
+
+                        if (m.getStatus() != (Integer.parseInt(constraint.toString()))) {
+                            filt.add(m);
+                        }
+
+                    }
+                }
+
+
+                //New list is filtered list
+                result.count = filt.size();
+                result.values = filt;
+            } else {
+                //New list is original list (no filter, default)
+                result.count = mOriginal.size();
+                result.values = mOriginal;
+
+            }
+            return result;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint,
+                                      FilterResults results) {
+
+
+            //If there are results, update list
+            mCurrent = (ArrayList<ModelPrinter>) results.values;
+            notifyDataSetChanged();
+
+        }
+
+    }
+
 
 }
