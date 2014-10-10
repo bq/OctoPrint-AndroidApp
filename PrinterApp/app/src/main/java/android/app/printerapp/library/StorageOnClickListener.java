@@ -227,7 +227,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 
-							deleteFiles(f);
+							StorageController.deleteFiles(f);
 							StorageController.getFileList().remove(f);
 							
 							if (DatabaseController.isPreference("Favorites",f.getName())){
@@ -259,26 +259,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 		
 	}
 	
-	/**
-	 * Delete files recursively
-	 * @param file
-	 */
-	public void deleteFiles(File file){
-		
-		
-		if (file.isDirectory()){
-			
-			for (File f : file.listFiles()){
-				
-				deleteFiles(f);
-				
-			}
-			
-		} 
-		
-		file.delete();
-		
-	}
+
 	
 
 	/*private void showGcodeList(File f){

@@ -338,7 +338,10 @@ public class PrintNetworkManager {
 					InetAddress myaddr;
 					try {
 						myaddr = InetAddress.getByAddress(ipAddress);
-						String hostaddr = myaddr.getHostAddress(); 
+
+
+                        //TODO HARDCODED ACCESS POINT
+						String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
 						Log.i("OUT","Numerito_ " +hostaddr);
 					
 					

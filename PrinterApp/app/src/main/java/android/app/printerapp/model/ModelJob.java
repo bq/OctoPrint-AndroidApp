@@ -86,7 +86,7 @@ public class ModelJob {
 			mEstimated = job.getString("lastPrintTime");
 			
 			
-			Log.i("MODEL", "Filename: " + mFile + " Filament: " + mFilament + " Estimated: " + mEstimated);
+			//Log.i("MODEL", "Filename: " + mFile + " Filament: " + mFilament + " Estimated: " + mEstimated);
 			
 			
 			//Progress time/timelapse
@@ -103,8 +103,8 @@ public class ModelJob {
 				else mFinished = false;
 			}
 
-			Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime + 
-					" Print time left: " + mPrintTimeLeft);
+			//Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime +
+					//" Print time left: " + mPrintTimeLeft);
 			
 
 		

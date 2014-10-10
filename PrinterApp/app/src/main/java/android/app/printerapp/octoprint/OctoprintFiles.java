@@ -13,10 +13,15 @@ import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.viewer.ViewerMain;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -154,13 +159,12 @@ public class OctoprintFiles {
 	}
 	
 	/**
-	 * Upload a new file to the server using the new API. 
-	 * TODO: Need to patch this later since I don't know how to send Load commands in the multipart form
+	 * Upload a new file to the server using the new API.
 	 * 
 	 * Right now it uses two requests, the first to upload the file and another one to load it in the printer.
 	 * @param file
 	 */
-	public static void uploadFile(final Context context, final File file, final ModelPrinter p, final boolean slice){
+	public static void uploadFile(final Context context, final File file, final ModelPrinter p, final boolean slice, final boolean background){
 			
 			RequestParams params = new RequestParams();
 			
@@ -176,12 +180,16 @@ public class OctoprintFiles {
 				e.printStackTrace();
 			} 
 
-    		Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName() 
-    				, Toast.LENGTH_LONG).show();
+    		if (!background) {
+
+                Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName()
+                        , Toast.LENGTH_LONG).show();
+                p.setLoaded(false);
+
+                DatabaseController.handlePreference("References", p.getName(), p.getJobPath(), true);
+            }
 			
-			p.setLoaded(false);
-			
-			DatabaseController.handlePreference("References", p.getName(), p.getJobPath(), true);
+
 			
 			HttpClientHandler.post(p.getAddress() + HttpUtils.URL_FILES + "/local", 
 					params, new JsonHttpResponseHandler(){				
@@ -202,9 +210,8 @@ public class OctoprintFiles {
 					
 					if (slice){
 						
-						OctoprintSlicing.sliceCommand(context, p.getAddress(), file, "/local/");
-						
-						
+						OctoprintSlicing.sliceCommand(context, p.getAddress(), file, "/local/", background);
+
 					}else {
 						
 						//p.setLoaded(true);
@@ -214,16 +221,12 @@ public class OctoprintFiles {
 							
 						
 					}
-					
-					
-				
-					
+
 				}
 
 				@Override
 				public void onFailure(int statusCode, Header[] headers,
 						String responseString, Throwable throwable) {
-					// TODO Auto-generated method stub
 					super.onFailure(statusCode, headers, responseString, throwable);
 					p.setLoaded(true);
 					Log.i("RESPONSEFAIL", responseString);
@@ -293,21 +296,35 @@ public class OctoprintFiles {
 	public static void downloadFile(Context context, String url, String path, String filename){
 		
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http:/" + url + filename));
+
+        //hide notifications
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
 	
 		// in order for this if to run, you must use the android 3.2 to compile your app
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 		    request.allowScanningByMediaScanner();
-		    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+		    //request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 		}
-		
-		
+
+
+        //Delete duplicated files
+		File extra = new File( path + filename);
+        if (extra.exists()){
+            extra.delete();
+        }
 		
 		request.setDestinationUri(Uri.parse("file://" + path + filename));
+
+
 
 		// get download service and enqueue file
 		DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 		manager.enqueue(request);
+
 	}
+
+
+
 	
 
 }

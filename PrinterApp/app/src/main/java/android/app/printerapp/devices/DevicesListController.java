@@ -197,7 +197,7 @@ public static void selectPrinter(final Context context, final File f){
 
 						
 						//OctoprintSlicing.retrieveProfiles(m.getAddress());
-						OctoprintSlicing.sliceCommand(context, m.getAddress(), f, "/local/");
+						//OctoprintSlicing.sliceCommand(context, m.getAddress(), f, "/local/");
 						
 						//TODO Yolo Temp
 						
@@ -211,8 +211,8 @@ public static void selectPrinter(final Context context, final File f){
 				    		
 						} else {
 							
-							if (StorageController.hasExtension(1, f.getName())) OctoprintFiles.uploadFile(context, f, m, false);
-							else if (StorageController.hasExtension(0, f.getName())) OctoprintFiles.uploadFile(context, f, m, true);
+							if (StorageController.hasExtension(1, f.getName())) OctoprintFiles.uploadFile(context, f, m, false, false);
+							else if (StorageController.hasExtension(0, f.getName())) OctoprintFiles.uploadFile(context, f, m, true, false);
 							
 						}
 						if (StorageController.hasExtension(1, f.getName())){

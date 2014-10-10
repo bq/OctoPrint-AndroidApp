@@ -60,7 +60,7 @@ public class StlFile {
 		
 		mData.setPathFile(mFile.getAbsolutePath());	
 		mData.initMaxMin();
-		
+
 		startThreadToOpenFile(context, uri);
 	}
 	
@@ -353,8 +353,16 @@ public class StlFile {
 		
 		return false;
 	}
-	
-	public static boolean saveModel (List<DataStorage> dataList, String projectName) {		
+
+    /**
+     * This method will save the model to a file, either to slice or to make a new project.
+     * I made a few adjustment to select between the two types of file creation. (Alberto)
+     *
+     * @param dataList
+     * @param projectName
+     *
+     */
+	public static boolean saveModel (List<DataStorage> dataList, String projectName, SlicingHandler slicer) {
 		float[] coordinates = null;
 		int coordinateCount = 0;
 		float[] rotationMatrix = new float [16];
@@ -423,18 +431,28 @@ public class StlFile {
 		
 		bb.position(0);
 	    byte[] data = bb.array();
-	    String path = StorageController.getParentFolder().getAbsolutePath() + "/" + projectName + ".stl";
-	    try {
-            FileOutputStream fos = new FileOutputStream(path);
-            fos.write(data);
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }     
-	    
-	    File file = new File (path);
-	    StorageModelCreation.createFolderStructure(mContext, file);
-	    file.delete();
+
+
+        if (slicer!=null){
+
+            slicer.setData(data);
+            slicer.sendTimer();
+
+        } else {
+            String path = StorageController.getParentFolder().getAbsolutePath() + "/" + projectName + ".stl";
+            try {
+                FileOutputStream fos = new FileOutputStream(path);
+                fos.write(data);
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            File file = new File (path);
+            StorageModelCreation.createFolderStructure(mContext, file);
+            file.delete();
+        }
+
 	    
 	    return true;
 	}

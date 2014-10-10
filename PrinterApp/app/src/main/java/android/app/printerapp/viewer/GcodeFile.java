@@ -224,7 +224,7 @@ public class GcodeFile  {
     			 * 
     			 * Alberto
     			 */
-    			Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
+    			//Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
     			ViewerMain.resetWhenCancel();
     			if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();
     			return;

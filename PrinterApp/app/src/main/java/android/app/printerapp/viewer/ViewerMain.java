@@ -4,10 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -91,6 +96,10 @@ public class ViewerMain extends Fragment {
 
 	private static Context mContext;
 	private static View mRootView;
+
+
+    /********************************************************************************/
+    private static SlicingHandler mSlicingHandler;
 	
 	//Empty constructor
 	public ViewerMain(){}
@@ -120,7 +129,12 @@ public class ViewerMain extends Fragment {
 					container, false);
 			
 			mContext = getActivity();
-											
+
+			//Create slicing handler
+            mSlicingHandler = new SlicingHandler(getActivity());
+            //Register receiver
+            mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
 			initUIElements ();
 			initRotateButtons ();
 			
@@ -170,7 +184,7 @@ public class ViewerMain extends Fragment {
 			public void onClick(View v) {
 				mSurface.showBackWitboxFace();
 			}
-			
+
 		});
 		
 		mRightWitboxFaces = (Button) mRootView.findViewById(R.id.right);
@@ -322,8 +336,12 @@ public class ViewerMain extends Fragment {
 			return true;
 			
        	case R.id.viewer_save: 
-       		saveNewProyect ();		
+       		saveNewProject();
             return true;
+
+           case R.id.viewer_save_gcode:
+               saveGcodeDialog();
+               return true;
             
     	case R.id.viewer_notes: 
     		//Add/View notes
@@ -405,10 +423,21 @@ public class ViewerMain extends Fragment {
 				case XRAY:		
 					changeStlViews(ViewerSurfaceView.XRAY);	
 					break;
-				case LAYER:		
-					if (mFile!=null) {
-						showGcodeFiles ();
-					} else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+				case LAYER:
+
+
+                    //TODO  what the fuck did i do here
+                    File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
+                    if (tempFile.exists()){
+                        //Open desired file
+                        openFile (tempFile.getAbsolutePath());
+                    } else {
+
+                        if (mFile!=null) {
+                            showGcodeFiles ();
+                        } else 	Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+
+                    }
 				break;
 
 				default:
@@ -434,6 +463,9 @@ public class ViewerMain extends Fragment {
 			GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
 		}
 		mDataList.add (data);
+
+       //Adding original project //TODO elsewhere?
+       if (mSlicingHandler.getOriginalProject()==null) mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
    }
      
 	private void changeStlViews (int state) {
@@ -445,17 +477,39 @@ public class ViewerMain extends Fragment {
 	}
    
    private void openStlFile () {
-		String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-		String pathStl = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
-		
-		File f = new File (pathStl);
 
-		//Only when it's a project
-		if (f.isDirectory() && f.list().length>0){
-			openFile (pathStl+ f.list()[0]);
-		} else {
-			Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-		}	   
+       //Name didn't work with new gcode creation so new stuff!
+	   //String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+
+       String pathStl;
+
+
+
+       //TODO   still fucking up stuff
+
+       if (mSlicingHandler.getLastReference()!=null){
+
+           pathStl = mSlicingHandler.getLastReference();
+           openFile(pathStl);
+
+       }else {
+
+                        //Here's the new stuff! //TODO Should make a method to get parent file
+           pathStl = //StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
+                   mFile.getParentFile().getParent() + "/_stl/";
+           File f = new File (pathStl);
+
+           Log.i("OUT","trying to open " + pathStl);
+
+           //Only when it's a project
+           if (f.isDirectory() && f.list().length>0){
+               openFile (pathStl+ f.list()[0]);
+           } else {
+               Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+           }
+       }
+		
+
 	}
 
 	private void showGcodeFiles () {
@@ -544,7 +598,7 @@ public class ViewerMain extends Fragment {
 	}
 		
 	/************************* SAVE FILE ********************************/
-	private void saveNewProyect () {
+	private void saveNewProject() {
 		View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_proyect_name_dialog, null);
 		final EditText proyectNameText = (EditText) dialogText.findViewById(R.id.proyect_name);
 
@@ -601,25 +655,70 @@ public class ViewerMain extends Fragment {
 	    	 * 
 	    	 *  Alberto
 	    	 */
-	    	//if ((proyectNameText.getText().toString().contains(".stl"))||
-	    	//(proyectNameText.getText().toString().contains(".STL"))){
-	    		
-	    	
-		    	if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
-		    	else {	    	
-			    	if (StlFile.saveModel(mDataList, proyectNameText.getText().toString())) dialog.dismiss();
-					else {
-						Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
-						dialog.dismiss();
-					}
-		    	}
-	    	//} else {
-			//	Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-			//	dialog.dismiss();
-			//}
+
+	    	    if (StorageController.hasExtension(0,mFile.getName())){
+                    if (StlFile.checkIfNameExists(proyectNameText.getText().toString())) proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
+                    else {
+                        if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null)) dialog.dismiss();
+                        else {
+                            Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    }
+	    	    } else {
+				    Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+				    dialog.dismiss();
+			    }
 
 	    }
 	}
+
+
+    /*************************** SAVE GCODE ************************************ by Alberto */
+
+     public void saveGcodeDialog(){
+
+         final File actualFile = new File(mSlicingHandler.getOriginalProject());
+
+         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+         adb.setTitle(R.string.library_create_dialog_title);
+
+         final EditText et = new EditText(mContext);
+         et.setText(actualFile.getName());
+
+         adb.setView(et);
+
+         adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialogInterface, int i) {
+
+
+
+
+                 //TODO move rename/move logic to StorageController
+                 //Save gcode
+                 File fileTo = new File (actualFile + "/_gcode/" + et.getText().toString() + ".gcode");
+                 File fileFrom = mFile;
+
+                 //Delete file if success
+                 if (!mFile.renameTo(fileTo)) {
+
+                     openFile(fileTo.getAbsolutePath());
+
+                     if (mFile.delete()){
+                         Log.i("OUT","File deletedillo");
+                     };
+                 }
+
+             }
+         });
+
+         adb.show();
+
+
+
+
+     }
 	
 	/************************* SURFACE CONTROL ********************************/
 	//This method will set the visibility of the surfaceview so it doesn't overlap
@@ -695,6 +794,12 @@ public class ViewerMain extends Fragment {
         	mRotateMenu.setVisibility(View.INVISIBLE);
 
 			mActionMode = null;
+
+            StlFile.saveModel(mDataList, null, mSlicingHandler);
+
+
+
+
 		}
 	};
 	
@@ -734,4 +839,24 @@ public class ViewerMain extends Fragment {
 		
     	draw();
 	}
+
+
+    //TODO HIGHLY EXPERIMENTAL BE CAREFUL!!!!11
+    /******************************* PROGRESS BAR FOR SLICING *******************************************/
+
+    public static void showProgressBar(int i){
+
+        Log.i("OUT","Theoretically showing Progress Bar :/");
+        ProgressBar pb = (ProgressBar)mRootView.findViewById(R.id.progress_slice);
+        pb.bringToFront();
+        pb.setVisibility(i);
+        mRootView.invalidate();
+    }
+
+    public BroadcastReceiver onComplete=new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+            showProgressBar(View.GONE);
+        }
+    };
+
 }

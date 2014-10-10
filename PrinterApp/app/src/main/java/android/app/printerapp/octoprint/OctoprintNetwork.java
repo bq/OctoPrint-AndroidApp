@@ -11,6 +11,8 @@ import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class OctoprintNetwork {
@@ -71,7 +73,7 @@ public class OctoprintNetwork {
 	 * @param psk
 	 * @param url
 	 */
-	public static void configureNetwork(final PrintNetworkReceiver pr, Context context, String ssid, String psk, String url){
+	public static void configureNetwork(final PrintNetworkReceiver pr, final Context context, String ssid, String psk, String url){
 
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
@@ -122,7 +124,9 @@ public class OctoprintNetwork {
 				super.onFailure(statusCode, headers, throwable, errorResponse);
                 pr.register();
 				Log.i("OUT","Failure while connecting " + statusCode);
-			}
+
+                Toast.makeText(context,"There was an error configuring the Network",Toast.LENGTH_LONG).show();
+            }
 		});
 	}
 
