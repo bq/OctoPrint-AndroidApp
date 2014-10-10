@@ -7,6 +7,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import java.io.File;
@@ -18,6 +19,8 @@ import java.util.TimerTask;
  * Created by alberto-baeza on 10/7/14.
  */
 public class SlicingHandler {
+
+    private static final int DELAY = 10; //timer delay just in case
 
     //Data array to send to the server
     private byte[] mData = null;
@@ -112,7 +115,8 @@ public class SlicingHandler {
         Log.i("OUT","Creating EL TIMER" );
         //Reschedule task
         mTimer = new Timer();
-        mTimer.schedule(new SliceTask(),5000);
+
+        mTimer.schedule(new SliceTask(),DELAY);
         isRunning = true;
 
     }
@@ -158,7 +162,10 @@ public class SlicingHandler {
                     ModelPrinter p = selectAvailablePrinter();
 
                     if (p!=null){
-                        OctoprintFiles.uploadFile(mActivity,createTempFile(),selectAvailablePrinter(),true);
+
+                        OctoprintFiles.uploadFile(mActivity,createTempFile(),selectAvailablePrinter(),true, true);
+                        ViewerMain.showProgressBar(View.VISIBLE);
+
                     } else {
 
                         Log.i("OUT", "No available printers for slicing");

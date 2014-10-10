@@ -4,10 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -127,6 +132,8 @@ public class ViewerMain extends Fragment {
 
 			//Create slicing handler
             mSlicingHandler = new SlicingHandler(getActivity());
+            //Register receiver
+            mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 			initUIElements ();
 			initRotateButtons ();
@@ -830,4 +837,24 @@ public class ViewerMain extends Fragment {
 		
     	draw();
 	}
+
+
+    //TODO HIGHLY EXPERIMENTAL BE CAREFUL!!!!11
+    /******************************* PROGRESS BAR FOR SLICING *******************************************/
+
+    public static void showProgressBar(int i){
+
+        Log.i("OUT","Theoretically showing Progress Bar :/");
+        ProgressBar pb = (ProgressBar)mRootView.findViewById(R.id.progress_slice);
+        pb.bringToFront();
+        pb.setVisibility(i);
+        mRootView.invalidate();
+    }
+
+    public BroadcastReceiver onComplete=new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+            showProgressBar(View.GONE);
+        }
+    };
+
 }

@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:background="@color/white" >
 
+
     <ProgressBar
 	   android:id="@+id/progress_bar"
 	   style = "@android:style/Widget.ProgressBar.Large.Inverse"
@@ -13,6 +14,18 @@
 	   android:layout_height="wrap_content"
 	   android:layout_centerHorizontal="true" 
 	   android:layout_centerVertical="true"/>
+
+    <ProgressBar
+        android:id="@+id/progress_slice"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tabhost_views"
+        android:indeterminate="true" />
+
     <Button
         android:id="@+id/down"
         android:layout_width="wrap_content"

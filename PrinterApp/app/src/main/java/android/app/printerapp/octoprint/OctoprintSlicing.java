@@ -105,7 +105,7 @@ public class OctoprintSlicing {
 		
 	}
 	
-	public static void sliceCommand(final Context context, String url, final File file, String target){
+	public static void sliceCommand(final Context context, String url, final File file, String target, final boolean background){
 		
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
@@ -113,7 +113,7 @@ public class OctoprintSlicing {
 		try {
 			object.put("command", "slice");
 			object.put("slicer", "cura");
-            object.put("gcode", "temp.gco");
+            if (background) object.put("gcode", "temp.gco");
 			entity = new StringEntity(object.toString(), "UTF-8");
 			
 		} catch (JSONException e) {		e.printStackTrace();
@@ -133,18 +133,21 @@ public class OctoprintSlicing {
 			public void onSuccess(int statusCode,
 					Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
-				
+
+                if (!background){
+                    Toast.makeText(context, "Slicing..." + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+                    try {
+
+                        DatabaseController.handlePreference("Slicing", response.getString("name"), file.getAbsolutePath(), true);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 				Log.i("OUT","Slicing @" + response.toString());
 			
-				Toast.makeText(context, "Slicing..." + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-;
-				try {
-					
-					DatabaseController.handlePreference("Slicing", response.getString("name"), file.getAbsolutePath(), true);
 
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
 				
 				
 				
