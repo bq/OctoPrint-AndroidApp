@@ -108,6 +108,7 @@
     
     <string name="viewer_menu_open">Abrir fichero</string>
     <string name="viewer_menu_save">Guardar</string>
+    <string name="viewer_menu_save_gcode">Guardar gcode</string>
     <string name="viewer_menu_notes">Notas</string>
     <string name="viewer_menu_autofit">Auto ajustar</string>
     <string name="viewer_menu_clean">Limpiar panel</string>

@@ -252,4 +252,25 @@ public class StorageController {
 	public static File getCurrentPath(){
 		return mCurrentPath;
 	}
+
+    /**
+     * Delete files recursively
+     * @param file
+     */
+    public static void deleteFiles(File file){
+
+
+        if (file.isDirectory()){
+
+            for (File f : file.listFiles()){
+
+                deleteFiles(f);
+
+            }
+
+        }
+
+        file.delete();
+
+    }
 }

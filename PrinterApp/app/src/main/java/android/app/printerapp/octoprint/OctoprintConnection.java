@@ -284,6 +284,7 @@ public class OctoprintConnection {
 
                 if (!path.contains("temp")) {
 
+                    //TODO PRO VI SIO NAL
 
                     AlertDialog.Builder adb = new AlertDialog.Builder(context);
                     adb.setTitle(payload.getString("gcode") + ": " + context.getString(R.string.slicing_title) + " " + String.format("%.2f", (Double.parseDouble(payload.getString("time")))) + "s");

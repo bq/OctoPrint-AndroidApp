@@ -5,16 +5,12 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
-import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
-import android.content.Context;
 import android.util.Log;
+import android.widget.ProgressBar;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,6 +34,7 @@ public class SlicingHandler {
 
     //Last reference to the temp file
     private String mLastReference = null;
+    private String mOriginalProject = null;
 
     //Default URL to slice models
     private String mUrl;
@@ -46,6 +43,7 @@ public class SlicingHandler {
 
         mActivity = activity;
         isRunning = false;
+        cleanTempFolder();
     }
 
 
@@ -138,6 +136,13 @@ public class SlicingHandler {
     public String getLastReference(){
         return mLastReference;
     }
+    public String getOriginalProject() { return mOriginalProject; }
+
+    public void setOriginalProject(String path) {
+
+        mOriginalProject = path;
+        Log.i("OUT","Workspace: " + path);
+    }
 
     private class SliceTask extends TimerTask {
 
@@ -163,9 +168,19 @@ public class SlicingHandler {
             });
 
 
+            //Timer stopped
+            isRunning = false;
 
 
         }
+    }
+
+    //delete temp folder
+    private void cleanTempFolder(){
+
+        File file = new File(StorageController.getParentFolder() + "/temp/");
+
+        StorageController.deleteFiles(file);
     }
 
 }
