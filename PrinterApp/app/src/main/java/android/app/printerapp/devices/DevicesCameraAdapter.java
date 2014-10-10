@@ -6,6 +6,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +43,9 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 				LinearLayout ll = new LinearLayout(getContext());
 				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 		                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                layoutParams.gravity = Gravity.CENTER;
 
-
-				ll.addView(m.getVideo(), layoutParams);
+                ll.addView(m.getVideo(), layoutParams);
 
 				LinearLayout layout = (LinearLayout) v.findViewById(R.id.video_layout);
 				//Remove all previous views (refresh icon)
@@ -52,16 +53,9 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter>{
 				layout.addView(ll);
 			}
 			
-	
-			
 		}else{
 			
 		}
-		
-		TextView tv = (TextView) v.findViewById(R.id.video_label);
-		tv.setText(m.getDisplayName());
-		
-		
 
 		return v;
 	}

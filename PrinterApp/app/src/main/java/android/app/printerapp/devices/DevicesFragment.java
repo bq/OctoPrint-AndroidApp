@@ -127,8 +127,8 @@ import it.sephiroth.android.library.widget.HListView;
 
             mGridAdapter = new DevicesGridAdapter(getActivity(),
                     R.layout.linear_grid_element, DevicesListController.getList());
-
             GridView gridView = (GridView) rootView.findViewById(R.id.devices_grid);
+            gridView.setSelector(R.drawable.quick_print_model_selector);
             gridView.setOnItemClickListener(gridClickListener());
             gridView.setOnItemLongClickListener(gridLongClickListener());
 
@@ -143,7 +143,7 @@ import it.sephiroth.android.library.widget.HListView;
                     R.layout.list_item_drawer, DevicesListController.getList());
 
             ListView listView = (ListView) rootView.findViewById(R.id.devices_list);
-            listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
+//            listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
             listView.setOnItemClickListener(listClickListener());
             listView.setAdapter(mListAdapter);
 
