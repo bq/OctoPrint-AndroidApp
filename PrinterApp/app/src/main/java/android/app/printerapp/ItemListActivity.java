@@ -56,7 +56,7 @@ public class ItemListActivity extends FragmentActivity implements
     //Drawer handling
     private DrawerLayout mDrawer;
     private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private static ActionBarDrawerToggle mDrawerToggle;
 
 
     @Override
@@ -297,6 +297,9 @@ public class ItemListActivity extends FragmentActivity implements
 
             case 0:
 
+                //Sisable the toggle menu and show up carat
+                mDrawerToggle.setDrawerIndicatorEnabled(false);
+
                 //New DetailView with the file as an index
                 DetailViewFragment detail = new DetailViewFragment();
                 Bundle args = new Bundle();
@@ -319,7 +322,7 @@ public class ItemListActivity extends FragmentActivity implements
                 detailp.setArguments(argsp);
                 //Transition is made by replacing instead of hiding to allow backstack navigation
 
-                //TODO: Use resource for id tag
+                //TODO: Use resource for id tag;
                 mTransaction.replace(R.id.item_detail_container, detailp, "Printer").commit();
                 break;
 
@@ -337,6 +340,8 @@ public class ItemListActivity extends FragmentActivity implements
                 else return;
             } else super.onBackPressed();
         } else super.onBackPressed();
+        //Turn on the Navigation Drawer image; this is called in the LowerLevelFragments
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
     }
 
     //Show dialog

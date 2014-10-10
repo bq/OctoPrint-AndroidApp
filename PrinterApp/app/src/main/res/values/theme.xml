@@ -7,12 +7,16 @@
        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
    -->
     <style name="AppBaseTheme.Light" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionOverflowButtonStyle">@style/ActionButton.Overflow</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListViewStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/AppBaseTheme.Light.ActionButton.Overflow</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_action_arrow_back</item>
         <item name="android:windowBackground">@color/pager_background</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Green</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Green</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Green</item>
+        <item name="android:actionBarStyle">@style/AppBaseTheme.Light.ActionBar.Solid</item>
         <item name="android:windowContentOverlay">@android:color/transparent</item>
+        <item name="android:buttonStyle">@style/Button</item>
+        <item name="android:actionBarItemBackground">@drawable/drawer_item_selector</item>
     </style>
 
     <style name="AppBaseTheme.Light.NoActionBar" parent="@android:style/Theme.Holo.Light.DarkActionBar">
@@ -20,27 +24,49 @@
     </style>
 
     <!-- Styles for action bar and action bar tabs -->
-    <style name="ActionBar.Solid" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="AppBaseTheme.Light.ActionBar.Solid" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/ab_background</item>
         <item name="android:height">@dimen/action_bar_height</item>
+        <item name="android:titleTextStyle">@style/AppBaseTheme.Light.ActionBar.TitleTextStyle</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_green</item>
-        <item name="android:popupMenuStyle">@android:style/Widget.Holo.Light.PopupMenu</item>
-        <item name="android:dropDownListViewStyle">
-            @android:style/Widget.Holo.Light.ListView.DropDown
-        </item>
         <item name="android:displayOptions">showHome|homeAsUp|showTitle</item>
         <item name="android:icon">@android:color/transparent</item> <!-- This does the magic! -->
     </style>
 
-    <style name="ActionButton.Overflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+    <style name="AppBaseTheme.Light.ActionButton.Overflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_action_overflow</item>
     </style>
 
+    <style name="AppBaseTheme.Light.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Styles for the pup up menu -->
+    <style name="PopupMenu.Green" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_green</item>
+    </style>
+
+    <style name="DropDownListView.Green" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_green</item>
+    </style>
+
+    <style name="DropDownNav.Green" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_green</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_green</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_green</item>
+    </style>
+
     <!--Dropdown listView style-->
-    <style name="DropDownListViewStyle" parent="android:Widget.ListView.DropDown">
+    <style name="AppBaseTheme.Light.DropDownListViewStyle" parent="android:Widget.ListView.DropDown">
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">@dimen/dropdown_list_divider_height</item>
     </style>
 
+    <!-- Buttons style -->
+    <style name="Button" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/selectable_background_green</item>
+    </style>
 
 </resources>

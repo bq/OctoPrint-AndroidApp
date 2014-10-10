@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:gravity="right"
-    android:orientation="vertical" >
+    android:orientation="vertical">
     
     <TextView
         android:id="@+id/grid_element_tag"

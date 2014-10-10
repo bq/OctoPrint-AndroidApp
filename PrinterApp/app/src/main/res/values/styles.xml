@@ -20,4 +20,34 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <!-- Body content -->
+    <style name="TextHeader">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textIsSelectable">true</item>
+    </style>
+
+    <style name="TextHeaderSub">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/body_text_2</item>
+    </style>
+
+    <style name="TextHeaderSubLight" parent="TextHeaderSub">
+        <item name="android:textColor">@color/body_text_3</item>
+    </style>
+
+    <style name="TextBodyDark">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/body_text_2</item>
+        <item name="android:lineSpacingMultiplier">1.1</item>
+    </style>
+
+    <style name="TextBodyLight" parent="TextBodyDark">
+        <item name="android:textColor">@color/body_text_3</item>
+    </style>
+
 </resources>

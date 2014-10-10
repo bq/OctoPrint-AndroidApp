@@ -54,7 +54,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
 
             //Inflate the view
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.list_item_drawer, null, false);
+            v = inflater.inflate(R.layout.list_item_printer, null, false);
             v.setOnDragListener(new DevicesDragListener(mContext, m));
 
         } else {
@@ -62,10 +62,10 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
         }
 
         //Printer tag reference
-        TextView tag = (TextView) v.findViewById(R.id.list_column_1_text);
+        TextView tag = (TextView) v.findViewById(R.id.printer_name_text_view);
         tag.setText(m.getDisplayName());
 
-        ImageView icon = (ImageView) v.findViewById(R.id.list_column_1_icon);
+        ImageView icon = (ImageView) v.findViewById(R.id.printer_icon_imageview);
 
         ModelJob job = m.getJob();
 
@@ -74,11 +74,8 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
         //TODO: Remove null option
         try {
 
-
-            TextView statusText = (TextView) v.findViewById(R.id.list_column_3);
-
+            TextView statusText = (TextView) v.findViewById(R.id.printer_state_textview);
             int status = m.getStatus();
-
 
             if (status == StateUtils.STATE_PRINTING) {
                 statusText.setText(getProgress(job.getProgress()) + "% (" + job.getPrintTimeLeft() + " left)");
@@ -93,8 +90,8 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
 
                     case StateUtils.STATE_NEW:
                     case StateUtils.STATE_ADHOC: {
-                        tag.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
-                        statusText.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
+                        tag.setTextColor(getContext().getResources().getColor(R.color.body_text_3));
+                        statusText.setTextColor(getContext().getResources().getColor(R.color.body_text_3));
 
                         statusText.setText(R.string.devices_add_dialog_title);
                         icon.setImageResource(R.drawable.icon_detectedprinter);
@@ -102,14 +99,14 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
                     break;
 
                     case StateUtils.STATE_ERROR: {
-                        statusText.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_light));
+                        statusText.setTextColor(getContext().getResources().getColor(R.color.error));
                         statusText.setText(m.getMessage());
                     }
                     break;
 
                     default: {
-                        tag.setTextColor(getContext().getResources().getColor(android.R.color.black));
-                        statusText.setTextColor(getContext().getResources().getColor(android.R.color.black));
+                        tag.setTextColor(getContext().getResources().getColor(R.color.body_text_1));
+                        statusText.setTextColor(getContext().getResources().getColor(R.color.body_text_2));
 
                         statusText.setText(m.getMessage());
                         icon.setImageResource(R.drawable.icon_selectedprinter);

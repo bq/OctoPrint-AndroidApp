@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@android:color/holo_red_light" >
+    android:background="@color/error" >
 
     <ImageView
         android:id="@+id/toast_icon"
