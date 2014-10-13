@@ -109,7 +109,7 @@ public class ModelJob {
 
 		
 		} catch (JSONException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	

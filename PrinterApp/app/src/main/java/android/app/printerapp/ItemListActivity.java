@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -118,7 +119,7 @@ public class ItemListActivity extends FragmentActivity implements
             // Set the drawer toggle as the DrawerListener
             mDrawerToggle.setDrawerIndicatorEnabled(true);
             mDrawer.setDrawerListener(mDrawerToggle);
-            mDrawer.openDrawer(Gravity.START);
+            //mDrawer.openDrawer(Gravity.START);
 
         }
 
@@ -136,6 +137,10 @@ public class ItemListActivity extends FragmentActivity implements
         mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
         mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
         mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
+
+        ItemListFragment.performClick(0);
+
+
     }
 
 
