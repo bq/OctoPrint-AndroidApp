@@ -111,8 +111,7 @@ public class StorageController {
 	
 	//Retrieve favorites
 	public static void retrieveFavorites(){
-		
-		mFileList.clear();
+
 		
 		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Favorites").entrySet()){
 			
@@ -196,9 +195,15 @@ public class StorageController {
 				}
 								
 			} else {
+
+                if ((path.equals("favorites"))){
+                    retrieveFavorites();
+                } else{
+                    ///any other folder will open normally
+                    retrieveFiles(new File(path), false);
+                }
 				
-				///any other folder will open normally
-				retrieveFiles(new File(path), false);
+
 			}
 			
 			

@@ -1,18 +1,12 @@
 package android.app.printerapp.library;
 
-import java.io.File;
-import java.util.Comparator;
-
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -29,9 +23,12 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
+import java.io.File;
+import java.util.Comparator;
 
 /**
  * Fragment to show the library with files on the system/remote
@@ -46,6 +43,7 @@ public class LibraryFragment extends Fragment {
     private ViewSwitcher mSwitcher;
 
     private String mCurrentFilter = null;
+    private String mCurrentTab = null;
 
     private File mMoveFile = null;
 
@@ -182,6 +180,12 @@ public class LibraryFragment extends Fragment {
 
                 return true;
 
+            case R.id.libray_reload:
+
+                changeTab();
+
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -235,30 +239,40 @@ public class LibraryFragment extends Fragment {
 
                 switch (tabs.getCurrentTab()) {
                     case 0:
-                        StorageController.reloadFiles("all");
-                        //StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
+                       mCurrentTab = "all";
                         break;
                     case 1:
-                        StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
+                        mCurrentTab = StorageController.getParentFolder().getAbsolutePath();
                         break;
                     case 2:
-                        StorageController.reloadFiles("printer");
+                        mCurrentTab = "printer";
                         break;
 
                     case 3:
-                        //StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath() + "/Files");
-                        StorageController.retrieveFavorites();
+                        mCurrentTab = "favorites";
                         break;
 
                     default:
                         break;
                 }
 
-                sortAdapter();
+               changeTab();
 
             }
         });
 
+    }
+
+    //Reload file list with the currently selected tab
+    public void changeTab(){
+
+        if (mCurrentTab!=null){
+
+            StorageController.reloadFiles(mCurrentTab);
+
+        }
+
+        sortAdapter();
     }
 
 
