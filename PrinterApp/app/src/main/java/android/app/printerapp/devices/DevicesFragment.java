@@ -31,6 +31,8 @@ import android.view.View.DragShadowBuilder;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -162,7 +164,7 @@ import it.sephiroth.android.library.widget.HListView;
 
             SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
             slidePanel.setOverlayed(false);
-            ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.expand_button);
+            CheckBox imageButton = (CheckBox) rootView.findViewById(R.id.expand_button_checkbox);
             slidePanel.setDragView(imageButton);
 
             /******************* QUICKPRINT PANEL ************************************/

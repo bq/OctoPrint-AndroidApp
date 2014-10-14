@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widget="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.ProgressBar.Large.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <ProgressBar
+        android:id="@+id/progress_slice"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tabhost_views"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="30dp"
+        android:indeterminate="true" />
+
+    <Button
+        android:id="@+id/down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/viewer_button_down" />
+
+    <Button
+        android:id="@+id/left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/down"
+        android:text="@string/viewer_button_left" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/right"
+        android:layout_alignBottom="@+id/right"
+        android:layout_toLeftOf="@+id/right"
+        android:text="@string/viewer_button_back" />
+
+    <Button
+        android:id="@+id/right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/down"
+        android:layout_toRightOf="@+id/down"
+        android:text="@string/viewer_button_right" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupMovement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="visible">
+
+        <RadioButton
+            android:id="@+id/radioRotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/viewer_button_rotation" />
+
+        <RadioButton
+            android:id="@+id/radioTranslation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/viewer_button_translation" />
+    </RadioGroup>
+
+    <!-- MAIN CONTAINER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabhost_views"
+        android:background="@color/almost_white"
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_small"
+        android:weightSum="5">
+
+        <!-- Left panel. Contains options to apply on the model in the right panel -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|right"
+            android:layout_marginRight="@dimen/content_margin_small"
+            android:layout_weight="3"
+            android:gravity="right"
+            android:orientation="vertical"
+            android:weightSum="4">
+
+            <!-- Simple options -->
+            <include
+                android:id="@+id/include2"
+                layout="@layout/print_panel_simple_settings_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/content_margin_small" />
+
+            <!-- Advanced options -->
+
+            <!-- Auxiliar linear layout to restrict the expansion of the advanced settings panel -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/print_model_button"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/include2">
+
+                <include
+                    android:id="@+id/advanced_options_expandable_panel"
+                    layout="@layout/print_panel_advanced_settings_card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp" />
+            </LinearLayout>
+
+            <!-- Print button -->
+            <com.material.widget.PaperButton
+                android:id="@+id/print_model_button"
+                style="@style/MaterialDesignButton.Raised.Default"
+                android:layout_width="150dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                widget:paper_text="@string/viewer_button_print" />
+
+            <!--<View-->
+            <!--android:layout_width="1dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/separation_line_vertical" />-->
+        </RelativeLayout>
+
+        <!-- Right panel. Contains the 3D model -->
+        <FrameLayout
+            android:id="@+id/viewer_container_framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <!-- Buttons to undo/redo the modifications on the model -->
+            <LinearLayout
+                android:id="@+id/model_button_bar_linearlayout"
+                style="@style/ButtonBar"
+                android:layout_gravity="bottom"
+                android:background="#66ffffff">
+
+                <Button
+                    android:id="@+id/undo_button"
+                    style="@style/ButtonBar.NoDefaultButton"
+                    android:text="@string/viewer_button_undo"
+                    android:drawableLeft="@drawable/ic_arrow_back"/>
+
+                <Button
+                    android:id="@+id/redo_button"
+                    style="@style/ButtonBar.NoDefaultButton"
+                    android:text="@string/viewer_button_redo"
+                    android:drawableRight="@drawable/ic_arrow_forward"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/angle_axis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/x_axis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/viewer_text_rx"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/y_axis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/x_axis"
+                    android:text="@string/viewer_text_ry"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/z_axis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/y_axis"
+                    android:text="@string/viewer_text_rz"
+                    android:textSize="30sp" />
+
+                <Button
+                    android:id="@+id/positive_angle_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/x_axis"
+                    android:text="@string/viewer_button_rotate_positive_angle" />
+
+                <Button
+                    android:id="@+id/negative_angle_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/positive_angle_x"
+                    android:text="@string/viewer_button_rotate_negative_angle" />
+
+                <Button
+                    android:id="@+id/positive_angle_y"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/positive_angle_x"
+                    android:layout_toRightOf="@+id/y_axis"
+                    android:text="@string/viewer_button_rotate_positive_angle" />
+
+                <Button
+                    android:id="@+id/negative_angle_y"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/negative_angle_x"
+                    android:layout_toRightOf="@+id/positive_angle_y"
+                    android:text="@string/viewer_button_rotate_negative_angle" />
+
+                <Button
+                    android:id="@+id/positive_angle_z"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/positive_angle_y"
+                    android:layout_toRightOf="@+id/z_axis"
+                    android:text="@string/viewer_button_rotate_positive_angle" />
+
+                <Button
+                    android:id="@+id/negative_angle_z"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/negative_angle_y"
+                    android:layout_toRightOf="@+id/positive_angle_z"
+                    android:text="@string/viewer_button_rotate_negative_angle" />
+            </RelativeLayout>
+
+            <!-- Seek bar to show/hide layers of the model -->
+            <android.app.printerapp.util.ui.VerticalSeekBar
+                android:id="@+id/barLayer"
+                android:layout_width="100dp"
+                android:layout_height="350dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="@dimen/content_margin_small" />
+
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- TABS CONTAINER -->
+
+    <TabHost
+        android:id="@+id/tabhost_views"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- The layout contains five tabs -->
+
+                <LinearLayout
+                    android:id="@+id/tab_normal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_overhang"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_xray"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"></LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab_gcodes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"></LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+</RelativeLayout>

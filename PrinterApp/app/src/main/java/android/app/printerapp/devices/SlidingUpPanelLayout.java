@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.CheckBox;
 
 import com.nineoldandroids.view.animation.AnimatorProxy;
 
@@ -115,7 +116,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
      * If provided, the panel can be dragged by only this view. Otherwise, the entire panel can be
      * used for dragging.
      */
-    private View mDragView;
+    private CheckBox mDragView;
 
     /**
      * If provided, the panel can be dragged by only this view. Otherwise, the entire panel can be
@@ -352,7 +353,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
     protected void onFinishInflate() {
         super.onFinishInflate();
         if (mDragViewResId != -1) {
-            mDragView = findViewById(mDragViewResId);
+            mDragView = (CheckBox) findViewById(mDragViewResId);
         }
     }
 
@@ -425,7 +426,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
      *
      * @param dragView A view that will be used to drag the panel.
      */
-    public void setDragView(View dragView) {
+    public void setDragView(CheckBox dragView) {
         mDragView = dragView;
     }
 
@@ -808,6 +809,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
                 if (dx * dx + dy * dy < slop * slop &&
                         isDragViewUnder((int) x, (int) y)) {
                     dragView.playSoundEffect(SoundEffectConstants.CLICK);
+                    mDragView.setChecked(!mDragView.isChecked());
                     if (!isPanelExpanded() && !isPanelAnchored()) {
                         expandPanel(mAnchorPoint);
                     } else {

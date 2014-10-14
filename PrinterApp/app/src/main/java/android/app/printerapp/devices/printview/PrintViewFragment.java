@@ -17,7 +17,7 @@ import android.app.printerapp.octoprint.OctoprintControl;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.viewer.DataStorage;
 import android.app.printerapp.viewer.GcodeFile;
-import android.app.printerapp.viewer.ViewerMain;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -239,8 +240,8 @@ public class PrintViewFragment extends Fragment{
 			//Slide panel setup
 			
 			SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
-			TextView textView = (TextView) rootView.findViewById(R.id.drag_text);
-			slidePanel.setDragView(textView);
+            CheckBox imageButton = (CheckBox) rootView.findViewById(R.id.expand_button_checkbox);
+            slidePanel.setDragView(imageButton);
 
 			refreshData();
 			
@@ -387,7 +388,7 @@ public class PrintViewFragment extends Fragment{
 		File file = new File (filePath);
 		
 		mDataGcode = new DataStorage();
-		GcodeFile.openGcodeFile(context, file, mDataGcode,ViewerMain.PRINT_PREVIEW);
+		GcodeFile.openGcodeFile(context, file, mDataGcode, ViewerMainFragment.PRINT_PREVIEW);
 		mDataGcode.setActualLayer(0);
 		
 	}
@@ -396,7 +397,7 @@ public class PrintViewFragment extends Fragment{
 		List <DataStorage> gcodeList = new ArrayList <DataStorage> ();
 		gcodeList.add(mDataGcode);	
 
-		mSurface = new ViewerSurfaceView (mContext, gcodeList, ViewerSurfaceView.LAYERS, ViewerMain.PRINT_PREVIEW);
+		mSurface = new ViewerSurfaceView (mContext, gcodeList, ViewerSurfaceView.LAYERS, ViewerMainFragment.PRINT_PREVIEW);
 		mLayout.removeAllViews();
 		mLayout.addView(mSurface, 0);	
 		

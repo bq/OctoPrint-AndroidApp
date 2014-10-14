@@ -16,7 +16,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.viewer.DataStorage;
 import android.app.printerapp.viewer.GcodeFile;
 import android.app.printerapp.viewer.StlFile;
-import android.app.printerapp.viewer.ViewerMain;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -140,12 +140,12 @@ public class StorageModelCreation {
 		DataStorage data = new DataStorage();
 		
 		if(StorageController.hasExtension(0, path)) {
-			StlFile.openStlFile (context, file, data, ViewerMain.DO_SNAPSHOT);
+			StlFile.openStlFile (context, file, data, ViewerMainFragment.DO_SNAPSHOT);
 		} else if (StorageController.hasExtension(1, path)) {
-			GcodeFile.openGcodeFile(context, file, data, ViewerMain.DO_SNAPSHOT);
+			GcodeFile.openGcodeFile(context, file, data, ViewerMainFragment.DO_SNAPSHOT);
 		}
 		
-		mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMain.DO_SNAPSHOT);
+		mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMainFragment.DO_SNAPSHOT);
 		list.add(data);
 	}
 	

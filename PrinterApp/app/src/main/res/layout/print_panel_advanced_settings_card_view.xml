@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widget="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_container_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Card view with the advanced options to handle the model in the right panel -->
+    <android.support.v7.widget.CardView
+        android:id="@+id/advanced_options_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fab_radious_big"
+        android:background="@color/white">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/content_padding_normal">
+
+                <TextView
+                    android:id="@+id/advanced_options_title_view"
+                    style="@style/TextHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/viewer_settings_advanced" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <!-- Profile -->
+                    <TextView
+                        android:id="@+id/profile_title_textview"
+                        style="@style/TextHeaderSub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/viewer_settings_profile" />
+
+                    <Spinner
+                        android:id="@+id/profile_spinner"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selectable_background_green"
+                        android:src="@drawable/ic_add_circle" />
+                </LinearLayout>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/content_padding_normal">
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- SPEED OPTIONS-->
+                        <TextView
+                            android:id="@+id/speed_title_view"
+                            style="@style/TextHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/viewer_settings_speed" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Travel speed -->
+                        <TextView
+                            android:id="@+id/travel_speed_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_travel_speed" />
+
+                        <EditText
+                            android:id="@+id/travel_speed_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Bottom layer speed -->
+                        <TextView
+                            android:id="@+id/bottom_layer_speed_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_bottom_layer_speed" />
+
+                        <EditText
+                            android:id="@+id/bottom_layer_speed_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Infill speed -->
+                        <TextView
+                            android:id="@+id/infill_speed_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_infill_speed" />
+
+                        <EditText
+                            android:id="@+id/infill_speed_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Outer shell speed -->
+                        <TextView
+                            android:id="@+id/outer_shell_speed_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_outer_speed" />
+
+                        <EditText
+                            android:id="@+id/outher_shell_speed_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Inner shell speed -->
+                        <TextView
+                            android:id="@+id/inner_shell_speed_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_inner_speed" />
+
+                        <EditText
+                            android:id="@+id/inner_shell_speed_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- COOL OPTIONS-->
+                        <TextView
+                            android:id="@+id/cool_title_view"
+                            style="@style/TextHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/viewer_settings_cool" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Minimal layer time -->
+                        <TextView
+                            android:id="@+id/minimal_layer_time_titletextview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_layer_time" />
+
+                        <EditText
+                            android:id="@+id/minimal_layer_time_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Enable cooling fan -->
+                        <TextView
+                            android:id="@+id/enable_cooling_fan_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_enable_fan" />
+
+                        <com.material.widget.CheckBox
+                            android:id="@+id/enable_cooling_fan_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"/>
+                    </TableRow>
+                </TableLayout>
+
+                <!-- Buttons container -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/retore_settings_button"
+                        style="@style/MaterialDesignButton.Flat"
+                        android:layout_width="160dp"
+                        widget:paper_text="@string/viewer_button_restore" />
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/save_settings_button"
+                        style="@style/MaterialDesignButton.Flat.Default"
+                        android:layout_width="110dp"
+                        widget:paper_text="@string/viewer_button_save" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </android.support.v7.widget.CardView>
+
+    <FrameLayout
+        android:id="@+id/expand_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:foregroundGravity="center">
+
+        <ImageView
+            android:id="@+id/expand_button_imageview"
+            android:layout_width="@dimen/fab_diameter_big"
+            android:layout_height="@dimen/fab_diameter_big"
+            android:layout_gravity="center"
+            android:background="@drawable/floating_action_button" />
+
+        <CheckBox
+            android:id="@+id/expand_button_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:checked="true"
+            android:button="@drawable/floating_checkbox_selector" />
+
+    </FrameLayout>
+
+
+</FrameLayout>

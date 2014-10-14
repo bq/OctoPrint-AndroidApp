@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.StorageModelCreation;
@@ -39,7 +38,7 @@ public class GcodeFile  {
 		mData = data;
 		mMode = mode;
 		mContinueThread = true;
-		if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
+		if(mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
 
 		mData.setPathFile(mFile.getAbsolutePath());		
 		mData.initMaxMin();
@@ -64,8 +63,8 @@ public class GcodeFile  {
 					countReader.close();
 					
 
-					if(mMode== ViewerMain.PRINT_PREVIEW) mData.setMaxLinesFile(maxLines);
-					if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
+					if(mMode== ViewerMainFragment.PRINT_PREVIEW) mData.setMaxLinesFile(maxLines);
+					if(mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 					if (mContinueThread) processGcode(allLines, maxLines);
 
 					if (mContinueThread) mHandler.sendEmptyMessage(0);
@@ -101,7 +100,7 @@ public class GcodeFile  {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-		    	ViewerMain.resetWhenCancel();
+		    	ViewerMainFragment.resetWhenCancel();
 		    }
 		});
 		
@@ -210,7 +209,7 @@ public class GcodeFile  {
 			 lines++;
 			 lastIndex = index+1;
 
-			 if (mMode!= ViewerMain.DO_SNAPSHOT && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);	
+			 if (mMode!= ViewerMainFragment.DO_SNAPSHOT && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);
 		}		
 	}
 	
@@ -225,8 +224,8 @@ public class GcodeFile  {
     			 * Alberto
     			 */
     			//Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
-    			ViewerMain.resetWhenCancel();
-    			if(mMode!= ViewerMain.DO_SNAPSHOT) mProgressDialog.dismiss();
+    			ViewerMainFragment.resetWhenCancel();
+    			if(mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.dismiss();
     			return;
     		}
     		
@@ -241,14 +240,14 @@ public class GcodeFile  {
     		mData.clearTypeList();
 
 
-    		if(mMode==ViewerMain.DONT_SNAPSHOT) {
-    			ViewerMain.initSeekBar(mMaxLayer);
-	    		ViewerMain.draw();
+    		if(mMode== ViewerMainFragment.DONT_SNAPSHOT) {
+    			ViewerMainFragment.initSeekBar(mMaxLayer);
+	    		ViewerMainFragment.draw();
 				mProgressDialog.dismiss();  
-    		} else if(mMode==ViewerMain.PRINT_PREVIEW) {
+    		} else if(mMode== ViewerMainFragment.PRINT_PREVIEW) {
     			PrintViewFragment.drawPrintView();
     			mProgressDialog.dismiss();
-    		} else if (mMode==ViewerMain.DO_SNAPSHOT) {
+    		} else if (mMode== ViewerMainFragment.DO_SNAPSHOT) {
 				StorageModelCreation.takeSnapshot();
     		}
         }

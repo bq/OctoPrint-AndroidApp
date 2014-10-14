@@ -4,37 +4,37 @@
     <item
         android:id="@+id/move"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/move"
+        android:icon="@drawable/ic_action_move"
         android:title="@string/edition_menu_move"/>
       
     <item
         android:id="@+id/rotate"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/rotate"
+        android:icon="@drawable/ic_action_rotate"
         android:title="@string/edition_menu_rotate"/>
 
  	<item
         android:id="@+id/scale"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/scale"
+        android:icon="@drawable/ic_action_scale"
         android:title="@string/edition_menu_resize"/>
       
     <item
         android:id="@+id/mirror"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/mirror"
+        android:icon="@drawable/ic_action_mirror"
         android:title="@string/edition_menu_mirror"/>
     
     <item
         android:id="@+id/multiply"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/multiply_objects"
+        android:icon="@drawable/ic_action_multiply_objects"
         android:title="@string/edition_menu_multiply"/>
         
     <item
         android:id="@+id/delete"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/delete"
+        android:icon="@drawable/ic_action_delete"
         android:title="@string/edition_menu_delete"/>
 
 </menu>

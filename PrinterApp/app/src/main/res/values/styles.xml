@@ -1,5 +1,6 @@
 <resources>
 
+    <!-- Navigation drawer -->
     <style name="NavigationDrawer">
         <item name="android:layout_width">@dimen/navigation_drawer_width</item>
         <item name="android:layout_height">match_parent</item>
@@ -19,6 +20,68 @@
         <item name="android:paddingRight">@dimen/navigation_drawer_margin</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
+    <!-- Buttons -->
+    <style name="MaterialDesignButton">
+        <item name="android:minWidth">88dp</item>
+        <item name="android:layout_height">56dp</item>
+    </style>
+
+    <style name="MaterialDesignButton.Raised">
+        <item name="paper_color">@color/white</item>
+        <item name="paper_text_color">@color/body_text_1</item>
+    </style>
+
+    <style name="MaterialDesignButton.Raised.Default">
+        <item name="paper_color">@color/theme_primary_dark</item>
+        <item name="paper_text_color">@color/white</item>
+    </style>
+
+    <style name="MaterialDesignButton.Flat">
+        <item name="paper_color">@color/transparent</item>
+        <item name="paper_shadow_color">@color/transparent</item>
+        <item name="paper_text_color">@color/body_text_1</item>
+    </style>
+
+    <style name="MaterialDesignButton.Flat.Default">
+        <item name="paper_color">@color/transparent</item>
+        <item name="paper_shadow_color">@color/transparent</item>
+        <item name="paper_text_color">@color/theme_primary_dark</item>
+    </style>
+
+    <!-- Button bar style -->
+    <style name="ButtonBar" parent="android:Holo.Light.ButtonBar">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:measureWithLargestChild">true</item>
+        <item name="android:paddingLeft">2dip</item>
+        <item name="android:paddingRight">2dip</item>
+        <item name="android:paddingTop">0dip</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="ButtonBar.NoDefaultButton" parent="android:Holo.ButtonBar.AlertDialog">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:background">@drawable/selectable_background_green</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:padding">2dip</item>
+        <item name="android:layout_margin">5dip</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="ButtonBar.DefaultButton" parent="ButtonBar.NoDefaultButton">
+        <item name="android:background">@drawable/selectable_background_green</item>
+        <item name="android:textColor">@color/theme_primary_dark</item>
+        <item name="android:clickable">true</item>
+    </style>
+
 
     <!-- Body content -->
     <style name="TextHeader">

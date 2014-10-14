@@ -69,33 +69,50 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/storage_layout"
+    <FrameLayout
+        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#333333"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:orientation="vertical" >
+        android:background="@android:color/transparent">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/storage_layout"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="#00B800"
-            android:orientation="vertical" />
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/fab_radious_big"
+            android:background="@color/gray_background"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/drag_text"
-            android:layout_width="match_parent"
+            <include layout="@layout/printview_slider_layout" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/expand_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center|top"
-            android:text="@string/devices_quickprint"
-            android:textColor="#00B800"
-            android:textSize="30sp" />
+            android:layout_gravity="center_horizontal"
+            android:foregroundGravity="center">
 
-        <include layout="@layout/printview_slider_layout" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/expand_button_imageview"
+                android:layout_width="@dimen/fab_diameter_big"
+                android:layout_height="@dimen/fab_diameter_big"
+                android:layout_gravity="center"
+                android:background="@drawable/floating_action_button" />
+
+            <CheckBox
+                android:id="@+id/expand_button_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:button="@drawable/floating_checkbox_selector" />
+
+        </FrameLayout>
+    </FrameLayout>
 
 </android.app.printerapp.devices.SlidingUpPanelLayout>

@@ -8,10 +8,9 @@ import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.settings.SettingsFragment;
-import android.app.printerapp.viewer.ViewerMain;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -45,7 +44,7 @@ public class ItemListActivity extends FragmentActivity implements
     //List of Fragments
     private static DevicesFragment mDevicesFragment; //Devices fragment @static for refresh
     private LibraryFragment mLibraryFragment; //Storage fragment
-    private static ViewerMain mViewerFragment; //Print panel fragment @static for model load
+    private static ViewerMainFragment mViewerFragment; //Print panel fragment @static for model load
     private SettingsFragment mSettingsFragment; //Settings fragment
 
     //Class specific variables
@@ -118,7 +117,7 @@ public class ItemListActivity extends FragmentActivity implements
             // Set the drawer toggle as the DrawerListener
             mDrawerToggle.setDrawerIndicatorEnabled(true);
             mDrawer.setDrawerListener(mDrawerToggle);
-            mDrawer.openDrawer(Gravity.START);
+//            mDrawer.openDrawer(Gravity.START);
 
         }
 
@@ -134,7 +133,7 @@ public class ItemListActivity extends FragmentActivity implements
         //Initialize fragments
         mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_devices));
         mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
-        mViewerFragment = (ViewerMain) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
+        mViewerFragment = (ViewerMainFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
         mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
     }
 
@@ -161,7 +160,7 @@ public class ItemListActivity extends FragmentActivity implements
          * Marina
          * This is necessary to close the ActionMode edition bar when changing between fragments
          */
-        if (Integer.valueOf(id) != 2) ViewerMain.hideActionModeBar();
+        if (Integer.valueOf(id) != 2) ViewerMainFragment.hideActionModeBar();
 
 
         if (mTwoPane) {
@@ -199,7 +198,7 @@ public class ItemListActivity extends FragmentActivity implements
                 case 2: {
                     //Check if we already created the Fragment to avoid having multiple instances
                     if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print)) == null) {
-                        mViewerFragment = new ViewerMain();
+                        mViewerFragment = new ViewerMainFragment();
                         fragmentTransaction.add(R.id.item_detail_container, mViewerFragment, getString(R.string.fragment_print));
                     }
                     mCurrent = mViewerFragment;
@@ -399,7 +398,7 @@ public class ItemListActivity extends FragmentActivity implements
             @Override
             public void run() {
 
-                ViewerMain.openFile(path);
+                ViewerMainFragment.openFile(path);
 
             }
         });
