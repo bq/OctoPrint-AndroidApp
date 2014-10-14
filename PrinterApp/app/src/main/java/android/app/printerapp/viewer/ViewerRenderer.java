@@ -321,8 +321,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		final AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
 			protected void onPreExecute() {			
-				ViewerMain.configureProgressState(View.VISIBLE);
-				ViewerMain.unlockRotationButtons(false);
+				ViewerMainFragment.configureProgressState(View.VISIBLE);
+				ViewerMainFragment.unlockRotationButtons(false);
 			}
 			
 			@Override
@@ -389,8 +389,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			}
 			
 			protected void onPostExecute(final Void unused) {
-				ViewerMain.configureProgressState(View.GONE);
-				ViewerMain.unlockRotationButtons(true);
+				ViewerMainFragment.configureProgressState(View.GONE);
+				ViewerMainFragment.unlockRotationButtons(true);
 
 			}		
 		};
@@ -487,7 +487,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				
 			} else if (mDataList.size()>0) mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
 		
-		if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true);
+		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true);
 
 		mWitboxFaceBack = new WitboxFaces (BACK);
 		mWitboxFaceRight = new WitboxFaces (RIGHT);
@@ -509,7 +509,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         // this projection matrix is applied to object coordinates		
         Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, Z_NEAR, Z_FAR);
         
-        if (mMode == ViewerMain.DO_SNAPSHOT || mMode == ViewerMain.PRINT_PREVIEW) {
+        if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) {
         	DataStorage data = mDataList.get(0);
 	        float h = data.getHeight();
 	        float l = data.getLong();
@@ -639,7 +639,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         }
         
 
-        if (mMode == ViewerMain.DO_SNAPSHOT) {
+        if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
         	takeSnapshot(unused);
         } else {

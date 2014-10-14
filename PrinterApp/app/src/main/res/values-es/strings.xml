@@ -137,7 +137,26 @@
     <string name="viewer_button_rx">Rotación X</string>
     <string name="viewer_button_ry">Rotación Y</string>
     <string name="viewer_button_rz">Rotación Z</string>
-    
+    <string name="viewer_settings_quality">Calidad</string>
+    <string name="viewer_settings_infill">Relleno</string>
+    <string name="viewer_settings_support">Soporte</string>
+    <string name="viewer_settings_advanced">Opciones avanzadas</string>
+    <string name="viewer_settings_profile">Perfil</string>
+    <string name="viewer_settings_speed">Velocidad</string>
+    <string name="viewer_settings_travel_speed">Velocidad de desplazamiento (mm/s)</string>
+    <string name="viewer_settings_bottom_layer_speed">Velocidad en la capa inferior (mm/s)</string>
+    <string name="viewer_settings_infill_speed">Velocidad de relleno (mm/s)</string>
+    <string name="viewer_settings_outer_speed">Velocidad de la superficie externa (mm/s)</string>
+    <string name="viewer_settings_inner_speed">Velocidad de la superficie interna (mm/s)</string>
+    <string name="viewer_settings_cool">Enfriamiento</string>
+    <string name="viewer_settings_layer_time">Tiempo mínimo de capa (s)</string>
+    <string name="viewer_settings_enable_fan">Habilitar ventilador de enfriamiento</string>
+    <string name="viewer_button_restore">Restaurar opciones</string>
+    <string name="viewer_button_save">Guardar</string>
+    <string name="viewer_button_print">Imprimir</string>.
+    <string name="viewer_button_undo">Deshacer</string>
+    <string name="viewer_button_redo">Rehacer</string>
+
     <string name="choose_file">Elegir fichero</string> 
 	<string name="open">Abrir</string>  
 	<string name="close_browser">Cerrar</string>  

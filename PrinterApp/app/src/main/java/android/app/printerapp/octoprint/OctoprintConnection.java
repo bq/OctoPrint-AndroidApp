@@ -16,14 +16,11 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.viewer.ViewerMain;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;

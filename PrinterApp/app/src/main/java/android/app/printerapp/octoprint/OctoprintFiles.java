@@ -13,15 +13,10 @@ import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.viewer.ViewerMain;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;

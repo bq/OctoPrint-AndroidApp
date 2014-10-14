@@ -101,12 +101,6 @@
                 layout="@layout/layout_slide_up_error"
                 android:visibility="gone"></include>
 
-            <!--<android.app.printerapp.devices.HorizontalListView-->
-                <!--android:layout_marginTop="@dimen/fab_radious_big"-->
-                <!--android:id="@+id/quickprint_horizontal_list_view"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content" />-->
-
             <it.sephiroth.android.library.widget.HListView
                 android:id="@+id/quickprint_horizontal_list_view"
                 android:layout_marginTop="@dimen/fab_radious_big"
@@ -117,13 +111,36 @@
 
         </FrameLayout>
 
-        <ImageButton
+        <!--<ImageButton-->
+            <!--android:id="@+id/expand_button"-->
+            <!--android:layout_width="@dimen/fab_diameter_big"-->
+            <!--android:layout_height="@dimen/fab_diameter_big"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:background="@drawable/floating_action_button"-->
+            <!--android:src="@drawable/ic_expand_more" />-->
+
+        <FrameLayout
             android:id="@+id/expand_button"
-            android:layout_width="@dimen/fab_diameter_big"
-            android:layout_height="@dimen/fab_diameter_big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/floating_action_button"
-            android:src="@drawable/ic_expand_more" />
+            android:foregroundGravity="center">
+
+            <ImageView
+                android:id="@+id/expand_button_imageview"
+                android:layout_width="@dimen/fab_diameter_big"
+                android:layout_height="@dimen/fab_diameter_big"
+                android:layout_gravity="center"
+                android:background="@drawable/floating_action_button" />
+
+            <CheckBox
+                android:id="@+id/expand_button_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:button="@drawable/floating_checkbox_selector" />
+
+        </FrameLayout>
     </FrameLayout>
 
 </android.app.printerapp.devices.SlidingUpPanelLayout>
