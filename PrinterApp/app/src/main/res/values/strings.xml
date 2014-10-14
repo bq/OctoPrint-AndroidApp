@@ -146,7 +146,27 @@
     <string name="viewer_text_rx">X axis</string>
     <string name="viewer_text_ry">Y axis</string>
     <string name="viewer_text_rz">Z axis</string>
-    
+    <string name="viewer_settings_quality">Quality</string>
+    <string name="viewer_settings_infill">Infill</string>
+    <string name="viewer_settings_support">Support</string>
+    <string name="viewer_settings_advanced">Advanced settings</string>
+    <string name="viewer_settings_profile">Profile</string>
+    <string name="viewer_settings_speed">Speed</string>
+    <string name="viewer_settings_travel_speed">Travel speed (mm/s)</string>
+    <string name="viewer_settings_bottom_layer_speed">Bottom layer speed (mm/s)</string>
+    <string name="viewer_settings_infill_speed">Infill speed (mm/s)</string>
+    <string name="viewer_settings_outer_speed">Outer shell speed (mm/s)</string>
+    <string name="viewer_settings_inner_speed">Inner shell speed (mm/s)</string>
+    <string name="viewer_settings_cool">Cool</string>
+    <string name="viewer_settings_layer_time">Minimal layer timer (s)</string>
+    <string name="viewer_settings_enable_fan">Enable cooling fan</string>
+    <string name="viewer_button_restore">Restore settings</string>
+    <string name="viewer_button_save">Save</string>
+    <string name="viewer_button_print">Print</string>
+    <string name="viewer_button_undo">Undo</string>
+    <string name="viewer_button_redo">Redo</string>
+
+
     
     <string name="choose_file">Choose File</string> 
 	<string name="open">Open</string>  

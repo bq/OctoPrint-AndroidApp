@@ -8,7 +8,6 @@ import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,7 +70,7 @@ public class SlicingHandler {
             tempFile = File.createTempFile("tmp",".stl", tempPath);
             tempFile.deleteOnExit();
 
-            //delete previous file
+            //ic_action_delete previous file
             try{
                 File lastFile = new File(mLastReference);
                 lastFile.delete();
@@ -164,7 +163,7 @@ public class SlicingHandler {
                     if (p!=null){
 
                         OctoprintFiles.uploadFile(mActivity,createTempFile(),selectAvailablePrinter(),true, true);
-                        ViewerMain.showProgressBar(View.VISIBLE);
+                        ViewerMainFragment.showProgressBar(View.VISIBLE);
 
                     } else {
 
@@ -182,7 +181,7 @@ public class SlicingHandler {
         }
     }
 
-    //delete temp folder
+    //ic_action_delete temp folder
     private void cleanTempFolder(){
 
         File file = new File(StorageController.getParentFolder() + "/temp/");

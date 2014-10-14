@@ -271,7 +271,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mMode == ViewerMain.PRINT_PREVIEW) return false;
+		if (mMode == ViewerMainFragment.PRINT_PREVIEW) return false;
 
 		float x = event.getX();
         float y = event.getY();
@@ -307,7 +307,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					if (objPressed!=-1 && isStl()) {
 						mEdition = true;
 						mObjectPressed=objPressed;
-						ViewerMain.showActionModeBar();
+						ViewerMainFragment.showActionModeBar();
 					} 
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();

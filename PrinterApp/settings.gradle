@@ -1,1 +1,1 @@
-include ':app', ':horizontallistlibrary'
+include ':app', ':horizontallistlibrary', 'materialdesignlibrary'
