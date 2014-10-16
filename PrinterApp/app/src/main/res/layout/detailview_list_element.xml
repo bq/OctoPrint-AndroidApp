@@ -2,27 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#EEEEEE"
-    android:orientation="horizontal" >
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="3dp">
 
     <LinearLayout
         android:id="@+id/ll_2"
+        android:background="@color/almost_white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <RelativeLayout
             android:id="@+id/rl"
             android:layout_width="165dp"
-            android:layout_height="80dp"
+            android:layout_height="90dp"
             android:layout_gravity="left"
-            android:gravity="right" >
+            android:gravity="right">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingRight="3dp">
             <ImageView
                 android:id="@+id/detailview_list_iv"
-                android:layout_width="165dp"
-                android:layout_height="80dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
                 android:src="@drawable/random" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/detailview_gcode"
@@ -30,34 +39,52 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="15dp"
                 android:background="@color/black"
                 android:text="@string/detailview_gcode"
-                android:textColor="@color/white" 
-                android:visibility="gone"/>
+                android:textColor="@color/white"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
         <TextView
             android:id="@+id/detailview_list_tv1"
             android:layout_width="wrap_content"
+            style="@style/TextHeader"
+            android:layout_marginLeft="@dimen/content_margin_small"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"/>
+            android:layout_gravity="left|center_vertical"
+            android:text="@string/app_name"/>
+
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/detailview_list_iv1"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
         android:layout_gravity="center_vertical|right"
-        android:src="@drawable/icon_detail_print" />
-    
-     <ImageButton
-        android:id="@+id/detailview_list_iv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/icon_detail_panel" />
+        android:background="@color/almost_white">
+
+        <ImageButton
+            android:id="@+id/detailview_list_iv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selectable_rect_background_green"
+            android:padding="@dimen/content_padding_small"
+            android:src="@drawable/icon_detail_print"
+            android:layout_gravity="center_vertical"/>
+
+        <ImageButton
+            android:id="@+id/detailview_list_iv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selectable_rect_background_green"
+            android:padding="@dimen/content_padding_small"
+            android:src="@drawable/icon_detail_panel"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>

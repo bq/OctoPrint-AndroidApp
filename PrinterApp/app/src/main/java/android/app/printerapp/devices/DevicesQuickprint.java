@@ -11,7 +11,6 @@ import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +47,7 @@ public class DevicesQuickprint {
         mHorizontalListView = quickprintHorizontalListView;
         mQuickPrintAdapter = new QuickPrintHorizontalListViewAdapter(mContext, mModelList);
         mHorizontalListView.setOnItemLongClickListener(onItemLongClickListener);
-        mHorizontalListView.setSelector(mContext.getResources().getDrawable(R.drawable.quick_print_model_selector));
+        mHorizontalListView.setSelector(mContext.getResources().getDrawable(R.drawable.list_selector));
         mHorizontalListView.setAdapter(mQuickPrintAdapter);
 
         //Show the models in the horizontal list view

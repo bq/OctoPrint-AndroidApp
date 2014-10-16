@@ -14,6 +14,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
@@ -32,9 +33,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
@@ -128,9 +127,9 @@ import it.sephiroth.android.library.widget.HListView;
             //Grid
 
             mGridAdapter = new DevicesGridAdapter(getActivity(),
-                    R.layout.linear_grid_element, DevicesListController.getList());
+                    R.layout.grid_item_printer, DevicesListController.getList());
             GridView gridView = (GridView) rootView.findViewById(R.id.devices_grid);
-            gridView.setSelector(R.drawable.quick_print_model_selector);
+            gridView.setSelector(new ColorDrawable(getResources().getColor(R.color.transparent)));
             gridView.setOnItemClickListener(gridClickListener());
             gridView.setOnItemLongClickListener(gridLongClickListener());
 

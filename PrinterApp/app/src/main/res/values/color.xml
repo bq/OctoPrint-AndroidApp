@@ -30,11 +30,12 @@
 
     <color name="theme_accent_2">#e91e63</color>
 
+    <color name="green_background">#ffd6fbad</color>
     <color name="gray_background">#e5e5e5</color>
     <color name="dark_divider">#32000000</color>
 
     <color name="navdrawer_background">#ffffffff</color>
-    <color name="navdrawer_background_selected">#ffd6fbad</color>
+    <color name="navdrawer_background_selected">@color/green_background</color>
     <color name="navdrawer_text_color">@color/body_text_2</color>
     <color name="navdrawer_text_color_selected">@color/theme_primary_dark</color>
     <color name="navdrawer_icon_tint">@color/body_text_2</color>

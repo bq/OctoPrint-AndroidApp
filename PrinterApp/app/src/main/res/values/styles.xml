@@ -21,7 +21,17 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <!-- Buttons -->
+    <!-- Seek bar -->
+    <style name="TallerSeekBar" parent="@android:style/Widget.SeekBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/green_seekbar_height_background</item>
+        <item name="android:indeterminateDrawable">@drawable/green_seekbar_height_track</item>
+        <item name="android:thumb">@drawable/green_seekbar_thumb</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:maxHeight">10dip</item>
+    </style>
+
+    <!-- Material design buttons -->
     <style name="MaterialDesignButton">
         <item name="android:minWidth">88dp</item>
         <item name="android:layout_height">56dp</item>
@@ -66,7 +76,7 @@
 
     <style name="ButtonBar.NoDefaultButton" parent="android:Holo.ButtonBar.AlertDialog">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:background">@drawable/selectable_background_green</item>
+        <item name="android:background">@drawable/selectable_rect_background_green</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/body_text_1</item>
         <item name="android:layout_width">0dip</item>
@@ -77,7 +87,7 @@
     </style>
 
     <style name="ButtonBar.DefaultButton" parent="ButtonBar.NoDefaultButton">
-        <item name="android:background">@drawable/selectable_background_green</item>
+        <item name="android:background">@drawable/selectable_rect_background_green</item>
         <item name="android:textColor">@color/theme_primary_dark</item>
         <item name="android:clickable">true</item>
     </style>

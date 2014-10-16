@@ -24,185 +24,177 @@ import android.widget.TextView;
 
 /**
  * This clas will handle the adapter for the library items
- * @author alberto-baeza
  *
+ * @author alberto-baeza
  */
 public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
-	
-	//Original list and current list to be filtered
-	private ArrayList<File> mCurrent;
-	private ArrayList<File> mOriginal;
-	
-	//Filter
-	private ListFilter mFilter;
-	
-	private int mResource;
 
-	public StorageAdapter(Context context, int resource, List<File> objects) {
-		super(context, resource, objects);
-		mOriginal = (ArrayList<File>) objects;
-		mCurrent = (ArrayList<File>) objects;
-		mFilter = new ListFilter();
-		
-		mResource = resource;
-	}
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		
-		View v = convertView;
-		File m = getItem(position);
-		
-		//View not yet created
-		if (v==null){
-			
-			//Inflate the view
-			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(mResource, null, false);			
-			
-		} else {
-			//v = convertView;
-		}
-		
-		TextView tv = (TextView) v.findViewById(R.id.storage_label);
-		tv.setText(m.getName());
-		
-		ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
-		
-		TextView tvg = (TextView) v.findViewById(R.id.storage_gcode);
-		tvg.setText("gcode");
-		tvg.setVisibility(View.GONE);
-		
-		if (m.isDirectory()){
-			
-			if (StorageController.isProject(m)){
-				
-				Drawable d;
-				d =((ModelFile)m).getSnapshot();
-			
-				if (d!=null){
-					iv.setImageDrawable(d);
-					
-				} else {
-					iv.setImageResource(R.drawable.folder_normal_icon);
-				}
-				
-				if (((ModelFile)m).getStl()==null) v.findViewById(R.id.storage_gcode).setVisibility(View.VISIBLE); 
-				
-				
-			} else{	
-							
-					iv.setImageResource(R.drawable.folder_normal_icon);
-			}
-			
+    //Original list and current list to be filtered
+    private ArrayList<File> mCurrent;
+    private ArrayList<File> mOriginal;
 
-			
-		} else {
-			
-			//TODO Handle printer internal files
-			if (m.getParent().equals("printer")){
-				iv.setImageResource(R.drawable.folder_internal_icon);
-				
-				ModelPrinter p = DevicesListController.getPrinter(m.getName());
-				tv.setText(p.getDisplayName());
-				
-			}
-			else {
-				iv.setImageResource(R.drawable.file_icon);
-				
-				if (m.getParent().equals("sd")) {
-					tvg.setText("sd");
-					tvg.setVisibility(View.VISIBLE);
-				}
-				else if (m.getParent().equals("witbox")){
-					
-					tvg.setText("internal");
-					tvg.setVisibility(View.VISIBLE);
-				}
-			}
-			
-			
-		}
-	
-		return v;
-	}
-	
+    //Filter
+    private ListFilter mFilter;
 
-	//Retrieve item from current list
-	@Override
-	public File getItem(int position) {
-		return mCurrent.get(position);
-	}
-	
-	//Retrieve count from current list
-	@Override
-	public int getCount() {
-		return mCurrent.size();
-	}
+    private int mResource;
 
-	//Get filter
-	@Override
-	public Filter getFilter() {
-		
-		if (mFilter == null)
-			mFilter = new ListFilter();
-		
-		return mFilter;
-	}
-	
-	public void removeFilter(){
-		
-		mCurrent = mOriginal;
-		notifyDataSetChanged();
-		
-	}
-	
-	/**
-	 * This class is the custom filter for the Library
-	 * @author alberto-baeza
-	 *
-	 */
-	private class ListFilter extends Filter{
+    public StorageAdapter(Context context, int resource, List<File> objects) {
+        super(context, resource, objects);
+        mOriginal = (ArrayList<File>) objects;
+        mCurrent = (ArrayList<File>) objects;
+        mFilter = new ListFilter();
 
-		@SuppressLint("DefaultLocale")
-		@Override
-		protected FilterResults performFiltering(CharSequence constraint) {
-			
-			//New filter result object
+        mResource = resource;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View v = convertView;
+        File m = getItem(position);
+
+        //View not yet created
+        if (v == null) {
+
+            //Inflate the view
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(mResource, null, false);
+
+        } else {
+            //v = convertView;
+        }
+
+        TextView nameTextView = (TextView) v.findViewById(R.id.storage_name_textview);
+        nameTextView.setText(m.getName());
+
+        TextView pathTextView = (TextView) v.findViewById(R.id.storage_path_textview);
+        pathTextView.setText(m.getAbsolutePath());
+
+        ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
+
+        TextView gcodeTag = (TextView) v.findViewById(R.id.storage_gcode_tag);
+        gcodeTag.setText("gcode");
+        gcodeTag.setVisibility(View.GONE);
+
+        if (m.isDirectory()) {
+
+            if (StorageController.isProject(m)) {
+                Drawable d;
+                d = ((ModelFile) m).getSnapshot();
+
+                if (d != null) {
+                    iv.setImageDrawable(d);
+                    iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                } else {
+                    iv.setImageResource(R.drawable.folder_normal_icon);
+                    iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                }
+
+                if (((ModelFile) m).getStl() == null)
+                    v.findViewById(R.id.storage_gcode_tag).setVisibility(View.VISIBLE);
+            } else {
+                iv.setImageResource(R.drawable.folder_normal_icon);
+                iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }
+
+        } else {
+
+            //TODO Handle printer internal files
+            if (m.getParent().equals("printer")) {
+                iv.setImageResource(R.drawable.folder_internal_icon);
+                iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+                ModelPrinter p = DevicesListController.getPrinter(m.getName());
+                pathTextView.setText(p.getDisplayName());
+
+            } else {
+                iv.setImageResource(R.drawable.file_icon);
+                iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+                if (m.getParent().equals("sd")) {
+                    gcodeTag.setText("sd");
+                    gcodeTag.setVisibility(View.VISIBLE);
+                } else if (m.getParent().equals("witbox")) {
+                    gcodeTag.setText("internal");
+                    gcodeTag.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+        return v;
+    }
+
+
+    //Retrieve item from current list
+    @Override
+    public File getItem(int position) {
+        return mCurrent.get(position);
+    }
+
+    //Retrieve count from current list
+    @Override
+    public int getCount() {
+        return mCurrent.size();
+    }
+
+    //Get filter
+    @Override
+    public Filter getFilter() {
+
+        if (mFilter == null)
+            mFilter = new ListFilter();
+
+        return mFilter;
+    }
+
+    public void removeFilter() {
+
+        mCurrent = mOriginal;
+        notifyDataSetChanged();
+
+    }
+
+    /**
+     * This class is the custom filter for the Library
+     *
+     * @author alberto-baeza
+     */
+    private class ListFilter extends Filter {
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            //New filter result object
             FilterResults result = new FilterResults();
-            
-            if(constraint != null && constraint.toString().length() > 0)
-            {
-            	//Temporal list
+
+            if (constraint != null && constraint.toString().length() > 0) {
+                //Temporal list
                 ArrayList<File> filt = new ArrayList<File>();
-                
-               // if ((constraint.equals("gcode"))||(constraint.equals("stl"))){
-                	
-                	//Check if every item from the CURRENT list has the constraint
-                    for (File m : mCurrent){
-                    	
-                    	if (!m.isDirectory()) {
-                    		if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())){
-	                    		Log.i("OUT","Added a lel " + m.getName());
-	                    		filt.add(m);
-                    		}
-                    	} else {
-                    		
-                    		if (!StorageController.isProject(m)){
-                    			filt.add(m);
-                    		} else {
-                    			if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())){
-    	                    		Log.i("OUT","Added a lel " + m.getName());
-    	                    		filt.add(m);
-                        		}
-                    		}
-                    		
-                    	}
-                    		
-                    	
+
+                // if ((constraint.equals("gcode"))||(constraint.equals("stl"))){
+
+                //Check if every item from the CURRENT list has the constraint
+                for (File m : mCurrent) {
+
+                    if (!m.isDirectory()) {
+                        if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            Log.i("OUT", "Added a lel " + m.getName());
+                            filt.add(m);
+                        }
+                    } else {
+
+                        if (!StorageController.isProject(m)) {
+                            filt.add(m);
+                        } else {
+                            if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                                Log.i("OUT", "Added a lel " + m.getName());
+                                filt.add(m);
+                            }
+                        }
                     }
+                }
                /* } else {
-                	 //Check if every item from the original list has the constraint
+                     //Check if every item from the original list has the constraint
                     for (File m : mOriginal){
                     	
                     	if (m.isDirectory()){
@@ -219,35 +211,31 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
                     	
                     }*/
                 //}
-                
-               
+
 
                 //New list is filtered list
                 result.count = filt.size();
                 result.values = filt;
-            }
-            else
-            {
-            	//New list is original list (no filter, default)
-            	result.count = mOriginal.size();
+            } else {
+                //New list is original list (no filter, default)
+                result.count = mOriginal.size();
                 result.values = mOriginal;
-                
+
             }
             return result;
-		}
+        }
 
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void publishResults(CharSequence constraint,
-				FilterResults results) {
-            
-			
-			//If there are results, update list
-			mCurrent = (ArrayList<File>) results.values;
-			notifyDataSetChanged();
-			
-		}
-		
-	}
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint,
+                                      FilterResults results) {
+
+            //If there are results, update list
+            mCurrent = (ArrayList<File>) results.values;
+            notifyDataSetChanged();
+
+        }
+
+    }
 
 }

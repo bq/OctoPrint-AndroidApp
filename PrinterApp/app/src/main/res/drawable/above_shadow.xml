@@ -5,10 +5,4 @@
         android:endColor="@color/transparent"
         android:angle="90" >
     </gradient>
-
-    <!--<gradient-->
-        <!--android:startColor="@color/gray_background"-->
-        <!--android:endColor="@color/almost_white"-->
-        <!--android:angle="90" >-->
-    <!--</gradient>-->
 </shape>

@@ -145,8 +145,8 @@ public class DetailViewFragment extends Fragment {
         inflater.inflate(R.menu.detailview_menu, menu);
 
         if (DatabaseController.isPreference("Favorites", mFile.getName())) {
-            menu.findItem(R.id.menu_favorite).setIcon(android.R.drawable.btn_star_big_on);
-        } else menu.findItem(R.id.menu_favorite).setIcon(android.R.drawable.btn_star_big_off);
+            menu.findItem(R.id.menu_favorite).setIcon(R.drawable.ic_action_star);
+        } else menu.findItem(R.id.menu_favorite).setIcon(R.drawable.ic_action_star_outline);
 
     }
 
@@ -160,10 +160,10 @@ public class DetailViewFragment extends Fragment {
 
                 if (DatabaseController.isPreference("Favorites", mFile.getName())) {
                     DatabaseController.handlePreference("Favorites", mFile.getName(), null, false);
-                    item.setIcon(android.R.drawable.btn_star_big_off);
+                    item.setIcon(getResources().getDrawable(R.drawable.ic_action_star_outline));
                 } else {
                     DatabaseController.handlePreference("Favorites", mFile.getName(), mFile.getAbsolutePath(), true);
-                    item.setIcon(android.R.drawable.btn_star_big_on);
+                    item.setIcon(getResources().getDrawable(R.drawable.ic_action_star));
                 }
 
                 return true;

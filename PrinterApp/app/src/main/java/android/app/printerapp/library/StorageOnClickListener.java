@@ -1,6 +1,7 @@
 package android.app.printerapp.library;
 
 import java.io.File;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
@@ -22,248 +23,191 @@ import android.widget.ArrayAdapter;
 
 /**
  * This class will handle the click events for the library elements
- * @author alberto-baeza
  *
+ * @author alberto-baeza
  */
-public class StorageOnClickListener implements OnItemClickListener, OnItemLongClickListener{
+public class StorageOnClickListener implements OnItemClickListener, OnItemLongClickListener {
 
-	LibraryFragment mContext;
-
-	
-	public StorageOnClickListener(LibraryFragment context){
-		
-		this.mContext = context;
+    LibraryFragment mContext;
 
 
-	}
+    public StorageOnClickListener(LibraryFragment context) {
+        this.mContext = context;
+    }
 
-	//On long click we'll display the gcodes
-	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
-		
-		File f = StorageController.getFileList().get(arg2);
-		
-		//If it's not IN the printer
-		if ((!f.getParent().contains("printer"))&&
-				(!f.getParent().contains("sd"))&&
-				(!f.getParent().contains("witbox"))){
+    //On long click we'll display the gcodes
+    @Override
+    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+                                   long arg3) {
 
-			showOptionDialog(arg2);
-		}
+        Log.d("StorageOnClickListener", "onItemLongClick");
 
-		return false;
-	}
+        File f = StorageController.getFileList().get(arg2);
 
-	@SuppressLint("SdCardPath")
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {		
+        //If it's not IN the printer
+        if ((!f.getParent().contains("printer")) &&
+                (!f.getParent().contains("sd")) &&
+                (!f.getParent().contains("witbox"))) {
 
-		//Logic for getting file type
-		File f = StorageController.getFileList().get(arg2);
-		
-		//If it's folder open it
-		if (f.isDirectory()){
-			
-			//If it's project folder, send stl
-			if (StorageController.isProject(f)){
-								
-				//Show detail view regardless
-				ItemListActivity.showExtraFragment(0, String.valueOf(arg2));
-								
-				
-			} else  {							
+            showOptionDialog(arg2);
+        }
 
-				//Not a project, open folder
-				StorageController.reloadFiles(f.getAbsolutePath());				
-				mContext.sortAdapter();
-				
-				
-			}							
-				
-			//If it's not a folder, just send the file
-		}else {
-			
-			//it's a printer file
-			if (f.getParent().contains("printer")){
-				
-				StorageController.retrievePrinterFiles(f.getName());
-				mContext.notifyAdapter();
-				
-				
-			} else {
-				
-				
-				ModelPrinter p = DevicesListController.getPrinter(StorageController.getCurrentPath().getName());
-				
-				//it's a printer folder because there's a printer with the same name
-				if (p!=null) {
-					
-					//either sd or internal
-					if (f.getParent().equals("sd")){
-						 
-						OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/", false);	
-						//OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
-					
-					}else OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false);	
-				
-					
-					Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
-					
-				}
-				else {
-					
-					//it's a raw file
-					 if (f.getAbsoluteFile().length()>0){
-							ItemListActivity.requestOpenFile(f.getAbsolutePath());
-						} else {
-						
-							Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+        return false;
+    }
 
-						}
-					 
-				
-			}
-			
-		}
-			
+    @SuppressLint("SdCardPath")
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-		}					
-	}
-	
-	//Show dialog for handling files
-	private void showOptionDialog(final int index){
-		
-		//Logic for getting file type
-		final File f = StorageController.getFileList().get(index);
-		
-		String[] mDialogOptions;
-		
-		//Different dialogs for different type of files
-		if (f.getParent().equals("sd")||f.getParent().equals("witbox")){
-			
-			mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print)};
-		}else {
-			mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print),
-				mContext.getResources().getString(R.string.library_option_edit),mContext.getResources().getString(R.string.library_option_move),
-				mContext.getResources().getString(R.string.delete)};
-		}
-		
-		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());	
-		adb.setTitle(R.string.library_option_dialog_title);
-		
-		final AlertDialog ad = adb.create();
-		
-		adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(), 
-				android.R.layout.simple_list_item_1, mDialogOptions), 
-				new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				
-				switch (which){
-				
-				case 0: //Print / Multiprint
-					
-					if (f.isDirectory()){
-						if (StorageController.isProject(f)){
-							
-							ItemListActivity.showExtraFragment(0, String.valueOf(index));
-							//ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
-						}
-						
-					} else {
-						DevicesListController.selectPrinter(mContext.getActivity(),f);
-					}
-					
-					
-					
-					break;
-				case 1: //Edit
-					
-					//TODO Doesn't work when empty gcodes comeon
-					ad.dismiss();
-					
-					if (f.isDirectory()){
-						if (StorageController.isProject(f)){
-							
-							if (((ModelFile)f).getStl()==null) ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
-							else ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
-						}
-						
-					} else {
-						//Check if the gcode is empty, won't work if file is actually corrupted
-						if (f.getAbsoluteFile().length()>0){
-							ItemListActivity.requestOpenFile(f.getAbsolutePath());
-						} else {
-							
-							Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+        Log.d("StorageOnClickListener", "onItemClick");
 
-						}
-					}
-					
-					
-					
-					
-					break;
-					
-					
-				case 2: //Move
+        //Logic for getting file type
+        File f = StorageController.getFileList().get(arg2);
 
-					mContext.setMoveFile(f);
-					Toast.makeText(mContext.getActivity(), R.string.library_paste_toast, Toast.LENGTH_SHORT).show();
+        //If it's folder open it
+        if (f.isDirectory()) {
 
-					
-					break;
-					
-				case 3: //Delete
-					
-					AlertDialog.Builder adb_delete = new AlertDialog.Builder(mContext.getActivity());
-					adb_delete.setTitle(R.string.library_delete_dialog_title);
-					adb_delete.setMessage(f.getName());
-					
-					adb_delete.setPositiveButton(R.string.delete, new OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
+            //If it's project folder, send stl
+            if (StorageController.isProject(f)) {
+                //Show detail view regardless
+                ItemListActivity.showExtraFragment(0, String.valueOf(arg2));
+            } else {
+                //Not a project, open folder
+                StorageController.reloadFiles(f.getAbsolutePath());
+                mContext.sortAdapter();
+            }
 
-							StorageController.deleteFiles(f);
-							StorageController.getFileList().remove(f);
-							
-							if (DatabaseController.isPreference("Favorites",f.getName())){
-								
-								Log.i("OUT", "oh my, IT IS! " + f.getName());
-								
-								DatabaseController.handlePreference("Favorites", f.getName(), null, false);
-							}
-							
-							mContext.notifyAdapter();
-							
-						}
-					});
-					
-					adb_delete.setNegativeButton(R.string.cancel, null);
-					
-					adb_delete.show();
-					
-					break;
-				
-				}
-				
-				//ad.dismiss();
-				
-			}
-		});
-		
-		adb.show();
-		
-	}
-	
+            //If it's not a folder, just send the file
+        } else {
 
-	
+            //it's a printer file
+            if (f.getParent().contains("printer")) {
+                StorageController.retrievePrinterFiles(f.getName());
+                mContext.notifyAdapter();
+
+            } else {
+
+                ModelPrinter p = DevicesListController.getPrinter(StorageController.getCurrentPath().getName());
+
+                //it's a printer folder because there's a printer with the same name
+                if (p != null) {
+                    //either sd or internal
+                    if (f.getParent().equals("sd")) {
+                        OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/", false);
+                        //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
+                    } else
+                        OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false);
+                    Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
+                } else {
+
+                    //it's a raw file
+                    if (f.getAbsoluteFile().length() > 0) {
+                        ItemListActivity.requestOpenFile(f.getAbsolutePath());
+                    } else {
+                        Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+    }
+
+    //Show dialog for handling files
+    private void showOptionDialog(final int index) {
+
+        //Logic for getting file type
+        final File f = StorageController.getFileList().get(index);
+
+        String[] mDialogOptions;
+
+        //Different dialogs for different type of files
+        if (f.getParent().equals("sd") || f.getParent().equals("witbox")) {
+            mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print)};
+        } else {
+            mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print),
+                    mContext.getResources().getString(R.string.library_option_edit), mContext.getResources().getString(R.string.library_option_move),
+                    mContext.getResources().getString(R.string.delete)};
+        }
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());
+        adb.setTitle(R.string.library_option_dialog_title);
+
+        final AlertDialog ad = adb.create();
+
+        adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(),
+                        android.R.layout.simple_list_item_1, mDialogOptions),
+                new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (which) {
+                            case 0: //Print / Multiprint
+                                if (f.isDirectory()) {
+                                    if (StorageController.isProject(f)) {
+                                        ItemListActivity.showExtraFragment(0, String.valueOf(index));
+                                        //ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+                                    }
+                                } else {
+                                    DevicesListController.selectPrinter(mContext.getActivity(), f);
+                                }
+                                break;
+                            case 1: //Edit
+                                //TODO Doesn't work when empty gcodes comeon
+                                ad.dismiss();
+                                if (f.isDirectory()) {
+                                    if (StorageController.isProject(f)) {
+
+                                        if (((ModelFile) f).getStl() == null)
+                                            ItemListActivity.requestOpenFile(((ModelFile) f).getGcodeList());
+                                        else
+                                            ItemListActivity.requestOpenFile(((ModelFile) f).getStl());
+                                    }
+                                } else {
+                                    //Check if the gcode is empty, won't work if file is actually corrupted
+                                    if (f.getAbsoluteFile().length() > 0) {
+                                        ItemListActivity.requestOpenFile(f.getAbsolutePath());
+                                    } else {
+                                        Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                break;
+                            case 2: //Move
+                                mContext.setMoveFile(f);
+                                Toast.makeText(mContext.getActivity(), R.string.library_paste_toast, Toast.LENGTH_SHORT).show();
+                                break;
+                            case 3: //Delete
+                                AlertDialog.Builder adb_delete = new AlertDialog.Builder(mContext.getActivity());
+                                adb_delete.setTitle(R.string.library_delete_dialog_title);
+                                adb_delete.setMessage(f.getName());
+                                adb_delete.setPositiveButton(R.string.delete, new OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        StorageController.deleteFiles(f);
+                                        StorageController.getFileList().remove(f);
+
+                                        if (DatabaseController.isPreference("Favorites", f.getName())) {
+                                            Log.i("OUT", "oh my, IT IS! " + f.getName());
+                                            DatabaseController.handlePreference("Favorites", f.getName(), null, false);
+                                        }
+                                        mContext.notifyAdapter();
+
+                                    }
+                                });
+
+                                adb_delete.setNegativeButton(R.string.cancel, null);
+                                adb_delete.show();
+                                break;
+                        }
+                        //ad.dismiss();
+                    }
+                });
+        adb.show();
+    }
 
 	/*private void showGcodeList(File f){
-		
+
 		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());
 		adb.setTitle("Files...");
 		
@@ -314,6 +258,6 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 		adb.show();
 		
 	}*/
-		
+
 
 }

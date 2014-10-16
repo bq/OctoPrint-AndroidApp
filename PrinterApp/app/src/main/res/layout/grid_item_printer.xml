@@ -1,63 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/grid_item_printer_container"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:gravity="right"
+    android:layout_height="match_parent"
     android:orientation="vertical">
-    
+
     <TextView
         android:id="@+id/grid_element_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/grid_element_ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"/>
+        android:textColor="@android:color/darker_gray"/>
 
-    <ImageView
-        android:id="@+id/grid_element_icon"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/grid_element_tag"
-        android:layout_margin="5dp"
-        android:layout_weight="0.09"
-        android:src="@drawable/icon_selectedprinter" />
+        android:layout_height="wrap_content"
+        >
 
+        <ImageView
+            android:id="@+id/grid_element_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/icon_selectedprinter" />
+
+        <ProgressBar
+            android:id="@+id/grid_element_loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/grid_text_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/grid_element_loading"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/darker_gray" />
+
+        <ImageView
+            android:id="@+id/grid_warning_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/grid_element_icon"
+            android:layout_alignBottom="@+id/grid_element_icon"
+            android:src="@drawable/icon_error" />
+
+    </RelativeLayout>
+    
     <ProgressBar
         android:id="@+id/grid_element_progressbar"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="110dp"
         android:layout_height="10dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="180dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
         android:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/grid_warning_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/grid_element_icon"
-        android:layout_marginLeft="90dp"
-        android:src="@drawable/icon_error" />
-
-    <ProgressBar
-        android:id="@+id/grid_element_loading"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/grid_element_icon"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:id="@+id/grid_text_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/grid_element_loading"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/darker_gray"/>
-
-</RelativeLayout>
+</LinearLayout>

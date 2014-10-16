@@ -17,15 +17,15 @@
         android:id="@+id/printview_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_small">
 
         <RelativeLayout
             android:id="@+id/rl1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
             android:layout_weight="1" >
-
-         
 
             <FrameLayout
                 android:id="@+id/printview_video"
@@ -48,9 +48,8 @@
             android:id="@+id/rl2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" >
-            
-            
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp">
 
             <FrameLayout
                 android:id="@+id/view_gcode"

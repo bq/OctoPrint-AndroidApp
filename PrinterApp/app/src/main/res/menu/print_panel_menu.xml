@@ -4,19 +4,19 @@
      <item
         android:id="@+id/viewer_open"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/icon_abrir"
+        android:icon="@drawable/ic_action_open"
         android:title="@string/viewer_menu_open"/>
       
     <item
         android:id="@+id/viewer_save"
-        android:showAsAction="never"
-        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_save"
         android:title="@string/viewer_menu_save"/>
 
     <item
         android:id="@+id/viewer_save_gcode"
         android:showAsAction="never"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_action_save"
         android:title="@string/viewer_menu_save_gcode"/>
     
     <item
