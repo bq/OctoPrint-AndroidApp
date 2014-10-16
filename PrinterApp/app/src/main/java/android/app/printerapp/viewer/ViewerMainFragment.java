@@ -2,9 +2,15 @@ package android.app.printerapp.viewer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.DownloadManager;
+import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.HttpUtils;
+import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -39,6 +46,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +57,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
+
+import com.material.widget.PaperButton;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
 
 public class ViewerMainFragment extends Fragment {
     //Tabs
@@ -108,10 +124,14 @@ public class ViewerMainFragment extends Fragment {
     private static View mRootView;
 
 
+
+
     /**
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
+    //Printer to slice / upload
+    private static ModelPrinter mPrinter = null;
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -143,8 +163,7 @@ public class ViewerMainFragment extends Fragment {
 
             mContext = getActivity();
 
-            //Create slicing handler
-            mSlicingHandler = new SlicingHandler(getActivity());
+
             //Register receiver
             mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -155,6 +174,9 @@ public class ViewerMainFragment extends Fragment {
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT);
             draw();
+
+            initSidePanel();
+
         }
 
         return mRootView;
@@ -510,6 +532,7 @@ public class ViewerMainFragment extends Fragment {
         mDataList.add(data);
 
         //Adding original project //TODO elsewhere?
+        if (mSlicingHandler!=null)
         if (mSlicingHandler.getOriginalProject() == null)
             mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
     }
@@ -853,7 +876,8 @@ public class ViewerMainFragment extends Fragment {
 
             mActionMode = null;
 
-            StlFile.saveModel(mDataList, null, mSlicingHandler);
+            //TODO temp callback for slicing
+            if (mSlicingHandler!=null)StlFile.saveModel(mDataList, null, mSlicingHandler);
 
 
         }
@@ -919,5 +943,82 @@ public class ViewerMainFragment extends Fragment {
             showProgressBar(View.GONE);
         }
     };
+
+
+
+    /************************************  SIDE PANEL ********************************************************/
+
+    public static void setPrinter(ModelPrinter p)
+    {
+
+        mPrinter = p;
+        //Create slicing handler
+        mSlicingHandler = new SlicingHandler((Activity)mContext, mPrinter);
+
+    }
+
+    public void initSidePanel(){
+
+        Handler handler = new Handler();
+
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                try {
+
+
+                    Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
+                    Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
+                    Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
+
+                    PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
+
+
+                    String[] infill_options = {"Low","Medium","High"};
+                    String[] support_options = {"Yes", "Nope"};
+
+
+
+                    ArrayAdapter adapter_quality = new ArrayAdapter(getActivity(),
+                            android.R.layout.simple_spinner_item, DevicesListController.selectAvailablePrinter().getProfiles());
+                    ArrayAdapter adapter_infill = new ArrayAdapter(getActivity(),
+                            android.R.layout.simple_spinner_item, infill_options);
+                    ArrayAdapter adapter_support = new ArrayAdapter(getActivity(),
+                            android.R.layout.simple_spinner_item, support_options);
+
+                    s_quality.setAdapter(adapter_quality);
+                    s_infill.setAdapter(adapter_infill);
+                    s_support.setAdapter(adapter_support);
+
+
+                    /*printButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (mFile!=null) DevicesListController.selectPrinter(mContext,mFile);
+                            else {Toast.makeText(mContext,"No file",Toast.LENGTH_LONG).show();};
+                        }
+                    });*/
+
+
+
+
+
+
+
+                }catch (Exception e) {
+                e.printStackTrace();
+                }
+
+
+
+
+            }
+        });
+
+
+    }
 
 }

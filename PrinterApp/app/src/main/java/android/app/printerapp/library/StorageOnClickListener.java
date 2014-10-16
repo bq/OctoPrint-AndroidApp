@@ -115,7 +115,9 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					
 					//it's a raw file
 					 if (f.getAbsoluteFile().length()>0){
-							ItemListActivity.requestOpenFile(f.getAbsolutePath());
+
+                            //TODO select printer for raw files?
+                            DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
 						} else {
 						
 							Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
@@ -173,7 +175,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 						}
 						
 					} else {
-						DevicesListController.selectPrinter(mContext.getActivity(),f);
+						DevicesListController.selectPrinter(mContext.getActivity(),f, 1);
 					}
 					
 					
@@ -187,27 +189,34 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 					if (f.isDirectory()){
 						if (StorageController.isProject(f)){
 							
-							if (((ModelFile)f).getStl()==null) ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
-							else ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+							if (((ModelFile)f).getStl()==null) {
+
+                                DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getGcodeList()) , 0);
+
+                            }
+							else {
+                                DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getStl()) , 0);
+
+                            }
 						}
-						
+
 					} else {
 						//Check if the gcode is empty, won't work if file is actually corrupted
 						if (f.getAbsoluteFile().length()>0){
-							ItemListActivity.requestOpenFile(f.getAbsolutePath());
+                            DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
 						} else {
-							
+
 							Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
 
 						}
 					}
-					
-					
-					
-					
+
+
+
+
 					break;
-					
-					
+
+
 				case 2: //Move
 
 					mContext.setMoveFile(f);

@@ -42,6 +42,9 @@ public class ModelPrinter {
 	
 	//Position in grid
 	private int mPosition;
+
+    //TODO temporary profile handling
+    private ArrayList<String> mProfiles;
 	
 	public ModelPrinter(String name, String address, int position){
 		
@@ -50,6 +53,7 @@ public class ModelPrinter {
 		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
+        mProfiles = new ArrayList<String>();
 		mJobLoaded = true;
 		
 		//TODO: Load with db
@@ -119,6 +123,8 @@ public class ModelPrinter {
 	public String getJobPath(){
 		return mJobPath;
 	}
+
+    public ArrayList<String> getProfiles() { return mProfiles; }
 	
 	/**********
 	 *  Sets

@@ -159,7 +159,7 @@ public class OctoprintFiles {
 	 * Right now it uses two requests, the first to upload the file and another one to load it in the printer.
 	 * @param file
 	 */
-	public static void uploadFile(final Context context, final File file, final ModelPrinter p, final boolean slice, final boolean background){
+	public static void uploadFile(final Context context, final File file, final ModelPrinter p){
 			
 			RequestParams params = new RequestParams();
 			
@@ -175,14 +175,13 @@ public class OctoprintFiles {
 				e.printStackTrace();
 			} 
 
-    		if (!background) {
 
-                Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName()
-                        , Toast.LENGTH_LONG).show();
-                p.setLoaded(false);
+            Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_text_loading) + " " + file.getName()
+                    , Toast.LENGTH_LONG).show();
+            p.setLoaded(false);
 
-                DatabaseController.handlePreference("References", p.getName(), p.getJobPath(), true);
-            }
+            DatabaseController.handlePreference("References", p.getName(), p.getJobPath(), true);
+
 			
 
 			
@@ -202,20 +201,15 @@ public class OctoprintFiles {
 					
 
 					Log.i("SUCCESS", response.toString());
-					
-					if (slice){
-						
-						OctoprintSlicing.sliceCommand(context, p.getAddress(), file, "/local/", background);
 
-					}else {
 						
-						//p.setLoaded(true);
-						fileCommand(context, p.getAddress(), file.getName(), "/local/", false);
-						
-						Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
+                    //p.setLoaded(true);
+                    fileCommand(context, p.getAddress(), file.getName(), "/local/", false);
+
+                    Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
 							
 						
-					}
+
 
 				}
 

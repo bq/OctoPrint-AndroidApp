@@ -73,7 +73,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			//it's an stl
 		}else {
 			
-			//ib.setVisibility(View.GONE);
+			ib.setVisibility(View.GONE);
 		}
 		
 		
@@ -82,8 +82,10 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			
 			@Override
 			public void onClick(View v) {
-				
-				DevicesListController.selectPrinter(v.getContext(), f);
+
+                if ((StorageController.hasExtension(0, f.getName()))) DevicesListController.selectPrinter(v.getContext(), f , 0);
+                else DevicesListController.selectPrinter(v.getContext(), f , 1);
+
 				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");
 				
 			}
@@ -94,8 +96,8 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			
 			@Override
 			public void onClick(View v) {
-				
-				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+
+                DevicesListController.selectPrinter(v.getContext(), f , 0);
 
 				
 			}

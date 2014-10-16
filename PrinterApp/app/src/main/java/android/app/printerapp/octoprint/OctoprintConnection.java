@@ -152,6 +152,7 @@ public class OctoprintConnection {
 		         public void onOpen() {
 		            Log.i("SOCK", "Status: Connected to " + wsuri);
 		            OctoprintFiles.getFiles(p);
+                    OctoprintSlicing.retrieveProfiles(context,p);
 		         }
 		 
 		         
@@ -159,7 +160,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 		            
-		        	// Log.i("SOCK", "Got echo: " + payload);
+		        	 Log.i("SOCK", "Got echo: " + payload);
 		        	 
 		        	  try {
 		        		  
@@ -174,6 +175,7 @@ public class OctoprintConnection {
 			            	//We'll add every single parameter
 							p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
 									response);
+
 		            	}
 		            	
 		            	if (object.has("event")){
@@ -281,6 +283,8 @@ public class OctoprintConnection {
 
                 final String path = DatabaseController.getPreference("Slicing", payload.getString("gcode"));
 
+
+                //TODO prolly not gonna happen
                 if (!path.contains("temp")) {
 
                     //TODO PRO VI SIO NAL
@@ -313,8 +317,9 @@ public class OctoprintConnection {
 
                     adb.show();
 
+                    //TODO no slice references
                     //Delete file from preferences
-                    DatabaseController.handlePreference("Slicing", payload.getString("gcode"), null, false);
+                    //DatabaseController.handlePreference("Slicing", payload.getString("gcode"), null, false);
                 }
 
 
