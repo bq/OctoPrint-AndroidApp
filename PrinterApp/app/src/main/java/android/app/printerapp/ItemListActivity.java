@@ -189,6 +189,9 @@ public class ItemListActivity extends FragmentActivity implements
                 }
             }
 
+            //Enable the navigation drawer icon when a new fragment is selected
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+
             //Select fragment
             switch (Integer.valueOf(id)) {
                 case 1: {
@@ -301,7 +304,7 @@ public class ItemListActivity extends FragmentActivity implements
 
             case 0:
 
-                //Sisable the toggle menu and show up carat
+                //Disable the toggle menu and show up carat
                 mDrawerToggle.setDrawerIndicatorEnabled(false);
 
                 //New DetailView with the file as an index
@@ -318,6 +321,9 @@ public class ItemListActivity extends FragmentActivity implements
                 break;
 
             case 1:
+
+                //Disable the toggle menu and show up carat
+                mDrawerToggle.setDrawerIndicatorEnabled(false);
 
                 //New detailview with the printer name as extra
                 PrintViewFragment detailp = new PrintViewFragment();

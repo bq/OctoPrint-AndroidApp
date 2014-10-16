@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -48,6 +49,16 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
     }
 
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return super.isEnabled(position);
+    }
+
     //TODO implement view holder
     //Overriding our view to show the grid on screen
     @Override
@@ -63,7 +74,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
         if (v == null) {
             //Inflate the view
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.linear_grid_element, null, false);
+            v = inflater.inflate(R.layout.grid_item_printer, null, false);
         } else {
             //v = convertView;
         }
@@ -86,23 +97,26 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
         //Check if it's an actual printer or just an empty slot
         if (m == null) {
-
             //Empty slot is an invisible printer on the current position
             v.setOnDragListener(new DevicesEmptyDragListener(position));
             tag.setText("");
             ip.setText("");
             icon.setVisibility(View.INVISIBLE);
 
-            //it's a printer
+        //It's a printer
         } else {
 
-            //intialize visual parameters
+            //Intialize visual parameters
             v.setOnDragListener(new DevicesDragListener(mContext, m));
             tag.setText(m.getDisplayName());
             ip.setText(m.getAddress().replace("/", ""));
             icon.setVisibility(View.VISIBLE);
 
             int status = m.getStatus();
+
+
+            LinearLayout gridItem = (LinearLayout) v.findViewById(R.id.grid_item_printer_container);
+            gridItem.setBackgroundResource(R.drawable.selectable_rect_background_green);
 
             //Printer icon
             switch (status) {

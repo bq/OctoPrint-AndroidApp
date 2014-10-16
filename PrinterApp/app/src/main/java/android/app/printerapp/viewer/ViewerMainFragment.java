@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -98,8 +97,11 @@ public class ViewerMainFragment extends Fragment {
 
     private static List<DataStorage> mDataList = new ArrayList<DataStorage>();
 
-    //Button bar
-    private static LinearLayout mButtonBar;
+    //Undo button bar
+    private static LinearLayout mUndoButtonBar;
+
+    //Rotate button bar
+    private static LinearLayout mRotateButtonBar;
 
     //Edition menu variables
     private static ProgressBar mProgress;
@@ -151,7 +153,8 @@ public class ViewerMainFragment extends Fragment {
             initUIElements();
             initRotateButtons();
 
-            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+//            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT);
             draw();
@@ -198,8 +201,11 @@ public class ViewerMainFragment extends Fragment {
             mSeekBar.getThumb().mutate().setAlpha(0);
         mSeekBar.setVisibility(View.INVISIBLE);
 
-        //Bring button bar to the front
-        mButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_bar_linearlayout);
+        //Undo button bar
+        mUndoButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_undo_bar_linearlayout);
+
+        //Rotate button bar
+        mRotateButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
 
         mLayout = (FrameLayout) mRootView.findViewById(R.id.viewer_container_framelayout);
 
@@ -639,7 +645,8 @@ public class ViewerMainFragment extends Fragment {
         mLayout.addView(mSurface, 0);
         mLayout.addView(mSeekBar, 1);
         mLayout.addView(mRotateMenu, 2);
-        mLayout.addView(mButtonBar, 3);
+//        mLayout.addView(mUndoButtonBar, 3);
+        mLayout.addView(mRotateButtonBar, 3);
     }
 
     /**

@@ -138,12 +138,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
                 widget:paper_text="@string/viewer_button_print" />
-
-            <!--<View-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_margin="5dp"-->
-            <!--android:background="@drawable/separation_line_vertical" />-->
         </RelativeLayout>
 
         <!-- Right panel. Contains the 3D model -->
@@ -153,9 +147,9 @@
             android:layout_height="match_parent"
             android:layout_weight="2">
 
-            <!-- Buttons to undo/redo the modifications on the model -->
+            <!-- Button bar to undo/redo the modifications on the model -->
             <LinearLayout
-                android:id="@+id/model_button_bar_linearlayout"
+                android:id="@+id/model_button_undo_bar_linearlayout"
                 style="@style/ButtonBar"
                 android:layout_gravity="bottom"
                 android:background="#66ffffff">
@@ -163,14 +157,51 @@
                 <Button
                     android:id="@+id/undo_button"
                     style="@style/ButtonBar.NoDefaultButton"
-                    android:text="@string/viewer_button_undo"
-                    android:drawableLeft="@drawable/ic_arrow_back"/>
+                    android:drawableLeft="@drawable/ic_arrow_back"
+                    android:text="@string/viewer_button_undo" />
 
                 <Button
                     android:id="@+id/redo_button"
                     style="@style/ButtonBar.NoDefaultButton"
-                    android:text="@string/viewer_button_redo"
-                    android:drawableRight="@drawable/ic_arrow_forward"/>
+                    android:drawableRight="@drawable/ic_arrow_forward"
+                    android:text="@string/viewer_button_redo" />
+            </LinearLayout>
+
+            <!-- Button bar to rotate the model -->
+            <LinearLayout
+                android:id="@+id/model_button_rotate_bar_linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="#66ffffff"
+                android:gravity="center"
+                android:padding="@dimen/content_padding_small"
+                android:orientation="horizontal"
+
+                android:weightSum="5">
+
+                <ImageButton
+                    android:id="@+id/cancel_rotate_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selectable_oval_background_green"
+                    android:src="@drawable/ic_cancel_circle" />
+
+                <SeekBar
+                    style="@style/TallerSeekBar"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_marginLeft="@dimen/content_margin_small"
+                    android:layout_marginRight="@dimen/content_margin_small"/>
+
+                <ImageButton
+                    android:id="@+id/ok_rotate_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selectable_oval_background_green"
+                    android:src="@drawable/ic_done_circle" />
+
             </LinearLayout>
 
             <RelativeLayout
@@ -254,12 +285,13 @@
 
             <!-- Seek bar to show/hide layers of the model -->
             <android.app.printerapp.util.ui.VerticalSeekBar
+                style="@style/TallerSeekBar"
                 android:id="@+id/barLayer"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="350dp"
                 android:layout_gravity="right|center_vertical"
+                android:maxHeight="6dp"
                 android:layout_margin="@dimen/content_margin_small" />
-
 
 
         </FrameLayout>

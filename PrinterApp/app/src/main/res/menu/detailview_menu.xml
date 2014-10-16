@@ -4,7 +4,7 @@
      <item
         android:id="@+id/menu_favorite"
         android:showAsAction="ifRoom"
-        android:icon="@android:drawable/btn_star_big_off"
+        android:icon="@drawable/ic_action_star_outline"
         android:title="@string/library_tabhost_tab_favorites"/>
     
 

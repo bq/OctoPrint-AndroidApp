@@ -132,7 +132,7 @@ public class TabIndicator extends HorizontalScrollView implements Animator.Anima
             @Override
             public void onGlobalLayout() {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 } else {
                     getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
@@ -432,7 +432,7 @@ public class TabIndicator extends HorizontalScrollView implements Animator.Anima
         public TabView(Context context, AttributeSet attrs, int defStyle) {
             super(context, attrs, defStyle);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                setBackgroundDrawable(null);
+//                setBackgroundDrawable(null);
             } else {
                 setBackground(null);
             }
@@ -565,7 +565,7 @@ public class TabIndicator extends HorizontalScrollView implements Animator.Anima
         public NavButton(Context context, AttributeSet attrs, int defStyle) {
             super(context, attrs, defStyle);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                setBackgroundDrawable(null);
+//                setBackgroundDrawable(null);
             } else {
                 setBackground(null);
             }

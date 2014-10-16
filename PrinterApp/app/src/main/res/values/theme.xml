@@ -59,7 +59,7 @@
     </style>
 
     <style name="AppBaseTheme.Green.ActionMode">
-        <item name="android:background">@drawable/selectable_background_green</item>
+        <item name="android:background">@drawable/selectable_rect_background_green</item>
         <item name="android:backgroundSplit">?android:attr/actionModeSplitBackground</item>
         <item name="android:height">@dimen/action_bar_height</item>
         <item name="android:titleTextStyle">@style/AppBaseTheme.Green.ActionBar.TitleTextStyle
@@ -67,7 +67,7 @@
     </style>
 
     <style name="ActionButton.CloseMode.Green" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
-        <item name="android:background">@drawable/selectable_background_green</item>
+        <item name="android:background">@drawable/selectable_rect_background_green</item>
     </style>
 
 
@@ -77,14 +77,14 @@
     </style>
 
     <style name="DropDownListView.Green" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_green</item>
+        <item name="android:listSelector">@drawable/selectable_rect_background_green</item>
     </style>
 
     <style name="DropDownNav.Green" parent="@android:style/Widget.Holo.Light.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_green</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_green</item>
         <item name="android:backgroundSplit">?android:attr/actionModeSplitBackground</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_green</item>
+        <item name="android:dropDownSelector">@drawable/selectable_rect_background_green</item>
     </style>
 
     <!--Dropdown listView style-->
@@ -106,13 +106,9 @@
 
     <!-- SeekBar style -->
     <style name="SeekBar.Green" parent="android:Widget.Holo.Light.SeekBar">
-        <item name="android:progressDrawable">
-            @drawable/green_scrubber_progress_horizontal_holo_light
-        </item>
-        <item name="android:indeterminateDrawable">
-            @drawable/green_scrubber_progress_horizontal_holo_light
-        </item>
-        <item name="android:thumb">@drawable/green_scrubber_control_selector_holo_light</item>
+        <item name="android:progressDrawable">@drawable/green_seekbar_background</item>
+        <item name="android:indeterminateDrawable">@drawable/green_seekbar_background</item>
+        <item name="android:thumb">@drawable/green_seekbar_thumb</item>
     </style>
 
 
