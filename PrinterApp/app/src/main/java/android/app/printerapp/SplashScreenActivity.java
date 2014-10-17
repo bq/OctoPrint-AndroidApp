@@ -1,6 +1,9 @@
 package android.app.printerapp;
 
 import android.app.Activity;
+import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.library.StorageController;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +33,11 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.activity_splash_screen);
 
         mContext = this;
+
+        //Initialize db and lists
+        new DatabaseController(this);
+        DevicesListController.loadList(this);
+        new StorageController();
 
         //Simulate a long loading process on application startup
         Timer timer = new Timer();
