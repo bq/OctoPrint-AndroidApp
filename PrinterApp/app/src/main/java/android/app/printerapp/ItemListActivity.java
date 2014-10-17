@@ -1,11 +1,8 @@
 package android.app.printerapp;
 
 import android.app.printerapp.devices.DevicesFragment;
-import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
-import android.app.printerapp.library.StorageController;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.settings.SettingsFragment;
@@ -121,11 +118,6 @@ public class ItemListActivity extends FragmentActivity implements
             //mDrawer.openDrawer(Gravity.START);
 
         }
-
-        //Initialize db and lists
-        new DatabaseController(this);
-        DevicesListController.loadList(this);
-        new StorageController();
 
         //Initialize variables
         mManager = getSupportFragmentManager();
@@ -375,11 +367,14 @@ public class ItemListActivity extends FragmentActivity implements
         try {
 
             //Refresh the devices fragment with status
-            if (mDevicesFragment != null) mDevicesFragment.notifyAdapter();
+            if (mDevicesFragment != null){
+                mDevicesFragment.notifyAdapter();
+                //Refresh printview fragment if exists
+                Fragment fragment = mManager.findFragmentByTag("Printer");
+                if (fragment != null) ((PrintViewFragment) fragment).refreshData();
+            }
 
-            //Refresh printview fragment if exists
-            Fragment fragment = mManager.findFragmentByTag("Printer");
-            if (fragment != null) ((PrintViewFragment) fragment).refreshData();
+
 
         } catch (NullPointerException e) {
 
