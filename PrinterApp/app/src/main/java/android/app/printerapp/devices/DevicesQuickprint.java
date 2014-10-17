@@ -1,9 +1,5 @@
 package android.app.printerapp.devices;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Map;
-
 import android.app.Activity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -11,11 +7,14 @@ import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelFile;
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
 
 import it.sephiroth.android.library.widget.AdapterView;
 import it.sephiroth.android.library.widget.HListView;
@@ -67,7 +66,9 @@ public class DevicesQuickprint {
      */
     private void addFiles() {
         for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Favorites").entrySet()) {
+            Log.i("OUT","Creatng file wiht " + entry.getValue().toString());
             ModelFile m = new ModelFile(entry.getValue().toString(), "Internal storage");
+
             mFileList.add(m);
         }
     }
@@ -97,6 +98,8 @@ public class DevicesQuickprint {
 
                     if ((StorageController.isProject(m))) {
 
+
+
                         //Set the model image
                         if (m.getStorage().equals("Internal storage")) {
 
@@ -114,7 +117,7 @@ public class DevicesQuickprint {
                         modelDescription = m.getInfo();
 
                         if (mHorizontalListView != null) {
-                            QuickPrintModel quickPrintModel = new QuickPrintModel(m.getName(), m.getStorage(), modelImage, modelAbsolutePath, modelName, modelDescription);
+                            QuickPrintModel quickPrintModel = new QuickPrintModel(m.getAbsolutePath(), m.getStorage(), modelImage, modelAbsolutePath, modelName, modelDescription);
                             Log.d(TAG, "Add quick print model to the horizontal list [" + quickPrintModel.toString() + "]");
                             mModelList.add(quickPrintModel);
                             mQuickPrintAdapter.notifyDataSetChanged();

@@ -964,36 +964,60 @@ public class ViewerMainFragment extends Fragment {
                 try {
 
 
-                    Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
-                    Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
-                    Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
+                    final Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
+                    final Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
+                    final Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
 
                     PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
 
                     s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setProfile(mPrinter.getProfiles().get(i));
+                            mSlicingHandler.setExtras("profile", s_quality.getItemAtPosition(i).toString());
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
-                            mSlicingHandler.setProfile(null);
+                            mSlicingHandler.setExtras("profile", null);
+                        }
+                    });
+
+                    s_infill.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            mSlicingHandler.setExtras("profile.fill_density",Float.parseFloat(s_infill.getItemAtPosition(i).toString()));
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            mSlicingHandler.setExtras("profile.fill_density",null);
+                        }
+                    });
+
+                    s_support.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            mSlicingHandler.setExtras("profile.support",null);
                         }
                     });
 
 
-                    String[] infill_options = {"Low","Medium","High"};
-                    String[] support_options = {"Yes", "Nope"};
+                    String[] infill_options = {"20","50","100"};
+                    String[] support_options = {"none", "buildplate", "everywhere"};
 
 
 
                     ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
-                            android.R.layout.simple_spinner_item, mPrinter.getProfiles());
+                            R.layout.print_panel_spinner_item, mPrinter.getProfiles());
                     ArrayAdapter<String> adapter_infill = new ArrayAdapter<String>(getActivity(),
-                            android.R.layout.simple_spinner_item, infill_options);
+                            R.layout.print_panel_spinner_item, infill_options);
                     ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(getActivity(),
-                            android.R.layout.simple_spinner_item, support_options);
+                            R.layout.print_panel_spinner_item, support_options);
 
 
 
@@ -1010,7 +1034,7 @@ public class ViewerMainFragment extends Fragment {
 
 
                                     //TODO Check for slicing or what?
-                                    Toast.makeText(getActivity(),"SLICING HASN'T FINISHED",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(),R.string.viewer_slice_wait,Toast.LENGTH_LONG).show();
 
                                 } else {
 
@@ -1018,20 +1042,22 @@ public class ViewerMainFragment extends Fragment {
                                     //TODO works
                                     File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
 
-                                    File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+                                    //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+                                    File renameFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());
+
+                                    Log.i("OUT","Creating new file in " + renameFile.getAbsolutePath());
 
                                     tempFile.renameTo(renameFile);
-                                    renameFile = tempFile;
+                                    //renameFile = tempFile;
                                     if (renameFile.exists()) {
 
-                                        Toast.makeText(getActivity(), "Printing " + renameFile.getName(), Toast.LENGTH_LONG).show();
                                         OctoprintFiles.uploadFile(getActivity(), renameFile, mPrinter);
                                         ItemListFragment.performClick(0);
                                         ItemListActivity.showExtraFragment(1, mPrinter.getName());
 
                                     } else {
 
-                                        Toast.makeText(getActivity(),"Error uploading the file",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(),R.string.viewer_slice_error,Toast.LENGTH_LONG).show();
 
                                     }
 

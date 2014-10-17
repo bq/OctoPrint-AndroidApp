@@ -7,6 +7,9 @@ import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.util.Log;
 import android.view.View;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Timer;
@@ -24,7 +27,9 @@ public class SlicingHandler {
 
 
     private Activity mActivity;
-    private String mProfile = null;
+    //private String mProfile = null;
+
+    private JSONObject mExtras = new JSONObject();
 
 
     //timer to upload files
@@ -55,9 +60,16 @@ public class SlicingHandler {
 
     }
 
-    public void setProfile(String profile){
+    public void setExtras(String tag, Object value){
 
-        mProfile = profile;
+        //mProfile = profile;
+        try {
+            mExtras.put(tag,value);
+
+            Log.i("OUT","Added extra " + tag + ":" + value + " [" + mExtras.length()+"]");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -151,9 +163,7 @@ public class SlicingHandler {
 
                     if (mPrinter!=null){
 
-                        Log.i("OUT","Slicing with " + mProfile + " profile.");
-
-                        OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mProfile);
+                        OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
                         ViewerMainFragment.showProgressBar(View.VISIBLE);
 
                     } else {

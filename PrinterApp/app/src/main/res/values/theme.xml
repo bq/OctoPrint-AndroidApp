@@ -101,7 +101,7 @@
     <!-- Spinner style -->
     <style name="Spinner.Green" parent="android:Widget.Holo.Light.Spinner">
         <item name="android:background">@drawable/green_spinner_background_holo_light</item>
-        <item name="android:dropDownSelector">@drawable/green_list_selector_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/green_list_selector_holo_light</item>>
     </style>
 
     <!-- SeekBar style -->

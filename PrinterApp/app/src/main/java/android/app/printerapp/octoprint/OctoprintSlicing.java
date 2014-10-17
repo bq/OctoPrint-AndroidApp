@@ -210,9 +210,8 @@ public class OctoprintSlicing {
      * @param context
      * @param url
      * @param file
-     * @param profile
      */
-	public static void sliceCommand(final Context context, final String url, final File file, final String profile){
+	public static void sliceCommand(final Context context, final String url, final File file, final JSONObject extras){
 
         RequestParams params = new RequestParams();
         try {
@@ -239,7 +238,7 @@ public class OctoprintSlicing {
 
                         Log.i("SUCCESS", response.toString());
 
-                        JSONObject object = new JSONObject();
+                        JSONObject object = extras ;
                         StringEntity entity = null;
 
                         try {
@@ -247,9 +246,12 @@ public class OctoprintSlicing {
                             object.put("slicer", "cura");
 
                             //TODO select profile
-                            object.put("profile", profile);
+
+                            //object.put("profile", profile);
                             object.put("gcode", "temp.gco");
                             entity = new StringEntity(object.toString(), "UTF-8");
+
+                            Log.i("OUT","Uploading " + object.toString());
 
                         } catch (JSONException e) {		e.printStackTrace();
                         } catch (UnsupportedEncodingException e) {	e.printStackTrace();
