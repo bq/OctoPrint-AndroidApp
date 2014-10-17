@@ -1,10 +1,15 @@
 package android.app.printerapp.viewer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.ItemListFragment;
+import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
+import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,9 +29,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,18 +43,21 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TabHost.OnTabChangeListener;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
+
+import com.material.widget.PaperButton;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewerMainFragment extends Fragment {
     //Tabs
@@ -110,10 +120,14 @@ public class ViewerMainFragment extends Fragment {
     private static View mRootView;
 
 
+
+
     /**
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
+    //Printer to slice / upload
+    private static ModelPrinter mPrinter = null;
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -145,8 +159,7 @@ public class ViewerMainFragment extends Fragment {
 
             mContext = getActivity();
 
-            //Create slicing handler
-            mSlicingHandler = new SlicingHandler(getActivity());
+
             //Register receiver
             mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -158,6 +171,9 @@ public class ViewerMainFragment extends Fragment {
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT);
             draw();
+
+            initSidePanel();
+
         }
 
         return mRootView;
@@ -516,6 +532,7 @@ public class ViewerMainFragment extends Fragment {
         mDataList.add(data);
 
         //Adding original project //TODO elsewhere?
+        if (mSlicingHandler!=null)
         if (mSlicingHandler.getOriginalProject() == null)
             mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
     }
@@ -860,7 +877,8 @@ public class ViewerMainFragment extends Fragment {
 
             mActionMode = null;
 
-            StlFile.saveModel(mDataList, null, mSlicingHandler);
+            //TODO temp callback for slicing
+            if (mSlicingHandler!=null)StlFile.saveModel(mDataList, null, mSlicingHandler);
 
 
         }
@@ -923,8 +941,157 @@ public class ViewerMainFragment extends Fragment {
 
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
+            //TODO set a slicing boolean to print
             showProgressBar(View.GONE);
         }
     };
+
+
+
+    /************************************  SIDE PANEL ********************************************************/
+
+    public static void setPrinter(ModelPrinter p)
+    {
+
+        mPrinter = p;
+        //Create slicing handler
+        mSlicingHandler = new SlicingHandler((Activity)mContext, mPrinter);
+
+    }
+
+    public void initSidePanel(){
+
+        Handler handler = new Handler();
+
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                try {
+
+
+                    final Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
+                    final Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
+                    final Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
+
+                    PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
+
+                    s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            mSlicingHandler.setExtras("profile", s_quality.getItemAtPosition(i).toString());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            mSlicingHandler.setExtras("profile", null);
+                        }
+                    });
+
+                    s_infill.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            mSlicingHandler.setExtras("profile.fill_density",Float.parseFloat(s_infill.getItemAtPosition(i).toString()));
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            mSlicingHandler.setExtras("profile.fill_density",null);
+                        }
+                    });
+
+                    s_support.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            mSlicingHandler.setExtras("profile.support",null);
+                        }
+                    });
+
+
+                    String[] infill_options = {"20","50","100"};
+                    String[] support_options = {"none", "buildplate", "everywhere"};
+
+
+
+                    ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
+                            R.layout.print_panel_spinner_item, mPrinter.getProfiles());
+                    ArrayAdapter<String> adapter_infill = new ArrayAdapter<String>(getActivity(),
+                            R.layout.print_panel_spinner_item, infill_options);
+                    ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(getActivity(),
+                            R.layout.print_panel_spinner_item, support_options);
+
+
+
+                    s_quality.setAdapter(adapter_quality);
+                    s_infill.setAdapter(adapter_infill);
+                    s_support.setAdapter(adapter_support);
+
+
+                    printButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (mFile!=null) {
+                                if (mRootView.findViewById(R.id.progress_slice).isShown()){
+
+
+                                    //TODO Check for slicing or what?
+                                    Toast.makeText(getActivity(),R.string.viewer_slice_wait,Toast.LENGTH_LONG).show();
+
+                                } else {
+
+
+                                    //TODO works
+                                    File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
+
+                                    //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+                                    File renameFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());
+
+                                    Log.i("OUT","Creating new file in " + renameFile.getAbsolutePath());
+
+                                    tempFile.renameTo(renameFile);
+                                    //renameFile = tempFile;
+                                    if (renameFile.exists()) {
+
+                                        OctoprintFiles.uploadFile(getActivity(), renameFile, mPrinter);
+                                        ItemListFragment.performClick(0);
+                                        ItemListActivity.showExtraFragment(1, mPrinter.getName());
+
+                                    } else {
+
+                                        Toast.makeText(getActivity(),R.string.viewer_slice_error,Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                }
+                            }
+                            else {Toast.makeText(mContext,"No file",Toast.LENGTH_LONG).show();};
+                        }
+                    });
+
+
+
+
+
+
+
+                }catch (Exception e) {
+                e.printStackTrace();
+                }
+
+
+
+
+            }
+        });
+
+
+    }
 
 }

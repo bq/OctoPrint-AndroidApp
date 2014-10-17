@@ -1,9 +1,5 @@
 package android.app.printerapp.library.detail;
 
-import java.io.File;
-import java.util.List;
-
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.StorageController;
@@ -17,6 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.List;
 
 
 /**
@@ -65,15 +64,18 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 						
 		ImageButton ib = (ImageButton) v.findViewById(R.id.detailview_list_iv1);
 		ImageButton ibe = (ImageButton) v.findViewById(R.id.detailview_list_iv2);
+
+        TextView ig = (TextView) v.findViewById(R.id.detailview_gcode);
 		
 		if ((StorageController.hasExtension(1, f.getName()))){
 			
-			v.findViewById(R.id.detailview_gcode).setVisibility(View.VISIBLE);
+			ig.setVisibility(View.VISIBLE);
+            ib.setVisibility(View.VISIBLE);
 
 			//it's an stl
 		}else {
-			
-			//ib.setVisibility(View.GONE);
+            ig.setVisibility(View.GONE);
+			ib.setVisibility(View.GONE);
 		}
 		
 		
@@ -82,8 +84,10 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			
 			@Override
 			public void onClick(View v) {
-				
-				DevicesListController.selectPrinter(v.getContext(), f);
+
+                if ((StorageController.hasExtension(0, f.getName()))) DevicesListController.selectPrinter(v.getContext(), f , 0);
+                else DevicesListController.selectPrinter(v.getContext(), f , 1);
+
 				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");
 				
 			}
@@ -94,8 +98,8 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			
 			@Override
 			public void onClick(View v) {
-				
-				ItemListActivity.requestOpenFile(f.getAbsolutePath());
+
+                DevicesListController.selectPrinter(v.getContext(), f , 0);
 
 				
 			}

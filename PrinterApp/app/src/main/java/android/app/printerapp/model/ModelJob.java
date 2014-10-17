@@ -83,7 +83,7 @@ public class ModelJob {
 			mFile = job.getJSONObject("file").getString("name");
 			mFilament = job.getString("filament");
 			mSize = job.getJSONObject("file").getString("size");
-			mEstimated = job.getString("lastPrintTime");
+			//mEstimated = job.getString("lastPrintTime");
 			
 			
 			//Log.i("MODEL", "Filename: " + mFile + " Filament: " + mFilament + " Estimated: " + mEstimated);
@@ -109,7 +109,7 @@ public class ModelJob {
 
 		
 		} catch (JSONException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	

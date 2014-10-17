@@ -134,10 +134,89 @@ public class DevicesListController {
 		return exists;
 		
 	}
+
+    /**
+     * Create a select printer dialog to open the print panel or to upload a file with the selected
+     * printer. 0 is for print panel, 1 is for upload
+     * @param c App context
+     * @param f File to upload/open
+     * @param m Selection mode: 0 - print panel, 1 - upload
+     */
+    public static void selectPrinter(Context c, File f, int m){
+
+        final ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
+        final File file = f;
+        final Context context = c;
+        final int mode = m;
+
+        //Fill the list with operational printers
+        for (ModelPrinter p : mList){
+
+            if (p.getStatus() == StateUtils.STATE_OPERATIONAL){
+
+                tempList.add(p);
+
+            }
+
+        }
+
+        String[] nameList = new String[tempList.size()];
+        int i = 0;
+
+        //New array with names only for the adapter
+        for (ModelPrinter p : tempList){
+            nameList[i] = p.getDisplayName();
+            i++;
+        }
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(context);
+        adb.setTitle(R.string.library_select_printer_title);
+
+        adb.setSingleChoiceItems(nameList,0,new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                ModelPrinter m = tempList.get(i);
+
+                switch (mode){
+
+                    case 0 :
+
+                        ItemListActivity.requestOpenFile(file.getAbsolutePath(), m);
+
+                        break;
+
+                    case 1 :
+
+                        OctoprintFiles.uploadFile(context, file, m);
+                        ItemListFragment.performClick(0);
+                        ItemListActivity.showExtraFragment(1, m.getName());
+
+
+
+                        break;
+
+                    default :
+                        break;
+
+                }
+
+                dialogInterface.dismiss();
+
+              //if (StorageController.hasExtension(0, file.getName()))
+                //    OctoprintFiles.uploadFile(context, file, m, true, false);
+
+            }
+        });
+
+        adb.show();
+
+
+    }
 	
 	//Select a printer from all the linked available  and send to print
-@SuppressLint("SdCardPath")
-public static void selectPrinter(final Context context, final File f){
+/*@SuppressLint("SdCardPath")
+    public static void selectPrinter(final Context context, final File f){
 		
 		final ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
 		
@@ -167,9 +246,7 @@ public static void selectPrinter(final Context context, final File f){
 		
 		AlertDialog.Builder adb2 = new AlertDialog.Builder(context);
 		adb2.setTitle(R.string.library_select_printer_title);
-		
-		
-		
+
 		//Show list of available printers
 		adb2.setMultiChoiceItems(nameList, null, new OnMultiChoiceClickListener() {
 			
@@ -177,7 +254,7 @@ public static void selectPrinter(final Context context, final File f){
 			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 				
 				checkedItems[which]	= isChecked;
-				
+
 			}
 		});
 		
@@ -219,26 +296,24 @@ public static void selectPrinter(final Context context, final File f){
 							ItemListFragment.performClick(0);
 							if (checkedItems.length==1) ItemListActivity.showExtraFragment(1, m.getName());
 						}
-							
-					
-						
-						
-						
+
+
+
+
+
 
 
 					}
 													
 				}
-				
-				
-				
+
 			}
 		});
 		
 		adb2.setNegativeButton(R.string.cancel, null);
 		
 		adb2.show();
-	}
+	}*/
 	
 	//TODO Move elsewhere maybe
 	//Get the Network id key to associate with the service name
@@ -281,5 +356,23 @@ public static void selectPrinter(final Context context, final File f){
 		return false;
 		
 	}
+
+    /**
+     * Return the first Operational printer on the list
+     * @return
+     */
+    public static ModelPrinter selectAvailablePrinter(){
+
+        //search for operational printers
+
+        for (ModelPrinter p : DevicesListController.getList()){
+
+            if (p.getStatus() == StateUtils.STATE_OPERATIONAL)
+                return p;
+
+        }
+        return null;
+
+    }
 		
 }

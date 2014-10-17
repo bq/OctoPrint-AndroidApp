@@ -1,5 +1,22 @@
 package android.app.printerapp.viewer;
 
+import android.app.ProgressDialog;
+import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.StorageModelCreation;
+import android.app.printerapp.viewer.Geometry.Point;
+import android.app.printerapp.viewer.Geometry.Vector;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.opengl.Matrix;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.devsmart.android.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,22 +26,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
-
-import com.devsmart.android.IOUtils;
-
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
-import android.opengl.Matrix;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
-import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
-import android.app.printerapp.library.StorageModelCreation;
-import android.app.printerapp.viewer.Geometry.*;
 
 
 public class StlFile {
@@ -65,28 +66,31 @@ public class StlFile {
 	}
 	
 	public static void startThreadToOpenFile (final Context context, final Uri uri) {
-		mThread = new Thread () {
-			@Override
-			public void run () {
-				byte [] arrayBytes = toByteArray (context, uri);
-				
-				try {
-					if (isText(arrayBytes)) {
-						Log.e(TAG,"trying text... ");
-						if(mContinueThread) processText(mFile);						
-					} else {
-						Log.e(TAG,"trying binary...");
-						if(mContinueThread) processBinary(arrayBytes);
-					} 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 
-				if(mContinueThread) mHandler.sendEmptyMessage(0);
-			}
-		};	
-		
-		mThread.start();
+        mThread = new Thread () {
+            @Override
+            public void run () {
+                byte [] arrayBytes = toByteArray (context, uri);
+
+                try {
+                    if (isText(arrayBytes)) {
+                        Log.e(TAG,"trying text... ");
+                        if(mContinueThread) processText(mFile);
+                    } else {
+                        Log.e(TAG,"trying binary...");
+                        if(mContinueThread) processBinary(arrayBytes);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if(mContinueThread) mHandler.sendEmptyMessage(0);
+            }
+        };
+
+        mThread.start();
+
+
 	}
 	
 	
@@ -170,12 +174,39 @@ public class StlFile {
     			if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.dismiss();
     			return;
     		}
-    		
-    		mData.fillVertexArray();
-    		mData.fillNormalArray();
-    		
-    		mData.clearNormalList();
-    		mData.clearVertexList();
+
+            mData.fillVertexArray();
+            mData.fillNormalArray();
+
+            mData.clearNormalList();
+            mData.clearVertexList();
+
+
+            //TODO OUT OF MEMORY HANDLING
+                  /*
+                    OUTOFMEMORy error handling, this must be checked ASAP
+
+            } catch (OutOfMemoryError e){
+
+
+
+
+                 Log.i("OUT","dismissing");
+                 if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.dismiss();
+                 Log.i("OUT","UFCK MEMORUY");
+                 mContinueThread = false;
+                 mThread.interrupt();
+                    /*try {
+
+                        mThread.join();
+                    } catch (InterruptedException i) {
+                        i.printStackTrace();
+                    }
+                 //Toast.makeText(mContext,"Out of memory :(", Toast.LENGTH_LONG).show();
+                 Log.i("OUT","gonna reset");
+
+
+             }*/
     		  		
 
     		//Finish
@@ -278,56 +309,61 @@ public class StlFile {
 	
 	}
 	
-	private static void processBinary(byte[] stlBytes) throws Exception {			
+	private static void processBinary(byte[] stlBytes) throws Exception {
+
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
+
+            if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setMax(vectorSize);
+            for (int i = 0; i < vectorSize; i++) {
+                if(!mContinueThread) break;
+
+                float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
+                float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
+                float z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 20));
+                Vector v0 = new Vector (x,y,z);
+
+                mData.adjustMaxMin(x, y, z);
+                mData.addVertex(x);
+                mData.addVertex(y);
+                mData.addVertex(z);
+
+
+                x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 24));
+                y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 28));
+                z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 32));
+                Vector v1 = new Vector (x,y,z);
+
+                mData.adjustMaxMin(x, y, z);
+                mData.addVertex(x);
+                mData.addVertex(y);
+                mData.addVertex(z);
+
+                x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 36));
+                y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 40));
+                z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 44));
+                Vector v2 = new Vector (x,y,z);
+
+                mData.adjustMaxMin(x, y, z);
+                mData.addVertex(x);
+                mData.addVertex(y);
+                mData.addVertex(z);
+
+                //Calculate triangle normal vector
+                Vector normal = Vector.normalize(Vector.crossProduct(Vector.substract(v1 , v0), Vector.substract(v2, v0)));
+
+                mData.addNormal(normal.x);
+                mData.addNormal(normal.y);
+                mData.addNormal(normal.z);
+
+
+                if (i % (vectorSize / 10) == 0) {
+                    if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setProgress(i);
+                }
+            }
+
+
 				
-		if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setMax(vectorSize);
-		for (int i = 0; i < vectorSize; i++) {
-			if(!mContinueThread) break;
 
-			float x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 12));
-			float y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 16));
-			float z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 20));
-			Vector v0 = new Vector (x,y,z);
-
-			mData.adjustMaxMin(x, y, z);
-			mData.addVertex(x);
-			mData.addVertex(y);
-			mData.addVertex(z);
-			
-		
-			x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 24));
-			y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 28));
-			z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 32));
-			Vector v1 = new Vector (x,y,z);
-
-			mData.adjustMaxMin(x, y, z);
-			mData.addVertex(x);
-			mData.addVertex(y);
-			mData.addVertex(z);
-			
-			x = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 36));
-			y = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 40));
-			z = Float.intBitsToFloat(getIntWithLittleEndian(stlBytes, 84 + i * 50 + 44));
-			Vector v2 = new Vector (x,y,z);
-
-			mData.adjustMaxMin(x, y, z);
-			mData.addVertex(x);
-			mData.addVertex(y);
-			mData.addVertex(z);
-			
-			//Calculate triangle normal vector
-			Vector normal = Vector.normalize(Vector.crossProduct(Vector.substract(v1 , v0), Vector.substract(v2, v0)));
-				
-			mData.addNormal(normal.x);
-			mData.addNormal(normal.y);
-			mData.addNormal(normal.z);		
-			
-			
-			if (i % (vectorSize / 10) == 0) {
-				if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setProgress(i);
-			}
-		}
 	}
 	
 	private static float[] setTransformationVector (float x, float y, float z, float[] rotationMatrix, float scaleFactorX, float scaleFactorY, float scaleFactorZ, float adjustZ, Point center) {

@@ -71,7 +71,7 @@ public class DevicesDragListener implements OnDragListener {
 		    		File file = new File(item.getText().toString());
 		    		
 		    		//Call to the static method to upload
-		    		OctoprintFiles.uploadFile(v.getContext(), file, mModel, false, false);
+		    		OctoprintFiles.uploadFile(v.getContext(), file, mModel);
 		    		
 		    	} else {
 		    		//Error dialog

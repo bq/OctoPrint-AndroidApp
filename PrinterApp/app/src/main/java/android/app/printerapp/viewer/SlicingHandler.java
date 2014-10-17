@@ -1,13 +1,14 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintFiles;
-import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.util.Log;
 import android.view.View;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +27,9 @@ public class SlicingHandler {
 
 
     private Activity mActivity;
+    //private String mProfile = null;
+
+    private JSONObject mExtras = new JSONObject();
 
 
     //timer to upload files
@@ -39,12 +43,13 @@ public class SlicingHandler {
     private String mOriginalProject = null;
 
     //Default URL to slice models
-    private String mUrl;
+    private ModelPrinter mPrinter;
 
-    public SlicingHandler(Activity activity){
+    public SlicingHandler(Activity activity, ModelPrinter p){
 
         mActivity = activity;
         isRunning = false;
+        mPrinter = p;
         cleanTempFolder();
     }
 
@@ -52,6 +57,19 @@ public class SlicingHandler {
     public void  setData(byte[] data){
 
         mData = data;
+
+    }
+
+    public void setExtras(String tag, Object value){
+
+        //mProfile = profile;
+        try {
+            mExtras.put(tag,value);
+
+            Log.i("OUT","Added extra " + tag + ":" + value + " [" + mExtras.length()+"]");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -70,7 +88,7 @@ public class SlicingHandler {
             tempFile = File.createTempFile("tmp",".stl", tempPath);
             tempFile.deleteOnExit();
 
-            //ic_action_delete previous file
+            //delete previous file
             try{
                 File lastFile = new File(mLastReference);
                 lastFile.delete();
@@ -120,21 +138,6 @@ public class SlicingHandler {
 
     }
 
-
-    private ModelPrinter selectAvailablePrinter(){
-
-    //search for operational printers
-
-        for (ModelPrinter p : DevicesListController.getList()){
-
-            if (p.getStatus() == StateUtils.STATE_OPERATIONAL)
-                return p;
-
-        }
-        return null;
-
-    }
-
     //returns last .stl reference
     public String getLastReference(){
         return mLastReference;
@@ -158,11 +161,9 @@ public class SlicingHandler {
                 public void run() {
                     Log.i("OUT","TASKEANDO" );
 
-                    ModelPrinter p = selectAvailablePrinter();
+                    if (mPrinter!=null){
 
-                    if (p!=null){
-
-                        OctoprintFiles.uploadFile(mActivity,createTempFile(),selectAvailablePrinter(),true, true);
+                        OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
                         ViewerMainFragment.showProgressBar(View.VISIBLE);
 
                     } else {
@@ -181,7 +182,7 @@ public class SlicingHandler {
         }
     }
 
-    //ic_action_delete temp folder
+    //delete temp folder
     private void cleanTempFolder(){
 
         File file = new File(StorageController.getParentFolder() + "/temp/");

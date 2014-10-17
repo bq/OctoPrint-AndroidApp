@@ -19,7 +19,7 @@ public class HttpUtils {
 	  public static final String URL_CONNECTION = CUSTOM_PORT + "/api/connection"; //Connection handling
 	  public static final String URL_PRINTHEAD = CUSTOM_PORT + "/api/printer/printhead"; //Send print head commands
 	  public static final String URL_NETWORK = CUSTOM_PORT + "/api/plugin/netconnectd"; //Network config
-	  public static final String URL_SLICING = CUSTOM_PORT + "/api/slicing/cura/profiles/testerino";
+	  public static final String URL_SLICING = CUSTOM_PORT + "/api/slicing/cura/profiles/tarantino";
 	  public static final String URL_SLICING_PROFILES = CUSTOM_PORT + "/api/slicing/cura/profiles";
 	  public static final String URL_DOWNLOAD_FILES = CUSTOM_PORT + "/downloads/files/local/";
 }

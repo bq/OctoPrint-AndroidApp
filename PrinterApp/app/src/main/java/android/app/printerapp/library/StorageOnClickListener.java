@@ -59,6 +59,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
+
         Log.d("StorageOnClickListener", "onItemClick");
 
         //Logic for getting file type
@@ -66,6 +67,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 
         //If it's folder open it
         if (f.isDirectory()) {
+
 
             //If it's project folder, send stl
             if (StorageController.isProject(f)) {
@@ -102,7 +104,9 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 
                     //it's a raw file
                     if (f.getAbsoluteFile().length() > 0) {
-                        ItemListActivity.requestOpenFile(f.getAbsolutePath());
+                        //TODO select printer for raw files?
+                        DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+
                     } else {
                         Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
                     }
@@ -148,24 +152,30 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
                                         //ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
                                     }
                                 } else {
-                                    DevicesListController.selectPrinter(mContext.getActivity(), f);
+                                    DevicesListController.selectPrinter(mContext.getActivity(),f, 1);
+
                                 }
                                 break;
                             case 1: //Edit
                                 //TODO Doesn't work when empty gcodes comeon
                                 ad.dismiss();
                                 if (f.isDirectory()) {
-                                    if (StorageController.isProject(f)) {
+                                    if (StorageController.isProject(f)){
 
-                                        if (((ModelFile) f).getStl() == null)
-                                            ItemListActivity.requestOpenFile(((ModelFile) f).getGcodeList());
-                                        else
-                                            ItemListActivity.requestOpenFile(((ModelFile) f).getStl());
+                                        if (((ModelFile)f).getStl()==null) {
+
+                                            DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getGcodeList()) , 0);
+
+                                        }
+                                        else {
+                                            DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getStl()) , 0);
+
+                                        }
                                     }
                                 } else {
                                     //Check if the gcode is empty, won't work if file is actually corrupted
                                     if (f.getAbsoluteFile().length() > 0) {
-                                        ItemListActivity.requestOpenFile(f.getAbsolutePath());
+                                        DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
                                     } else {
                                         Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
                                     }
@@ -205,59 +215,6 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
                 });
         adb.show();
     }
-
-	/*private void showGcodeList(File f){
-
-		AlertDialog.Builder adb = new AlertDialog.Builder(mContext.getActivity());
-		adb.setTitle("Files...");
-		
-		//We need the alertdialog instance to dismiss it
-		final AlertDialog ad = adb.create();
-		
-		String path = ((ModelFile)f).getGcodeList();
-			
-		//TODO add popup
-		if (path!=null) {
-			
-			
-			final File[] files = (new File(path)).getParentFile().listFiles();
-			
-			//Create a string-only array for the adapter
-			if (files!=null){
-				String[] names = new String[files.length];
-				
-				for (int i = 0 ; i< files.length ; i++){
-					
-					names[i] = files[i].getName();
-					Log.i("OUT","Found " + files[i].getName());
-					
-				}
-					
-				adb.setAdapter(new ArrayAdapter<String>(mContext.getActivity(),
-						android.R.layout.simple_list_item_1,names), 
-						new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-						    File m = files[which];
-
-						    //Open desired file
-						    //ItemListActivity.requestOpenFile(m.getAbsolutePath());
-						    
-						    showOptionDialog(m);
-						    
-						    ad.dismiss();
-						}
-					});
-				
-					
-			} else Log.i("OUT","Pero si soy null primo");
-		}
-					
-		adb.show();
-		
-	}*/
 
 
 }

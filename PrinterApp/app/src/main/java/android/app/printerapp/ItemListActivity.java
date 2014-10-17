@@ -7,6 +7,7 @@ import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.library.detail.DetailViewFragment;
+import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Intent;
@@ -19,7 +20,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -397,7 +397,7 @@ public class ItemListActivity extends FragmentActivity implements
      *
      * @param path File path
      */
-    public static void requestOpenFile(final String path) {
+    public static void requestOpenFile(final String path, final ModelPrinter p) {
 
         //This method will simulate a click and all its effects
         ItemListFragment.performClick(1);
@@ -408,8 +408,11 @@ public class ItemListActivity extends FragmentActivity implements
 
             @Override
             public void run() {
-
+                //Set printer separately to avoid bad coding
+                ViewerMainFragment.setPrinter(p);
                 ViewerMainFragment.openFile(path);
+
+
 
             }
         });

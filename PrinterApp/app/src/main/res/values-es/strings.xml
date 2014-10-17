@@ -112,6 +112,9 @@
     <string name="viewer_menu_notes">Notas</string>
     <string name="viewer_menu_autofit">Auto ajustar</string>
     <string name="viewer_menu_clean">Limpiar panel</string>
+
+    <string name="viewer_slice_wait">Espere a que termine de laminar</string>
+    <string name="viewer_slice_error">Error subiendo el fichero</string>
     
     <string name="settings_network">Red por defecto</string>
     <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>
