@@ -1,15 +1,5 @@
 package android.app.printerapp.octoprint;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
@@ -21,6 +11,16 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.util.Log;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -327,7 +327,7 @@ public class OctoprintConnection {
 
 
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
-                        StorageController.getParentFolder() + "/temp/", payload.getString("gcode"));
+                StorageController.getParentFolder() + "/temp/", payload.getString("gcode"));
 
 
 

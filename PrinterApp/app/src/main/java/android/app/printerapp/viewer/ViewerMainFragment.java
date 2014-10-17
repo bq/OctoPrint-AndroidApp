@@ -1,16 +1,15 @@
 package android.app.printerapp.viewer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
-import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.ItemListFragment;
+import android.app.printerapp.R;
+import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.HttpUtils;
-import android.app.printerapp.octoprint.OctoprintSlicing;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,7 +22,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -31,9 +29,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,27 +43,21 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TabHost.OnTabChangeListener;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
 
 import com.material.widget.PaperButton;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewerMainFragment extends Fragment {
     //Tabs
@@ -940,6 +933,7 @@ public class ViewerMainFragment extends Fragment {
 
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
+            //TODO set a slicing boolean to print
             showProgressBar(View.GONE);
         }
     };
@@ -976,31 +970,76 @@ public class ViewerMainFragment extends Fragment {
 
                     PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
 
+                    s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            mSlicingHandler.setProfile(mPrinter.getProfiles().get(i));
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            mSlicingHandler.setProfile(null);
+                        }
+                    });
+
 
                     String[] infill_options = {"Low","Medium","High"};
                     String[] support_options = {"Yes", "Nope"};
 
 
 
-                    ArrayAdapter adapter_quality = new ArrayAdapter(getActivity(),
-                            android.R.layout.simple_spinner_item, DevicesListController.selectAvailablePrinter().getProfiles());
-                    ArrayAdapter adapter_infill = new ArrayAdapter(getActivity(),
+                    ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
+                            android.R.layout.simple_spinner_item, mPrinter.getProfiles());
+                    ArrayAdapter<String> adapter_infill = new ArrayAdapter<String>(getActivity(),
                             android.R.layout.simple_spinner_item, infill_options);
-                    ArrayAdapter adapter_support = new ArrayAdapter(getActivity(),
+                    ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(getActivity(),
                             android.R.layout.simple_spinner_item, support_options);
+
+
 
                     s_quality.setAdapter(adapter_quality);
                     s_infill.setAdapter(adapter_infill);
                     s_support.setAdapter(adapter_support);
 
 
-                    /*printButton.setOnClickListener(new OnClickListener() {
+                    printButton.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (mFile!=null) DevicesListController.selectPrinter(mContext,mFile);
+                            if (mFile!=null) {
+                                if (mRootView.findViewById(R.id.progress_slice).isShown()){
+
+
+                                    //TODO Check for slicing or what?
+                                    Toast.makeText(getActivity(),"SLICING HASN'T FINISHED",Toast.LENGTH_LONG).show();
+
+                                } else {
+
+
+                                    //TODO works
+                                    File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
+
+                                    File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+
+                                    tempFile.renameTo(renameFile);
+                                    renameFile = tempFile;
+                                    if (renameFile.exists()) {
+
+                                        Toast.makeText(getActivity(), "Printing " + renameFile.getName(), Toast.LENGTH_LONG).show();
+                                        OctoprintFiles.uploadFile(getActivity(), renameFile, mPrinter);
+                                        ItemListFragment.performClick(0);
+                                        ItemListActivity.showExtraFragment(1, mPrinter.getName());
+
+                                    } else {
+
+                                        Toast.makeText(getActivity(),"Error uploading the file",Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                }
+                            }
                             else {Toast.makeText(mContext,"No file",Toast.LENGTH_LONG).show();};
                         }
-                    });*/
+                    });
 
 
 

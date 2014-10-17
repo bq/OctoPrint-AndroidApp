@@ -1,15 +1,11 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
-import android.app.printerapp.octoprint.StateUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,6 +24,7 @@ public class SlicingHandler {
 
 
     private Activity mActivity;
+    private String mProfile = null;
 
 
     //timer to upload files
@@ -55,6 +52,12 @@ public class SlicingHandler {
     public void  setData(byte[] data){
 
         mData = data;
+
+    }
+
+    public void setProfile(String profile){
+
+        mProfile = profile;
 
     }
 
@@ -148,7 +151,9 @@ public class SlicingHandler {
 
                     if (mPrinter!=null){
 
-                        OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),null);
+                        Log.i("OUT","Slicing with " + mProfile + " profile.");
+
+                        OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mProfile);
                         ViewerMainFragment.showProgressBar(View.VISIBLE);
 
                     } else {

@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -403,11 +402,11 @@ public class ItemListActivity extends FragmentActivity implements
 
             @Override
             public void run() {
-
-                ViewerMainFragment.openFile(path);
-
                 //Set printer separately to avoid bad coding
                 ViewerMainFragment.setPrinter(p);
+                ViewerMainFragment.openFile(path);
+
+
 
             }
         });
