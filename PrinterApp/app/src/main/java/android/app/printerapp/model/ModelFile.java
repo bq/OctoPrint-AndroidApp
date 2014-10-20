@@ -3,7 +3,11 @@ package android.app.printerapp.model;
 import android.app.printerapp.R;
 import android.app.printerapp.library.StorageController;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ThumbnailUtils;
 
 import java.io.File;
 
@@ -85,7 +89,10 @@ public class ModelFile extends File {
     public void setSnapshot(String path) {
 
         try {
-            mSnapshot = Drawable.createFromPath(path);
+            Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path), 256, 256);
+
+            mSnapshot = new BitmapDrawable(Resources.getSystem(),ThumbImage);
+            //mSnapshot = Drawable.createFromPath(path);
         } catch (Exception e) {
             mSnapshot = Resources.getSystem().getDrawable(R.drawable.file_icon);
         }

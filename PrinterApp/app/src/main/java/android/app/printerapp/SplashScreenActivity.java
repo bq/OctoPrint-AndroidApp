@@ -3,11 +3,11 @@ package android.app.printerapp;
 import android.app.Activity;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.StorageController;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,7 +37,7 @@ public class SplashScreenActivity extends Activity {
         //Initialize db and lists
         new DatabaseController(this);
         DevicesListController.loadList(this);
-        new StorageController();
+        //new StorageController();
 
         //Simulate a long loading process on application startup
         Timer timer = new Timer();
