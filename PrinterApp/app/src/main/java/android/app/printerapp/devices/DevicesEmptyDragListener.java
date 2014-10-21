@@ -59,7 +59,7 @@ public class DevicesEmptyDragListener implements OnDragListener{
 	    				//update position
 	    				p.setPosition(mPosition);
 	    				//update database
-	    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getName(), String.valueOf(mPosition));
+	    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getId(), String.valueOf(mPosition));
 	    				//static notification of the adapters
 	    				ItemListActivity.notifyAdapters();
 

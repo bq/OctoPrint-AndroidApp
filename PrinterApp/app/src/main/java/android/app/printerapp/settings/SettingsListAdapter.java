@@ -1,7 +1,5 @@
 package android.app.printerapp.settings;
 
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
@@ -12,12 +10,15 @@ import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.List;
 
 /**
  * This is the adapter for the printer list on the settings fragment
@@ -47,30 +48,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = inflater.inflate(R.layout.settings_row, null, false);
 				
-				if (DatabaseController.checkExisting(m)) {
-					
-				
-				
-					v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							DatabaseController.deleteFromDb(m.getName());
-			                DevicesListController.getList().remove(m);
-			                ItemListActivity.notifyAdapters();
-			                notifyDataSetChanged();
-						}
-					});
-					
-					v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							optionEdit(m);
-						}
-					});
-				
-				}
+
 				
 			} else {
 				//v = convertView;
@@ -78,6 +56,37 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 			
 			TextView tv = (TextView) v.findViewById(R.id.settings_text);
 			tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") +"]");
+
+        if (DatabaseController.checkExisting(m)) {
+
+
+
+            v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    Log.i("OUT", "Trying to delete " + m.getName());
+                    DatabaseController.deleteFromDb(m.getId());
+                    DevicesListController.getList().remove(m);
+                    ItemListActivity.notifyAdapters();
+                    notifyDataSetChanged();
+                }
+            });
+
+            v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    optionEdit(m);
+                }
+            });
+
+        } else {
+
+            //v.setVisibility(View.GONE);
+
+        }
 		
 		return v;
 	}
@@ -99,7 +108,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 				String newName = et.getText().toString();
 				
 				m.setDisplayName(newName);
-				DatabaseController.updateDB(FeedEntry.DEVICES_DISPLAY, m.getName(), newName);
+				DatabaseController.updateDB(FeedEntry.DEVICES_DISPLAY, m.getId(), newName);
+                notifyDataSetChanged();
 				
 			}
 		});
@@ -107,6 +117,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 		adb.setNegativeButton(R.string.cancel, null);
 		
 		adb.show();
+
+
 		
 	}
  

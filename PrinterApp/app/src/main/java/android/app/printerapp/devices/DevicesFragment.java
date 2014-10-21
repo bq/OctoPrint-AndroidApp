@@ -63,6 +63,7 @@ import it.sephiroth.android.library.widget.HListView;
 
     //Network manager contoller
     private PrintNetworkManager mNetworkManager;
+    private JmdnsServiceListener mServiceListener;
 
     /**
      * Additional variables
@@ -174,7 +175,7 @@ import it.sephiroth.android.library.widget.HListView;
             /***************************************************************/
 
             //Custom service listener
-            new JmdnsServiceListener(this);
+            mServiceListener = new JmdnsServiceListener(this);
             mNetworkManager = new PrintNetworkManager(this);
 
             //Default filter
@@ -207,7 +208,10 @@ import it.sephiroth.android.library.widget.HListView;
                 optionFilter();
                 return true;
 
+            case R.id.menu_reload: //Reload service discovery
 
+                optionReload();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -386,6 +390,15 @@ import it.sephiroth.android.library.widget.HListView;
     }
 
     /**
+     * Method to reload the service discovery and reload the devices
+     */
+    public void optionReload(){
+
+        mServiceListener.reloadListening();
+
+    }
+
+    /**
      * Dialog for the QR code insertion and sending
      *
      * @param m
@@ -406,7 +419,7 @@ import it.sephiroth.android.library.widget.HListView;
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()));
+                m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
                 m.setLinked(getActivity());
                 notifyAdapter();
             }
