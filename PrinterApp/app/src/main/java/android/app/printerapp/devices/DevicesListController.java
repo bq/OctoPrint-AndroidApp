@@ -1,8 +1,5 @@
 package android.app.printerapp.devices;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
@@ -16,6 +13,9 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.util.Log;
+
+import java.io.File;
+import java.util.ArrayList;
 
 
 /**
@@ -67,8 +67,9 @@ public class DevicesListController {
 			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3));
 			
 			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
-			
-			
+
+            m.setId(c.getInt(0));
+
 			//Custom name
 			m.setDisplayName(c.getString(4));
 			

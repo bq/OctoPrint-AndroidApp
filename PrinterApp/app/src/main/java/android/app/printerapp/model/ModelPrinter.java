@@ -1,12 +1,5 @@
 package android.app.printerapp.model;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.camera.MjpegView;
@@ -15,7 +8,17 @@ import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
+
 public class ModelPrinter {
+
+    //Id for database interaction
+    private long mId;
 	
 	//Service info
 	private String mName;
@@ -125,6 +128,8 @@ public class ModelPrinter {
 	}
 
     public ArrayList<String> getProfiles() { return mProfiles; }
+
+    public long getId() { return mId; }
 	
 	/**********
 	 *  Sets
@@ -212,5 +217,7 @@ public class ModelPrinter {
 	public void setJobPath(String path){
 		mJobPath = path;
 	}
+
+    public void setId(long id) { mId = id; }
 
 }

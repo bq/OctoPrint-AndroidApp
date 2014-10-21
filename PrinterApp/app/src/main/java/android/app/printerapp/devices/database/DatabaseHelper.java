@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
         "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-        FeedEntry._ID + " INTEGER PRIMARY KEY," +
+        FeedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
         FeedEntry.DEVICES_NAME + TEXT_TYPE + COMMA_SEP +
         FeedEntry.DEVICES_ADDRESS + TEXT_TYPE + COMMA_SEP +
         FeedEntry.DEVICES_POSITION + TEXT_TYPE + COMMA_SEP +

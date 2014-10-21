@@ -1,6 +1,5 @@
 package android.app.printerapp.devices.database;
 
-import java.util.Map;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ContentValues;
@@ -10,6 +9,8 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import java.util.Map;
 
 
 /**
@@ -32,7 +33,7 @@ public class DatabaseController {
 	}
 	
 	//Add a new element to the permanent database
-	public static void writeDb(String name, String address, String position){
+	public static long writeDb(String name, String address, String position){
 		
 		// Gets the data repository in write mode
 		mDb = mDbHelper.getWritableDatabase();
@@ -45,16 +46,18 @@ public class DatabaseController {
 		values.put(FeedEntry.DEVICES_POSITION, position);
 		values.put(FeedEntry.DEVICES_DISPLAY, name);
 		
-		mDb.insert(FeedEntry.TABLE_NAME, null, values);		
+		long id = mDb.insert(FeedEntry.TABLE_NAME, null, values);
 		mDb.close();
+
+        return id;
 		
 	}
 	
-	public static void deleteFromDb(String name){
+	public static void deleteFromDb(long id){
 		
 		mDb = mDbHelper.getWritableDatabase();
 		
-		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry.DEVICES_NAME + " = '" + name + "'", null);
+		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry._ID + " = '" + id + "'", null);
 		mDb.close();
 		
 		//DevicesListController.loadList(mContext);
@@ -115,7 +118,7 @@ public class DatabaseController {
 	}
 	
 	//update new position
-	public static void updateDB(String tableName, String id, String newValue){
+	public static void updateDB(String tableName, long id, String newValue){
 		
 		mDb = mDbHelper.getReadableDatabase();
 		
@@ -124,7 +127,7 @@ public class DatabaseController {
 		values.put(tableName, newValue);
 		
 		int count = mDb.update(FeedEntry.TABLE_NAME, values,
-				FeedEntry.DEVICES_NAME + " = '" + id + "'", null);
+				FeedEntry._ID + " = '" + id + "'", null);
 		
 		Log.i("OUT", "Updated: " + count + " with " + tableName + " updated with " + newValue + " where " + id);
 		
@@ -148,7 +151,6 @@ public class DatabaseController {
 	
 	/**
 	 * Check if a file is favorite
-	 * @param name
 	 * @return
 	 */
 	public static boolean isPreference(String where, String key){
