@@ -8,6 +8,7 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -15,7 +16,6 @@ import android.opengl.Matrix;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.app.printerapp.library.StorageModelCreation;
 import android.app.printerapp.viewer.Geometry.*;
 
 
@@ -661,7 +661,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
 
         GLES20.glReadPixels(minX, minY, mWidth, mHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
-        StorageModelCreation.saveSnapshot(mWidth, mHeight, bb); 
+        LibraryModelCreation.saveSnapshot(mWidth, mHeight, bb);
 	}
 	
 

@@ -1,5 +1,21 @@
 package android.app.printerapp.library;
 
+import android.app.AlertDialog;
+import android.app.printerapp.R;
+import android.app.printerapp.viewer.DataStorage;
+import android.app.printerapp.viewer.GcodeFile;
+import android.app.printerapp.viewer.StlFile;
+import android.app.printerapp.viewer.ViewerMainFragment;
+import android.app.printerapp.viewer.ViewerSurfaceView;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,22 +27,6 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
-import android.app.printerapp.R;
-import android.app.printerapp.viewer.DataStorage;
-import android.app.printerapp.viewer.GcodeFile;
-import android.app.printerapp.viewer.StlFile;
-import android.app.printerapp.viewer.ViewerMainFragment;
-import android.app.printerapp.viewer.ViewerSurfaceView;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.Handler;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
-
 
 /**
  * 
@@ -34,7 +34,7 @@ import android.widget.FrameLayout;
  * @author alberto-baeza
  *
  */
-public class StorageModelCreation {
+public class LibraryModelCreation {
 	
 	static AlertDialog mAlert;
 	static String mName;
@@ -43,31 +43,36 @@ public class StorageModelCreation {
 	
 	private static Handler mHandler = new Handler();
 	private static final int WAIT_TIME = 2000;
+
+    private static Context mContext;
+    private static File mFile;
 	
 	//Static method to create a folder structure
 	public static void createFolderStructure(Context context, File source){
 		//Catch null pointer because file browser buttons aren't implemented
 		if (source!=null){
 			mName = source.getName().substring(0, source.getName().lastIndexOf('.'));
+            mContext = context;
+            mFile = source;
 			
-			File root = new File(StorageController.getParentFolder().getAbsolutePath() +
+			File root = new File(LibraryController.getParentFolder().getAbsolutePath() +
 					"/Files/" + mName);
 			
 			File mainFolder;
 			File secondaryFolder;
 			
-			Log.i("OUT","File " + root.getAbsolutePath() + " source " + source.getName());
+			Log.i("OUT","File " + root.getAbsolutePath() + " source " + mFile.getName());
 			
 			//root folder
 			if (root.mkdirs()){
 				
-				if ((source.getName().contains(".stl")) || (source.getName().contains(".STL"))){
+				if ((mFile.getName().contains(".stl")) || (mFile.getName().contains(".STL"))){
 					
 					mainFolder = new File(root.getAbsolutePath() + "/_stl");
 					secondaryFolder = new File(root.getAbsolutePath() + "/_gcode");
 					
 				} else {
-					Log.i("OUT","I DONT EVEN " + source.getName());
+					Log.i("OUT","I DONT EVEN " + mFile.getName());
 					mainFolder = new File(root.getAbsolutePath() + "/_gcode");
 					secondaryFolder = new File(root.getAbsolutePath() + "/_stl");
 					
@@ -84,12 +89,12 @@ public class StorageModelCreation {
 					
 					try{
 					
-						File target = new File(mainFolder.getAbsolutePath() + "/" + source.getName());
+						File target = new File(mainFolder.getAbsolutePath() + "/" + mFile.getName());
 		
 						
-						if(source.exists()){
+						if(mFile.exists()){
 		                    
-		                    InputStream in = new FileInputStream(source);
+		                    InputStream in = new FileInputStream(mFile);
 		                    OutputStream out = new FileOutputStream(target);
 		         
 		                    // Copy the bits from instream to outstream
@@ -107,7 +112,7 @@ public class StorageModelCreation {
 		
 		                }
 						
-						openModel(context, target.getAbsolutePath());
+						openModel(mContext, target.getAbsolutePath());
 					} catch (IOException e){
 						e.printStackTrace();
 					}	
@@ -140,9 +145,9 @@ public class StorageModelCreation {
 		List<DataStorage> list = new ArrayList<DataStorage> ();
 		DataStorage data = new DataStorage();
 		
-		if(StorageController.hasExtension(0, path)) {
+		if(LibraryController.hasExtension(0, path)) {
 			StlFile.openStlFile (context, file, data, ViewerMainFragment.DO_SNAPSHOT);
-		} else if (StorageController.hasExtension(1, path)) {
+		} else if (LibraryController.hasExtension(1, path)) {
 			GcodeFile.openGcodeFile(context, file, data, ViewerMainFragment.DO_SNAPSHOT);
 		}
 		
@@ -160,7 +165,6 @@ public class StorageModelCreation {
 	
 	/**
 	 * Creates the snapshot of the model
-	 * @param unused
 	 */
 	public static void saveSnapshot (final int width, final int height, final ByteBuffer bb ) {
 		int screenshotSize = width * height;
@@ -184,7 +188,7 @@ public class StorageModelCreation {
         bitmap.copyPixelsFromBuffer(sb);
         
         try {
-            FileOutputStream fos = new FileOutputStream(StorageController.getParentFolder().getAbsolutePath() + "/Files/" + mName + "/" + mName + ".jpg");
+            FileOutputStream fos = new FileOutputStream(LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + mName + "/" + mName + ".jpg");
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
@@ -199,11 +203,32 @@ public class StorageModelCreation {
 	 * Dismiss the loading project dialog after a few seconds.
 	 */
 	private static void dismissSnapshotAlert () {
+
 		mHandler.postDelayed(new Runnable() {
             public void run() {
                 mAlert.dismiss();
+                deleteFileDialog();
             }
         }, WAIT_TIME);
 
 	}
+
+    private static void deleteFileDialog(){
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+        adb.setTitle("Do you want to delete the original file?");
+        adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                LibraryController.deleteFiles(mFile);
+                //LibraryController.getFileList().remove(mFile);
+
+
+            }
+        });
+        adb.setNegativeButton(R.string.cancel, null);
+        adb.show();
+
+    }
 }

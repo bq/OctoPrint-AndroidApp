@@ -1,7 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -17,7 +15,6 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintNetwork;
 import android.content.Context;

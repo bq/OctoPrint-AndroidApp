@@ -1,7 +1,7 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.util.Log;
@@ -81,7 +81,7 @@ public class SlicingHandler {
 
         try {
 
-            File tempPath =  new File(StorageController.getParentFolder().getAbsolutePath() + "/temp");
+            File tempPath =  new File(LibraryController.getParentFolder().getAbsolutePath() + "/temp");
 
             tempPath.mkdir();
 
@@ -185,9 +185,9 @@ public class SlicingHandler {
     //delete temp folder
     private void cleanTempFolder(){
 
-        File file = new File(StorageController.getParentFolder() + "/temp/");
+        File file = new File(LibraryController.getParentFolder() + "/temp/");
 
-        StorageController.deleteFiles(file);
+        LibraryController.deleteFiles(file);
     }
 
 }

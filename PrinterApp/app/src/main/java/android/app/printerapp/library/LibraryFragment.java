@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -38,8 +37,8 @@ import java.util.Comparator;
  */
 public class LibraryFragment extends Fragment {
 
-    private StorageAdapter mGridAdapter;
-    private StorageAdapter mListAdapter;
+    private LibraryAdapter mGridAdapter;
+    private LibraryAdapter mListAdapter;
 
     private ViewSwitcher mSwitcher;
 
@@ -95,12 +94,12 @@ public class LibraryFragment extends Fragment {
             mSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher_library);
 
             //Initial file list
-            StorageController.reloadFiles("all");
+            LibraryController.reloadFiles("all");
 
-            mGridAdapter = new StorageAdapter(getActivity(), R.layout.grid_item_libray, StorageController.getFileList());
-            mListAdapter = new StorageAdapter(getActivity(), R.layout.list_item_library, StorageController.getFileList());
+            mGridAdapter = new LibraryAdapter(getActivity(), R.layout.grid_item_libray, LibraryController.getFileList());
+            mListAdapter = new LibraryAdapter(getActivity(), R.layout.list_item_library, LibraryController.getFileList());
 
-            StorageOnClickListener clickListener = new StorageOnClickListener(this);
+            LibraryOnClickListener clickListener = new LibraryOnClickListener(this);
 
             GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
             g.setSelector(getResources().getDrawable(R.drawable.list_selector));
@@ -203,6 +202,7 @@ public class LibraryFragment extends Fragment {
         tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
+        mCurrentTab = "all";
 
         //Set style for the tab widget
         for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
@@ -221,7 +221,7 @@ public class LibraryFragment extends Fragment {
                         mCurrentTab = "all";
                         break;
                     case 1:
-                        mCurrentTab = StorageController.getParentFolder().getAbsolutePath();
+                        mCurrentTab = LibraryController.getParentFolder().getAbsolutePath();
                         break;
                     case 2:
                         mCurrentTab = "printer";
@@ -244,10 +244,10 @@ public class LibraryFragment extends Fragment {
     public void changeTab() {
 
         if (mCurrentTab != null) {
+            Log.i("OUT","realdong " + mCurrentTab);
+            LibraryController.reloadFiles(mCurrentTab);
 
-            StorageController.reloadFiles(mCurrentTab);
-
-        }
+        } Log.i("OUT","Null hijo de puta");
 
         sortAdapter();
     }
@@ -276,7 +276,7 @@ public class LibraryFragment extends Fragment {
 
                     case R.id.lb_radio3: //remove All filters and reload the whole list
                         mCurrentFilter = null;
-                        StorageController.reloadFiles(StorageController.getParentFolder().getAbsolutePath());
+                        LibraryController.reloadFiles(LibraryController.getParentFolder().getAbsolutePath());
                         break;
                     case R.id.lb_radio1: //Show gcodes only
                         mCurrentFilter = "gcode";
@@ -350,7 +350,7 @@ public class LibraryFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = et.getText().toString();
-                if (name != null) StorageController.createFolder(name);
+                if (name != null) LibraryController.createFolder(name);
                 notifyAdapter();
             }
         });
@@ -368,14 +368,14 @@ public class LibraryFragment extends Fragment {
     public void optionPaste() {
 
         //Copy file to new folder
-        File fileTo = new File(StorageController.getCurrentPath() + "/" + mMoveFile.getName());
+        File fileTo = new File(LibraryController.getCurrentPath() + "/" + mMoveFile.getName());
 
         //Delete file if success
         if (!mMoveFile.renameTo(fileTo)) {
             mMoveFile.delete();
         }
 
-        StorageController.reloadFiles(StorageController.getCurrentPath().getAbsolutePath());
+        LibraryController.reloadFiles(LibraryController.getCurrentPath().getAbsolutePath());
         sortAdapter();
 
         setMoveFile(null);
@@ -397,17 +397,17 @@ public class LibraryFragment extends Fragment {
                 //Must check all cases, Folders > Projects > Files
                 if (arg0.isDirectory()) {
 
-                    if (StorageController.isProject(arg0)) {
+                    if (LibraryController.isProject(arg0)) {
 
                         if (arg1.isDirectory()) {
-                            if (StorageController.isProject(arg1))
+                            if (LibraryController.isProject(arg1))
                                 return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
                             else return 1;
                         } else return -1;
 
                     } else {
                         if (arg1.isDirectory()) {
-                            if (StorageController.isProject(arg1)) return -1;
+                            if (LibraryController.isProject(arg1)) return -1;
                             else
                                 return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
 
@@ -440,9 +440,9 @@ public class LibraryFragment extends Fragment {
 
     //onBackPressed handler to the file browser
     public boolean goBack() {
-        if (!StorageController.getCurrentPath().getAbsolutePath().equals(StorageController.getParentFolder().getAbsolutePath())) {
-            Log.i("OUT", "This is " + StorageController.getCurrentPath());
-            StorageController.reloadFiles(StorageController.getCurrentPath().getParent());
+        if (!LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
+            Log.i("OUT", "This is " + LibraryController.getCurrentPath());
+            LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
             sortAdapter();
             return true;
         }

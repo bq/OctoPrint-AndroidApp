@@ -1,15 +1,16 @@
 package android.app.printerapp.library;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Map;
 import android.annotation.SuppressLint;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.os.Environment;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -19,13 +20,14 @@ import android.os.Environment;
  *
  */
 @SuppressLint("DefaultLocale")
-public class StorageController {
+public class LibraryController {
 	
 	private static ArrayList<File> mFileList = new ArrayList<File>();
 	private static File mCurrentPath;
 	
-	public StorageController(){
-		
+	public LibraryController(){
+
+        //TODO nope
 		mFileList.clear();
 		//Retrieve normal files
 		retrieveFiles( getParentFolder(), false);

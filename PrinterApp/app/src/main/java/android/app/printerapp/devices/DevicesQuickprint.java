@@ -3,7 +3,7 @@ package android.app.printerapp.devices;
 import android.app.Activity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelFile;
 import android.content.ClipData;
 import android.content.Context;
@@ -61,7 +61,7 @@ public class DevicesQuickprint {
 
 
     /**
-     * TODO: This is the same method as StorageController.retrieveFavorites but this will
+     * TODO: This is the same method as LibraryController.retrieveFavorites but this will
      * contain History instead of favorites so it shouldn't matter
      */
     private void addFiles() {
@@ -96,7 +96,7 @@ public class DevicesQuickprint {
 
                     final int current = i;
 
-                    if ((StorageController.isProject(m))) {
+                    if ((LibraryController.isProject(m))) {
 
 
 
@@ -147,7 +147,7 @@ public class DevicesQuickprint {
                         data = ClipData.newPlainText("internal", name);
                     } else if (quickPrintModel.getStorage().equals("sd")) {
                         data = ClipData.newPlainText("internalsd", quickPrintModel.getName());
-                    } else if (StorageController.hasExtension(1, name)) {
+                    } else if (LibraryController.hasExtension(1, name)) {
                         data = ClipData.newPlainText("name", name);
                     }
 

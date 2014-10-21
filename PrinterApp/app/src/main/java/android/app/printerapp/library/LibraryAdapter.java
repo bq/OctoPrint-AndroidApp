@@ -1,9 +1,5 @@
 package android.app.printerapp.library;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
@@ -21,13 +17,17 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * This clas will handle the adapter for the library items
  *
  * @author alberto-baeza
  */
-public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
+public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
 
     //Original list and current list to be filtered
     private ArrayList<File> mCurrent;
@@ -38,7 +38,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 
     private int mResource;
 
-    public StorageAdapter(Context context, int resource, List<File> objects) {
+    public LibraryAdapter(Context context, int resource, List<File> objects) {
         super(context, resource, objects);
         mOriginal = (ArrayList<File>) objects;
         mCurrent = (ArrayList<File>) objects;
@@ -78,7 +78,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
 
         if (m.isDirectory()) {
 
-            if (StorageController.isProject(m)) {
+            if (LibraryController.isProject(m)) {
                 Drawable d;
                 d = ((ModelFile) m).getSnapshot();
 
@@ -183,7 +183,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
                         }
                     } else {
 
-                        if (!StorageController.isProject(m)) {
+                        if (!LibraryController.isProject(m)) {
                             filt.add(m);
                         } else {
                             if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
@@ -199,7 +199,7 @@ public class StorageAdapter extends ArrayAdapter<File> implements Filterable {
                     	
                     	if (m.isDirectory()){
                     		
-                    		if (StorageController.isProject(m)){
+                    		if (LibraryController.isProject(m)){
                     			if (((ModelFile)m).getStorage().contains(constraint)){
                             		filt.add(m);
                             	}

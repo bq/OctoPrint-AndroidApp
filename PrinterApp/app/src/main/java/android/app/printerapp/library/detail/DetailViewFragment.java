@@ -3,14 +3,12 @@ package android.app.printerapp.library.detail;
 import java.io.File;
 import java.util.ArrayList;
 
-import android.app.ActionBar;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelFile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,7 +51,7 @@ public class DetailViewFragment extends Fragment {
                     container, false);
 
 
-            mFile = (ModelFile) StorageController.getFileList().get(args.getInt("index"));
+            mFile = (ModelFile) LibraryController.getFileList().get(args.getInt("index"));
 
             ImageView iv = (ImageView) rootView.findViewById(R.id.detail_iv_preview);
             iv.setImageDrawable(mFile.getSnapshot());

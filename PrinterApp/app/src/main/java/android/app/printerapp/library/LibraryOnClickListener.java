@@ -1,7 +1,5 @@
 package android.app.printerapp.library;
 
-import java.io.File;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
@@ -16,22 +14,24 @@ import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
+import java.io.File;
 
 /**
  * This class will handle the click events for the library elements
  *
  * @author alberto-baeza
  */
-public class StorageOnClickListener implements OnItemClickListener, OnItemLongClickListener {
+public class LibraryOnClickListener implements OnItemClickListener, OnItemLongClickListener {
 
     LibraryFragment mContext;
 
 
-    public StorageOnClickListener(LibraryFragment context) {
+    public LibraryOnClickListener(LibraryFragment context) {
         this.mContext = context;
     }
 
@@ -40,9 +40,9 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
                                    long arg3) {
 
-        Log.d("StorageOnClickListener", "onItemLongClick");
+        Log.d("LibraryOnClickListener", "onItemLongClick");
 
-        File f = StorageController.getFileList().get(arg2);
+        File f = LibraryController.getFileList().get(arg2);
 
         //If it's not IN the printer
         if ((!f.getParent().contains("printer")) &&
@@ -60,22 +60,22 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 
-        Log.d("StorageOnClickListener", "onItemClick");
+        Log.d("LibraryOnClickListener", "onItemClick");
 
         //Logic for getting file type
-        File f = StorageController.getFileList().get(arg2);
+        File f = LibraryController.getFileList().get(arg2);
 
         //If it's folder open it
         if (f.isDirectory()) {
 
 
             //If it's project folder, send stl
-            if (StorageController.isProject(f)) {
+            if (LibraryController.isProject(f)) {
                 //Show detail view regardless
                 ItemListActivity.showExtraFragment(0, String.valueOf(arg2));
             } else {
                 //Not a project, open folder
-                StorageController.reloadFiles(f.getAbsolutePath());
+                LibraryController.reloadFiles(f.getAbsolutePath());
                 mContext.sortAdapter();
             }
 
@@ -84,12 +84,12 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
 
             //it's a printer file
             if (f.getParent().contains("printer")) {
-                StorageController.retrievePrinterFiles(f.getName());
+                LibraryController.retrievePrinterFiles(f.getName());
                 mContext.notifyAdapter();
 
             } else {
 
-                ModelPrinter p = DevicesListController.getPrinter(StorageController.getCurrentPath().getName());
+                ModelPrinter p = DevicesListController.getPrinter(LibraryController.getCurrentPath().getName());
 
                 //it's a printer folder because there's a printer with the same name
                 if (p != null) {
@@ -119,7 +119,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
     private void showOptionDialog(final int index) {
 
         //Logic for getting file type
-        final File f = StorageController.getFileList().get(index);
+        final File f = LibraryController.getFileList().get(index);
 
         String[] mDialogOptions;
 
@@ -147,7 +147,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
                         switch (which) {
                             case 0: //Print / Multiprint
                                 if (f.isDirectory()) {
-                                    if (StorageController.isProject(f)) {
+                                    if (LibraryController.isProject(f)) {
                                         ItemListActivity.showExtraFragment(0, String.valueOf(index));
                                         //ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
                                     }
@@ -160,7 +160,7 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
                                 //TODO Doesn't work when empty gcodes comeon
                                 ad.dismiss();
                                 if (f.isDirectory()) {
-                                    if (StorageController.isProject(f)){
+                                    if (LibraryController.isProject(f)){
 
                                         if (((ModelFile)f).getStl()==null) {
 
@@ -194,8 +194,8 @@ public class StorageOnClickListener implements OnItemClickListener, OnItemLongCl
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        StorageController.deleteFiles(f);
-                                        StorageController.getFileList().remove(f);
+                                        LibraryController.deleteFiles(f);
+                                        LibraryController.getFileList().remove(f);
 
                                         if (DatabaseController.isPreference("Favorites", f.getName())) {
                                             Log.i("OUT", "oh my, IT IS! " + f.getName());
