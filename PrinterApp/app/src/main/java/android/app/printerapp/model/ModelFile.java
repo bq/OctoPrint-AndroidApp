@@ -1,7 +1,7 @@
 package android.app.printerapp.model;
 
 import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,8 +37,8 @@ public class ModelFile extends File {
         mStorage = storage;
 
         //TODO: Move this to the ModelFile code
-        setPathStl(StorageController.retrieveFile(path, "_stl"));
-        setPathGcode(StorageController.retrieveFile(path, "_gcode"));
+        setPathStl(LibraryController.retrieveFile(path, "_stl"));
+        setPathGcode(LibraryController.retrieveFile(path, "_gcode"));
         setSnapshot(path + "/" + getName() + ".jpg");
 
     }

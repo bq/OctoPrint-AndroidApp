@@ -72,7 +72,7 @@ public class OctoprintFiles {
 				     //Add to storage file list
 				     p.updateFiles(m);
 				     //TODO NOPE!
-				     //StorageController.addToList(m);
+				     //LibraryController.addToList(m);
 				     
 				     Log.i("FILES","Adding " + object.getString("name"));
 				    } 

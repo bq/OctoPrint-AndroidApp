@@ -7,7 +7,7 @@ import android.app.DownloadManager;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
@@ -491,7 +491,7 @@ public class ViewerMainFragment extends Fragment {
 
 
                         //TODO  what the fuck did i do here
-                        File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
+                        File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
                         if (tempFile.exists()) {
                             //Open desired file
                             openFile(tempFile.getAbsolutePath());
@@ -522,10 +522,10 @@ public class ViewerMainFragment extends Fragment {
         DataStorage data = null;
         mFile = new File(filePath);
         //Open the file
-        if (StorageController.hasExtension(0, filePath)) {
+        if (LibraryController.hasExtension(0, filePath)) {
             data = new DataStorage();
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
-        } else if (StorageController.hasExtension(1, filePath)) {
+        } else if (LibraryController.hasExtension(1, filePath)) {
             data = new DataStorage();
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
         }
@@ -564,7 +564,7 @@ public class ViewerMainFragment extends Fragment {
         } else {
 
             //Here's the new stuff! //TODO Should make a method to get parent file
-            pathStl = //StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
+            pathStl = //LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
                     mFile.getParentFile().getParent() + "/_stl/";
             File f = new File(pathStl);
 
@@ -584,14 +584,14 @@ public class ViewerMainFragment extends Fragment {
     private void showGcodeFiles() {
         //Logic for getting file type
         String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-        String pathProject = StorageController.getParentFolder().getAbsolutePath() + "/Files/" + name;
+        String pathProject = LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + name;
         File f = new File(pathProject);
 
         //Only when it's a project
         if (f.isDirectory()) {
             String path = pathProject + "/_gcode";
 
-            if (StorageController.isProject(f) && new File(path).list().length > 0) {
+            if (LibraryController.isProject(f) && new File(path).list().length > 0) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
                 adb.setTitle(mContext.getString(R.string.gcode_viewer));
 
@@ -640,16 +640,16 @@ public class ViewerMainFragment extends Fragment {
         String filePath = "";
         if (mFile != null) filePath = mFile.getAbsolutePath();
 
-        if (StorageController.hasExtension(0, filePath)) {
+        if (LibraryController.hasExtension(0, filePath)) {
             if (mDataList.size() > 1) {
-                if (StorageController.hasExtension(1, mDataList.get(mDataList.size() - 2).getPathFile())) {
+                if (LibraryController.hasExtension(1, mDataList.get(mDataList.size() - 2).getPathFile())) {
                     mDataList.remove(mDataList.size() - 2);
                 }
             }
             Geometry.relocateIfOverlaps(mDataList);
             mSeekBar.setVisibility(View.INVISIBLE);
 
-        } else if (StorageController.hasExtension(1, filePath)) {
+        } else if (LibraryController.hasExtension(1, filePath)) {
             if (mDataList.size() > 1)
                 while (mDataList.size() > 1) {
                     mDataList.remove(0);
@@ -670,7 +670,7 @@ public class ViewerMainFragment extends Fragment {
      * ********************** SAVE FILE *******************************
      */
     private void saveNewProject() {
-        View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_proyect_name_dialog, null);
+        View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_project_name_dialog, null);
         final EditText proyectNameText = (EditText) dialogText.findViewById(R.id.proyect_name);
 
         proyectNameText.addTextChangedListener(new TextWatcher() {
@@ -729,7 +729,7 @@ public class ViewerMainFragment extends Fragment {
              *  Alberto
              */
 
-            if (StorageController.hasExtension(0, mFile.getName())) {
+            if (LibraryController.hasExtension(0, mFile.getName())) {
                 if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
                     proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
                 else {
@@ -770,7 +770,7 @@ public class ViewerMainFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
 
 
-                //TODO move rename/move logic to StorageController
+                //TODO move rename/move logic to LibraryController
                 //Save gcode
                 File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString() + ".gcode");
                 File fileFrom = mFile;
@@ -1048,7 +1048,7 @@ public class ViewerMainFragment extends Fragment {
 
 
                                     //TODO works
-                                    File tempFile = new File(StorageController.getParentFolder() + "/temp/temp.gco");
+                                    File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
 
                                     //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
                                     File renameFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());

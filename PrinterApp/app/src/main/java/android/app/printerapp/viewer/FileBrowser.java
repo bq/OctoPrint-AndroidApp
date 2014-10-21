@@ -10,13 +10,13 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.printerapp.library.LibraryController;
+import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.view.KeyEvent;
 import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
-import android.app.printerapp.library.StorageModelCreation;
 
 /**
  * 
@@ -78,7 +78,7 @@ public class FileBrowser extends Activity  {
 			break;
 		}
 		
-		show(StorageController.getParentFolder().getAbsolutePath());		
+		show(LibraryController.getParentFolder().getAbsolutePath());
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class FileBrowser extends Activity  {
 		mFileListListener = new OnFileListDialogListener() {			
 			@Override
 			public void onClickFileList(File file) {
-				StorageModelCreation.createFolderStructure(context,file);
+				LibraryModelCreation.createFolderStructure(context, file);
 			}
 		};
 	}

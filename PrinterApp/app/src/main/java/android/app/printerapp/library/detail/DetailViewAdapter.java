@@ -2,7 +2,7 @@ package android.app.printerapp.library.detail;
 
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -67,7 +67,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 
         TextView ig = (TextView) v.findViewById(R.id.detailview_gcode);
 		
-		if ((StorageController.hasExtension(1, f.getName()))){
+		if ((LibraryController.hasExtension(1, f.getName()))){
 			
 			ig.setVisibility(View.VISIBLE);
             ib.setVisibility(View.VISIBLE);
@@ -85,7 +85,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			@Override
 			public void onClick(View v) {
 
-                if ((StorageController.hasExtension(0, f.getName()))) DevicesListController.selectPrinter(v.getContext(), f , 0);
+                if ((LibraryController.hasExtension(0, f.getName()))) DevicesListController.selectPrinter(v.getContext(), f , 0);
                 else DevicesListController.selectPrinter(v.getContext(), f , 1);
 
 				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");

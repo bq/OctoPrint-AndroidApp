@@ -6,6 +6,7 @@ import java.io.FileReader;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
@@ -13,7 +14,6 @@ import android.os.Message;
 import android.util.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.printview.PrintViewFragment;
-import android.app.printerapp.library.StorageModelCreation;
 
 public class GcodeFile  {
 	private static final String TAG = "gcode";
@@ -248,7 +248,7 @@ public class GcodeFile  {
     			PrintViewFragment.drawPrintView();
     			mProgressDialog.dismiss();
     		} else if (mMode== ViewerMainFragment.DO_SNAPSHOT) {
-				StorageModelCreation.takeSnapshot();
+				LibraryModelCreation.takeSnapshot();
     		}
         }
     };

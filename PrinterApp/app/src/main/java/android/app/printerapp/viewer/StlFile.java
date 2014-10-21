@@ -2,8 +2,8 @@ package android.app.printerapp.viewer;
 
 import android.app.ProgressDialog;
 import android.app.printerapp.R;
-import android.app.printerapp.library.StorageController;
-import android.app.printerapp.library.StorageModelCreation;
+import android.app.printerapp.library.LibraryController;
+import android.app.printerapp.library.LibraryModelCreation;
 import android.app.printerapp.viewer.Geometry.Point;
 import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
@@ -214,7 +214,7 @@ public class StlFile {
 				ViewerMainFragment.draw();
 				mProgressDialog.dismiss();  
 			} else if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
-				StorageModelCreation.takeSnapshot();
+				LibraryModelCreation.takeSnapshot();
 			}
         }
 	 };
@@ -384,7 +384,7 @@ public class StlFile {
 	}
 	
 	public static boolean checkIfNameExists (String projectName) {
-		File check = new File (StorageController.getParentFolder().getAbsolutePath() + "/Files/" + projectName);
+		File check = new File (LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + projectName);
 		if (check.exists()) return true;
 		
 		return false;
@@ -475,7 +475,7 @@ public class StlFile {
             slicer.sendTimer();
 
         } else {
-            String path = StorageController.getParentFolder().getAbsolutePath() + "/" + projectName + ".stl";
+            String path = LibraryController.getParentFolder().getAbsolutePath() + "/" + projectName + ".stl";
             try {
                 FileOutputStream fos = new FileOutputStream(path);
                 fos.write(data);
@@ -485,7 +485,7 @@ public class StlFile {
             }
 
             File file = new File (path);
-            StorageModelCreation.createFolderStructure(mContext, file);
+            LibraryModelCreation.createFolderStructure(mContext, file);
             file.delete();
         }
 

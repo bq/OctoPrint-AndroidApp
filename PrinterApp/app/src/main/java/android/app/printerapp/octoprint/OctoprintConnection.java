@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.StorageController;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -327,7 +327,7 @@ public class OctoprintConnection {
 
 
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
-                StorageController.getParentFolder() + "/temp/", payload.getString("gcode"));
+                LibraryController.getParentFolder() + "/temp/", payload.getString("gcode"));
 
 
 

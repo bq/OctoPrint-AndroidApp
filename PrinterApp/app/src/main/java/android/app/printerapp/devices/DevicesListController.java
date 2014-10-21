@@ -3,21 +3,17 @@ package android.app.printerapp.devices;
 import java.io.File;
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.StorageController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
-import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -203,7 +199,7 @@ public class DevicesListController {
 
                 dialogInterface.dismiss();
 
-              //if (StorageController.hasExtension(0, file.getName()))
+              //if (LibraryController.hasExtension(0, file.getName()))
                 //    OctoprintFiles.uploadFile(context, file, m, true, false);
 
             }
@@ -288,11 +284,11 @@ public class DevicesListController {
 				    		
 						} else {
 							
-							if (StorageController.hasExtension(1, f.getName())) OctoprintFiles.uploadFile(context, f, m, false, false);
-							else if (StorageController.hasExtension(0, f.getName())) OctoprintFiles.uploadFile(context, f, m, true, false);
+							if (LibraryController.hasExtension(1, f.getName())) OctoprintFiles.uploadFile(context, f, m, false, false);
+							else if (LibraryController.hasExtension(0, f.getName())) OctoprintFiles.uploadFile(context, f, m, true, false);
 							
 						}
-						if (StorageController.hasExtension(1, f.getName())){
+						if (LibraryController.hasExtension(1, f.getName())){
 							ItemListFragment.performClick(0);
 							if (checkedItems.length==1) ItemListActivity.showExtraFragment(1, m.getName());
 						}
