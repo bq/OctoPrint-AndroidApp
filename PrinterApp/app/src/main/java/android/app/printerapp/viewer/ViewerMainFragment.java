@@ -930,19 +930,49 @@ public class ViewerMainFragment extends Fragment {
      * **************************** PROGRESS BAR FOR SLICING ******************************************
      */
 
+    /**
+     * Static method to show the progress bar by sending an integer when receiving data from the socket
+     * @param i either -1 to hide the progress bar, 0 to show an indefinite bar, or a normal integer
+     */
     public static void showProgressBar(int i) {
 
-        Log.i("OUT", "Theoretically showing Progress Bar :/");
         ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
-        pb.bringToFront();
-        pb.setVisibility(i);
-        mRootView.invalidate();
+
+        if (i>=0){
+
+            pb.bringToFront();
+            pb.setVisibility(View.VISIBLE);
+
+            if (i==0) {
+                pb.setIndeterminate(true);
+            } else {
+
+                pb.setProgress(i);
+                pb.setIndeterminate(false);
+
+            }
+
+
+            mRootView.invalidate();
+            
+
+
+        } else {
+            pb.setVisibility(View.GONE);
+        }
+
+        Log.i("OUT", "Theoretically showing Progress Bar :/");
+
+
     }
 
+    /**
+     * Receives the "download complete" event asynchronously
+     */
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
             //TODO set a slicing boolean to print
-            showProgressBar(View.GONE);
+            showProgressBar(-1);
         }
     };
 
@@ -950,6 +980,8 @@ public class ViewerMainFragment extends Fragment {
 
     /************************************  SIDE PANEL ********************************************************/
 
+    //Set the working printer
+    //TODO this won't happen
     public static void setPrinter(ModelPrinter p)
     {
 
@@ -959,6 +991,7 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
+    //Initializes the side panel with the printer data
     public void initSidePanel(){
 
         Handler handler = new Handler();
@@ -971,6 +1004,7 @@ public class ViewerMainFragment extends Fragment {
 
                 try {
 
+                    //UI references
 
                     final Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
                     final Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
@@ -978,6 +1012,8 @@ public class ViewerMainFragment extends Fragment {
 
                     PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
 
+
+                    //Set slicing parameters to send to the server
                     s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -1034,6 +1070,7 @@ public class ViewerMainFragment extends Fragment {
                     s_support.setAdapter(adapter_support);
 
 
+                    //Send a print command
                     printButton.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {

@@ -3,6 +3,7 @@ package android.app.printerapp.octoprint;
 import android.app.ProgressDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.util.Log;
@@ -273,6 +274,9 @@ public class OctoprintSlicing {
 
 
                                         Log.i("OUT","Slicing @" + response.toString());
+
+                                        //TODO we can actually use the null field to hold the original project name
+                                        DatabaseController.handlePreference("Slicing",file.getName(), null, true);
 
                                     }
 

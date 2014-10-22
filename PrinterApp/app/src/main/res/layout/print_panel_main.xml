@@ -25,7 +25,7 @@
         android:layout_below="@+id/tabhost_views"
         android:layout_marginRight="15dp"
         android:layout_marginTop="30dp"
-        android:indeterminate="true" />
+        />
 
     <Button
         android:id="@+id/down"
