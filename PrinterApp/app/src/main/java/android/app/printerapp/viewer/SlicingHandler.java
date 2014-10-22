@@ -5,7 +5,6 @@ import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -164,7 +163,7 @@ public class SlicingHandler {
                     if (mPrinter!=null){
 
                         OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
-                        ViewerMainFragment.showProgressBar(View.VISIBLE);
+                        ViewerMainFragment.showProgressBar(0);
 
                     } else {
 
