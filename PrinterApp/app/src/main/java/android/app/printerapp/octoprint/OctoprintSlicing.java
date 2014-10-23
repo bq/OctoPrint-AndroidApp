@@ -144,7 +144,7 @@ public class OctoprintSlicing {
 							JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
 
-                Log.i("OUT", response.toString());
+                Log.i("PROFILES", response.toString());
 
                 Iterator<String> keys = response.keys();
                 int selectedItem = 0;

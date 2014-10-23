@@ -29,6 +29,8 @@ import de.tavendo.autobahn.WebSocketHandler;
  *
  */
 public class OctoprintConnection {
+
+    private static final int SOCKET_TIMEOUT = 10000;
 		
 	/**
 	 * 
@@ -242,11 +244,13 @@ public class OctoprintConnection {
 							
 							@Override
 							public void run() {
+
+                                Log.i("OUT","Timeout expired, reconnecting to " + p.getAddress());
 								
 								 p.startUpdate(context);
 								
 							}
-						}, 1000);
+						}, SOCKET_TIMEOUT);
 			           
 		            
 		         }

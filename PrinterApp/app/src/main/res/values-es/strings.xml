@@ -115,6 +115,8 @@
 
     <string name="viewer_slice_wait">Espere a que termine de laminar</string>
     <string name="viewer_slice_error">Error subiendo el fichero</string>
+    <string name="viewer_printer_unavailable">Impresora no disponible</string>
+    <string name="viewer_printer_selected">Impresora no seleccionada</string>
     
     <string name="settings_network">Red por defecto</string>
     <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>

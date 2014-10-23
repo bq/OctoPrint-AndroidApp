@@ -96,7 +96,7 @@ public class LibraryFragment extends Fragment {
             //Initial file list
             LibraryController.reloadFiles("all");
 
-            mGridAdapter = new LibraryAdapter(getActivity(), R.layout.grid_item_libray, LibraryController.getFileList());
+            mGridAdapter = new LibraryAdapter(getActivity(), R.layout.grid_item_library, LibraryController.getFileList());
             mListAdapter = new LibraryAdapter(getActivity(), R.layout.list_item_library, LibraryController.getFileList());
 
             LibraryOnClickListener clickListener = new LibraryOnClickListener(this);

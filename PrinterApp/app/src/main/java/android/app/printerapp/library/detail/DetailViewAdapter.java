@@ -1,5 +1,6 @@
 package android.app.printerapp.library.detail;
 
+import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.LibraryController;
@@ -85,8 +86,8 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			@Override
 			public void onClick(View v) {
 
-                if ((LibraryController.hasExtension(0, f.getName()))) DevicesListController.selectPrinter(v.getContext(), f , 0);
-                else DevicesListController.selectPrinter(v.getContext(), f , 1);
+                if ((LibraryController.hasExtension(0, f.getName()))) ItemListActivity.requestOpenFile(f.getAbsolutePath());
+                else DevicesListController.selectPrinter(v.getContext(), f);
 
 				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");
 				
@@ -99,7 +100,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			@Override
 			public void onClick(View v) {
 
-                DevicesListController.selectPrinter(v.getContext(), f , 0);
+                ItemListActivity.requestOpenFile(f.getAbsolutePath());
 
 				
 			}

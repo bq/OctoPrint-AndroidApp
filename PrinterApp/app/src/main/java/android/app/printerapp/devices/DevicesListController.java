@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class DevicesListController {
 	}
 	
 	//Load device list from the Database
-	public static void loadList(Context context){
+	public static void loadList(final Context context){
 		
 		mList.clear();
 		
@@ -66,7 +67,7 @@ public class DevicesListController {
 			
 			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3));
 			
-			ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
+			final ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
 
             m.setId(c.getInt(0));
 
@@ -74,8 +75,20 @@ public class DevicesListController {
 			m.setDisplayName(c.getString(4));
 			
 			addToList(m);
-			
-			m.setLinked(context);
+
+            //Timeout for reconnection
+            Handler handler = new Handler();
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    m.setLinked(context);
+                    Log.i("OUT","Running shit");
+
+                }
+            });
+
 			
 			c.moveToNext();
 		}
@@ -137,14 +150,12 @@ public class DevicesListController {
      * printer. 0 is for print panel, 1 is for upload
      * @param c App context
      * @param f File to upload/open
-     * @param m Selection mode: 0 - print panel, 1 - upload
      */
-    public static void selectPrinter(Context c, File f, int m){
+    public static void selectPrinter(Context c, File f){
 
         final ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
         final File file = f;
         final Context context = c;
-        final int mode = m;
 
         //Fill the list with operational printers
         for (ModelPrinter p : mList){
@@ -175,33 +186,13 @@ public class DevicesListController {
 
                 ModelPrinter m = tempList.get(i);
 
-                switch (mode){
+                OctoprintFiles.uploadFile(context, file, m);
+                ItemListFragment.performClick(0);
+                ItemListActivity.showExtraFragment(1, m.getName());
 
-                    case 0 :
-
-                        ItemListActivity.requestOpenFile(file.getAbsolutePath(), m);
-
-                        break;
-
-                    case 1 :
-
-                        OctoprintFiles.uploadFile(context, file, m);
-                        ItemListFragment.performClick(0);
-                        ItemListActivity.showExtraFragment(1, m.getName());
-
-
-
-                        break;
-
-                    default :
-                        break;
-
-                }
 
                 dialogInterface.dismiss();
 
-              //if (LibraryController.hasExtension(0, file.getName()))
-                //    OctoprintFiles.uploadFile(context, file, m, true, false);
 
             }
         });

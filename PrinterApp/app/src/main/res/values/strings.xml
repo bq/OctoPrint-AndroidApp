@@ -122,6 +122,8 @@
 
     <string name="viewer_slice_wait">Wait for the file to slice</string>
     <string name="viewer_slice_error">Error uploading the file</string>
+    <string name="viewer_printer_unavailable">Printer unavailable</string>
+    <string name="viewer_printer_selected">No printer selected</string>
     
     <string name="settings_network">Default network</string>
     <string name="settings_printers">Linked Witbox/Witclon connections</string>
