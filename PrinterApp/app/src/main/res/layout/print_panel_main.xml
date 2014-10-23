@@ -103,13 +103,22 @@
             android:orientation="vertical"
             android:weightSum="4">
 
+            <!-- Printer select-->
+            <include
+                android:id="@+id/include1"
+                layout="@layout/print_panel_printer_select_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/content_margin_small" />
+
             <!-- Simple options -->
             <include
                 android:id="@+id/include2"
                 layout="@layout/print_panel_simple_settings_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/content_margin_small" />
+                android:layout_marginBottom="@dimen/content_margin_small"
+                android:layout_below="@+id/include1"/>
 
             <!-- Advanced options -->
 

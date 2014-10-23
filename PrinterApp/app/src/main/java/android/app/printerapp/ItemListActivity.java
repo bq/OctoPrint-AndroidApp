@@ -4,7 +4,6 @@ import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
-import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Intent;
@@ -392,7 +391,7 @@ public class ItemListActivity extends FragmentActivity implements
      *
      * @param path File path
      */
-    public static void requestOpenFile(final String path, final ModelPrinter p) {
+    public static void requestOpenFile(final String path) {
 
         //This method will simulate a click and all its effects
         ItemListFragment.performClick(1);
@@ -404,7 +403,7 @@ public class ItemListActivity extends FragmentActivity implements
             @Override
             public void run() {
                 //Set printer separately to avoid bad coding
-                ViewerMainFragment.setPrinter(p);
+                //ViewerMainFragment.setPrinter(p);
                 ViewerMainFragment.openFile(path);
 
 

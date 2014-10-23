@@ -1,10 +1,13 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
+import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintSlicing;
+import android.app.printerapp.octoprint.StateUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,11 +47,10 @@ public class SlicingHandler {
     //Default URL to slice models
     private ModelPrinter mPrinter;
 
-    public SlicingHandler(Activity activity, ModelPrinter p){
+    public SlicingHandler(Activity activity){
 
         mActivity = activity;
         isRunning = false;
-        mPrinter = p;
         cleanTempFolder();
     }
 
@@ -69,6 +71,13 @@ public class SlicingHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    //Set the printer dynamically to send the files
+    public void setPrinter(ModelPrinter p){
+
+        mPrinter = p;
 
     }
 
@@ -162,12 +171,19 @@ public class SlicingHandler {
 
                     if (mPrinter!=null){
 
-                        OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
-                        ViewerMainFragment.showProgressBar(0);
+                        if (mPrinter.getStatus()== StateUtils.STATE_OPERATIONAL){
+                            OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
+                            ViewerMainFragment.showProgressBar(0);
+                        } else {
+
+                            Toast.makeText(mActivity, R.string.viewer_printer_unavailable,Toast.LENGTH_LONG).show();
+
+                        }
+
 
                     } else {
 
-                        Log.i("OUT", "No available printers for slicing");
+                        Toast.makeText(mActivity,R.string.viewer_printer_selected,Toast.LENGTH_LONG).show();
 
                     }
                 }

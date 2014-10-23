@@ -7,9 +7,11 @@ import android.app.DownloadManager;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
+import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -181,8 +183,20 @@ public class ViewerMainFragment extends Fragment {
     }
 
     public static void resetWhenCancel() {
-        mDataList.remove(mDataList.size() - 1);
-        mSurface.requestRender();
+
+
+        //Crashes on printview
+        try{
+            mDataList.remove(mDataList.size() - 1);
+            mSurface.requestRender();
+
+        } catch (Exception e){
+
+            e.printStackTrace();
+
+        }
+
+
     }
 
     /**
@@ -980,19 +994,12 @@ public class ViewerMainFragment extends Fragment {
 
     /************************************  SIDE PANEL ********************************************************/
 
-    //Set the working printer
-    //TODO this won't happen
-    public static void setPrinter(ModelPrinter p)
-    {
-
-        mPrinter = p;
-        //Create slicing handler
-        mSlicingHandler = new SlicingHandler((Activity)mContext, mPrinter);
-
-    }
 
     //Initializes the side panel with the printer data
     public void initSidePanel(){
+
+        //TODO dont initialize here the slicing handler
+        mSlicingHandler = new SlicingHandler((Activity)mContext);
 
         Handler handler = new Handler();
 
@@ -1006,12 +1013,71 @@ public class ViewerMainFragment extends Fragment {
 
                     //UI references
 
+                    Spinner s_printer = (Spinner) mRootView.findViewById(R.id.printer_spinner);
+                    PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
+
                     final Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
                     final Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
                     final Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
 
-                    PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
+                    s_printer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+
+                            //Select a printer from the spinner and add a no-printer option
+
+                            if (i < DevicesListController.getList().size()){
+
+                                mPrinter = DevicesListController.getList().get(i);
+
+                                ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
+                                        R.layout.print_panel_spinner_item, mPrinter.getProfiles());
+
+                                s_quality.setAdapter(adapter_quality);
+
+                                adapter_quality.notifyDataSetChanged();
+
+                            } else mPrinter = null;
+
+
+                            mSlicingHandler.setPrinter(mPrinter);
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            mPrinter = null;
+                            mSlicingHandler.setPrinter(mPrinter);
+
+                        }
+                    });
+
+
+
+                    String[] nameList = new String[DevicesListController.getList().size() + 1];
+                    int i = 0;
+
+                    //New array with names only for the adapter
+                    for (ModelPrinter p : DevicesListController.getList()){
+
+                        if (p.getStatus() == StateUtils.STATE_OPERATIONAL){
+                            nameList[i] = p.getDisplayName();
+
+                        } else   nameList[i] = "***" + p.getDisplayName(); //TODO temporal
+
+                        i++;
+
+                    }
+
+                    //TODO hardcoded
+                    nameList[i] = mContext.getString(R.string.viewer_printer_selected);
+
+                    ArrayAdapter<String> adapter_printer = new ArrayAdapter<String>(getActivity(),
+                            R.layout.print_panel_spinner_item,nameList);
+
+                    s_printer.setAdapter(adapter_printer);
 
                     //Set slicing parameters to send to the server
                     s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1029,12 +1095,12 @@ public class ViewerMainFragment extends Fragment {
                     s_infill.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile.fill_density",Float.parseFloat(s_infill.getItemAtPosition(i).toString()));
+                            mSlicingHandler.setExtras("profile.fill_density", Float.parseFloat(s_infill.getItemAtPosition(i).toString()));
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
-                            mSlicingHandler.setExtras("profile.fill_density",null);
+                            mSlicingHandler.setExtras("profile.fill_density", null);
                         }
                     });
 
@@ -1050,65 +1116,93 @@ public class ViewerMainFragment extends Fragment {
                         }
                     });
 
-
                     String[] infill_options = {"20","50","100"};
                     String[] support_options = {"none", "buildplate", "everywhere"};
 
-
-
-                    ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
-                            R.layout.print_panel_spinner_item, mPrinter.getProfiles());
                     ArrayAdapter<String> adapter_infill = new ArrayAdapter<String>(getActivity(),
                             R.layout.print_panel_spinner_item, infill_options);
                     ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(getActivity(),
                             R.layout.print_panel_spinner_item, support_options);
 
-
-
-                    s_quality.setAdapter(adapter_quality);
                     s_infill.setAdapter(adapter_infill);
                     s_support.setAdapter(adapter_support);
+
+
+
 
 
                     //Send a print command
                     printButton.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (mFile!=null) {
-                                if (mRootView.findViewById(R.id.progress_slice).isShown()){
+
+                            if (mPrinter!=null){
+
+                                if (mPrinter.getStatus() == StateUtils.STATE_OPERATIONAL){
 
 
-                                    //TODO Check for slicing or what?
-                                    Toast.makeText(getActivity(),R.string.viewer_slice_wait,Toast.LENGTH_LONG).show();
+                                    if (mFile!=null) {
 
-                                } else {
+                                        if (mRootView.findViewById(R.id.progress_slice).isShown()){
 
 
-                                    //TODO works
-                                    File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+                                            //TODO Check for slicing or what?
+                                            Toast.makeText(getActivity(),R.string.viewer_slice_wait,Toast.LENGTH_LONG).show();
 
-                                    //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                                    File renameFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());
+                                        } else {
 
-                                    Log.i("OUT","Creating new file in " + renameFile.getAbsolutePath());
 
-                                    tempFile.renameTo(renameFile);
-                                    //renameFile = tempFile;
-                                    if (renameFile.exists()) {
+                                            //TODO works
+                                            File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+                                            File finalFile = null;
 
-                                        OctoprintFiles.uploadFile(getActivity(), renameFile, mPrinter);
-                                        ItemListFragment.performClick(0);
-                                        ItemListActivity.showExtraFragment(1, mPrinter.getName());
+                                            //If we have a gcode which is temporary, we use that
+                                            if (tempFile.exists()){
 
-                                    } else {
+                                                //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+                                                finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());
 
-                                        Toast.makeText(getActivity(),R.string.viewer_slice_error,Toast.LENGTH_LONG).show();
+                                                Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
 
+                                                tempFile.renameTo(finalFile);
+                                                //renameFile = tempFile;
+
+                                                //if we don't have a temporary gcode, means we are currently watching an original gcode
+                                            } else {
+
+                                                if (LibraryController.hasExtension(1, mFile.getName())){
+
+                                                    finalFile = mFile;
+
+                                                }
+
+                                            }
+
+                                            //either case if the file exists, we send it to the printer
+                                            if (finalFile.exists()) {
+
+                                                OctoprintFiles.uploadFile(getActivity(), finalFile, mPrinter);
+                                                ItemListFragment.performClick(0);
+                                                ItemListActivity.showExtraFragment(1, mPrinter.getName());
+
+                                            } else {
+
+                                                Toast.makeText(getActivity(),R.string.viewer_slice_error,Toast.LENGTH_LONG).show();
+
+                                            }
+
+
+
+                                        }
                                     }
+                                    else {Toast.makeText(mContext,R.string.devices_toast_no_gcode,Toast.LENGTH_LONG).show();};
 
-                                }
-                            }
-                            else {Toast.makeText(mContext,"No file",Toast.LENGTH_LONG).show();};
+                                } else Toast.makeText(mContext, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
+
+
+
+                            } else Toast.makeText(mContext,R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
+
                         }
                     });
 

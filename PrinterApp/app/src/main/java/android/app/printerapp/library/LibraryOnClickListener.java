@@ -105,7 +105,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                     //it's a raw file
                     if (f.getAbsoluteFile().length() > 0) {
                         //TODO select printer for raw files?
-                        DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+                        //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+                        ItemListActivity.requestOpenFile(f.getAbsolutePath());
 
                     } else {
                         Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
@@ -152,7 +153,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                         //ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
                                     }
                                 } else {
-                                    DevicesListController.selectPrinter(mContext.getActivity(),f, 1);
+                                    ItemListActivity.requestOpenFile(f.getAbsolutePath());
 
                                 }
                                 break;
@@ -163,19 +164,19 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                     if (LibraryController.isProject(f)){
 
                                         if (((ModelFile)f).getStl()==null) {
-
-                                            DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getGcodeList()) , 0);
+                                            ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
+                                            //DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getGcodeList()) , 0);
 
                                         }
                                         else {
-                                            DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getStl()) , 0);
+                                            ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
 
                                         }
                                     }
                                 } else {
                                     //Check if the gcode is empty, won't work if file is actually corrupted
                                     if (f.getAbsoluteFile().length() > 0) {
-                                        DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+                                        ItemListActivity.requestOpenFile(f.getAbsolutePath());
                                     } else {
                                         Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
                                     }
