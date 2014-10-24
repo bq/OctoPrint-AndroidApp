@@ -151,6 +151,7 @@
     <string name="viewer_text_rx">X axis</string>
     <string name="viewer_text_ry">Y axis</string>
     <string name="viewer_text_rz">Z axis</string>
+    <string name="viewer_settings_printer">Select printer</string>
     <string name="viewer_settings_quality">Quality</string>
     <string name="viewer_settings_infill">Infill</string>
     <string name="viewer_settings_support">Support</string>

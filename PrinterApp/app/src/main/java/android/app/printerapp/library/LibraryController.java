@@ -92,13 +92,13 @@ public class LibraryController {
 	}
 	
 	//Retrieve only files from the individual printers
-	public static void retrievePrinterFiles(String source){
+	public static void retrievePrinterFiles(Long id){
 		
 		mFileList.clear();
 		
-		if (source!=null){
+		if (id!=null){
 		
-			ModelPrinter p = DevicesListController.getPrinter(source);
+			ModelPrinter p = DevicesListController.getPrinter(id);
 
 			for (File f : p.getFiles()){
 				
@@ -108,7 +108,7 @@ public class LibraryController {
 		}
 		
 		//Set the current path pointing to a printer so we can go back
-		mCurrentPath = new File("printer/" + source);
+		mCurrentPath = new File("printer/" + id);
 	}
 	
 	//Retrieve favorites
@@ -193,7 +193,7 @@ public class LibraryController {
 				for (ModelPrinter p : DevicesListController.getList()){
 					
 					//we add a printer/ parent to determine inside a printer
-					addToList(new File("printer/" + p.getName()));
+					addToList(new File("printer/" + p.getId()));
 				}
 								
 			} else {

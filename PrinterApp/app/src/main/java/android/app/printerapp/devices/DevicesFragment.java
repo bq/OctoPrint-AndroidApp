@@ -508,7 +508,7 @@ import it.sephiroth.android.library.widget.HListView;
 
                                 //if not finished, normal behavior
                             } else {
-                                ItemListActivity.showExtraFragment(1, m.getName());
+                                ItemListActivity.showExtraFragment(1, m.getId());
                             }
                         }
                     }
@@ -532,10 +532,12 @@ import it.sephiroth.android.library.widget.HListView;
                     if (mp.getPosition() == arg2) m = mp;
                 }
 
+                Log.i("DEVICES","Dude im touching " + m.getDisplayName());
+
                 if (m != null) {
 
                     ClipData data = null;
-                    data = ClipData.newPlainText("printer", m.getName());
+                    data = ClipData.newPlainText("printer", "" + m.getId());
                     DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(arg1);
                     arg1.startDrag(data, shadowBuilder, arg1, 0);
                 }

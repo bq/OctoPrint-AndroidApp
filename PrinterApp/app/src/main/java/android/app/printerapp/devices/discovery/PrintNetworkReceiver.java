@@ -1,8 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.BroadcastReceiver;
@@ -15,6 +12,9 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class will handle new ad-hoc printers, searching for them on the local network and connecting to them to configure.
@@ -143,7 +143,6 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 		for (ScanResult s : networks){
 			if (!a.contains(s.SSID)){
 				a.add(s.SSID);
-				Log.i("OUT",s.SSID);
 			} else Log.i("OUT","Duplicate network " + s.SSID);
 		}
 

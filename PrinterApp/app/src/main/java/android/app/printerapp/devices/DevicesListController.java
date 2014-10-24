@@ -42,7 +42,7 @@ public class DevicesListController {
 	}
 	
 	//Return a specific printer
-	public static ModelPrinter getPrinter(String name) {
+	/*public static ModelPrinter getPrinter(String name) {
 		
 		for (ModelPrinter p : mList){
 			
@@ -52,7 +52,20 @@ public class DevicesListController {
 		}
 		
 		return null;
-	}
+	}*/
+
+    //Return a specific printer
+    public static ModelPrinter getPrinter(long id) {
+
+        for (ModelPrinter p : mList){
+
+            if (p.getId()==id){
+                return p;
+            }
+        }
+
+        return null;
+    }
 	
 	//Load device list from the Database
 	public static void loadList(final Context context){
@@ -188,7 +201,7 @@ public class DevicesListController {
 
                 OctoprintFiles.uploadFile(context, file, m);
                 ItemListFragment.performClick(0);
-                ItemListActivity.showExtraFragment(1, m.getName());
+                ItemListActivity.showExtraFragment(1, m.getId());
 
 
                 dialogInterface.dismiss();

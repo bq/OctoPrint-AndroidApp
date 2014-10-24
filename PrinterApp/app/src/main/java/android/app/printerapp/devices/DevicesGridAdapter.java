@@ -1,8 +1,5 @@
 package android.app.printerapp.devices;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
@@ -20,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class will handle the View adapter for the Devices fragment
  *
@@ -30,7 +30,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
     private Context mContext;
 
     //max items in the grid
-    private static final int maxItems = 20;
+    private static final int GRID_MAX_ITEMS = 15;
 
     //Original list and current list to be filtered
     private ArrayList<ModelPrinter> mCurrent;
@@ -256,7 +256,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
     //Retrieve count for MAX items to show empty slots
     @Override
     public int getCount() {
-        return maxItems;
+        return GRID_MAX_ITEMS;
     }
 
     //Get filter

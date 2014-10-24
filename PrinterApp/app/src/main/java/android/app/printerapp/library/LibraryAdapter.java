@@ -104,8 +104,9 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                 iv.setImageResource(R.drawable.folder_internal_icon);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-                ModelPrinter p = DevicesListController.getPrinter(m.getName());
-                pathTextView.setText(p.getDisplayName());
+                ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(m.getName()));
+                nameTextView.setText(p.getDisplayName());
+                pathTextView.setText(m.getAbsolutePath());
 
             } else {
                 iv.setImageResource(R.drawable.file_icon);

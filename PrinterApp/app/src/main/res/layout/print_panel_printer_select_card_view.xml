@@ -33,7 +33,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="Select printer"/>
+                    android:text="@string/viewer_settings_printer"/>
 
                 <Spinner
                     android:id="@+id/printer_spinner"

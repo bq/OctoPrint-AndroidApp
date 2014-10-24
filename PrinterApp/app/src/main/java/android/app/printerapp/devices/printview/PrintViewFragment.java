@@ -1,14 +1,6 @@
 package android.app.printerapp.devices.printview;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.SlidingUpPanelLayout;
@@ -33,6 +25,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * This class will show the PrintView detailed view for every printer
@@ -80,7 +80,7 @@ public class PrintViewFragment extends Fragment {
 
             //Get the printer from the list
             Bundle args = getArguments();
-            mPrinter = DevicesListController.getPrinter(args.getString("printer"));
+            mPrinter = DevicesListController.getPrinter(args.getLong("id"));
             //getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
 
             //Check printing status

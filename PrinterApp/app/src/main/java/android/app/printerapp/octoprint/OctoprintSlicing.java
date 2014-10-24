@@ -159,7 +159,7 @@ public class OctoprintSlicing {
                     profileList.add(current);
 
                     //TODO adding profiles manually
-                    if (!p.getProfiles().contains(current)) p.getProfiles().add(current);
+                    //if (!p.getProfiles().contains(current)) p.getProfiles().add(current);
 
                     try {
 
@@ -173,6 +173,23 @@ public class OctoprintSlicing {
                     }
 
                     count++;
+
+                    HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SLICING_PROFILES + "/" + current , null, new JsonHttpResponseHandler() {
+
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers,
+                                              JSONObject response) {
+                            super.onSuccess(statusCode, headers, response);
+
+
+                            p.getProfiles().add(response);
+
+                        }
+
+
+                    });
+
                 }
 
                 //Custom Dialog to insert network parameters.

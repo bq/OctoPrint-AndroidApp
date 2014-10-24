@@ -47,7 +47,7 @@ public class ModelPrinter {
 	private int mPosition;
 
     //TODO temporary profile handling
-    private ArrayList<String> mProfiles;
+    private ArrayList<JSONObject> mProfiles;
 	
 	public ModelPrinter(String name, String address, int position){
 		
@@ -56,7 +56,7 @@ public class ModelPrinter {
 		mAddress = address;
 		mJob = new ModelJob();
 		mFileList = new ArrayList<File>();
-        mProfiles = new ArrayList<String>();
+        mProfiles = new ArrayList<JSONObject>();
 		mJobLoaded = true;
 		
 		//TODO: Load with db
@@ -127,7 +127,7 @@ public class ModelPrinter {
 		return mJobPath;
 	}
 
-    public ArrayList<String> getProfiles() { return mProfiles; }
+    public ArrayList<JSONObject> getProfiles() { return mProfiles; }
 
     public long getId() { return mId; }
 	

@@ -57,6 +57,9 @@ import android.widget.Toast;
 
 import com.material.widget.PaperButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -1020,6 +1023,15 @@ public class ViewerMainFragment extends Fragment {
                     final Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
                     final Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
 
+                    final EditText travelSpeed = (EditText)mRootView.findViewById(R.id.travel_speed_edittext);
+                    final EditText bottomLayerSpeed = (EditText)mRootView.findViewById(R.id.bottom_layer_speed_edittext);
+                    final EditText infillSpeed = (EditText)mRootView.findViewById(R.id.infill_speed_edittext);
+                    final EditText outerShellSpeed = (EditText)mRootView.findViewById(R.id.outher_shell_speed_edittext);
+                    final EditText innerShellSpeed = (EditText)mRootView.findViewById(R.id.inner_shell_speed_edittext);
+
+                    final EditText minimalLayerTime = (EditText)mRootView.findViewById(R.id.minimal_layer_time_edittext);
+                    final com.material.widget.CheckBox enableCoolingFan = (com.material.widget.CheckBox)mRootView.findViewById(R.id.enable_cooling_fan_checkbox);
+
                     s_printer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -1031,8 +1043,23 @@ public class ViewerMainFragment extends Fragment {
 
                                 mPrinter = DevicesListController.getList().get(i);
 
+                                ArrayList<String> names = new ArrayList<String>();
+                                for (JSONObject o : mPrinter.getProfiles()){
+
+                                    try {
+
+                                        names.add(o.getString("displayName"));
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
+                                }
+
                                 ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
-                                        R.layout.print_panel_spinner_item, mPrinter.getProfiles());
+                                        R.layout.print_panel_spinner_item, names);
 
                                 s_quality.setAdapter(adapter_quality);
 
@@ -1083,7 +1110,36 @@ public class ViewerMainFragment extends Fragment {
                     s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
                             mSlicingHandler.setExtras("profile", s_quality.getItemAtPosition(i).toString());
+
+                            try {
+                                JSONObject data = mPrinter.getProfiles().get(i).getJSONObject("data");
+                                travelSpeed.setText(data.getString("travel_speed"));
+                                bottomLayerSpeed.setText(data.getString("bottom_layer_speed"));
+                                infillSpeed.setText(data.getString("infill_speed"));
+                                outerShellSpeed.setText(data.getString("outer_shell_speed"));
+                                innerShellSpeed.setText(data.getString("inner_shell_speed"));
+
+                                minimalLayerTime.setText(data.getString("cool_min_layer_time"));
+
+
+
+                                //TODO Can't be checked by default
+                                if (data.getBoolean("fan_enabled")){
+                                    enableCoolingFan.setChecked(true);
+                                    Log.i("OUT","Checked true" );
+                                }
+                                else {
+                                    enableCoolingFan.setChecked(false);
+                                    Log.i("OUT","Checked false" );
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
                         }
 
                         @Override
@@ -1183,7 +1239,7 @@ public class ViewerMainFragment extends Fragment {
 
                                                 OctoprintFiles.uploadFile(getActivity(), finalFile, mPrinter);
                                                 ItemListFragment.performClick(0);
-                                                ItemListActivity.showExtraFragment(1, mPrinter.getName());
+                                                ItemListActivity.showExtraFragment(1, mPrinter.getId());
 
                                             } else {
 
@@ -1205,11 +1261,6 @@ public class ViewerMainFragment extends Fragment {
 
                         }
                     });
-
-
-
-
-
 
 
                 }catch (Exception e) {
