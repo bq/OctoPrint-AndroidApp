@@ -35,35 +35,28 @@ public class OctoprintSlicing {
 	 * @param context
 	 * @param url
 	 */
-	public static void sendProfile(Context context, String url){
-		
-		JSONObject object = new JSONObject();
-		StringEntity entity = null;
-		
-		
-		try {
-			object.put("displayName", "tostorino");
-			object.put("description", "hijo de una nutria");
-            object.put("default", "true");
+	public static void sendProfile(Context context, final ModelPrinter p, JSONObject profile){
 
-            JSONObject object_data = new JSONObject();
+        StringEntity entity = null;
+        String key = null;
 
-            object_data.put("layer_height", 0.1);
-            object_data.put("skirt_line_count", 3);
-            object.put("data",object_data);
-			entity = new StringEntity(object.toString(), "UTF-8");
-			
-		} catch (JSONException e) {		e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {	e.printStackTrace();
-		}
-				
-		//Progress dialog to notify command events
+        try {
+            entity = new StringEntity(profile.toString(), "UTF-8");
+            key = profile.getString("key");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        //Progress dialog to notify command events
 		final ProgressDialog pd = new ProgressDialog(context);
 		pd.setMessage(context.getString(R.string.devices_command_waiting));
 		pd.show();
 
 		
-		HttpClientHandler.put(context,url + HttpUtils.URL_SLICING, 
+		HttpClientHandler.put(context,p.getAddress() + HttpUtils.URL_SLICING + "/" + key,
 				entity, "application/json", new JsonHttpResponseHandler(){
 			
 			@Override
@@ -78,7 +71,12 @@ public class OctoprintSlicing {
 						Log.i("OUT",response.toString());
 						//Dismiss progress dialog
 						pd.dismiss();
-					}
+
+                        p.getProfiles().add(response);
+
+
+
+            }
 			
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
@@ -98,7 +96,7 @@ public class OctoprintSlicing {
         // HTTP GET request
         public static String sendGet() throws Exception {
 
-            String url = "http://192.168.10.212" + HttpUtils.URL_SLICING_PROFILES;
+            String url = "http://192.168.10.212" + HttpUtils.URL_SLICING;
 
             HttpClient client = new DefaultHttpClient();
             HttpGet request = new HttpGet(url);
@@ -133,7 +131,7 @@ public class OctoprintSlicing {
      */
 	public static void retrieveProfiles(final Context context, final ModelPrinter p){
 		
-		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SLICING_PROFILES, null, new JsonHttpResponseHandler(){
+		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SLICING, null, new JsonHttpResponseHandler(){
 			
 			@Override
 					public void onProgress(int bytesWritten, int totalSize) {
@@ -174,7 +172,7 @@ public class OctoprintSlicing {
 
                     count++;
 
-                    HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SLICING_PROFILES + "/" + current , null, new JsonHttpResponseHandler() {
+                    HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SLICING + "/" + current , null, new JsonHttpResponseHandler() {
 
 
                         @Override

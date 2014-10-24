@@ -44,9 +44,15 @@
                         android:layout_height="wrap_content"
                         android:text="@string/viewer_settings_profile" />
 
-                    <Spinner
+                    Spinner
                         android:id="@+id/profile_spinner"
                         android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp" />
+
+                    <EditText
+                        android:id="@+id/profile_edittext"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp" />
 
@@ -87,7 +93,8 @@
                             android:id="@+id/travel_speed_edittext"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp" />
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -103,7 +110,8 @@
                             android:id="@+id/bottom_layer_speed_edittext"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp" />
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number" />
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -119,7 +127,8 @@
                             android:id="@+id/infill_speed_edittext"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp" />
+                            android:layout_marginLeft="5dp"
+                            android:inputType="numberDecimal"/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -135,7 +144,8 @@
                             android:id="@+id/outher_shell_speed_edittext"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp" />
+                            android:layout_marginLeft="5dp"
+                            android:inputType="numberDecimal"/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -151,7 +161,8 @@
                             android:id="@+id/inner_shell_speed_edittext"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp" />
+                            android:layout_marginLeft="5dp"
+                            android:inputType="numberDecimal"/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -179,7 +190,8 @@
                             android:id="@+id/minimal_layer_time_edittext"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp" />
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">

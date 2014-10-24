@@ -1,19 +1,18 @@
 package android.app.printerapp.octoprint;
 
-import java.io.UnsupportedEncodingException;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
+import android.content.Context;
+import android.util.Log;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.printerapp.devices.discovery.PrintNetworkManager;
-import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
+import java.io.UnsupportedEncodingException;
 
 public class OctoprintNetwork {
 	
@@ -51,7 +50,7 @@ public class OctoprintNetwork {
 					Throwable throwable, JSONObject errorResponse) {
 				
 				super.onFailure(statusCode, headers, throwable, errorResponse);
-				
+
 				Log.i("OUT","Failure while connecting " + statusCode);
 			}
 			
@@ -125,7 +124,7 @@ public class OctoprintNetwork {
                 pr.register();
 				Log.i("OUT","Failure while connecting " + statusCode);
 
-                Toast.makeText(context,"There was an error configuring the Network",Toast.LENGTH_LONG).show();
+                //Toast.makeText(context,"There was an error configuring the Network",Toast.LENGTH_LONG).show();
             }
 		});
 	}
