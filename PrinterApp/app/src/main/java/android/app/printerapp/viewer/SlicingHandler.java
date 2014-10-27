@@ -103,7 +103,6 @@ public class SlicingHandler {
             } catch (NullPointerException e){
 
                 e.printStackTrace();
-                Log.i("OUT","FUCKING FILE DIDNT EXIST FUKLASJDLKASJD");
             }
 
 

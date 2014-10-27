@@ -280,9 +280,9 @@ public class ItemListActivity extends FragmentActivity implements
      * Method to create a new type of fragment to show special detailed views.
      *
      * @param type  Type of detailed view 0: DetailView 1: PrintView
-     * @param extra Extra argument to the fragment DetailView: File index, PrintView: Printer name
+     * @param id Extra argument to the fragment DetailView: File index, PrintView: Printer id
      */
-    public static void showExtraFragment(int type, String extra) {
+    public static void showExtraFragment(int type, long id) {
 
         //New transaction
         FragmentTransaction mTransaction = mManager.beginTransaction();
@@ -301,7 +301,7 @@ public class ItemListActivity extends FragmentActivity implements
                 //New DetailView with the file as an index
                 DetailViewFragment detail = new DetailViewFragment();
                 Bundle args = new Bundle();
-                args.putInt("index", Integer.parseInt(extra));
+                args.putInt("index", (int)id);
                 detail.setArguments(args);
 
                 //Transition is made by replacing instead of hiding to allow backstack navigation
@@ -319,7 +319,7 @@ public class ItemListActivity extends FragmentActivity implements
                 //New detailview with the printer name as extra
                 PrintViewFragment detailp = new PrintViewFragment();
                 Bundle argsp = new Bundle();
-                argsp.putString("printer", extra);
+                argsp.putLong("id", id);
                 detailp.setArguments(argsp);
                 //Transition is made by replacing instead of hiding to allow backstack navigation
 

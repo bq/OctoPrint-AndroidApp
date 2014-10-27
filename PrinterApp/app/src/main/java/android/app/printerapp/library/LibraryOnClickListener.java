@@ -72,7 +72,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
             //If it's project folder, send stl
             if (LibraryController.isProject(f)) {
                 //Show detail view regardless
-                ItemListActivity.showExtraFragment(0, String.valueOf(arg2));
+                ItemListActivity.showExtraFragment(0, (long)arg2);
             } else {
                 //Not a project, open folder
                 LibraryController.reloadFiles(f.getAbsolutePath());
@@ -84,12 +84,12 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
             //it's a printer file
             if (f.getParent().contains("printer")) {
-                LibraryController.retrievePrinterFiles(f.getName());
+                LibraryController.retrievePrinterFiles(Long.parseLong(f.getName()));
                 mContext.notifyAdapter();
 
             } else {
 
-                ModelPrinter p = DevicesListController.getPrinter(LibraryController.getCurrentPath().getName());
+                ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
 
                 //it's a printer folder because there's a printer with the same name
                 if (p != null) {
@@ -149,7 +149,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                             case 0: //Print / Multiprint
                                 if (f.isDirectory()) {
                                     if (LibraryController.isProject(f)) {
-                                        ItemListActivity.showExtraFragment(0, String.valueOf(index));
+                                        ItemListActivity.showExtraFragment(0, (long)index);
                                         //ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
                                     }
                                 } else {

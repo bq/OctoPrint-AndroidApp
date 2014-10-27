@@ -1,17 +1,10 @@
 package android.app.printerapp.viewer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
-import android.app.printerapp.ItemListActivity;
-import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.library.LibraryController;
-import android.app.printerapp.model.ModelPrinter;
-import android.app.printerapp.octoprint.OctoprintFiles;
-import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,7 +26,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,13 +40,10 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.material.widget.PaperButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -128,8 +116,6 @@ public class ViewerMainFragment extends Fragment {
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
-    //Printer to slice / upload
-    private static ModelPrinter mPrinter = null;
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -174,7 +160,9 @@ public class ViewerMainFragment extends Fragment {
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT);
             draw();
 
-            initSidePanel();
+            //Init slicing elements
+            mSlicingHandler = new SlicingHandler(getActivity());
+            new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
 
         }
 
@@ -994,235 +982,7 @@ public class ViewerMainFragment extends Fragment {
 
     /************************************  SIDE PANEL ********************************************************/
 
+    public static File getFile(){ return mFile; }
 
-    //Initializes the side panel with the printer data
-    public void initSidePanel(){
-
-        //TODO dont initialize here the slicing handler
-        mSlicingHandler = new SlicingHandler((Activity)mContext);
-
-        Handler handler = new Handler();
-
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                try {
-
-                    //UI references
-
-                    Spinner s_printer = (Spinner) mRootView.findViewById(R.id.printer_spinner);
-                    PaperButton printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
-
-                    final Spinner s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
-                    final Spinner s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
-                    final Spinner s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
-
-                    s_printer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-                            //Select a printer from the spinner and add a no-printer option
-
-                            if (i < DevicesListController.getList().size()){
-
-                                mPrinter = DevicesListController.getList().get(i);
-
-                                ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(getActivity(),
-                                        R.layout.print_panel_spinner_item, mPrinter.getProfiles());
-
-                                s_quality.setAdapter(adapter_quality);
-
-                                adapter_quality.notifyDataSetChanged();
-
-                            } else mPrinter = null;
-
-
-                            mSlicingHandler.setPrinter(mPrinter);
-
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                            mPrinter = null;
-                            mSlicingHandler.setPrinter(mPrinter);
-
-                        }
-                    });
-
-
-
-                    String[] nameList = new String[DevicesListController.getList().size() + 1];
-                    int i = 0;
-
-                    //New array with names only for the adapter
-                    for (ModelPrinter p : DevicesListController.getList()){
-
-                        if (p.getStatus() == StateUtils.STATE_OPERATIONAL){
-                            nameList[i] = p.getDisplayName();
-
-                        } else   nameList[i] = "***" + p.getDisplayName(); //TODO temporal
-
-                        i++;
-
-                    }
-
-                    //TODO hardcoded
-                    nameList[i] = mContext.getString(R.string.viewer_printer_selected);
-
-                    ArrayAdapter<String> adapter_printer = new ArrayAdapter<String>(getActivity(),
-                            R.layout.print_panel_spinner_item,nameList);
-
-                    s_printer.setAdapter(adapter_printer);
-
-                    //Set slicing parameters to send to the server
-                    s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile", s_quality.getItemAtPosition(i).toString());
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                            mSlicingHandler.setExtras("profile", null);
-                        }
-                    });
-
-                    s_infill.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile.fill_density", Float.parseFloat(s_infill.getItemAtPosition(i).toString()));
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                            mSlicingHandler.setExtras("profile.fill_density", null);
-                        }
-                    });
-
-                    s_support.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                            mSlicingHandler.setExtras("profile.support",null);
-                        }
-                    });
-
-                    String[] infill_options = {"20","50","100"};
-                    String[] support_options = {"none", "buildplate", "everywhere"};
-
-                    ArrayAdapter<String> adapter_infill = new ArrayAdapter<String>(getActivity(),
-                            R.layout.print_panel_spinner_item, infill_options);
-                    ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(getActivity(),
-                            R.layout.print_panel_spinner_item, support_options);
-
-                    s_infill.setAdapter(adapter_infill);
-                    s_support.setAdapter(adapter_support);
-
-
-
-
-
-                    //Send a print command
-                    printButton.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            if (mPrinter!=null){
-
-                                if (mPrinter.getStatus() == StateUtils.STATE_OPERATIONAL){
-
-
-                                    if (mFile!=null) {
-
-                                        if (mRootView.findViewById(R.id.progress_slice).isShown()){
-
-
-                                            //TODO Check for slicing or what?
-                                            Toast.makeText(getActivity(),R.string.viewer_slice_wait,Toast.LENGTH_LONG).show();
-
-                                        } else {
-
-
-                                            //TODO works
-                                            File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-                                            File finalFile = null;
-
-                                            //If we have a gcode which is temporary, we use that
-                                            if (tempFile.exists()){
-
-                                                //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                                                finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());
-
-                                                Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
-
-                                                tempFile.renameTo(finalFile);
-                                                //renameFile = tempFile;
-
-                                                //if we don't have a temporary gcode, means we are currently watching an original gcode
-                                            } else {
-
-                                                if (LibraryController.hasExtension(1, mFile.getName())){
-
-                                                    finalFile = mFile;
-
-                                                }
-
-                                            }
-
-                                            //either case if the file exists, we send it to the printer
-                                            if (finalFile.exists()) {
-
-                                                OctoprintFiles.uploadFile(getActivity(), finalFile, mPrinter);
-                                                ItemListFragment.performClick(0);
-                                                ItemListActivity.showExtraFragment(1, mPrinter.getName());
-
-                                            } else {
-
-                                                Toast.makeText(getActivity(),R.string.viewer_slice_error,Toast.LENGTH_LONG).show();
-
-                                            }
-
-
-
-                                        }
-                                    }
-                                    else {Toast.makeText(mContext,R.string.devices_toast_no_gcode,Toast.LENGTH_LONG).show();};
-
-                                } else Toast.makeText(mContext, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
-
-
-
-                            } else Toast.makeText(mContext,R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
-
-                        }
-                    });
-
-
-
-
-
-
-
-                }catch (Exception e) {
-                e.printStackTrace();
-                }
-
-
-
-
-            }
-        });
-
-
-    }
 
 }

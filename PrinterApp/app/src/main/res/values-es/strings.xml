@@ -116,7 +116,7 @@
     <string name="viewer_slice_wait">Espere a que termine de laminar</string>
     <string name="viewer_slice_error">Error subiendo el fichero</string>
     <string name="viewer_printer_unavailable">Impresora no disponible</string>
-    <string name="viewer_printer_selected">Impresora no seleccionada</string>
+    <string name="viewer_printer_selected">Sin impresora</string>
     
     <string name="settings_network">Red por defecto</string>
     <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>
@@ -142,11 +142,23 @@
     <string name="viewer_button_rx">Rotación X</string>
     <string name="viewer_button_ry">Rotación Y</string>
     <string name="viewer_button_rz">Rotación Z</string>
+    <string name="viewer_settings_printer">Seleccionar impresora</string>
     <string name="viewer_settings_quality">Calidad</string>
     <string name="viewer_settings_infill">Relleno</string>
     <string name="viewer_settings_support">Soporte</string>
     <string name="viewer_settings_advanced">Opciones avanzadas</string>
     <string name="viewer_settings_profile">Perfil</string>
+    <string name="viewer_settings_layer_height">Altura de capa (mm)</string>
+    <string name="viewer_settings_shell_thickness">Grosor del recubrimiento (mm)</string>
+    <string name="viewer_settings_enable_retraction">Habilitar retracción</string>
+    <string name="viewer_settings_fill">Relleno</string>
+    <string name="viewer_settings_bottom_top_thickness">Grosor de capa inferior/superior (mm)</string>
+    <string name="viewer_settings_speed_temperature">Velocidad y temperatura</string>
+    <string name="viewer_settings_print_speed">Velocidad de impresión (mm/s)</string>
+    <string name="viewer_settings_print_temperature">Temperatura de impresión (C)</string>
+    <string name="viewer_settings_filament">Filamento</string>
+    <string name="viewer_settings_diameter">Diámetro (mm)</string>
+    <string name="viewer_settings_flow">Flujo (%)</string>
     <string name="viewer_settings_speed">Velocidad</string>
     <string name="viewer_settings_travel_speed">Velocidad de desplazamiento (mm/s)</string>
     <string name="viewer_settings_bottom_layer_speed">Velocidad en la capa inferior (mm/s)</string>
@@ -158,6 +170,7 @@
     <string name="viewer_settings_enable_fan">Habilitar ventilador de enfriamiento</string>
     <string name="viewer_button_restore">Restaurar opciones</string>
     <string name="viewer_button_save">Guardar</string>
+    <string name="viewer_button_save_error">Elija otro nombre</string>
     <string name="viewer_button_print">Imprimir</string>.
     <string name="viewer_button_undo">Deshacer</string>
     <string name="viewer_button_redo">Rehacer</string>
