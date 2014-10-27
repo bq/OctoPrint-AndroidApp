@@ -13,28 +13,23 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 public class OctoprintSlicing {
-	
-	/**
-	 * Send a command to the server to start/pause/stop a job
-	 * @param context
-	 * @param url
-	 */
+
+    /**
+     * Upload a profile to the server with custom parameters
+     * @param context
+     * @param p
+     * @param profile
+     */
 	public static void sendProfile(Context context, final ModelPrinter p, JSONObject profile){
 
         StringEntity entity = null;
@@ -92,37 +87,6 @@ public class OctoprintSlicing {
 		
 	
 	}
-
-        // HTTP GET request
-        public static String sendGet() throws Exception {
-
-            String url = "http://192.168.10.212" + HttpUtils.URL_SLICING;
-
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(url);
-
-            request.addHeader("X-Api-Key", HttpUtils.API_KEY);
-
-            HttpResponse response = client.execute(request);
-
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " +
-                    response.getStatusLine().getStatusCode());
-
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuffer result = new StringBuffer();
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-
-            System.out.println(result.toString());
-
-            return result.toString();
-
-        }
 
 
     /**

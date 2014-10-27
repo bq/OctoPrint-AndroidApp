@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.material.widget.PaperButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 public class SidePanelHandler {
 
     //static parameters
-    private static final String[] INFILL_OPTIONS = {"20","50","100"};
+    private static final String[] INFILL_OPTIONS = {"Low","Medium","High","Full", "None"};
     private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"};
 
     //Printer to send the files
@@ -55,6 +56,15 @@ public class SidePanelHandler {
     private Spinner s_quality;
     private Spinner s_infill;
     private Spinner s_support;
+
+    private EditText layerHeight;
+    private EditText shellThickness;
+    private com.material.widget.CheckBox enableRetraction;
+    private EditText bottomTopThickness;
+    private EditText printSpeed;
+    private EditText printTemperature;
+    private EditText filamentDiamenter;
+    private EditText filamentFlow;
 
     private EditText travelSpeed;
     private EditText bottomLayerSpeed;
@@ -92,6 +102,15 @@ public class SidePanelHandler {
         printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
         saveButton = (PaperButton) mRootView.findViewById(R.id.save_settings_button);
         restoreButton = (PaperButton) mRootView.findViewById(R.id.retore_settings_button);
+
+        layerHeight = (EditText)mRootView.findViewById(R.id.layer_height_edittext);
+        shellThickness = (EditText)mRootView.findViewById(R.id.shell_thickness_edittext);
+        enableRetraction = (com.material.widget.CheckBox)mRootView.findViewById(R.id.enable_retraction_checkbox);
+        bottomTopThickness = (EditText)mRootView.findViewById(R.id.bottom_top_thickness_edittext);
+        printSpeed = (EditText)mRootView.findViewById(R.id.print_speed_edittext);
+        printTemperature = (EditText)mRootView.findViewById(R.id.print_temperature_edittext);
+        filamentDiamenter = (EditText)mRootView.findViewById(R.id.diameter_edittext);
+        filamentFlow = (EditText)mRootView.findViewById(R.id.flow_title_edittext);
 
         travelSpeed = (EditText)mRootView.findViewById(R.id.travel_speed_edittext);
         bottomLayerSpeed = (EditText)mRootView.findViewById(R.id.bottom_layer_speed_edittext);
@@ -214,9 +233,16 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                          mSlicingHandler.setExtras("profile", s_quality.getItemAtPosition(i).toString());
+                            try {
+                                String key = mPrinter.getProfiles().get(i).getString("key");
+                                mSlicingHandler.setExtras("profile", key);
 
-                          parseJson(i);
+                                parseJson(i);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
 
 
                         }
@@ -233,7 +259,24 @@ public class SidePanelHandler {
                     s_infill.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile.fill_density", Float.parseFloat(s_infill.getItemAtPosition(i).toString()));
+
+                            float infill = 0;
+
+                            switch(i){
+
+                                case 0: infill = 20; break;
+                                case 1: infill = 50; break;
+                                case 2: infill = 80; break;
+                                case 3: infill = 100; break;
+                                case 4: infill = 0; break;
+                                default: infill = 0; break;
+
+
+                            }
+
+                            Log.i("OUT","Infill: " + infill);
+
+                            mSlicingHandler.setExtras("profile.fill_density", infill);
                         }
 
                         @Override
@@ -398,6 +441,13 @@ public class SidePanelHandler {
 
             profileText.setText(mPrinter.getProfiles().get(i).getString("displayName"));
             JSONObject data = mPrinter.getProfiles().get(i).getJSONObject("data");
+            layerHeight.setText(data.getString("layer_height"));
+            shellThickness.setText(data.getString("wall_thickness"));
+            bottomTopThickness.setText(data.getString("solid_layer_thickness"));
+            printSpeed.setText(data.getString("print_speed"));
+            printTemperature.setText(data.getJSONArray("print_temperature").get(0).toString());
+            filamentDiamenter.setText(data.getJSONArray("filament_diameter").get(0).toString());
+            filamentFlow.setText(data.getString("filament_flow"));
             travelSpeed.setText(data.getString("travel_speed"));
             bottomLayerSpeed.setText(data.getString("bottom_layer_speed"));
             infillSpeed.setText(data.getString("infill_speed"));
@@ -406,6 +456,14 @@ public class SidePanelHandler {
 
             minimalLayerTime.setText(data.getString("cool_min_layer_time"));
 
+            if (data.getBoolean("retraction_enable")){
+                enableRetraction.setChecked(true);
+                Log.i("OUT", "Checked true");
+            }
+            else {
+                enableRetraction.setChecked(false);
+                Log.i("OUT","Checked false" );
+            }
 
 
             //TODO Not checked by default
@@ -425,6 +483,17 @@ public class SidePanelHandler {
     }
 
     /**
+     * Parse float to a variable to avoid accuracy error
+     * @param s
+     * @return
+     */
+    public Float getFloatValue(String s){
+
+        Float f = Float.parseFloat(s);
+        return f;
+    }
+
+    /**
      * Save a slicing profile by adding every individual element to a JSON
      */
     public void saveProfile(){
@@ -441,20 +510,30 @@ public class SidePanelHandler {
             profile = new JSONObject();
 
             profile.put("displayName", profileText.getText().toString());
-            profile.put("description", "Test profile created from App");
-            profile.put("key", profileText.getText().toString());
+            profile.put("description", "Test profile created from App"); //TODO
+            profile.put("key", profileText.getText().toString().replace(" ","_").toLowerCase());
 
 
             //Data info
             JSONObject data = new JSONObject();
+;
+            data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
+            data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
+            data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
 
-            data.put("travel_speed", travelSpeed.getText().toString());
-            data.put("bottom_layer_speed", bottomLayerSpeed.getText().toString());
-            data.put("infill_speed", infillSpeed.getText().toString());
-            data.put("outer_shell_speed", outerShellSpeed.getText().toString());
-            data.put("inner_shell_speed", innerShellSpeed.getText().toString());
+            data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
+            data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
+            data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
+            data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
+            data.put("retraction_enabled", enableRetraction.isChecked());
 
-            data.put("cool_min_layer_time", minimalLayerTime.getText().toString());
+            data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
+            data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
+            data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
+            data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
+            data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+
+            data.put("cool_min_layer_time",getFloatValue( minimalLayerTime.getText().toString()));
             data.put("fan_enabled", enableCoolingFan.isChecked());
 
             profile.put("data",data);
@@ -468,6 +547,30 @@ public class SidePanelHandler {
         }
 
         if (profile!=null){
+
+            //check if name already exists to avoid overwriting
+            for(JSONObject o : mPrinter.getProfiles()){
+
+                try {
+                    if (profile.get("displayName").equals(o.get("displayName"))){
+
+
+                        //set error and focus
+                        profileText.setError(mActivity.getString(R.string.viewer_button_save_error));
+                        profileText.requestFocus();
+                        return;
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            //Clear error and focus
+            profileText.setError(null);
+            profileText.clearFocus();
 
             //Send profile to server
             OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);

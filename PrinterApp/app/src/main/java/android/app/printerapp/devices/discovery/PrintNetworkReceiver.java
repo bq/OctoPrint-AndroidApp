@@ -143,7 +143,8 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 		for (ScanResult s : networks){
 			if (!a.contains(s.SSID)){
 				a.add(s.SSID);
-			} else Log.i("OUT","Duplicate network " + s.SSID);
+			} else {//Log.i("OUT","Duplicate network " + s.SSID);
+			 }
 		}
 
 		

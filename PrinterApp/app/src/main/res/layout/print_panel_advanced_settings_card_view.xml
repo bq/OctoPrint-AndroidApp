@@ -69,6 +69,191 @@
                     android:paddingLeft="@dimen/content_padding_normal">
 
                     <TableRow android:gravity="center_vertical">
+                        <!-- QUALITY OPTIONS-->
+                        <TextView
+                            android:id="@+id/quality_title_view"
+                            style="@style/TextHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/viewer_settings_quality" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Layer height -->
+                        <TextView
+                            android:id="@+id/layer_height_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_layer_height" />
+
+                        <EditText
+                            android:id="@+id/layer_height_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Shell thickness -->
+                        <TextView
+                            android:id="@+id/shell_thickness_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_shell_thickness" />
+
+                        <EditText
+                            android:id="@+id/shell_thickness_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Enable retraction -->
+                        <TextView
+                            android:id="@+id/enable_retraction_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_enable_retraction" />
+
+                        <com.material.widget.CheckBox
+                            android:id="@+id/enable_retraction_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"/>
+                    </TableRow>
+
+
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- FILL OPTIONS-->
+                        <TextView
+                            android:id="@+id/fill_title_view"
+                            style="@style/TextHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/viewer_settings_fill" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Bottom/Top thickness -->
+                        <TextView
+                            android:id="@+id/bottom_top_thickness_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_bottom_top_thickness" />
+
+                        <EditText
+                            android:id="@+id/bottom_top_thickness_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- SPEED AND TEMPERATURE OPTIONS-->
+                        <TextView
+                            android:id="@+id/speed_temperature_title_view"
+                            style="@style/TextHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/viewer_settings_speed_temperature" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Print speed -->
+                        <TextView
+                            android:id="@+id/print_speed_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_print_speed" />
+
+                        <EditText
+                            android:id="@+id/print_speed_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Print temperature -->
+                        <TextView
+                            android:id="@+id/print_temperature_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_print_temperature" />
+
+                        <EditText
+                            android:id="@+id/print_temperature_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- FILAMENT OPTIONS-->
+                        <TextView
+                            android:id="@+id/filament_title_view"
+                            style="@style/TextHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/viewer_settings_filament" />
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Diameter -->
+                        <TextView
+                            android:id="@+id/diameter_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_diameter" />
+
+                        <EditText
+                            android:id="@+id/diameter_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
+                        <!-- Flow -->
+                        <TextView
+                            android:id="@+id/flow_title_textview"
+                            style="@style/TextHeaderSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/viewer_settings_flow" />
+
+                        <EditText
+                            android:id="@+id/flow_title_edittext"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:inputType="number"/>
+                    </TableRow>
+
+                    <TableRow android:gravity="center_vertical">
                         <!-- SPEED OPTIONS-->
                         <TextView
                             android:id="@+id/speed_title_view"

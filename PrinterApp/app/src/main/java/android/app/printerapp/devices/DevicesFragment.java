@@ -532,7 +532,7 @@ import it.sephiroth.android.library.widget.HListView;
                     if (mp.getPosition() == arg2) m = mp;
                 }
 
-                Log.i("DEVICES","Dude im touching " + m.getDisplayName());
+                //Log.i("DEVICES","Dude im touching " + m.getDisplayName());
 
                 if (m != null) {
 
