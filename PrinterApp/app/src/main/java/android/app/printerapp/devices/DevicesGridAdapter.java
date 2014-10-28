@@ -228,6 +228,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                 case StateUtils.STATE_NONE:
                     tvl.setText("Offline");
                     tvl.setVisibility(View.VISIBLE);
+                    pl.setVisibility(View.VISIBLE);
                     break;
 
                 default: {

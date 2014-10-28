@@ -8,6 +8,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.ClipData;
@@ -27,8 +28,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.DragShadowBuilder;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -37,9 +38,9 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TabHost.OnTabChangeListener;
 
 import it.sephiroth.android.library.widget.HListView;
 
@@ -422,6 +423,7 @@ import it.sephiroth.android.library.widget.HListView;
                 m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
                 m.setLinked(getActivity());
                 notifyAdapter();
+
             }
         });
 
@@ -476,7 +478,11 @@ import it.sephiroth.android.library.widget.HListView;
 
                 //search printer by position
                 for (ModelPrinter mp : DevicesListController.getList()) {
-                    if (mp.getPosition() == arg2) m = mp;
+                    if (mp.getPosition() == arg2) {
+
+                        Log.i("OUT","Lets " + mp.getName());
+                        m = mp;
+                    }
                 }
 
                 if (m != null) {
@@ -500,7 +506,7 @@ import it.sephiroth.android.library.widget.HListView;
                         }
 
                         //Check if the Job has finished, and create a dialog to remove the file / send a new one
-                        if (m.getStatus() > 0) {
+                        if ((m.getStatus() > 0) && (m.getStatus()<7)) {
 
                             //if job finished, create dialog
                             if (m.getJob().getFinished()) {
@@ -510,6 +516,11 @@ import it.sephiroth.android.library.widget.HListView;
                             } else {
                                 ItemListActivity.showExtraFragment(1, m.getId());
                             }
+                        } else {
+
+                            OctoprintConnection.getConnection(getActivity(),m, true);
+
+
                         }
                     }
                 }

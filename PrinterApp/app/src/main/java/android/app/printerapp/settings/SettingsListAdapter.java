@@ -68,6 +68,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
                     Log.i("OUT", "Trying to delete " + m.getName());
                     DatabaseController.deleteFromDb(m.getId());
+
+                    //TODO change to remove method
                     DevicesListController.getList().remove(m);
                     ItemListActivity.notifyAdapters();
                     notifyDataSetChanged();

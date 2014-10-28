@@ -1,14 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
-import javax.jmdns.ServiceInfo;
-import javax.jmdns.ServiceListener;
-
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
@@ -17,6 +8,15 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.util.Log;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+import javax.jmdns.ServiceListener;
 
 
 /**
@@ -114,11 +114,11 @@ public class JmdnsServiceListener implements ServiceListener{
 		public void serviceResolved(ServiceEvent event) {	
 			
 			//Creates a service with info
-			 Log.i("Model","Service resolved: " + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
+			 Log.i("Model","Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 			
 			 mContext.addElement(new ModelPrinter(service.getName(),
-					 service.getInetAddresses()[0].toString(), searchPrinter(DevicesListController.getNetworkId(event.getName()))));
+					 service.getInetAddresses()[0].toString(), DevicesListController.searchAvailablePosition()));
 			 
 		}
 		
