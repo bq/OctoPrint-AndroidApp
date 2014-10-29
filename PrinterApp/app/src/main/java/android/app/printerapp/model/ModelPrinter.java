@@ -170,7 +170,7 @@ public class ModelPrinter {
 	
 	public void startUpdate(Context context){
 		//Initialize web socket connection
-		OctoprintConnection.getConnection(context, this);
+		//OctoprintConnection.getConnection(context, this, false);
 		OctoprintConnection.getSettings(this,context);
 	}
 	

@@ -1,14 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.printerapp.ItemListActivity;
@@ -31,6 +22,15 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * This class will connect to the server AP and select a wifi from the list to connect the server to
@@ -89,7 +89,7 @@ public class PrintNetworkManager {
 			conf.preSharedKey = "\""+ PASS +"\"";
 			
 			mPosition = position;
-			
+
 			//Add the new network
 			mManager = (WifiManager)context.getActivity().getSystemService(Context.WIFI_SERVICE); 
 			final int nId = mManager.addNetwork(conf);	
@@ -269,9 +269,10 @@ public class PrintNetworkManager {
 												public void run() {
 												
 													Log.i("MANAGER","Registering again with " + target.SSID + "!");
-																								
 
-													DevicesListController.getList().remove(mPosition);
+                                                    DevicesListController.removeElement(mPosition);
+													//DevicesListController.getList().remove(mPosition);
+
                                                     //Remove ad-hoc network
                                                     clearNetwork("OctoPi-Dev");
 													mPosition = -1;

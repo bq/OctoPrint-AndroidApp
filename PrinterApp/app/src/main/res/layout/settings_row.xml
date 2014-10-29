@@ -24,6 +24,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FF000000" />
 
+    <ImageButton
+        android:id="@+id/settings_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:src="@drawable/disconnected_icon" />
+
 <ImageButton
     android:id="@+id/settings_edit"
     android:layout_width="wrap_content"

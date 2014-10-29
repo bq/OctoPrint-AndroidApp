@@ -117,8 +117,8 @@ public class SlicingHandler {
             e.printStackTrace();
         }
 
-        if (tempFile != null )Log.i("OUT", "FIle created nasdijalskdjldaj as fucking name " + tempFile.getName());
-        else Log.i("OUT","ERROR CREATING TEMP FILASIDÑLAISDÑ  ");
+      /*  if (tempFile != null )Log.i("OUT", "FIle created nasdijalskdjldaj as fucking name " + tempFile.getName());
+        else Log.i("OUT","ERROR CREATING TEMP FILASIDÑLAISDÑ  ");*/
 
         return  tempFile;
 
@@ -131,12 +131,9 @@ public class SlicingHandler {
         if (isRunning) {
             mTimer.cancel();
             mTimer.purge();
-
-            Log.i("OUT","TIMER RESETING HIJO DE PUTA" );
             isRunning = false;
         }
 
-        Log.i("OUT","Creating EL TIMER" );
         //Reschedule task
         mTimer = new Timer();
 

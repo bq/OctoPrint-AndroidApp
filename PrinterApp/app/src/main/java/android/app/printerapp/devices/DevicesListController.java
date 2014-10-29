@@ -139,6 +139,8 @@ public class DevicesListController {
 		return -1;
 		
 	}
+
+    //TODO remove this method
 	
 	public static boolean checkExisting(ModelPrinter m){
 		
@@ -157,6 +159,25 @@ public class DevicesListController {
 		return exists;
 		
 	}
+
+    public static void removeElement(int position){
+
+        ModelPrinter target = null;
+
+        //search printer by position
+        for (ModelPrinter mp : mList) {
+            if (mp.getPosition() == position) {
+
+                target = mp;
+            }
+        }
+
+        if (target!=null) {
+            Log.i("OUT","Removing " + target.getName() + " with  index " + mList.indexOf(target));
+            mList.remove(mList.indexOf(target));
+        }
+
+    }
 
     /**
      * Create a select printer dialog to open the print panel or to upload a file with the selected
@@ -214,108 +235,7 @@ public class DevicesListController {
 
 
     }
-	
-	//Select a printer from all the linked available  and send to print
-/*@SuppressLint("SdCardPath")
-    public static void selectPrinter(final Context context, final File f){
-		
-		final ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
-		
-		//Fill the list with operational printers
-		for (ModelPrinter p : mList){
-			
-			if (p.getStatus() == StateUtils.STATE_OPERATIONAL){
-				
-				tempList.add(p);
-				
-			}
-			
-		}
-		String[] nameList = new String[tempList.size()];
-		
-		//We'll check for checked items (heh) with a boolean array
-		//TODO use this same method with printer discovery
-		final boolean[] checkedItems = new boolean[nameList.length];
-		
-		int i = 0;
-		
-		//New array with names only for the adapter
-		for (ModelPrinter p : tempList){		
-			nameList[i] = p.getDisplayName();
-			i++;
-		}
-		
-		AlertDialog.Builder adb2 = new AlertDialog.Builder(context);
-		adb2.setTitle(R.string.library_select_printer_title);
 
-		//Show list of available printers
-		adb2.setMultiChoiceItems(nameList, null, new OnMultiChoiceClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-				
-				checkedItems[which]	= isChecked;
-
-			}
-		});
-		
-		adb2.setPositiveButton(R.string.library_option_print, new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-	
-				//SparseBooleanArray checked = ad2.getListView().getCheckedItemPositions();;
-				
-				//TODO Multiprint interaction
-				for (int i = 0; i<checkedItems.length ; i++){
-					
-					if (checkedItems[i]){
-						
-						ModelPrinter m = tempList.get(i);
-
-						
-						//OctoprintSlicing.retrieveProfiles(m.getAddress());
-						//OctoprintSlicing.sliceCommand(context, m.getAddress(), f, "/local/");
-						
-						//TODO Yolo Temp
-						
-						if (f.getParent().equals("sd")){
-							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/sdcard/", false);	
-							
-			    			
-						} else if (f.getParent().equals("witbox")){
-							OctoprintFiles.fileCommand(context, m.getAddress(), f.getName(), "/local/", false);	
-							
-				    		
-						} else {
-							
-							if (LibraryController.hasExtension(1, f.getName())) OctoprintFiles.uploadFile(context, f, m, false, false);
-							else if (LibraryController.hasExtension(0, f.getName())) OctoprintFiles.uploadFile(context, f, m, true, false);
-							
-						}
-						if (LibraryController.hasExtension(1, f.getName())){
-							ItemListFragment.performClick(0);
-							if (checkedItems.length==1) ItemListActivity.showExtraFragment(1, m.getName());
-						}
-
-
-
-
-
-
-
-					}
-													
-				}
-
-			}
-		});
-		
-		adb2.setNegativeButton(R.string.cancel, null);
-		
-		adb2.show();
-	}*/
-	
 	//TODO Move elsewhere maybe
 	//Get the Network id key to associate with the service name
 	public static String getNetworkId(String name){
