@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
-        android:src="@drawable/disconnected_icon" />
+        android:src="@drawable/ic_settings_disconnect" />
 
 <ImageButton
     android:id="@+id/settings_edit"

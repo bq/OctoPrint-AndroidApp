@@ -398,13 +398,19 @@
 
                 <!-- Buttons container -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right|center_vertical"
                     android:orientation="horizontal">
 
                     <com.material.widget.PaperButton
-                        android:id="@+id/retore_settings_button"
+                        android:id="@+id/delete_settings_button"
+                        style="@style/MaterialDesignButton.Flat"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/viewer_button_delete" />
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/restore_settings_button"
                         style="@style/MaterialDesignButton.Flat"
                         android:layout_width="160dp"
                         widget:paper_text="@string/viewer_button_restore" />

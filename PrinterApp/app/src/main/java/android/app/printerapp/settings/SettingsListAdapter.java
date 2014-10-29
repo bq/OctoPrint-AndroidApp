@@ -68,9 +68,9 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
                 case (StateUtils.STATE_CLOSED):
                 case (StateUtils.STATE_ERROR):
-                    connectionButton.setImageResource(R.drawable.disconnected_icon);
+                    connectionButton.setImageResource(R.drawable.ic_settings_disconnect);
                     break;
-                default: connectionButton.setImageResource(R.drawable.connected_icon);
+                default: connectionButton.setImageResource(R.drawable.ic_settings_connect);
                     break;
 
             }
@@ -83,10 +83,10 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
                     if (m.getStatus() == StateUtils.STATE_OPERATIONAL) {
                         OctoprintConnection.disconnect(getContext(), m.getAddress());
-                        connectionButton.setImageResource(R.drawable.disconnected_icon);
+                        connectionButton.setImageResource(R.drawable.ic_settings_disconnect);
                     } else {
                         OctoprintConnection.getConnection(getContext(), m, true);
-                        connectionButton.setImageResource(R.drawable.connected_icon);
+                        connectionButton.setImageResource(R.drawable.ic_settings_connect);
                     }
 
 

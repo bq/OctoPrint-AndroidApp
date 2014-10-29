@@ -1,6 +1,7 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
@@ -10,6 +11,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +37,9 @@ import java.util.ArrayList;
 public class SidePanelHandler {
 
     //static parameters
-    private static final String[] INFILL_OPTIONS = {"Low","Medium","High","Full", "None"};
-    private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"};
+    private static final String[] INFILL_OPTIONS = {"Low","Medium","High","Full", "None"}; //quality options
+    private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"}; //support options
+    private static final String[] PREDEFINED_PROFILES = {"bq"}; //filter for profile deletion
 
     //Printer to send the files
     private ModelPrinter mPrinter;
@@ -52,6 +55,7 @@ public class SidePanelHandler {
     private PaperButton printButton;
     private PaperButton saveButton;
     private PaperButton restoreButton;
+    private PaperButton deleteButton;
 
     private Spinner s_quality;
     private Spinner s_infill;
@@ -101,7 +105,8 @@ public class SidePanelHandler {
 
         printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
         saveButton = (PaperButton) mRootView.findViewById(R.id.save_settings_button);
-        restoreButton = (PaperButton) mRootView.findViewById(R.id.retore_settings_button);
+        restoreButton = (PaperButton) mRootView.findViewById(R.id.restore_settings_button);
+        deleteButton = (PaperButton) mRootView.findViewById(R.id.delete_settings_button);
 
         layerHeight = (EditText)mRootView.findViewById(R.id.layer_height_edittext);
         shellThickness = (EditText)mRootView.findViewById(R.id.shell_thickness_edittext);
@@ -338,6 +343,14 @@ public class SidePanelHandler {
                             parseJson(s_quality.getSelectedItemPosition());
                         }
                     });
+
+                    deleteButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            deleteProfile();
+                        }
+                    });
+
 
 
 
@@ -578,6 +591,45 @@ public class SidePanelHandler {
         }
 
 
+
+    }
+
+    //Delete a profile that it's not restricted by a constant
+    public void deleteProfile(){
+
+        try {
+            final String profile = mPrinter.getProfiles().get(s_quality.getSelectedItemPosition()).getString("key");
+
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
+            adb.setTitle(R.string.viewer_profile_delete);
+            adb.setMessage(s_quality.getSelectedItem().toString());
+            adb.setPositiveButton(R.string.delete,new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                //Check if the profile is part of the predefined constants
+                for (String s : PREDEFINED_PROFILES){
+
+                    if (profile.contains(s)) {
+
+                        Toast.makeText(mActivity,R.string.viewer_profile_delete_error,Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+                OctoprintSlicing.deleteProfile(mActivity,mPrinter,profile);
+
+            }
+        });
+
+        adb.setNegativeButton(R.string.cancel, null);
+        adb.show();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 

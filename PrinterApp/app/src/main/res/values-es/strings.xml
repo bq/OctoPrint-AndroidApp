@@ -117,6 +117,8 @@
     <string name="viewer_slice_error">Error subiendo el fichero</string>
     <string name="viewer_printer_unavailable">Impresora no disponible</string>
     <string name="viewer_printer_selected">Sin impresora</string>
+    <string name="viewer_profile_delete">¿Quieres eliminar este perfil?</string>
+    <string name="viewer_profile_delete_error">No se puede eliminar ese perfil</string>
     
     <string name="settings_network">Red por defecto</string>
     <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>
@@ -169,6 +171,7 @@
     <string name="viewer_settings_layer_time">Tiempo mínimo de capa (s)</string>
     <string name="viewer_settings_enable_fan">Habilitar ventilador de enfriamiento</string>
     <string name="viewer_button_restore">Restaurar opciones</string>
+    <string name="viewer_button_delete">Eliminar perfil</string>
     <string name="viewer_button_save">Guardar</string>
     <string name="viewer_button_save_error">Elija otro nombre</string>
     <string name="viewer_button_print">Imprimir</string>.
