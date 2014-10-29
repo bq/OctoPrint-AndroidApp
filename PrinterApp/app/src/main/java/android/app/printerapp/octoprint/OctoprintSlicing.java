@@ -90,6 +90,35 @@ public class OctoprintSlicing {
 	
 	}
 
+    /**
+     * Delete the profile selected by the profile parameter
+     * @param context
+     * @param profile
+     */
+    public static void deleteProfile(final Context context, final ModelPrinter p, String profile){
+
+        HttpClientHandler.delete(context,p.getAddress() + HttpUtils.URL_SLICING + "/" + profile, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                //Reload profiles
+                retrieveProfiles(context,p);
+
+            }
+
+
+
+        });
+
+    }
+
 
     /**
      * Method to retrieve slice profiles before sending the file to the actual printer

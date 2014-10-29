@@ -124,6 +124,8 @@
     <string name="viewer_slice_error">Error uploading the file</string>
     <string name="viewer_printer_unavailable">Printer unavailable</string>
     <string name="viewer_printer_selected">No printer selected</string>
+    <string name="viewer_profile_delete">Do you want to delete this profile?</string>
+    <string name="viewer_profile_delete_error">That profile can\'t be deleted</string>
     
     <string name="settings_network">Default network</string>
     <string name="settings_printers">Linked Witbox/Witclon connections</string>
@@ -178,6 +180,7 @@
     <string name="viewer_settings_layer_time">Minimal layer timer (s)</string>
     <string name="viewer_settings_enable_fan">Enable cooling fan</string>
     <string name="viewer_button_restore">Restore settings</string>
+    <string name="viewer_button_delete">Delete profile</string>
     <string name="viewer_button_save">Save</string>
     <string name="viewer_button_save_error">Select another name</string>
     <string name="viewer_button_print">Print</string>
