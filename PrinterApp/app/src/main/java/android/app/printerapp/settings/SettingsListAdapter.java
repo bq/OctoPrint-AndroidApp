@@ -7,6 +7,8 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintConnection;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -41,25 +44,55 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		
 					
-			//View not yet created
-			if (v==null){
+        //View not yet created
+        if (v==null){
 
-				//Inflate the view
-				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = inflater.inflate(R.layout.settings_row, null, false);
-				
+            //Inflate the view
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.settings_row, null, false);
 
-				
-			} else {
-				//v = convertView;
-			}
-			
-			TextView tv = (TextView) v.findViewById(R.id.settings_text);
-			tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") +"]");
+
+
+        } else {
+            //v = convertView;
+        }
+
+        TextView tv = (TextView) v.findViewById(R.id.settings_text);
+        tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") +"]");
 
         if (DatabaseController.checkExisting(m)) {
 
+            final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.settings_connection);
 
+            switch (m.getStatus()){
+
+                case (StateUtils.STATE_CLOSED):
+                case (StateUtils.STATE_ERROR):
+                    connectionButton.setImageResource(R.drawable.disconnected_icon);
+                    break;
+                default: connectionButton.setImageResource(R.drawable.connected_icon);
+                    break;
+
+            }
+
+
+            //TODO notify adapter instead of changing icons
+            connectionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (m.getStatus() == StateUtils.STATE_OPERATIONAL) {
+                        OctoprintConnection.disconnect(getContext(), m.getAddress());
+                        connectionButton.setImageResource(R.drawable.disconnected_icon);
+                    } else {
+                        OctoprintConnection.getConnection(getContext(), m, true);
+                        connectionButton.setImageResource(R.drawable.connected_icon);
+                    }
+
+
+
+                }
+            });
 
             v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
 

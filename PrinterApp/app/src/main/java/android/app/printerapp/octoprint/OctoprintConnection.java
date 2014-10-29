@@ -41,7 +41,7 @@ public class OctoprintConnection {
 
     private static final int SOCKET_TIMEOUT = 10000;
     private static final String DEFAULT_PORT = "VIRTUAL";
-		
+
 	/**
 	 * 
 	 * Post parameters to handle connection. JSON for the new API is made 
@@ -89,6 +89,28 @@ public class OctoprintConnection {
 		
 		
 	}
+    public static void disconnect(Context context, String url){
+
+        JSONObject object = new JSONObject();
+        StringEntity entity = null;
+        try {
+            object.put("command","disconnect");
+            entity = new StringEntity(object.toString(), "UTF-8");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION,
+                entity, "application/json", new JsonHttpResponseHandler(){
+
+                    //Override onProgress because it's faulty
+                    @Override
+                    public void onProgress(int bytesWritten, int totalSize) {
+                    }
+                });
+    }
 	
 	/**
 	 * Obtains the current state of the machine and issues new connection commands
@@ -265,7 +287,7 @@ public class OctoprintConnection {
 		            			JSONObject slicingPayload = response.getJSONObject("payload");
 
 		            			sliceHandling(context, slicingPayload, p.getAddress());
-		            			
+
 		            		}
 
                             //A file was uploaded
@@ -352,11 +374,8 @@ public class OctoprintConnection {
 					if (flags.getBoolean("error")) return StateUtils.STATE_ERROR;
 					if (flags.getBoolean("paused")) return StateUtils.STATE_PAUSED;
 					if (flags.getBoolean("closedOrError")) return StateUtils.STATE_CLOSED;
-					
-					
-					
+
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -382,6 +401,7 @@ public class OctoprintConnection {
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
                 LibraryController.getParentFolder() + "/temp/", payload.getString("gcode"));
                 DatabaseController.handlePreference("Slicing",payload.getString("stl"),null, false);
+                OctoprintFiles.deleteFile(context,url,payload.getString("stl"), "/local/");
 
             }else {
 
