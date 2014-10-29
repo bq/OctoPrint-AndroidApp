@@ -30,7 +30,7 @@ public class OctoprintSlicing {
      * @param p
      * @param profile
      */
-	public static void sendProfile(Context context, final ModelPrinter p, JSONObject profile){
+	public static void sendProfile(final Context context, final ModelPrinter p, JSONObject profile){
 
         StringEntity entity = null;
         String key = null;
@@ -67,7 +67,9 @@ public class OctoprintSlicing {
 						//Dismiss progress dialog
 						pd.dismiss();
 
-                        p.getProfiles().add(response);
+
+                        //Reload profiles
+                        retrieveProfiles(context,p);
 
 
 
@@ -107,6 +109,8 @@ public class OctoprintSlicing {
                 super.onSuccess(statusCode, headers, response);
 
                 Log.i("PROFILES", response.toString());
+
+                p.getProfiles().clear();
 
                 Iterator<String> keys = response.keys();
                 int selectedItem = 0;
@@ -154,22 +158,7 @@ public class OctoprintSlicing {
 
                 }
 
-                //Custom Dialog to insert network parameters.
-               /* AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                adb.setTitle("Select profile");
 
-                //Get an adapter with the Network list retrieved from the main controller
-                adb.setSingleChoiceItems(profileList, selectedItem, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        sliceCommand(context, url, file, profileList.getItem(i).toString(), false);
-
-                    }
-                });
-
-                adb.show();*/
             }
 			
 			@Override

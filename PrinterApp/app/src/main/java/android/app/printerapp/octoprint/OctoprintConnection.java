@@ -40,7 +40,7 @@ import de.tavendo.autobahn.WebSocketHandler;
 public class OctoprintConnection {
 
     private static final int SOCKET_TIMEOUT = 10000;
-    private static final String DEFAULT_PORT = "VIRTUAL";
+    private static final String DEFAULT_PORT = null;
 
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class OctoprintConnection {
 		StringEntity entity = null;
 		try {
 			object.put("command","connect");
-            object.put("port",port);
+            if (port!=null) object.put("port",port);
             object.put("save", true);
 			object.put("autoconnect","true");
 			entity = new StringEntity(object.toString(), "UTF-8");
@@ -245,10 +245,11 @@ public class OctoprintConnection {
 		            Log.i("SOCK", "Status: Connected to " + wsuri);
                     getConnection(context,p,false);
 
-                     //TODO NOPE
+                     //Get a new set of files
+                    OctoprintFiles.getFiles(p);
 
-		            OctoprintFiles.getFiles(p);
-                    OctoprintSlicing.retrieveProfiles(context,p);
+                     //Get a new set of profiles
+                     OctoprintSlicing.retrieveProfiles(context,p);
 
 
 		         }

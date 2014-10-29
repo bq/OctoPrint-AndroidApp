@@ -1,14 +1,5 @@
 package android.app.printerapp.octoprint;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -21,6 +12,16 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 public class OctoprintFiles {
 	
@@ -40,7 +41,8 @@ public class OctoprintFiles {
 		public void onSuccess(int statusCode, Header[] headers,
 				JSONObject response) {
 			super.onSuccess(statusCode, headers, response);
-			
+
+            p.getFiles().clear();
 					
 			try {
 				
