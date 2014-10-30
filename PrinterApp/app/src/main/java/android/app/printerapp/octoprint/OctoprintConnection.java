@@ -1,7 +1,6 @@
 package android.app.printerapp.octoprint;
 
 import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
@@ -9,7 +8,9 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -275,6 +276,14 @@ public class OctoprintConnection {
 							p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
 									response);
 
+
+                            //SEND NOTIFICATION
+
+                            Intent intent = new Intent("notify");
+                            intent.putExtra("message", "Devices");
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+
 		            	}
 
                          //Check for events in the server
@@ -298,9 +307,7 @@ public class OctoprintConnection {
 		            			p.setLoaded(true);
 		            			
 		            		}
-		            		
 
-		            		
 		            	}
 
                           //update slicing progress in the print panel fragment
@@ -314,6 +321,8 @@ public class OctoprintConnection {
 
                                   int progress = response.getInt("progress");
 
+
+                                  //TODO
                                   ViewerMainFragment.showProgressBar(progress);
                               }
 
@@ -325,9 +334,10 @@ public class OctoprintConnection {
 						e.printStackTrace();
 						Log.i("CONNECTION","Invalid JSON");
 												
-					}	
-					
-		            ItemListActivity.notifyAdapters();
+					}
+
+
+
 
 					
 		        
@@ -363,8 +373,8 @@ public class OctoprintConnection {
 		   }
 
 	}
-	
-	public static int createStatus(JSONObject flags){
+
+    public static int createStatus(JSONObject flags){
 		
 		//Log.i("FLAGSSS",flags.toString());
 		

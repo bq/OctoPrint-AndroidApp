@@ -97,8 +97,6 @@ public class DevicesListController {
                 public void run() {
 
                     m.setLinked(context);
-                    Log.i("OUT","Running shit");
-
                 }
             });
 
@@ -107,7 +105,6 @@ public class DevicesListController {
 		}
 	   
 	   DatabaseController.closeDb();
-	   ItemListActivity.notifyAdapters();
 
 	}
 	

@@ -1,6 +1,5 @@
 package android.app.printerapp.devices;
 
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.widget.ArrayAdapter;
 
 
 /**
@@ -22,14 +22,16 @@ public class DevicesEmptyDragListener implements OnDragListener{
 	
 	//current position on the grid
 	private int mPosition;
+    private ArrayAdapter<ModelPrinter> mAdapter;
 	
 	/**
 	 * Constructor to the listener
 	 * @param pos the position on the grid
 	 */
-	public DevicesEmptyDragListener(int pos){
+	public DevicesEmptyDragListener(int pos, ArrayAdapter<ModelPrinter> adapter){
 
 		mPosition = pos;
+        mAdapter = adapter;
 	}
 		
 
@@ -60,8 +62,10 @@ public class DevicesEmptyDragListener implements OnDragListener{
 	    				p.setPosition(mPosition);
 	    				//update database
 	    				DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getId(), String.valueOf(mPosition));
+
 	    				//static notification of the adapters
-	    				ItemListActivity.notifyAdapters();
+;
+                        mAdapter.notifyDataSetChanged();
 
 
 		    				

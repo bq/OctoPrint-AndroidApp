@@ -1,7 +1,5 @@
 package android.app.printerapp.devices;
 
-import java.io.File;
-
 import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
@@ -13,6 +11,9 @@ import android.content.res.Resources;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.widget.ArrayAdapter;
+
+import java.io.File;
 
 /**
  * OnDragListener to handle printing and other possible events such as
@@ -26,14 +27,16 @@ public class DevicesDragListener implements OnDragListener {
 
 	//Reference to model
     private ModelPrinter mModel;
+    private ArrayAdapter<ModelPrinter> mAdapter;
 	
 	/**
 	 * Class constructor
 	 * @param model The model currently being dragged on
 	 */
-	public DevicesDragListener(Context context, ModelPrinter model){
+	public DevicesDragListener(Context context, ModelPrinter model, ArrayAdapter<ModelPrinter> adapter){
 		mContext = context;
         mModel = model;
+        mAdapter = adapter;
 	}
 
 	
@@ -72,6 +75,8 @@ public class DevicesDragListener implements OnDragListener {
 		    		
 		    		//Call to the static method to upload
 		    		OctoprintFiles.uploadFile(v.getContext(), file, mModel);
+
+                    mAdapter.notifyDataSetChanged();
 		    		
 		    	} else {
 		    		//Error dialog

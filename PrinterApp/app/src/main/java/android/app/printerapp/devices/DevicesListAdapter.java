@@ -1,8 +1,5 @@
 package android.app.printerapp.devices;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
@@ -15,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Adapter for the listview mode, has reduced functionality and status text added
@@ -55,7 +55,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
             //Inflate the view
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.list_item_printer, null, false);
-            v.setOnDragListener(new DevicesDragListener(mContext, m));
+            v.setOnDragListener(new DevicesDragListener(mContext, m, this));
 
         } else {
             //v = convertView;

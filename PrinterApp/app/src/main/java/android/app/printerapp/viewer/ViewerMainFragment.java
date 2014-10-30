@@ -116,6 +116,7 @@ public class ViewerMainFragment extends Fragment {
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
+    private SidePanelHandler mSidePanelHandler;
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -162,7 +163,7 @@ public class ViewerMainFragment extends Fragment {
 
             //Init slicing elements
             mSlicingHandler = new SlicingHandler(getActivity());
-            new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
+            mSidePanelHandler = new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
 
         }
 
@@ -757,6 +758,8 @@ public class ViewerMainFragment extends Fragment {
 
     public void saveGcodeDialog() {
 
+
+        //TODO check for null after printing
         final File actualFile = new File(mSlicingHandler.getOriginalProject());
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
@@ -784,8 +787,7 @@ public class ViewerMainFragment extends Fragment {
 
                     if (mFile.delete()) {
                         Log.i("OUT", "File deletedillo");
-                    }
-                    ;
+                    };
                 }
 
             }
@@ -977,6 +979,20 @@ public class ViewerMainFragment extends Fragment {
             showProgressBar(-1);
         }
     };
+
+    public void notifyAdapter(int type){
+
+
+        if (mSidePanelHandler!=null) {
+            switch (type){
+                case 0: mSidePanelHandler.printerAdapter.notifyDataSetChanged(); break;
+                case 1: mSidePanelHandler.profileAdapter.notifyDataSetChanged(); break;
+            }
+        }
+
+
+
+    }
 
 
 

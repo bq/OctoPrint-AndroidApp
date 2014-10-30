@@ -14,10 +14,13 @@ import android.app.printerapp.octoprint.StateUtils;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -28,7 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Class to initialize and handle the side panel in the print panel
@@ -60,6 +62,9 @@ public class SidePanelHandler {
     private Spinner s_quality;
     private Spinner s_infill;
     private Spinner s_support;
+
+    public SidePanelPrinterAdapter printerAdapter;
+    public SidePanelProfileAdapter profileAdapter;
 
     private EditText layerHeight;
     private EditText shellThickness;
@@ -128,6 +133,23 @@ public class SidePanelHandler {
 
         profileText = (EditText) mRootView.findViewById(R.id.profile_edittext);
 
+        // SCROLL VIEW HACK
+
+        /**
+         * Removes focus from the scrollview when notifying the adapter
+         */
+        ScrollView view = (ScrollView) mRootView.findViewById(R.id.advanced_options_scroll_view);
+        view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocusFromTouch();
+                return false;
+            }
+        });
+
     }
 
     //Initializes the side panel with the printer data
@@ -159,29 +181,12 @@ public class SidePanelHandler {
 
                                 mPrinter = DevicesListController.getList().get(i);
 
-                                ArrayList<String> names = new ArrayList<String>();
+                                profileAdapter = new SidePanelProfileAdapter(mActivity,
+                                        R.layout.print_panel_spinner_item,  mPrinter.getProfiles());
 
-                                for (JSONObject o : mPrinter.getProfiles()){
+                                s_quality.setAdapter(profileAdapter);
 
-                                    try {
-
-                                        names.add(o.getString("displayName"));
-                                        //TODO set default value
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-
-
-                                }
-
-                                ArrayAdapter<String> adapter_quality = new ArrayAdapter<String>(mActivity,
-                                        R.layout.print_panel_spinner_item, names);
-
-                                s_quality.setAdapter(adapter_quality);
-
-                                adapter_quality.notifyDataSetChanged();
+                                profileAdapter.notifyDataSetChanged();
 
                             } else mPrinter = null;
 
@@ -199,29 +204,9 @@ public class SidePanelHandler {
                         }
                     });
 
+                    printerAdapter = new SidePanelPrinterAdapter(mActivity,R.layout.print_panel_spinner_item,DevicesListController.getList());
+                    s_printer.setAdapter(printerAdapter);
 
-
-                    String[] nameList = new String[DevicesListController.getList().size() + 1];
-                    int i = 0;
-
-                    //New array with names only for the adapter
-                    for (ModelPrinter p : DevicesListController.getList()){
-
-                        if (p.getStatus() == StateUtils.STATE_OPERATIONAL){
-                            nameList[i] = p.getDisplayName();
-
-                        } else   nameList[i] = "***" + p.getDisplayName(); //TODO temporal
-
-                        i++;
-
-                    }
-
-                    nameList[i] = mActivity.getString(R.string.viewer_printer_selected);
-
-                    ArrayAdapter<String> adapter_printer = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item,nameList);
-
-                    s_printer.setAdapter(adapter_printer);
 
 
                     /*************************************************************************************/
@@ -448,7 +433,6 @@ public class SidePanelHandler {
      */
     public void parseJson(int i){
 
-
          //Parse the JSON element
         try {
 
@@ -578,7 +562,6 @@ public class SidePanelHandler {
                     e.printStackTrace();
                 }
 
-
             }
 
             //Clear error and focus
@@ -603,7 +586,7 @@ public class SidePanelHandler {
 
             AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
             adb.setTitle(R.string.viewer_profile_delete);
-            adb.setMessage(s_quality.getSelectedItem().toString());
+            adb.setMessage(mPrinter.getProfiles().get(s_quality.getSelectedItemPosition()).getString("displayName"));
             adb.setPositiveButton(R.string.delete,new DialogInterface.OnClickListener() {
 
             @Override
@@ -630,6 +613,13 @@ public class SidePanelHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void notifyAdapter(){
+
+        printerAdapter.notifyDataSetChanged();
+        if (profileAdapter!=null)profileAdapter.notifyDataSetChanged();
 
     }
 

@@ -64,76 +64,82 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = convertView;
+        ViewHolder holder;
 
         //For every element on the list we create a model printer, but only use the
         //ones that are actually holding printers, else are empty spaces
         ModelPrinter m = getItem(position);
 
         //View not yet created
-        if (v == null) {
+        if (convertView == null) {
+
             //Inflate the view
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.grid_item_printer, null, false);
+            convertView = inflater.inflate(R.layout.grid_item_printer, null, false);
+
+            holder = new ViewHolder();
+            holder.textViewTag = (TextView) convertView.findViewById(R.id.grid_element_tag);
+            holder.textViewIp = (TextView) convertView.findViewById(R.id.grid_element_ip);
+            holder.textViewLoading = (TextView) convertView.findViewById(R.id.grid_text_loading);
+            holder.imageIcon = (ImageView) convertView.findViewById(R.id.grid_element_icon);
+            holder.progressBarPrinting = (ProgressBar) convertView.findViewById(R.id.grid_element_progressbar);
+            holder.progressBarLoading = (ProgressBar) convertView.findViewById(R.id.grid_element_loading);
+            holder.imageWarning = (ImageView) convertView.findViewById(R.id.grid_warning_icon);
+            holder.gridItem = (LinearLayout) convertView.findViewById(R.id.grid_item_printer_container);
+            convertView.setTag(holder);
+
         } else {
-            //v = convertView;
+
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        //Printer tag reference
-        TextView tag = (TextView) v.findViewById(R.id.grid_element_tag);
-        TextView ip = (TextView) v.findViewById(R.id.grid_element_ip);
-        TextView tvl = (TextView) v.findViewById(R.id.grid_text_loading);
-        ImageView icon = (ImageView) v.findViewById(R.id.grid_element_icon);
-        ProgressBar pb = (ProgressBar) v.findViewById(R.id.grid_element_progressbar);
-        ProgressBar pl = (ProgressBar) v.findViewById(R.id.grid_element_loading);
-        ImageView iv = (ImageView) v.findViewById(R.id.grid_warning_icon);
-
-
         //Hide icons and progress bars
-        tvl.setVisibility(View.GONE);
-        iv.setVisibility(View.GONE);
-        pb.setVisibility(View.GONE);
-        pl.setVisibility(View.INVISIBLE);
+        holder.textViewLoading.setVisibility(View.GONE);
+        holder.imageWarning.setVisibility(View.GONE);
+        holder.progressBarPrinting.setVisibility(View.GONE);
+        holder.progressBarLoading.setVisibility(View.INVISIBLE);
 
         //Check if it's an actual printer or just an empty slot
         if (m == null) {
+
             //Empty slot is an invisible printer on the current position
-            v.setOnDragListener(new DevicesEmptyDragListener(position));
-            tag.setText("");
-            ip.setText("");
-            icon.setVisibility(View.INVISIBLE);
+            convertView.setOnDragListener(new DevicesEmptyDragListener(position, this));
+            holder.textViewTag.setText("");
+            holder.textViewIp.setText("");
+            holder.imageIcon.setVisibility(View.INVISIBLE);
+            holder.gridItem.setBackgroundResource(0);
 
         //It's a printer
         } else {
 
             //Intialize visual parameters
-            v.setOnDragListener(new DevicesDragListener(mContext, m));
-            tag.setText(m.getDisplayName());
-            ip.setText(m.getAddress().replace("/", ""));
-            icon.setVisibility(View.VISIBLE);
+            convertView.setOnDragListener(new DevicesDragListener(mContext, m, this));
+            holder.textViewTag.setText(m.getDisplayName());
+            holder.textViewIp.setText(m.getAddress().replace("/", ""));
+            holder.imageIcon.setVisibility(View.VISIBLE);
 
             int status = m.getStatus();
 
 
-            LinearLayout gridItem = (LinearLayout) v.findViewById(R.id.grid_item_printer_container);
-            gridItem.setBackgroundResource(R.drawable.selectable_rect_background_green);
+            //LinearLayout gridItem = (LinearLayout) convertView.findViewById(R.id.grid_item_printer_container);
+            holder.gridItem.setBackgroundResource(R.drawable.selectable_rect_background_green);
 
             //Printer icon
             switch (status) {
 
                 case StateUtils.STATE_NONE: {
-                    icon.setImageResource(R.drawable.icon_printer);
+                    holder.imageIcon.setImageResource(R.drawable.icon_printer);
                 }
                 break;
 
                 case StateUtils.STATE_NEW:
                 case StateUtils.STATE_ADHOC: {
-                    icon.setImageResource(R.drawable.icon_detectedprinter);
+                    holder.imageIcon.setImageResource(R.drawable.icon_detectedprinter);
                 }
                 break;
 
                 default: {
-                    icon.setImageResource(R.drawable.icon_selectedprinter);
+                    holder.imageIcon.setImageResource(R.drawable.icon_selectedprinter);
                 }
                 break;
 
@@ -152,11 +158,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                         if (!m.getJob().getProgress().equals("null")) {
 
                             if (m.getJob().getFinished()) {
-                                pb.setVisibility(View.VISIBLE);
-                                pb.setProgress(100);
-                                pb.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
-                                tvl.setText(R.string.devices_text_completed);
-                                tvl.setVisibility(View.VISIBLE);
+                                holder.progressBarPrinting.setVisibility(View.VISIBLE);
+                                holder.progressBarPrinting.setProgress(100);
+                                holder.progressBarPrinting.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
+                                holder.textViewLoading.setText(R.string.devices_text_completed);
+                                holder.textViewLoading.setVisibility(View.VISIBLE);
                             }
 
 							/*Double n = Double.parseDouble(m.getJob().getProgress() );
@@ -181,9 +187,9 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                     if (!m.getLoaded()) {
 
                         //check if a file is loading
-                        pl.setVisibility(View.VISIBLE);
-                        tvl.setText(R.string.devices_text_loading);
-                        tvl.setVisibility(View.VISIBLE);
+                        holder.progressBarLoading.setVisibility(View.VISIBLE);
+                        holder.textViewLoading.setText(R.string.devices_text_loading);
+                        holder.textViewLoading.setVisibility(View.VISIBLE);
                     }
 
                 }
@@ -192,19 +198,19 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                 //When printing, show status bar and update progress
                 case StateUtils.STATE_PRINTING: {
 
-                    pb.setVisibility(View.VISIBLE);
+                    holder.progressBarPrinting.setVisibility(View.VISIBLE);
                     Double n = Double.valueOf(m.getJob().getProgress());
-                    pb.setProgress(n.intValue());
+                    holder.progressBarPrinting.setProgress(n.intValue());
 
                 }
                 break;
 
                 case StateUtils.STATE_PAUSED: {
-                    pb.setVisibility(View.VISIBLE);
+                    holder.progressBarPrinting.setVisibility(View.VISIBLE);
                     Double n = Double.valueOf(m.getJob().getProgress());
-                    pb.setProgress(n.intValue());
-                    tvl.setText(R.string.devices_text_paused);
-                    tvl.setVisibility(View.VISIBLE);
+                    holder.progressBarPrinting.setProgress(n.intValue());
+                    holder.textViewLoading.setText(R.string.devices_text_paused);
+                    holder.textViewLoading.setVisibility(View.VISIBLE);
 
                 }
                 break;
@@ -212,23 +218,23 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                 //when closed or error, show error icon
                 case StateUtils.STATE_CLOSED:
                 case StateUtils.STATE_ERROR: {
-                    iv.setImageResource(R.drawable.icon_error);
-                    iv.setVisibility(View.VISIBLE);
+                    holder.imageWarning.setImageResource(R.drawable.icon_error);
+                    holder.imageWarning.setVisibility(View.VISIBLE);
                 }
                 break;
 
                 //When connecting show status bar
                 case StateUtils.STATE_CONNECTING: {
-                    tvl.setText(R.string.devices_text_connecting);
-                    tvl.setVisibility(View.VISIBLE);
-                    pl.setVisibility(View.VISIBLE);
+                    holder.textViewLoading.setText(R.string.devices_text_connecting);
+                    holder.textViewLoading.setVisibility(View.VISIBLE);
+                    holder.progressBarLoading.setVisibility(View.VISIBLE);
                 }
                 break;
 
                 case StateUtils.STATE_NONE:
-                    tvl.setText("Offline");
-                    tvl.setVisibility(View.VISIBLE);
-                    pl.setVisibility(View.VISIBLE);
+                    holder.textViewLoading.setText("Offline");
+                    holder.textViewLoading.setVisibility(View.VISIBLE);
+                    holder.progressBarLoading.setVisibility(View.VISIBLE);
                     break;
 
                 default: {
@@ -240,7 +246,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
         }
 
 
-        return v;
+        return convertView;
     }
 
     //Retrieve item from current list by its position on the grid
@@ -250,7 +256,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
         for (ModelPrinter p : mCurrent) {
             if (p.getPosition() == position) return p;
         }
-
         return null;
     }
 
@@ -268,6 +273,23 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             mFilter = new GridFilter();
         return mFilter;
     }
+
+
+    static class ViewHolder {
+
+        TextView textViewTag;
+        TextView textViewIp;
+        TextView textViewLoading;
+        ImageView imageIcon;
+        ProgressBar progressBarPrinting;
+        ProgressBar progressBarLoading;
+        ImageView imageWarning;
+        LinearLayout gridItem;
+
+
+    }
+
+
 
     /**
      * This class is the custom filter for the Library

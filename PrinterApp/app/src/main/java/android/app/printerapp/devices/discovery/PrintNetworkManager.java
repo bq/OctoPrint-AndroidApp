@@ -2,7 +2,6 @@ package android.app.printerapp.devices.discovery;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
@@ -77,11 +76,10 @@ public class PrintNetworkManager {
 		
 		/**
 		 * Method to connect to the AP
-		 * @param context
 		 * @param ssid
 		 * @param position
 		 */
-		public void setupNetwork(final DevicesFragment context, final String ssid, int position){
+		public void setupNetwork(final String ssid, int position){
 			
 			//Get connection parameters
 			WifiConfiguration conf = new WifiConfiguration();
@@ -91,7 +89,7 @@ public class PrintNetworkManager {
 			mPosition = position;
 
 			//Add the new network
-			mManager = (WifiManager)context.getActivity().getSystemService(Context.WIFI_SERVICE); 
+			mManager = (WifiManager)mController.getActivity().getSystemService(Context.WIFI_SERVICE);
 			final int nId = mManager.addNetwork(conf);	
 					
 			//Configure network
@@ -277,7 +275,7 @@ public class PrintNetworkManager {
                                                     clearNetwork("OctoPi-Dev");
 													mPosition = -1;
 
-                                                    ItemListActivity.notifyAdapters();
+                                                    mController.notifyAdapter();
                                                    // mReceiver.register();
 													dismissNetworkDialog();
 													
