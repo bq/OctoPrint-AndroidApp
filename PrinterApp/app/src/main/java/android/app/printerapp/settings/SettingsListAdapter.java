@@ -1,7 +1,6 @@
 package android.app.printerapp.settings;
 
 import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -38,42 +37,68 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
-		View v = convertView;
-		final ModelPrinter m = getItem(position);
-		
-		
-					
-        //View not yet created
-        if (v==null){
 
-            //Inflate the view
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.settings_row, null, false);
+        View v = convertView;
+        final ModelPrinter m = getItem(position);
 
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        if (!DatabaseController.checkExisting(m)) {
+
+            v = inflater.inflate(R.layout.null_item, null, false);
 
         } else {
-            //v = convertView;
-        }
 
-        TextView tv = (TextView) v.findViewById(R.id.settings_text);
-        tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") +"]");
+            if (v == null) {
 
-        if (DatabaseController.checkExisting(m)) {
+                v = inflater.inflate(R.layout.settings_row, null, false);
+
+            } else {
+                if (!DatabaseController.checkExisting(m))  v = inflater.inflate(R.layout.null_item, null, false);
+                else v = inflater.inflate(R.layout.settings_row, null, false);
+                //v = convertView;
+            }
+
+
+            TextView tv = (TextView) v.findViewById(R.id.settings_text);
+            tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
 
             final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.settings_connection);
 
-            switch (m.getStatus()){
+            switch (m.getStatus()) {
 
                 case (StateUtils.STATE_CLOSED):
                 case (StateUtils.STATE_ERROR):
                     connectionButton.setImageResource(R.drawable.ic_settings_disconnect);
                     break;
-                default: connectionButton.setImageResource(R.drawable.ic_settings_connect);
+                default:
+                    connectionButton.setImageResource(R.drawable.ic_settings_connect);
                     break;
 
             }
+
+            v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    Log.i("OUT", "Trying to delete " + m.getName());
+                    DatabaseController.deleteFromDb(m.getId());
+
+                    //TODO change to remove method
+                    DevicesListController.getList().remove(m);
+                    //ItemListActivity.notifyAdapters();
+                    notifyDataSetChanged();
+                }
+            });
+
+            v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    optionEdit(m);
+                }
+            });
 
 
             //TODO notify adapter instead of changing icons
@@ -90,39 +115,11 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                     }
 
 
-
                 }
             });
-
-            v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-
-                    Log.i("OUT", "Trying to delete " + m.getName());
-                    DatabaseController.deleteFromDb(m.getId());
-
-                    //TODO change to remove method
-                    DevicesListController.getList().remove(m);
-                    ItemListActivity.notifyAdapters();
-                    notifyDataSetChanged();
-                }
-            });
-
-            v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    optionEdit(m);
-                }
-            });
-
-        } else {
-
-            //v.setVisibility(View.GONE);
 
         }
-		
+
 		return v;
 	}
 	

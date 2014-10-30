@@ -235,6 +235,13 @@ import it.sephiroth.android.library.widget.HListView;
     }
 
 
+
+
+
+
+
+    /****************************************** UI HANDLING *********************************/
+
     /**
      * Constructor for the tab host
      * TODO: Should be moved to a View class since it only handles ui.
@@ -279,6 +286,8 @@ import it.sephiroth.android.library.widget.HListView;
 
     }
 
+
+    //TODO get rid of this
     /**
      * Add a new element to the list and notify the adapter
      * It's handled on this Fragment to allow dynamic addition
@@ -307,7 +316,7 @@ import it.sephiroth.android.library.widget.HListView;
 
     }
 
-
+    //TODO get rid of this
     //Notify all adapters
     public void notifyAdapter() {
 
@@ -321,6 +330,8 @@ import it.sephiroth.android.library.widget.HListView;
         }
 
     }
+
+
 
 
     /**
@@ -399,41 +410,7 @@ import it.sephiroth.android.library.widget.HListView;
 
     }
 
-    /**
-     * Dialog for the QR code insertion and sending
-     *
-     * @param m
-     */
-    public void codeDialog(final ModelPrinter m) {
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.devices_setup_title);
-
-        //Inflate the view
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.setup_dialog, null, false);
-
-
-        //On insertion write the printer onto the database and start updating the socket
-        adb.setPositiveButton(R.string.add, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
-                m.setLinked(getActivity());
-                notifyAdapter();
-
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.setView(v);
-
-        adb.show();
-
-    }
 
     /**
      * ***************************** click listeners ********************************
@@ -455,7 +432,7 @@ import it.sephiroth.android.library.widget.HListView;
                     if (m.getStatus() == StateUtils.STATE_NEW) {
                         codeDialog(m);
                     } else if (m.getStatus() == StateUtils.STATE_ADHOC) {
-                        mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), arg2);
+                        mNetworkManager.setupNetwork(m.getName(), arg2);
                     }
                 }
 
@@ -490,7 +467,7 @@ import it.sephiroth.android.library.widget.HListView;
                     if (m.getStatus() == StateUtils.STATE_NEW) {
                         codeDialog(m);
                     } else if (m.getStatus() == StateUtils.STATE_ADHOC) {
-                        mNetworkManager.setupNetwork(DevicesFragment.this, m.getName(), arg2);
+                        mNetworkManager.setupNetwork(m.getName(), arg2);
                     } else {
                         //show custom dialog
                         if (m.getStatus() == StateUtils.STATE_ERROR) {
@@ -559,8 +536,49 @@ import it.sephiroth.android.library.widget.HListView;
         };
     }
 
+
+    /**
+     * Dialog for the QR code insertion and sending
+     *
+     * @param m
+     */
+    public void codeDialog(final ModelPrinter m) {
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        adb.setTitle(R.string.devices_setup_title);
+
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.setup_dialog, null, false);
+
+
+        //On insertion write the printer onto the database and start updating the socket
+        adb.setPositiveButton(R.string.add, new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
+                m.setLinked(getActivity());
+
+                //TODO not notifying will wait til the socket opens
+                notifyAdapter();
+
+            }
+        });
+
+        adb.setNegativeButton(R.string.cancel, null);
+
+        adb.setView(v);
+
+        adb.show();
+
+    }
+
     @Override
     public void onDestroyView() {
+
+        //TODO random crash
         //mNetworkManager.destroy();
         super.onDestroyView();
     }

@@ -1,19 +1,11 @@
 package android.app.printerapp.settings;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import android.annotation.TargetApi;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -27,6 +19,11 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class SettingsFragment extends Fragment{
 	
@@ -205,5 +202,9 @@ public class SettingsFragment extends Fragment{
 		 
 		 return s;
 	}
+
+    public void notifyAdapter(){
+        mAdapter.notifyDataSetChanged();
+    }
 	
 }

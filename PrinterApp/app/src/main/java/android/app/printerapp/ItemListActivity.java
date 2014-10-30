@@ -6,7 +6,10 @@ import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMainFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -39,9 +43,9 @@ public class ItemListActivity extends FragmentActivity implements
     private boolean mTwoPane;
 
     //List of Fragments
-    private static DevicesFragment mDevicesFragment; //Devices fragment @static for refresh
+    private DevicesFragment mDevicesFragment; //Devices fragment @static for refresh
     private LibraryFragment mLibraryFragment; //Storage fragment
-    private static ViewerMainFragment mViewerFragment; //Print panel fragment @static for model load
+    private ViewerMainFragment mViewerFragment; //Print panel fragment @static for model load
     private SettingsFragment mSettingsFragment; //Settings fragment
 
     //Class specific variables
@@ -129,6 +133,10 @@ public class ItemListActivity extends FragmentActivity implements
         mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
 
         ItemListFragment.performClick(0);
+
+        // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this).registerReceiver(mAdapterNotification,
+                new IntentFilter("notify"));
 
 
     }
@@ -352,37 +360,6 @@ public class ItemListActivity extends FragmentActivity implements
 
 
     /*****************************
-     *  Devices Fragment handlers
-     *****************************/
-
-    //TODO find a better way maybe?
-
-    /**
-     * Static method to refresh the adapters for the fragments with
-     * the info from the server socket.
-     */
-    public static void notifyAdapters() {
-
-        try {
-
-            //Refresh the devices fragment with status
-            if (mDevicesFragment != null){
-                mDevicesFragment.notifyAdapter();
-                //Refresh printview fragment if exists
-                Fragment fragment = mManager.findFragmentByTag("Printer");
-                if (fragment != null) ((PrintViewFragment) fragment).refreshData();
-            }
-
-
-
-        } catch (NullPointerException e) {
-
-            e.printStackTrace();
-        }
-    }
-
-
-    /*****************************
      *  Viewer Fragment handlers
      *****************************/
 
@@ -413,5 +390,45 @@ public class ItemListActivity extends FragmentActivity implements
 
     }
 
+   //notify ALL adapters every time a notification is received
+    //TODO should filter only by type
+    private BroadcastReceiver mAdapterNotification = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
+            // Extract data included in the Intent
+            String message = intent.getStringExtra("message");
+
+            if (message.equals("Devices")){
+
+
+                mDevicesFragment.notifyAdapter();
+                if (mSettingsFragment!=null)mSettingsFragment.notifyAdapter();
+
+
+                //We have to update the viewer fragment here because status change comes after event
+                if (mViewerFragment!=null) mViewerFragment.notifyAdapter(0);
+
+                //Refresh printview fragment if exists
+                Fragment fragment = mManager.findFragmentByTag("Printer");
+                if (fragment != null) ((PrintViewFragment) fragment).refreshData();
+
+
+
+            } else if (message.equals("Profile")){
+
+                if (mViewerFragment!=null) mViewerFragment.notifyAdapter(1);
+            }
+
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mAdapterNotification);
+
+        super.onDestroy();
+    }
 }
