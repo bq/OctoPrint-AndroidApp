@@ -164,7 +164,7 @@ public class LibraryFragment extends Fragment {
                 optionPaste();
                 return true;
             case R.id.libray_reload:
-                changeTab();
+                refreshFiles();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -221,7 +221,7 @@ public class LibraryFragment extends Fragment {
                         mCurrentTab = "all";
                         break;
                     case 1:
-                        mCurrentTab = LibraryController.getParentFolder().getAbsolutePath();
+                        mCurrentTab = "current";
                         break;
                     case 2:
                         mCurrentTab = "printer";
@@ -233,7 +233,8 @@ public class LibraryFragment extends Fragment {
                         break;
                 }
 
-                changeTab();
+                refreshFiles();
+
 
             }
         });
@@ -241,14 +242,9 @@ public class LibraryFragment extends Fragment {
     }
 
     //Reload file list with the currently selected tab
-    public void changeTab() {
+    public void refreshFiles() {
 
-        if (mCurrentTab != null) {
-            Log.i("OUT","realdong " + mCurrentTab);
-            LibraryController.reloadFiles(mCurrentTab);
-
-        } Log.i("OUT","Null hijo de puta");
-
+        if (mCurrentTab != null) LibraryController.reloadFiles(mCurrentTab);
         sortAdapter();
     }
 
@@ -276,7 +272,7 @@ public class LibraryFragment extends Fragment {
 
                     case R.id.lb_radio3: //remove All filters and reload the whole list
                         mCurrentFilter = null;
-                        LibraryController.reloadFiles(LibraryController.getParentFolder().getAbsolutePath());
+                        refreshFiles();
                         break;
                     case R.id.lb_radio1: //Show gcodes only
                         mCurrentFilter = "gcode";

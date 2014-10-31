@@ -85,6 +85,7 @@
     <string name="library_delete_dialog_title">¿Quieres eliminar este fichero?</string>
     <string name="library_paste_toast">Selecciona "Pegar" en el menu</string>
     <string name="library_parent_folder">[Carpeta anterior]</string>
+    <string name="library_delete_dialog_original">¿Quieres eliminar el fichero original?</string>
     
     <string name="library_menu_search">Buscar modelo</string>
     <string name="library_menu_filter">Filtrar modelos</string>

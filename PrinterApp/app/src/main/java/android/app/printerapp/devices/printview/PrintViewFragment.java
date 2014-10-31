@@ -300,7 +300,7 @@ public class PrintViewFragment extends Fragment {
     public void refreshData() {
 
         //Check around here if files were changed
-        tv_printer.setText(mPrinter.getDisplayName() + " : " + mPrinter.getMessage());
+        tv_printer.setText(mPrinter.getDisplayName() + " : " + mPrinter.getMessage() + " ["+mPrinter.getPort()+"]");
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
 

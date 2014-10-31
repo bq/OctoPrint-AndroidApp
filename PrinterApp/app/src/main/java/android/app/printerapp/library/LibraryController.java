@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @SuppressLint("DefaultLocale")
 public class LibraryController {
-	
+
 	private static ArrayList<File> mFileList = new ArrayList<File>();
 	private static File mCurrentPath;
 	
@@ -201,8 +201,16 @@ public class LibraryController {
                 if ((path.equals("favorites"))){
                     retrieveFavorites();
                 } else{
-                    ///any other folder will open normally
-                    retrieveFiles(new File(path), false);
+
+                    if ((path.equals("current"))){
+
+                        retrieveFiles(mCurrentPath, false);
+
+                    }else {
+                        ///any other folder will open normally
+                        retrieveFiles(new File(path), false);
+                    }
+
                 }
 				
 

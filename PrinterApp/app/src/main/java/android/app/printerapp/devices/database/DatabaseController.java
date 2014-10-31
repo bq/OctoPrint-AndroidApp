@@ -101,8 +101,6 @@ public class DatabaseController {
 
 		if (c.moveToFirst()){
 			
-			Log.i("out", "Record exists: " + c.getString(0) + "  " + c.getString(1));
-			
 			exists = true;
 			
 		}else {	

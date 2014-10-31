@@ -418,6 +418,10 @@ public class ItemListActivity extends FragmentActivity implements
             } else if (message.equals("Profile")){
 
                 if (mViewerFragment!=null) mViewerFragment.notifyAdapter(1);
+
+            } else if (message.equals("Files")){
+
+                if (mLibraryFragment!=null) mLibraryFragment.refreshFiles();
             }
 
         }

@@ -47,7 +47,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         //If it's not IN the printer
         if ((!f.getParent().contains("printer")) &&
                 (!f.getParent().contains("sd")) &&
-                (!f.getParent().contains("witbox"))) {
+                (!f.getParent().contains("local"))) {
 
             showOptionDialog(arg2);
         }
@@ -125,7 +125,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         String[] mDialogOptions;
 
         //Different dialogs for different type of files
-        if (f.getParent().equals("sd") || f.getParent().equals("witbox")) {
+        if (f.getParent().equals("sd") || f.getParent().equals("local")) {
             mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print)};
         } else {
             mDialogOptions = new String[]{mContext.getResources().getString(R.string.library_option_print),
@@ -199,7 +199,6 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                         LibraryController.getFileList().remove(f);
 
                                         if (DatabaseController.isPreference("Favorites", f.getName())) {
-                                            Log.i("OUT", "oh my, IT IS! " + f.getName());
                                             DatabaseController.handlePreference("Favorites", f.getName(), null, false);
                                         }
                                         mContext.notifyAdapter();

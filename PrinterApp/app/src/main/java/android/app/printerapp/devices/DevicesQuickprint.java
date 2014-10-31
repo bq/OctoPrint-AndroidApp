@@ -143,11 +143,12 @@ public class DevicesQuickprint {
 
                     ClipData data = null;
 
-                    if (quickPrintModel.getStorage().equals("Witbox")) {
+                    /*if (quickPrintModel.getStorage().equals("Witbox")) {
                         data = ClipData.newPlainText("internal", name);
                     } else if (quickPrintModel.getStorage().equals("sd")) {
                         data = ClipData.newPlainText("internalsd", quickPrintModel.getName());
-                    } else if (LibraryController.hasExtension(1, name)) {
+                    } else*/
+                    if (LibraryController.hasExtension(1, name)) {
                         data = ClipData.newPlainText("name", name);
                     }
 
