@@ -86,7 +86,8 @@
     <string name="library_paste_toast">Selecciona "Pegar" en el menu</string>
     <string name="library_parent_folder">[Carpeta anterior]</string>
     <string name="library_delete_dialog_original">¿Quieres eliminar el fichero original?</string>
-    
+
+    <string name="library_menu_refresh">Recargar modelos</string>
     <string name="library_menu_search">Buscar modelo</string>
     <string name="library_menu_filter">Filtrar modelos</string>
     <string name="library_menu_list">Vista de lista</string>
@@ -94,6 +95,7 @@
     <string name="library_menu_add">Añadir modelo</string>
     <string name="library_menu_folder">Crear nueva carpeta</string>
     <string name="library_menu_paste">Pegar</string>
+    <string name="library_menu_thingiverse">Buscar en Thingiverse</string>
     
     <string name="library_tabhost_tab_all">Todos los modelos</string>
     <string name="library_tabhost_tab_local">Local</string>

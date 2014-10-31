@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -789,6 +790,14 @@ public class ViewerMainFragment extends Fragment {
                         Log.i("OUT", "File deletedillo");
                     };
                 }
+
+                /**
+                 * Use an intent because it's an asynchronous static method without any reference (yet)
+                 */
+                //TODO What have I done -_-
+                Intent intent = new Intent("notify");
+                intent.putExtra("message", "Files");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
             }
         });
