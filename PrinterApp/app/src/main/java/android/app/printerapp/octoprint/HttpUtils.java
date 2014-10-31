@@ -13,12 +13,12 @@ public class HttpUtils {
 	  
 	  /** OctoPrint URLs **/
 	  
-	  public static final String URL_FILES = CUSTOM_PORT + "/api/files"; //File operations
-	  public static final String URL_CONTROL = CUSTOM_PORT + "/api/job"; //Job operations
-	  public static final String URL_SOCKET = CUSTOM_PORT + "/sockjs/websocket"; //Socket handling
-	  public static final String URL_CONNECTION = CUSTOM_PORT + "/api/connection"; //Connection handling
-	  public static final String URL_PRINTHEAD = CUSTOM_PORT + "/api/printer/printhead"; //Send print head commands
-	  public static final String URL_NETWORK = CUSTOM_PORT + "/api/plugin/netconnectd"; //Network config
-	  public static final String URL_SLICING = CUSTOM_PORT + "/api/slicing/cura/profiles";
-	  public static final String URL_DOWNLOAD_FILES = CUSTOM_PORT + "/downloads/files/local/";
+	  public static final String URL_FILES = "/api/files"; //File operations
+	  public static final String URL_CONTROL = "/api/job"; //Job operations
+	  public static final String URL_SOCKET = "/sockjs/websocket"; //Socket handling
+	  public static final String URL_CONNECTION = "/api/connection"; //Connection handling
+	  public static final String URL_PRINTHEAD = "/api/printer/printhead"; //Send print head commands
+	  public static final String URL_NETWORK = "/api/plugin/netconnectd"; //Network config
+	  public static final String URL_SLICING = "/api/slicing/cura/profiles";
+	  public static final String URL_DOWNLOAD_FILES = "/downloads/files/local/";
 }

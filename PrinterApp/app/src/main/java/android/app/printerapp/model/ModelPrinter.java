@@ -25,6 +25,7 @@ public class ModelPrinter {
 	private String mDisplayName;
 	private String mAddress;
 	private int mStatus = StateUtils.STATE_NONE;
+    private String mPort;
 	
 	//TODO hardcoded string
 	private String mMessage = "Offline";
@@ -130,6 +131,8 @@ public class ModelPrinter {
     public ArrayList<JSONObject> getProfiles() { return mProfiles; }
 
     public long getId() { return mId; }
+
+    public String getPort() { return mPort; }
 	
 	/**********
 	 *  Sets
@@ -219,5 +222,7 @@ public class ModelPrinter {
 	}
 
     public void setId(long id) { mId = id; }
+
+    public void setPort(String port) { mPort = port; }
 
 }

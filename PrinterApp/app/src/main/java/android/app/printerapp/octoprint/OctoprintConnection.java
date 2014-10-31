@@ -74,7 +74,7 @@ public class OctoprintConnection {
 			@Override
 			public void onProgress(int bytesWritten, int totalSize) {						
 			}
-			
+
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
@@ -196,7 +196,11 @@ public class OctoprintConnection {
 
                         }
 
-                    } else Log.i("OUT","Printer already connected");
+                    } else {
+
+                        p.setPort(current.getString("port"));
+                        Log.i("OUT","Printer already connected to " + p.getPort());
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -260,7 +264,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 		            
-		        	 Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	 //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 		        	 
 		        	  try {
 		        		  
@@ -308,6 +312,11 @@ public class OctoprintConnection {
 		            			
 		            		}
 
+                            if (response.getString("type").equals("Connected")){
+                                p.setPort(response.getJSONObject("payload").getString("port"));
+                                Log.i("OUT","UPDATED PORT " + p.getPort());
+                            }
+
 		            	}
 
                           //update slicing progress in the print panel fragment
@@ -329,6 +338,8 @@ public class OctoprintConnection {
 
 
                           }
+
+
 												
 		            } catch (JSONException e) {
 						e.printStackTrace();

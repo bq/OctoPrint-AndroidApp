@@ -115,7 +115,7 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                 if (m.getParent().equals("sd")) {
                     gcodeTag.setText("sd");
                     gcodeTag.setVisibility(View.VISIBLE);
-                } else if (m.getParent().equals("witbox")) {
+                } else if (m.getParent().equals("local")) {
                     gcodeTag.setText("internal");
                     gcodeTag.setVisibility(View.VISIBLE);
                 }

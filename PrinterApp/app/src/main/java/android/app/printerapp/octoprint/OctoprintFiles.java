@@ -59,7 +59,7 @@ public class OctoprintFiles {
 				     File m;
 				     
 				     //If it has an origin we need to set it for the printer
-				     if (object.has("origin")){
+				     if (object.getString("origin").equals("sdcard")){
 				    	 
 				    	//Set the storage to sd
 				    	 m = new File("sd/" +object.getString("name"));
@@ -67,16 +67,13 @@ public class OctoprintFiles {
 				     else   {
 				    	 
 				    	//Set the storage to Witbox
-				    	 m = new File("witbox/" +object.getString("name"));
+				    	 m = new File("local/" +object.getString("name"));
 					     
 				     }
 				     
 				     //Add to storage file list
 				     p.updateFiles(m);
-				     //TODO NOPE!
-				     //LibraryController.addToList(m);
-				     
-				     Log.i("FILES","Adding " + object.getString("name"));
+
 				    } 
 				 } 
 

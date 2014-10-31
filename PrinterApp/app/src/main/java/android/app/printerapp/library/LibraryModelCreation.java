@@ -9,8 +9,10 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,6 +115,7 @@ public class LibraryModelCreation {
 		                }
 						
 						openModel(mContext, target.getAbsolutePath());
+
 					} catch (IOException e){
 						e.printStackTrace();
 					}	
@@ -216,13 +219,12 @@ public class LibraryModelCreation {
     private static void deleteFileDialog(){
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-        adb.setTitle("Do you want to delete the original file?");
+        adb.setTitle(R.string.library_delete_dialog_original);
         adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 LibraryController.deleteFiles(mFile);
-                //LibraryController.getFileList().remove(mFile);
 
 
             }
@@ -230,5 +232,14 @@ public class LibraryModelCreation {
         adb.setNegativeButton(R.string.cancel, null);
         adb.show();
 
+        /**
+         * Use an intent because it's an asynchronous static method without any reference (yet)
+         */
+        //TODO What have I done -_-
+        Intent intent = new Intent("notify");
+        intent.putExtra("message", "Files");
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+
     }
+
 }
