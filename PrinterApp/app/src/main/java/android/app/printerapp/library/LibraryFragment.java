@@ -3,10 +3,13 @@ package android.app.printerapp.library;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
+import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -163,8 +166,11 @@ public class LibraryFragment extends Fragment {
             case R.id.library_paste:
                 optionPaste();
                 return true;
-            case R.id.libray_reload:
+            case R.id.library_reload:
                 refreshFiles();
+                return true;
+            case R.id.library_thingiverse:
+                optionThingiverse();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -375,6 +381,16 @@ public class LibraryFragment extends Fragment {
         sortAdapter();
 
         setMoveFile(null);
+    }
+
+    /**
+     * Open Thingiverse in the browser
+     */
+    public void optionThingiverse(){
+
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_THINGIVERSE));
+        startActivity(browserIntent);
+
     }
 
     //Random adapter with lots of comparisons

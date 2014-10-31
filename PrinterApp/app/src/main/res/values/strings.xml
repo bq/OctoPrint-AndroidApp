@@ -92,7 +92,8 @@
     <string name="library_paste_toast">Select "Paste" in the menu</string>
     <string name="library_parent_folder">[Previous folder]</string>
     <string name="library_delete_dialog_original">Do you want to delete the original file?</string>
-    
+
+    <string name="library_menu_refresh">Refresh models</string>
     <string name="library_menu_search">Search model</string>
     <string name="library_menu_filter">Filter models</string>
     <string name="library_menu_list">View as list</string>
@@ -100,6 +101,7 @@
     <string name="library_menu_add">Add model</string>
     <string name="library_menu_folder">Create new folder</string>
     <string name="library_menu_paste">Paste</string>
+    <string name="library_menu_thingiverse">Search in Thingiverse</string>
     
     <string name="library_tabhost_tab_all">All the models</string>
     <string name="library_tabhost_tab_local">Local</string>

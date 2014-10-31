@@ -2,7 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/libray_reload"
+        android:id="@+id/library_thingiverse"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/logo_thingiverse"
+        android:title="@string/library_menu_thingiverse"/>
+
+    <item
+        android:id="@+id/library_reload"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/stat_notify_sync"
         android:title="@string/devices_menu_filter"/>

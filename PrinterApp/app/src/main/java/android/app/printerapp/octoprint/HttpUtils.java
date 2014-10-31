@@ -21,4 +21,8 @@ public class HttpUtils {
 	  public static final String URL_NETWORK = "/api/plugin/netconnectd"; //Network config
 	  public static final String URL_SLICING = "/api/slicing/cura/profiles";
 	  public static final String URL_DOWNLOAD_FILES = "/downloads/files/local/";
+
+    /** External links **/
+
+      public static final String URL_THINGIVERSE = "http://www.thingiverse.com/newest";
 }

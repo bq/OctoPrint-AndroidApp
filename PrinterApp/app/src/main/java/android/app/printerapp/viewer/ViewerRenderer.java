@@ -1,14 +1,10 @@
 package android.app.printerapp.viewer;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.app.printerapp.library.LibraryModelCreation;
+import android.app.printerapp.viewer.Geometry.Box;
+import android.app.printerapp.viewer.Geometry.Point;
+import android.app.printerapp.viewer.Geometry.Ray;
+import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -16,7 +12,14 @@ import android.opengl.Matrix;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.app.printerapp.viewer.Geometry.*;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 
 public class ViewerRenderer implements GLSurfaceView.Renderer  {
@@ -26,7 +29,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public static float Z_NEAR =1f;
 	public static float Z_FAR = 3000f;
 	
-	private static float OFFSET_HEIGHT = 1f;
+	private static float OFFSET_HEIGHT = 2f;
 	private static float OFFSET_BIG_HEIGHT = 5f;
 	
 	private static int mWidth;
