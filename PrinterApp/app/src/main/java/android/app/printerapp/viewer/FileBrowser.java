@@ -126,8 +126,14 @@ public class FileBrowser extends Activity  {
 					}
 
 					if (name != null) {
-						list.add(name);
-						fileList.add(file);
+
+                        //Filter by directory, stl or gcode extension
+                        if ((LibraryController.hasExtension(0,name))||(LibraryController.hasExtension(1,name))
+                                ||file.isDirectory()){
+                            list.add(name);
+                            fileList.add(file);
+                        }
+
 					}
 				}
 
