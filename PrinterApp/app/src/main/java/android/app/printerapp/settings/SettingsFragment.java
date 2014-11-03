@@ -1,8 +1,12 @@
 package android.app.printerapp.settings;
 
+import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -14,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -103,6 +108,10 @@ public class SettingsFragment extends Fragment{
 	   switch (item.getItemId()) {
 	   
 	   case R.id.settings_menu_add: //Add a new printer
+
+
+           optionAddPrinter();
+
 		   return true;
     
        default:
@@ -205,6 +214,55 @@ public class SettingsFragment extends Fragment{
 
     public void notifyAdapter(){
         mAdapter.notifyDataSetChanged();
+    }
+
+
+    /**
+     * Add a new printer to the database by IP instead of service discovery
+     */
+    private void optionAddPrinter(){
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+
+
+        adb.setTitle(R.string.settings_add_title);
+
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.settings_add_printer_dialog, null, false);
+
+        final EditText et_name = (EditText) v.findViewById(R.id.et_name);
+        final EditText et_address = (EditText) v.findViewById(R.id.et_address);
+
+        adb.setView(v);
+
+        //On insertion write the printer onto the database and start updating the socket
+        adb.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), DevicesListController.searchAvailablePosition());
+
+                if (!DevicesListController.checkExisting(m)) {
+
+                    DevicesListController.addToList(m);
+                    m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
+                    m.setLinked(getActivity());
+                    notifyAdapter();
+
+                }
+
+            }
+        });
+
+        adb.setNegativeButton(R.string.cancel, null);
+
+        adb.setView(v);
+
+        adb.show();
+
+
     }
 	
 }
