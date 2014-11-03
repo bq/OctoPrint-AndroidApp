@@ -14,58 +14,112 @@
     app:shadowHeight="4dp" >
 
     <LinearLayout
-        android:id="@+id/printview_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:padding="@dimen/content_padding_small">
+        android:padding="@dimen/content_padding_small"
+        android:weightSum="2">
 
-        <RelativeLayout
-            android:id="@+id/rl1"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1" >
+            android:orientation="vertical"
+            android:padding="@dimen/content_padding_small"
+            android:layout_weight="1">
 
-            <FrameLayout
-                android:id="@+id/printview_video"
+            <!-- Progress -->
+            <include
+                android:id="@+id/include"
+                layout="@layout/printview_progress_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/content_margin_small"/>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/video_feed_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/black" >
-            </FrameLayout>
-            
-               <TextView
-                android:id="@+id/textView1"
-                android:padding="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Video Feed"
-                android:layout_width="wrap_content"
-            	android:layout_height="wrap_content"
-                android:textColor="@color/white" />
-        </RelativeLayout>
+                android:background="@color/white">
 
-        <RelativeLayout
-            android:id="@+id/rl2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp">
+                <LinearLayout
+                    android:id="@+id/printview_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/content_padding_small">
 
-            <FrameLayout
-                android:id="@+id/view_gcode"
+                    <RelativeLayout
+                        android:id="@+id/rl1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:id="@+id/printview_video"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/black" >
+                            </FrameLayout>
+
+                               <TextView
+                                android:id="@+id/textView1"
+                                android:padding="10dp"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:text="@string/printview_video_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white" />
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-            </FrameLayout>
-            
-            <TextView
-                android:id="@+id/textView2"
-                android:padding="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-            	android:layout_height="wrap_content"
-                android:text="Current progress"
-                android:textColor="@color/white" />
-        </RelativeLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/content_padding_small"
+                android:layout_weight="1">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/progress_card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:id="@+id/rl2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:padding="@dimen/content_padding_small">
+
+                        <FrameLayout
+                            android:id="@+id/view_gcode"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                        </FrameLayout>
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:padding="10dp"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/printview_3d_text"
+                            android:textColor="@color/white" />
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+
+
     </LinearLayout>
 
     <FrameLayout

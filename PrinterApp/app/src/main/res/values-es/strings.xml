@@ -56,6 +56,12 @@
     <string name="devices_discovery_config">Configurando los parámetros de red, puede tardar un rato. \nEl servicio de descubrimiento de nuevas redes está detenido hasta que termine la configuración.</string>
     <string name="devices_discovery_title">Configurando nueva impresora</string>
 
+    <string name="printview_video_text">Video</string>
+    <string name="printview_3d_text">3D</string>
+    <string name="printview_profile_tag">Perfil - </string>
+    <string name="printview_start_button">COMENZAR / PAUSAR</string>
+    <string name="printview_stop_button">DETENER</string>
+
     <string name="devices_toast_no_gcode">No se ha encontrado .gcode</string>
     <string name="storage_toast_corrupted">El fichero está corrupto</string>
     <string name="devices_toast_upload_1">Subido&#8230;</string>

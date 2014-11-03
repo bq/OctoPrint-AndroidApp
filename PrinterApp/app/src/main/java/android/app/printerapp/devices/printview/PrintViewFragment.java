@@ -24,7 +24,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.material.widget.PaperButton;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -51,6 +54,11 @@ public class PrintViewFragment extends Fragment {
     private TextView tv_file;
     private TextView tv_temp;
     private TextView tv_prog;
+
+    private ProgressBar pb_prog;
+
+    private PaperButton button_pause;
+    private PaperButton button_stop;
 
     //File references
     private static DataStorage mDataGcode;
@@ -160,10 +168,32 @@ public class PrintViewFragment extends Fragment {
 
 
             //UI references
-            tv_printer = (TextView) rootView.findViewById(R.id.printview_printer);
-            tv_file = (TextView) rootView.findViewById(R.id.printview_file);
+            tv_printer = (TextView) rootView.findViewById(R.id.printview_printer_tag);
+            tv_file = (TextView) rootView.findViewById(R.id.printview_printer_file);
             tv_temp = (TextView) rootView.findViewById(R.id.printview_temp);
-            tv_prog = (TextView) rootView.findViewById(R.id.printview_time);
+            tv_prog = (TextView) rootView.findViewById(R.id.printview_printer_progress);
+            pb_prog = (ProgressBar) rootView.findViewById(R.id.printview_progress_bar);
+
+            button_pause = (PaperButton) rootView.findViewById(R.id.printview_pause_button);
+            button_stop = (PaperButton) rootView.findViewById(R.id.printview_stop_button);
+
+            button_pause.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!isPrinting) {
+                        OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "start");
+                    } else {
+                        OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "pause");
+                    }
+                }
+            });
+
+            button_stop.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "cancel");
+                }
+            });
 
             final EditText et_am = (EditText) rootView.findViewById(R.id.et_amount);
 
@@ -235,17 +265,11 @@ public class PrintViewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.printview_menu, menu);
     }
 
     //Switch menu options if it's printing/paused
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-
-        if (!isPrinting) {
-            menu.findItem(R.id.printview_pause).setIcon(android.R.drawable.ic_media_play);
-        } else menu.findItem(R.id.printview_pause).setIcon(android.R.drawable.ic_media_pause);
-
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -254,19 +278,6 @@ public class PrintViewFragment extends Fragment {
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
         switch (item.getItemId()) {
-
-            case R.id.printview_pause:
-
-                if (!isPrinting) {
-                    OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "start");
-                } else {
-                    OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "pause");
-                }
-                return true;
-
-            case R.id.printview_stop:
-                OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "cancel");
-                return true;
             case android.R.id.home:
                 getActivity().onBackPressed();
                 return true;
@@ -300,7 +311,7 @@ public class PrintViewFragment extends Fragment {
     public void refreshData() {
 
         //Check around here if files were changed
-        tv_printer.setText(mPrinter.getDisplayName() + " : " + mPrinter.getMessage() + " ["+mPrinter.getPort()+"]");
+        tv_printer.setText(mPrinter.getDisplayName() + " : " + mPrinter.getMessage() +  " ["+mPrinter.getPort()+"]");
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
 
@@ -309,7 +320,10 @@ public class PrintViewFragment extends Fragment {
 
             isPrinting = true;
             tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) +
-                    " left / " + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed)");
+                    " left / " + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed) - ");
+
+            Double n = Double.valueOf(mPrinter.getJob().getProgress());
+            pb_prog.setProgress(n.intValue());
 
             if (mPrinter.getJobPath() != null)
                 changeProgress(Double.valueOf(mPrinter.getJob().getProgress()));
@@ -317,7 +331,7 @@ public class PrintViewFragment extends Fragment {
         } else {
 
             if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
-            tv_prog.setText(mPrinter.getMessage());
+            tv_prog.setText(mPrinter.getMessage() + " - ");
             isPrinting = false;
         }
 

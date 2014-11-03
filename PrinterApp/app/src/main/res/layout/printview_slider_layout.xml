@@ -29,7 +29,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Witbox 34F"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
@@ -39,7 +38,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Mario_Bros_Stand_Medium.gcode"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -57,7 +55,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_margin="10dp"
-                    android:text="221ºC / 27ºC"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white" />
 
@@ -67,7 +64,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_margin="10dp"
-                    android:text="1min left (99%)"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white" />
 
