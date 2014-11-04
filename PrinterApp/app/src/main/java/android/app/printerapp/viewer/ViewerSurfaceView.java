@@ -1,14 +1,15 @@
 package android.app.printerapp.viewer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewerSurfaceView extends GLSurfaceView{
 	//View Modes
@@ -69,6 +70,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int ROTATE_Z = 2;
 
 	private int mObjectPressed = -1;
+
+    //TODO TEMP
+    private float mCurrentAngle = 0;
 	
 	public ViewerSurfaceView(Context context) {
 	    super(context);
@@ -241,7 +245,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	public void rotateAngleAxisX (float angle) {
 		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
-		mRenderer.setRotationObject (angle);	
+
+        float rotation = angle - mCurrentAngle;
+
+        mCurrentAngle = mCurrentAngle + (angle - mCurrentAngle);
+
+        Log.i("ANGLE", " Current " +mCurrentAngle + " rotated: " + rotation);
+
+		mRenderer.setRotationObject (rotation);
 		mRenderer.refreshRotatedObjectCoordinates();
 
 	}

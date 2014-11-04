@@ -1,4 +1,4 @@
-package android.app.printerapp.viewer;
+package android.app.printerapp.viewer.sidepanel;
 
 import android.app.printerapp.R;
 import android.content.Context;

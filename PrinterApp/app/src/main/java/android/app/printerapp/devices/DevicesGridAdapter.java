@@ -29,9 +29,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
     private Context mContext;
 
-    //max items in the grid
-    private static final int GRID_MAX_ITEMS = 15;
-
     //Original list and current list to be filtered
     private ArrayList<ModelPrinter> mCurrent;
     private ArrayList<ModelPrinter> mOriginal;
@@ -262,7 +259,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
     //Retrieve count for MAX items to show empty slots
     @Override
     public int getCount() {
-        return GRID_MAX_ITEMS;
+        return DevicesListController.GRID_MAX_ITEMS;
     }
 
     //Get filter

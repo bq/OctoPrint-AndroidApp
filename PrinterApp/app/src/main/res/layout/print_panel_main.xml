@@ -198,6 +198,7 @@
 
                 <SeekBar
                     style="@style/TallerSeekBar"
+                    android:id="@+id/rotation_seek_bar"
                     android:layout_width="400dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"

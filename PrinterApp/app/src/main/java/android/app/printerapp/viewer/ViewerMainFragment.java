@@ -6,6 +6,7 @@ import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
+import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -110,7 +111,8 @@ public class ViewerMainFragment extends Fragment {
     private static Context mContext;
     private static View mRootView;
 
-
+    private static LinearLayout mRotationLayout;
+    private SeekBar mRotationSeekbar;
 
 
     /**
@@ -297,8 +299,59 @@ public class ViewerMainFragment extends Fragment {
             }
         });
 
+
+        /*****************************
+         * EXTRA
+         *****************************/
         mProgress = (ProgressBar) mRootView.findViewById(R.id.progress_bar);
         mProgress.setVisibility(View.GONE);
+
+        mRotationSeekbar = (SeekBar) mRootView.findViewById(R.id.rotation_seek_bar);
+        mRotationSeekbar.setProgress(50);
+        mRotationSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                Log.i("OUT","STOPPED AT FUCKING " + convertProgressToDegrees(i));
+
+                mSurface.rotateAngleAxisX(convertProgressToDegrees(i));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+
+
+            }
+        });
+
+        mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
+        mRotationLayout.setVisibility(View.INVISIBLE);
+    }
+
+
+    /**
+     * Convert a seekbar progress to +/-180º being 50 -> 0º
+     * @param i percentage integer
+     * @return
+     */
+    private float convertProgressToDegrees(int i){
+
+
+
+        Double number = (i * 3.6) - 180;
+
+        Log.i("OUT","Converting percentage: " + i + " to degrees: " + number.intValue());
+
+        return number.intValue();
+
+
     }
 
     private void initRotateButtons() {
@@ -856,12 +909,14 @@ public class ViewerMainFragment extends Fragment {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             mRotateMenu.setVisibility(View.INVISIBLE);
+            mRotationLayout.setVisibility(View.INVISIBLE);
             switch (item.getItemId()) {
                 case R.id.move:
                     mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
                     return true;
                 case R.id.rotate:
                     mRotateMenu.setVisibility(View.VISIBLE);
+                    mRotationLayout.setVisibility(View.VISIBLE);
                     mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
                     return true;
                 case R.id.scale:

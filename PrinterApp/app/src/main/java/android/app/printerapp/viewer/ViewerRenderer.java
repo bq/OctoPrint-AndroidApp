@@ -128,7 +128,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public final static int OUT_NOT_TOUCHED = 1;
 	public final static int INSIDE_TOUCHED = 2;
 	public final static int OUT_TOUCHED = 3;
-
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode) {	
 		this.mDataList = dataList;
@@ -317,7 +316,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		float [] rotateObjectMatrix = data.getRotationMatrix();
         Matrix.rotateM(rotateObjectMatrix, 0, angle, mVector.x, mVector.y, mVector.z);
 
-        data.setRotationMatrix(rotateObjectMatrix);		
+        data.setRotationMatrix(rotateObjectMatrix);
 	}
 
 	public void refreshRotatedObjectCoordinates () {	

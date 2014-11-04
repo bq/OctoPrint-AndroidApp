@@ -25,6 +25,9 @@ import java.util.ArrayList;
  *
  */
 public class DevicesListController {
+
+    //max items in the grid
+    public static final int GRID_MAX_ITEMS = 15;
 	
 	//List for the printers found
 	private static ArrayList<ModelPrinter> mList = new ArrayList<ModelPrinter>();
@@ -111,11 +114,10 @@ public class DevicesListController {
 	//Search first available position by listing the printers
 	//TODO HARDCODED MAXIMUM CELLS
 	public static int searchAvailablePosition(){
+
+		boolean[] mFree = new boolean[GRID_MAX_ITEMS];
 		
-		int max = 12;
-		boolean[] mFree = new boolean[max];
-		
-		for (int i = 0; i<max; i++){
+		for (int i = 0; i<GRID_MAX_ITEMS; i++){
 			mFree[i] = false;
 		
 		}
@@ -126,7 +128,7 @@ public class DevicesListController {
 			
 		}
 		
-		for (int i = 0; i<max; i++){
+		for (int i = 0; i<GRID_MAX_ITEMS; i++){
 			
 			if (!mFree[i]) return i;
 			
