@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private int mObjectPressed = -1;
 
     //TODO TEMP
-    private float mCurrentAngle = 0;
+    private float[] mCurrentAngle = {0,0,0};
 	
 	public ViewerSurfaceView(Context context) {
 	    super(context);
@@ -238,6 +237,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			break;
 		}		
 	}
+
+    /**
+     * Return the current angle rotation for every axis
+     * @return
+     */
+    public float[] getCurrentAngle(){
+        return mCurrentAngle;
+    }
 		
 	/**
 	 * Rotate the object in the X axis
@@ -246,14 +253,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void rotateAngleAxisX (float angle) {
 		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
 
-        float rotation = angle - mCurrentAngle;
-
-        mCurrentAngle = mCurrentAngle + (angle - mCurrentAngle);
-
-        Log.i("ANGLE", " Current " +mCurrentAngle + " rotated: " + rotation);
+        float rotation = angle - mCurrentAngle[0];
+        mCurrentAngle[0] = mCurrentAngle[0] + (angle - mCurrentAngle[0]);
 
 		mRenderer.setRotationObject (rotation);
-		mRenderer.refreshRotatedObjectCoordinates();
+	    mRenderer.refreshRotatedObjectCoordinates();
 
 	}
 	
@@ -263,7 +267,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	public void rotateAngleAxisY (float angle) {
 		if (mRotateMode!=ROTATE_Y) setRotationVector(ROTATE_Y);
-		mRenderer.setRotationObject (angle);	
+
+        float rotation = angle - mCurrentAngle[1];
+        mCurrentAngle[1] = mCurrentAngle[1] + (angle - mCurrentAngle[1]);
+
+		mRenderer.setRotationObject (rotation);
 		mRenderer.refreshRotatedObjectCoordinates();
 	}
 	
@@ -273,8 +281,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	public void rotateAngleAxisZ (float angle) {
 		if (mRotateMode!=ROTATE_Z) setRotationVector(ROTATE_Z);
-		mRenderer.setRotationObject (angle);	
-		mRenderer.refreshRotatedObjectCoordinates();
+
+        float rotation = angle - mCurrentAngle[2];
+        mCurrentAngle[2] = mCurrentAngle[2] + (angle - mCurrentAngle[2]);
+
+        mRenderer.setRotationObject (rotation);
+        mRenderer.refreshRotatedObjectCoordinates();
 	}
 	
 	/**

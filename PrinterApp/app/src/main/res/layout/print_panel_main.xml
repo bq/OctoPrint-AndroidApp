@@ -182,37 +182,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="#66ffffff"
                 android:gravity="center"
                 android:padding="@dimen/content_padding_small"
-                android:orientation="horizontal"
+                android:orientation="vertical">
 
-                android:weightSum="5">
-
-                <ImageButton
-                    android:id="@+id/cancel_rotate_button"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selectable_oval_background_green"
-                    android:src="@drawable/ic_cancel_circle" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/text_axis"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"/>
 
-                <SeekBar
-                    style="@style/TallerSeekBar"
-                    android:id="@+id/rotation_seek_bar"
-                    android:layout_width="400dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_marginLeft="@dimen/content_margin_small"
-                    android:layout_marginRight="@dimen/content_margin_small"/>
-
-                <ImageButton
-                    android:id="@+id/ok_rotate_button"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selectable_oval_background_green"
-                    android:src="@drawable/ic_done_circle" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/text_rotation"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#66ffffff"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+
+                    android:weightSum="5">
+
+                        <ImageButton
+                            android:id="@+id/cancel_rotate_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/selectable_oval_background_green"
+                            android:src="@drawable/ic_cancel_circle" />
+
+                        <SeekBar
+                            style="@style/TallerSeekBar"
+                            android:id="@+id/rotation_seek_bar"
+                            android:layout_width="400dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:layout_marginLeft="@dimen/content_margin_small"
+                            android:layout_marginRight="@dimen/content_margin_small"/>
+
+                        <ImageButton
+                            android:id="@+id/ok_rotate_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/selectable_oval_background_green"
+                            android:src="@drawable/ic_done_circle" />
+
+                    </LinearLayout>
+
 
             </LinearLayout>
+
+
 
             <RelativeLayout
                 android:id="@+id/angle_axis"
