@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public static final int LAYERS = 3;
 	public static final int OVERHANG = 4;
 
+    //Zoom limits
+    public static final int MIN_ZOOM = -500;
+    public static final int MAX_ZOOM = -30;
 		
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
@@ -359,8 +363,24 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 							mRenderer.scaleObject(fx,fy,fz);
 						} else {
-							mRenderer.setCameraPosY(pinchStartY / pinchScale);
-							mRenderer.setCameraPosZ(pinchStartZ / pinchScale);						
+
+                            /**
+                             * Zoom controls will be limited to MIN and MAX
+                             */
+
+                            if ((mRenderer.getCameraPosY() < MIN_ZOOM) && (pinchScale < 1.0)) {
+
+                                Log.i("OUT","MIN ZOOM REACHED");
+
+                            } else if ((mRenderer.getCameraPosY() > MAX_ZOOM) && (pinchScale > 1.0)){
+
+                                Log.i("OUT","MAX ZOOM REACHED");
+
+                            } else{
+                                mRenderer.setCameraPosY(pinchStartY / pinchScale);
+                                mRenderer.setCameraPosZ(pinchStartZ / pinchScale);
+                            }
+
 						}
 
 						requestRender();
