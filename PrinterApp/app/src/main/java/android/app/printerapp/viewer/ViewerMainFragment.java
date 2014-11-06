@@ -6,6 +6,7 @@ import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
+import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,7 +39,6 @@ import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TabHost;
@@ -74,8 +74,6 @@ public class ViewerMainFragment extends Fragment {
     private static ViewerSurfaceView mSurface;
     private static FrameLayout mLayout;
 
-    private static RelativeLayout mRotateMenu;
-
     //Advanced settings expandable panel
     private int mSettingsPanelMinHeight;
 
@@ -88,21 +86,10 @@ public class ViewerMainFragment extends Fragment {
     private Button mDownWitboxFaces;
     private static SeekBar mSeekBar;
 
-    private static Button mPositiveAngleX;
-    private static Button mPositiveAngleY;
-    private static Button mPositiveAngleZ;
-
-    private static Button mNegativeAngleX;
-    private static Button mNegativeAngleY;
-    private static Button mNegativeAngleZ;
-
     private static List<DataStorage> mDataList = new ArrayList<DataStorage>();
 
     //Undo button bar
     private static LinearLayout mUndoButtonBar;
-
-    //Rotate button bar
-    private static LinearLayout mRotateButtonBar;
 
     //Edition menu variables
     private static ProgressBar mProgress;
@@ -110,14 +97,18 @@ public class ViewerMainFragment extends Fragment {
     private static Context mContext;
     private static View mRootView;
 
-
-
+    private static LinearLayout mRotationLayout;
+    private static SeekBar mRotationSeekbar;
 
     /**
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
     private SidePanelHandler mSidePanelHandler;
+
+    private static TextView mRotationText;
+    private static TextView mAxisText;
+    private static int mCurrentAxis;
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -154,7 +145,6 @@ public class ViewerMainFragment extends Fragment {
             mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
             initUIElements();
-            initRotateButtons();
 
 //            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -165,6 +155,7 @@ public class ViewerMainFragment extends Fragment {
             //Init slicing elements
             mSlicingHandler = new SlicingHandler(getActivity());
             mSidePanelHandler = new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
+
 
         }
 
@@ -223,9 +214,6 @@ public class ViewerMainFragment extends Fragment {
 
         //Undo button bar
         mUndoButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_undo_bar_linearlayout);
-
-        //Rotate button bar
-        mRotateButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
 
         mLayout = (FrameLayout) mRootView.findViewById(R.id.viewer_container_framelayout);
 
@@ -297,68 +285,137 @@ public class ViewerMainFragment extends Fragment {
             }
         });
 
+
+        /*****************************
+         * EXTRA
+         *****************************/
         mProgress = (ProgressBar) mRootView.findViewById(R.id.progress_bar);
         mProgress.setVisibility(View.GONE);
+        mRotationText = (TextView) mRootView.findViewById(R.id.text_rotation);
+        mAxisText = (TextView) mRootView.findViewById(R.id.text_axis);
+        mRotationSeekbar = (SeekBar) mRootView.findViewById(R.id.rotation_seek_bar);
+        mRotationSeekbar.setProgress(50);
+        mRotationText.setText("0º");
+        mRotationSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            boolean lock = true;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                float newAngle = convertProgressToDegrees(i);
+
+
+                if (!lock){
+
+                    switch (mCurrentAxis){
+
+                        case 0: mSurface.rotateAngleAxisX(newAngle); break;
+                        case 1: mSurface.rotateAngleAxisY(newAngle); break;
+                        case 2: mSurface.rotateAngleAxisZ(newAngle); break;
+                        default: return;
+
+                    }
+                }
+
+
+                mRotationText.setText((int)newAngle + "º");
+
+                mSurface.requestRender();
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                lock = false;
+
+
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+                lock = true;
+
+            }
+        });
+
+        mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
+        mRotationLayout.setVisibility(View.INVISIBLE);
+
+        mCurrentAxis = -1;
+
     }
 
-    private void initRotateButtons() {
-        mRotateMenu = (RelativeLayout) mRootView.findViewById(R.id.angle_axis);
-        mRotateMenu.setVisibility(View.INVISIBLE);
+    /**
+     * Change the current rotation axis and update the text accordingly
+     *
+     * Alberto
+     */
+    public static void changeCurrentAxis(){
 
-        mPositiveAngleX = (Button) mRootView.findViewById(R.id.positive_angle_x);
-        mPositiveAngleX.setOnClickListener(new OnClickListener() {
+        mCurrentAxis++;
+        if (mCurrentAxis>2) mCurrentAxis = 0;
 
-            @Override
-            public void onClick(View v) {
-                mSurface.rotateAngleAxisX(POSITIVE_ANGLE);
-            }
-        });
+        float currentAngle = 0;
 
-        mPositiveAngleY = (Button) mRootView.findViewById(R.id.positive_angle_y);
-        mPositiveAngleY.setOnClickListener(new OnClickListener() {
+        switch(mCurrentAxis){
 
-            @Override
-            public void onClick(View v) {
-                mSurface.rotateAngleAxisY(POSITIVE_ANGLE);
-            }
-        });
+            case 0:
 
-        mPositiveAngleZ = (Button) mRootView.findViewById(R.id.positive_angle_z);
-        mPositiveAngleZ.setOnClickListener(new OnClickListener() {
+                mAxisText.setText("Eje X");
 
-            @Override
-            public void onClick(View v) {
-                mSurface.rotateAngleAxisZ(POSITIVE_ANGLE);
-            }
-        });
+                currentAngle = mSurface.getCurrentAngle()[0];
 
-        mNegativeAngleX = (Button) mRootView.findViewById(R.id.negative_angle_x);
-        mNegativeAngleX.setOnClickListener(new OnClickListener() {
+                break;
 
-            @Override
-            public void onClick(View v) {
-                mSurface.rotateAngleAxisX(NEGATIVE_ANGLE);
-            }
-        });
+            case 1:
+                mAxisText.setText("Eje Y");
 
-        mNegativeAngleY = (Button) mRootView.findViewById(R.id.negative_angle_y);
-        mNegativeAngleY.setOnClickListener(new OnClickListener() {
+                currentAngle = mSurface.getCurrentAngle()[1];
 
-            @Override
-            public void onClick(View v) {
-                mSurface.rotateAngleAxisY(NEGATIVE_ANGLE);
-            }
-        });
+                break;
+            case 2:
+                mAxisText.setText("Eje Z");
 
-        mNegativeAngleZ = (Button) mRootView.findViewById(R.id.negative_angle_z);
-        mNegativeAngleZ.setOnClickListener(new OnClickListener() {
+                currentAngle = mSurface.getCurrentAngle()[2];
 
-            @Override
-            public void onClick(View v) {
-                mSurface.rotateAngleAxisZ(NEGATIVE_ANGLE);
-            }
-        });
+                break;
+            default: mAxisText.setText(""); break;
+
+        }
+
+        Log.i("OUT","Current axis is " + mCurrentAxis + " lets " + convertDegreesToProgress((int)currentAngle));
+
+        mRotationSeekbar.setProgress(convertDegreesToProgress((int)currentAngle));
+        mRotationText.setText((int)currentAngle + "º");
+
     }
+
+
+    /**
+     * Convert a seekbar progress to +/-180º being 50 -> 0º
+     * @param i percentage integer
+     * @return
+     */
+    private float convertProgressToDegrees(int i){
+
+        Double number = (i * 3.6) - 180;
+        return number.intValue();
+    }
+
+    private static int convertDegreesToProgress(int f){
+
+        Double number = (f  + 180) / 3.6;
+
+        Log.i("OUT","Precision loss: " + number + " to " + number.intValue());
+
+        return number.intValue();
+    }
+
+    /*****************************************************************************/
 
     public static void initSeekBar(int max) {
         mSeekBar.setMax(max);
@@ -370,17 +427,6 @@ public class ViewerMainFragment extends Fragment {
         else if (v == View.VISIBLE) mProgress.bringToFront();
 
         mProgress.setVisibility(v);
-    }
-
-    public static void unlockRotationButtons(boolean lock) {
-        mPositiveAngleX.setEnabled(lock);
-        mPositiveAngleY.setEnabled(lock);
-        mPositiveAngleZ.setEnabled(lock);
-
-        mNegativeAngleX.setEnabled(lock);
-        mNegativeAngleY.setEnabled(lock);
-        mNegativeAngleZ.setEnabled(lock);
-
     }
 
 
@@ -665,9 +711,8 @@ public class ViewerMainFragment extends Fragment {
         mLayout.removeAllViews();
         mLayout.addView(mSurface, 0);
         mLayout.addView(mSeekBar, 1);
-        mLayout.addView(mRotateMenu, 2);
 //        mLayout.addView(mUndoButtonBar, 3);
-        mLayout.addView(mRotateButtonBar, 3);
+        mLayout.addView(mRotationLayout, 2);
     }
 
     /**
@@ -855,13 +900,14 @@ public class ViewerMainFragment extends Fragment {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            mRotateMenu.setVisibility(View.INVISIBLE);
+            mRotationLayout.setVisibility(View.INVISIBLE);
             switch (item.getItemId()) {
                 case R.id.move:
                     mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
                     return true;
                 case R.id.rotate:
-                    mRotateMenu.setVisibility(View.VISIBLE);
+                    changeCurrentAxis();
+                    mRotationLayout.setVisibility(View.VISIBLE);
                     mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
                     return true;
                 case R.id.scale:
@@ -886,8 +932,7 @@ public class ViewerMainFragment extends Fragment {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mSurface.exitEditionMode();
-            mRotateMenu.setVisibility(View.INVISIBLE);
-
+            mRotationLayout.setVisibility(View.INVISIBLE);
             mActionMode = null;
 
             //TODO temp callback for slicing
@@ -989,15 +1034,26 @@ public class ViewerMainFragment extends Fragment {
         }
     };
 
+    /**
+     * Notify the side panel adapters, check for null if they're not available yet (rare case)
+     * @param type
+     */
     public void notifyAdapter(int type){
 
-
-        if (mSidePanelHandler!=null) {
-            switch (type){
-                case 0: mSidePanelHandler.printerAdapter.notifyDataSetChanged(); break;
-                case 1: mSidePanelHandler.profileAdapter.notifyDataSetChanged(); break;
+        try {
+            if (mSidePanelHandler!=null) {
+                switch (type){
+                    case 0: mSidePanelHandler.printerAdapter.notifyDataSetChanged(); break;
+                    case 1: mSidePanelHandler.profileAdapter.notifyDataSetChanged(); break;
+                }
             }
+        } catch (NullPointerException e ){
+
+            e.printStackTrace();
         }
+
+
+
 
 
 

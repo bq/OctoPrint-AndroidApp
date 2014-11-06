@@ -128,7 +128,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public final static int OUT_NOT_TOUCHED = 1;
 	public final static int INSIDE_TOUCHED = 2;
 	public final static int OUT_TOUCHED = 3;
-
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode) {	
 		this.mDataList = dataList;
@@ -310,22 +309,48 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			data.setLastScaleFactorZ(mScaleFactorZ);
 		}
 	}
-	
+
+    /**
+     * Changed rotation logic to rotate around plate's global axes
+     *
+     * Alberto
+     * @param angle degrees to rotate
+     */
 	public void setRotationObject (float angle) {
 		DataStorage data = mDataList.get(mObjectPressed);
-		
-		float [] rotateObjectMatrix = data.getRotationMatrix();
-        Matrix.rotateM(rotateObjectMatrix, 0, angle, mVector.x, mVector.y, mVector.z);
 
-        data.setRotationMatrix(rotateObjectMatrix);		
+
+        //Get the object's rotation matrix
+		float [] rotateObjectMatrix = data.getRotationMatrix();
+
+        Point center = data.getLastCenter();
+
+        float[] mTemporaryMatrix = new float[16];
+        float[] mFinalMatrix = new float[16];
+
+        //Set a new identity matrix
+        Matrix.setIdentityM(mTemporaryMatrix,0);
+
+        //Move the matrix to the origin
+        Matrix.translateM(mTemporaryMatrix, 0, 0.0f, 0.0f, 0.0f);
+
+        //Rotate in the origin
+        Matrix.rotateM(mTemporaryMatrix, 0, angle, mVector.x, mVector.y, mVector.z);
+
+        //Multiply by the object's matrix to get the new position
+        Matrix.multiplyMM(mFinalMatrix, 0, mTemporaryMatrix, 0, rotateObjectMatrix, 0);
+
+
+
+        //Set the new rotation matrix
+        data.setRotationMatrix(mFinalMatrix);
 	}
 
 	public void refreshRotatedObjectCoordinates () {	
 		final AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
-			protected void onPreExecute() {			
+			protected void onPreExecute() {
 				ViewerMainFragment.configureProgressState(View.VISIBLE);
-				ViewerMainFragment.unlockRotationButtons(false);
 			}
 			
 			@Override
@@ -393,7 +418,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 			protected void onPostExecute(final Void unused) {
 				ViewerMainFragment.configureProgressState(View.GONE);
-				ViewerMainFragment.unlockRotationButtons(true);
 
 			}		
 		};
@@ -563,17 +587,17 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                         
         //Set Identity
         Matrix.setIdentityM(mRotationMatrix, 0);
-                        
-        //Rotation x       
+
+        //Rotation x
         Matrix.rotateM(mRotationMatrix, 0, mSceneAngleX, 0.0f, 0.0f, 1.0f);
-        
+
         //RotationY
         Matrix.rotateM(mRotationMatrix, 0, mSceneAngleY, 1.0f, 0.0f, 0.0f);
         
         //Reset angle, we store the rotation in the matrix
         mSceneAngleX=0;
         mSceneAngleY=0;
-        
+
         //Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
         Matrix.multiplyMM(mTemporaryMatrix, 0, mRotationMatrix, 0, mModelMatrix, 0);
         System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
@@ -597,16 +621,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		        Point center = data.getLastCenter();
 		
 		        Matrix.setIdentityM(mTemporaryModel, 0);
-		        Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);  
+		        Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);
 		        Matrix.scaleM(mTemporaryModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
 		        
 		        Matrix.translateM(mTemporaryModel, 0, 0, 0, data.getAdjustZ());
 		
 		        //Object rotation  
 		        float [] rotateObjectMatrix = data.getRotationMatrix();
-		     
-		        //Multiply the model by the accumulated rotation
-		        Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);     	
+
+                //Multiply the model by the accumulated rotation
+		        Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);
 		        Matrix.multiplyMM(mMVPObjectMatrix, 0,mMVPMatrix, 0, mObjectModel, 0);   
 	
 		        Matrix.multiplyMM(mMVObjectMatrix, 0,mMVMatrix, 0, mObjectModel, 0);   
@@ -618,6 +642,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        if (isStl()) 
 	    		for (int i=0; i<mStlObjectList.size(); i++) {
 	    			if (i==mObjectPressed) {
+
 	    				mDataList.get(i).setModelMatrix(mObjectModel);
 	
 	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);

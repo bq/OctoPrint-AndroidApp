@@ -1,4 +1,4 @@
-package android.app.printerapp.viewer;
+package android.app.printerapp.viewer.sidepanel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +11,8 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.viewer.SlicingHandler;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
