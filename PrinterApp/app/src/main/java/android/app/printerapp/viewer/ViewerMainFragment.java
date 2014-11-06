@@ -1034,15 +1034,26 @@ public class ViewerMainFragment extends Fragment {
         }
     };
 
+    /**
+     * Notify the side panel adapters, check for null if they're not available yet (rare case)
+     * @param type
+     */
     public void notifyAdapter(int type){
 
-
-        if (mSidePanelHandler!=null) {
-            switch (type){
-                case 0: mSidePanelHandler.printerAdapter.notifyDataSetChanged(); break;
-                case 1: mSidePanelHandler.profileAdapter.notifyDataSetChanged(); break;
+        try {
+            if (mSidePanelHandler!=null) {
+                switch (type){
+                    case 0: mSidePanelHandler.printerAdapter.notifyDataSetChanged(); break;
+                    case 1: mSidePanelHandler.profileAdapter.notifyDataSetChanged(); break;
+                }
             }
+        } catch (NullPointerException e ){
+
+            e.printStackTrace();
         }
+
+
+
 
 
 

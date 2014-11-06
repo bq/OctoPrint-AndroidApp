@@ -309,22 +309,40 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			data.setLastScaleFactorZ(mScaleFactorZ);
 		}
 	}
-	
+
+    /**
+     * Changed rotation logic to rotate around plate's global axes
+     *
+     * Alberto
+     * @param angle degrees to rotate
+     */
 	public void setRotationObject (float angle) {
 		DataStorage data = mDataList.get(mObjectPressed);
 
+
+        //Get the object's rotation matrix
 		float [] rotateObjectMatrix = data.getRotationMatrix();
+
+        Point center = data.getLastCenter();
 
         float[] mTemporaryMatrix = new float[16];
         float[] mFinalMatrix = new float[16];
 
+        //Set a new identity matrix
         Matrix.setIdentityM(mTemporaryMatrix,0);
+
+        //Move the matrix to the origin
         Matrix.translateM(mTemporaryMatrix, 0, 0.0f, 0.0f, 0.0f);
 
+        //Rotate in the origin
         Matrix.rotateM(mTemporaryMatrix, 0, angle, mVector.x, mVector.y, mVector.z);
 
+        //Multiply by the object's matrix to get the new position
         Matrix.multiplyMM(mFinalMatrix, 0, mTemporaryMatrix, 0, rotateObjectMatrix, 0);
 
+
+
+        //Set the new rotation matrix
         data.setRotationMatrix(mFinalMatrix);
 	}
 
