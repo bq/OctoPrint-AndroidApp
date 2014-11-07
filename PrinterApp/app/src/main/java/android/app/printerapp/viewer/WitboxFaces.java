@@ -1,13 +1,13 @@
 package android.app.printerapp.viewer;
 
+import android.opengl.GLES20;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.opengl.GLES20;
 
 public class WitboxFaces {
 	private final String vertexShaderCode =
@@ -49,7 +49,7 @@ public class WitboxFaces {
     int vertexCount;
     final int vertexStride = COORDS_PER_VERTEX * 4; // bytes per vertex
 
-    float color[] = { 0f, 0f, 0f, 0.5f };
+    float color[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
     
     private final short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
     
@@ -81,6 +81,8 @@ public class WitboxFaces {
 
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
+     *
+     * Alberto: change alpha according to face
      */
     public WitboxFaces(int face) {		
     	switch (face) {
@@ -89,12 +91,15 @@ public class WitboxFaces {
     		break;
     	case ViewerRenderer.BACK:
     		mCoordsArray = planeCoordsBack;
+            color[3] = 0.6f;
     		break;
     	case ViewerRenderer.RIGHT:
     		mCoordsArray = planeCoordsRight;
+            color[3] = 0.5f;
     		break;
     	case ViewerRenderer.LEFT:
     		mCoordsArray = planeCoordsLeft;
+            color[3] = 0.5f;
     		break;
     	}
     		    	
