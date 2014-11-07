@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -144,32 +143,21 @@ public class OctoprintSlicing {
                 p.getProfiles().clear();
 
                 Iterator<String> keys = response.keys();
-                int selectedItem = 0;
 
-                final ArrayAdapter<String> profileList = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
 
-                int count = 0;
                 while(keys.hasNext()) {
 
                     String current = keys.next();
 
-                    profileList.add(current);
-
-                    //TODO adding profiles manually
-                    //if (!p.getProfiles().contains(current)) p.getProfiles().add(current);
-
                     try {
 
                         if (response.getJSONObject(current).getBoolean("default")){
-                            selectedItem = count;
                             Log.i("OUT","Selected item is " + response.getJSONObject(current).getString("key"));
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    count++;
 
                     HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SLICING + "/" + current , null, new JsonHttpResponseHandler() {
 
@@ -180,11 +168,31 @@ public class OctoprintSlicing {
                             super.onSuccess(statusCode, headers, response);
 
 
-                            p.getProfiles().add(response);
+                            /**
+                             * Check if the profile is already added because auto-refresh
+                             */
+                            for (JSONObject o : p.getProfiles()){
 
-                            Intent intent = new Intent("notify");
-                            intent.putExtra("message", "Profile");
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                try {
+                                    if (o.getString("key").equals(response.getString("key"))) return;
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+
+                            if (!p.getProfiles().contains(response)){
+
+                                p.getProfiles().add(response);
+
+                                Intent intent = new Intent("notify");
+                                intent.putExtra("message", "Profile");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+                                Log.i("OUT","Adding profile");
+                            } else Log.i("OUT","NOPEEEYAYAYA");
+
 
                         }
 

@@ -183,6 +183,20 @@ public class SidePanelHandler {
 
                                 mPrinter = DevicesListController.getList().get(i);
 
+
+                                /**
+                                 * Auto-refresh profiles if there are none available
+                                 */
+                                if (mPrinter.getStatus()==StateUtils.STATE_OPERATIONAL){
+
+                                    if (mPrinter.getProfiles().size()==0)
+                                    {
+                                        OctoprintSlicing.retrieveProfiles(mActivity,mPrinter);
+                                    }
+
+                                }
+
+
                                 profileAdapter = new SidePanelProfileAdapter(mActivity,
                                         R.layout.print_panel_spinner_item,  mPrinter.getProfiles());
 
@@ -233,9 +247,6 @@ public class SidePanelHandler {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
-
 
                         }
 
