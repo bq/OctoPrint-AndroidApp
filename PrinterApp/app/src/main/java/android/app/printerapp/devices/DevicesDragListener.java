@@ -55,8 +55,8 @@ public class DevicesDragListener implements OnDragListener {
 	    
 	    //If it's a drop
 	    case DragEvent.ACTION_DROP:{
-	    	
-	    	CharSequence tag = event.getClipData().getDescription().getLabel();
+
+            CharSequence tag = event.getClipDescription().getLabel();
 	    	
 
 	    	//If it's a file (avoid draggable printers)
@@ -80,7 +80,7 @@ public class DevicesDragListener implements OnDragListener {
 		    		
 		    	} else {
 		    		//Error dialog
-		    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + mModel.getMessage());
+		    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + v.getContext().getString(R.string.viewer_printer_unavailable));
 		    	}
 	    	}
 
@@ -90,8 +90,18 @@ public class DevicesDragListener implements OnDragListener {
 	    } break;
 	    
 	    case DragEvent.ACTION_DRAG_ENTERED:{
-	    	//Highlight on hover
-	    	v.setBackgroundColor(mContext.getResources().getColor(R.color.drag_and_drop_hover_background));
+
+            CharSequence tag = event.getClipDescription().getLabel();
+            //If it's a file (avoid draggable printers)
+            if (tag.equals("name")) {
+
+                if ((mModel.getStatus() == StateUtils.STATE_OPERATIONAL) ||
+                        (mModel.getStatus() == StateUtils.STATE_ERROR)) {
+
+                    //Highlight on hover
+                    v.setBackgroundColor(mContext.getResources().getColor(R.color.drag_and_drop_hover_background));
+                }
+            }
 
 	    }break;
 	    case DragEvent.ACTION_DRAG_EXITED:{
