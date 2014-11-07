@@ -1,18 +1,18 @@
 package android.app.printerapp.viewer;
 
+import android.app.printerapp.R;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.opengl.GLES20;
+import android.opengl.GLUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.opengl.GLES20;
-import android.opengl.GLUtils;
-import android.app.printerapp.R;
 
 
 public class WitboxPlate {
@@ -67,11 +67,10 @@ public class WitboxPlate {
   		  	// Calculate the dot product of the light vector and vertex normal. If the normal and light vector are pointing in the same direction then it will get max illumination.
   		  	+ " 	float diffuse = max(dot(v_Normal, lightVector), 0.0);						\n"               	  		  													  
 
-  		  	// Add attenuation. 
-  		  	+ "	diffuse = diffuse * (1.0 / (1.0 + (0.10 * distance)));						\n"
-  	    
+  		  	// Add attenuation. Alberto: Removed to show the texture original color
+  	        //diffuse * (1.0 / (1.0 + (0.10 * distance)));
   		  	// Add ambient lighting
-  		  	+ "	diffuse = diffuse + 0.3;													\n"  
+  		  	+ "	diffuse = 0.8;													\n"
 
   		  	// Multiply the color by the diffuse illumination level and texture value to get final output color.
   		  	+ "	gl_FragColor = (v_Color * diffuse * texture2D(u_Texture, v_TexCoordinate));	\n"    	  
@@ -104,7 +103,7 @@ public class WitboxPlate {
 
     List<Float> lineCoordsList = new ArrayList<Float>();
 
-    float mColor[] = { 0.658824f,  0.658824f, 0.658824f, 1f };
+    float mColor[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
     
     private final short mDrawOrder[] = {0, 1, 3, 1, 2, 3}; // order to draw vertices
     
@@ -192,7 +191,7 @@ public class WitboxPlate {
   		mNormalBuffer.put(mNormalData);
   		mNormalBuffer.position(0);
   		
-        mTextureDataHandle = loadTexture (mContext, R.drawable.texture);
+        mTextureDataHandle = loadTexture (mContext, R.drawable.texture_blue);
 
         // prepare shaders and OpenGL program
         int vertexShader = ViewerRenderer.loadShader(
@@ -214,7 +213,7 @@ public class WitboxPlate {
         final int[] textureHandle = new int[1];
      
         GLES20.glGenTextures(1, textureHandle, 0);
-     
+
         if (textureHandle[0] != 0) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;   // No pre-scaling
@@ -252,10 +251,10 @@ public class WitboxPlate {
     public void draw(float[] mvpMatrix, float[] mvMatrix) {
 	    // Add program to OpenGL environment
 	    GLES20.glUseProgram(mProgram);
-	   
+
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		
-		
+
+
 	    mTextureCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_TexCoordinate");
         ViewerRenderer.checkGlError("glGetAttribLocation Texture Coord Handle");
 
