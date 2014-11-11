@@ -326,7 +326,7 @@ public class OctoprintConnection {
 
 
                               //Check if it's our file
-                              if (DatabaseController.isPreference("Slicing", response.getString("source_path"))){
+                              if (DatabaseController.getPreference("Slicing","Last").equals( response.getString("source_path"))){
 
                                   int progress = response.getInt("progress");
 
@@ -416,13 +416,13 @@ public class OctoprintConnection {
 		
 		
 		try {
-
             //Search for files waiting for slice
-            if (DatabaseController.isPreference("Slicing", payload.getString("stl"))) {
+            if (DatabaseController.getPreference("Slicing","Last").equals( payload.getString("stl")))
+            {
 
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
                 LibraryController.getParentFolder() + "/temp/", payload.getString("gcode"));
-                DatabaseController.handlePreference("Slicing",payload.getString("stl"),null, false);
+                DatabaseController.handlePreference("Slicing","Last",null, false);
                 OctoprintFiles.deleteFile(context,url,payload.getString("stl"), "/local/");
 
             }else {

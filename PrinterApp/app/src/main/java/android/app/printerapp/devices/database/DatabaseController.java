@@ -154,6 +154,13 @@ public class DatabaseController {
 	public static boolean isPreference(String where, String key){
 		
 		SharedPreferences prefs = mContext.getSharedPreferences(where, Context.MODE_PRIVATE);
+
+        Map<String,?> keys = prefs.getAll();
+
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+            Log.i("map values",entry.getKey() + ": " +
+                    entry.getValue().toString());
+        }
 		
 		if (prefs.contains(key)) return true;		
 		return false;
