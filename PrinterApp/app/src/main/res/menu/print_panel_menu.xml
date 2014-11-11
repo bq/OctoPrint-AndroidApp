@@ -19,11 +19,6 @@
         android:visible="false"
         android:icon="@drawable/ic_action_save"
         android:title="@string/viewer_menu_save_gcode"/>
-    
-    <item
-        android:id="@+id/viewer_notes"
-        android:showAsAction="never"
-        android:title="@string/viewer_menu_notes"/>
 
     <item
         android:id="@+id/viewer_autofit"
@@ -34,6 +29,10 @@
         android:id="@+id/viewer_clean"
         android:showAsAction="never"
         android:title="@string/viewer_menu_clean"/>
-    
+
+    <item
+        android:id="@+id/viewer_restore"
+        android:showAsAction="never"
+        android:title="@string/viewer_menu_restore"/>
 
 </menu>

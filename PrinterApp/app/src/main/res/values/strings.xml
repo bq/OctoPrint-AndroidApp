@@ -124,7 +124,7 @@
     <string name="viewer_menu_open">Open file</string>
     <string name="viewer_menu_save">Save</string>
     <string name="viewer_menu_save_gcode">Save gcode</string>
-    <string name="viewer_menu_notes">Notes</string>
+    <string name="viewer_menu_restore">Restore panel</string>
     <string name="viewer_menu_autofit">Autofit</string>
     <string name="viewer_menu_clean">Clean panel</string>
 
