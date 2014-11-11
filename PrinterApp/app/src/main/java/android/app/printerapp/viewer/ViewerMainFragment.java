@@ -1,5 +1,6 @@
 package android.app.printerapp.viewer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
@@ -105,6 +106,8 @@ public class ViewerMainFragment extends Fragment {
      */
     private static SlicingHandler mSlicingHandler;
     private SidePanelHandler mSidePanelHandler;
+
+    private static boolean mLayerMode = false;
 
     private static TextView mRotationText;
     private static TextView mAxisText;
@@ -438,6 +441,10 @@ public class ViewerMainFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.print_panel_menu, menu);
+
+        if (mLayerMode) menu.findItem(R.id.viewer_save_gcode).setVisible(true);
+        else menu.findItem(R.id.viewer_save_gcode).setVisible(false);
+
     }
 
     @Override
@@ -474,6 +481,17 @@ public class ViewerMainFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Switch to layer mode if there is a gcode loaded to show the save gcode option
+     * @param mode true if there is a gcode, false if not
+     */
+    public static void setLayerMode(boolean mode){
+
+        mLayerMode = mode;
+        ((Activity)mContext).invalidateOptionsMenu();
+
     }
 
     /**
@@ -540,7 +558,7 @@ public class ViewerMainFragment extends Fragment {
                     case LAYER:
 
 
-                        //TODO  what the fuck did i do here
+                        //TODO  what the f*ck did i do here
                         File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
                         if (tempFile.exists()) {
                             //Open desired file
@@ -571,13 +589,21 @@ public class ViewerMainFragment extends Fragment {
         Log.i("viewer", " file path " + filePath);
         DataStorage data = null;
         mFile = new File(filePath);
+
         //Open the file
         if (LibraryController.hasExtension(0, filePath)) {
+
             data = new DataStorage();
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
+            setLayerMode(false);
+
+
         } else if (LibraryController.hasExtension(1, filePath)) {
+
             data = new DataStorage();
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
+            setLayerMode(true);
+
         }
         mDataList.add(data);
 
