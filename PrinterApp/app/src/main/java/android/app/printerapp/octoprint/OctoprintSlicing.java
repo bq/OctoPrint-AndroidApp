@@ -286,8 +286,15 @@ public class OctoprintSlicing {
 
                                         Log.i("OUT","Slicing @" + response.toString());
 
+                                        if (DatabaseController.isPreference("Slicing","Last")){
+
+                                            Log.i("OUT","We have a preference already yo! deleting yo! " + DatabaseController.getPreference("Slicing","Last"));
+                                            OctoprintFiles.deleteFile(context,url,DatabaseController.getPreference("Slicing","Last"), "/local/");
+
+                                        }
+
                                         //TODO we can actually use the null field to hold the original project name
-                                        DatabaseController.handlePreference("Slicing",file.getName(), null, true);
+                                        DatabaseController.handlePreference("Slicing","Last", file.getName(), true);
 
                                     }
 

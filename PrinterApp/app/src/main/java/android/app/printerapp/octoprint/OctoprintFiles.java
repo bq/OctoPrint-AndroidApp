@@ -252,7 +252,7 @@ public class OctoprintFiles {
 				super.onSuccess(statusCode, headers, response);
 				
 				
-				Log.i("SUCCESS", response.toString());
+				Log.i("SUCCESS", "DELETED FROM THE SERVERCITO: " + response.toString());
 
 			}
 			

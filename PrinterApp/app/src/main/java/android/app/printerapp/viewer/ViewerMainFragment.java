@@ -1057,7 +1057,7 @@ public class ViewerMainFragment extends Fragment {
             pb.setVisibility(View.GONE);
         }
 
-        Log.i("OUT", "Theoretically showing Progress Bar :/");
+        Log.i("OUT", "Progress @" + i);
 
 
     }
