@@ -464,8 +464,8 @@ public class ViewerMainFragment extends Fragment {
                 saveGcodeDialog();
                 return true;
 
-            case R.id.viewer_notes:
-                //Add/View notes
+            case R.id.viewer_restore:
+                optionRestoreView();
                 return true;
 
             case R.id.viewer_autofit:
@@ -581,12 +581,24 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-
     /**
      * ********************** FILE MANAGEMENT *******************************
      */
+
+
+    /**
+     * Restore the original view and discard the modifications by clearing the data list
+     */
+    public void optionRestoreView(){
+
+        String pathStl = mDataList.get(0).getPathFile();
+        mDataList.clear();
+
+        openFile(pathStl);
+
+    }
+
     public static void openFile(String filePath) {
-        Log.i("viewer", " file path " + filePath);
         DataStorage data = null;
         mFile = new File(filePath);
 
