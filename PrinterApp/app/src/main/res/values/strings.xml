@@ -59,6 +59,8 @@
     <string name="devices_discovery_connect">Connecting to printer network, this should take a moment.\nIf it takes too long, there may be a problem with the access point.</string>
     <string name="devices_discovery_config">Configuring network parameters, this may take a while. \nNew device discovery is currently down until the configuration finishes.</string>
     <string name="devices_discovery_title">Configuring new printer</string>
+    <string name="devices_discovery_toast_error">There was an error configuring the printer, try again</string>
+    <string name="devices_discovery_toast_success">Printer configured successfully! </string>
 
     <string name="printview_video_text">Video</string>
     <string name="printview_3d_text">3D</string>

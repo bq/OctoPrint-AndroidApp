@@ -55,6 +55,8 @@
     <string name="devices_discovery_connect">Conectando a la red de la impresora, sólo tardará un momento.\nSi tarda demasiado, podría haber un problema con el punto de acceso.</string>
     <string name="devices_discovery_config">Configurando los parámetros de red, puede tardar un rato. \nEl servicio de descubrimiento de nuevas redes está detenido hasta que termine la configuración.</string>
     <string name="devices_discovery_title">Configurando nueva impresora</string>
+    <string name="devices_discovery_toast_error">Ha habido un error al configurar la impresora, vuelve a intentarlo</string>
+    <string name="devices_discovery_toast_success">¡Impresora configurada correctamente! </string>
 
     <string name="printview_video_text">Video</string>
     <string name="printview_3d_text">3D</string>

@@ -5,6 +5,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
@@ -147,7 +148,7 @@ public class DevicesListController {
 		
 		for (ModelPrinter p : mList){
 			
-			if ((m.getName().equals(p.getName()))||(m.getName().contains(getNetworkId(p.getName())))){
+			if ((m.getName().equals(p.getName()))||(m.getName().contains(PrintNetworkManager.getNetworkId(p.getName())))){
 				
 				exists = true;
 				
@@ -235,26 +236,6 @@ public class DevicesListController {
 
     }
 
-	//TODO Move elsewhere maybe
-	//Get the Network id key to associate with the service name
-	public static String getNetworkId(String name){
-		
-			
-			String[] parsedString = name.split("\\(");
-			
-			if (parsedString.length>1){
-				
-			
-				String parsedName = parsedString[1];
-				
-				String finale =  parsedName.replaceAll("[^A-Za-z0-9]", "");
-
-			return finale;
-			
-		} else return "00000";
-	}
-	
-	
 	/**
 	 * check if there's already the printer listed filtered by ip
 	 * @param ip

@@ -116,14 +116,17 @@ public class JmdnsServiceListener implements ServiceListener{
 			//Creates a service with info
 			 Log.i("Model","Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
-			
-			 mContext.addElement(new ModelPrinter(service.getName(),
-					 service.getInetAddresses()[0].toString(), DevicesListController.searchAvailablePosition()));
-			 
+
+            Log.i("OUT","Network ID: " + PrintNetworkManager.getNetworkId(service.getName()));
+
+            mContext.addElement(new ModelPrinter(service.getName(),
+                    service.getInetAddresses()[0].toString(), DevicesListController.searchAvailablePosition()));
+
+            PrintNetworkManager.checkNetworkId(service.getName(),true);
+
 		}
 		
-	
-		
+
 		//This method was obtained externally, basically it gets our IP Address, or return Android localhost by default.
 		public  static InetAddress getDeviceIpAddress(WifiManager wifi) {
 			
@@ -186,5 +189,5 @@ public class JmdnsServiceListener implements ServiceListener{
 			return pos;
 			
 		}
-		
-	}
+
+}

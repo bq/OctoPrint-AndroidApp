@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintNetwork;
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -204,6 +206,8 @@ public class PrintNetworkManager {
                                     et_pass.setSelection(start, end);
                                 }
                             });
+
+                            et_pass.requestFocus();
 					        
 					        adb_net.setView(v);
 					        adb_net.setPositiveButton(R.string.ok, new OnClickListener() {
@@ -251,10 +255,13 @@ public class PrintNetworkManager {
 											isOffline = true;
 											
 								         	mManager.disconnect();
-											mManager.disableNetwork(mManager.getConnectionInfo().getNetworkId());
+
+                                            final String origin = getNetworkId(mManager.getConnectionInfo().getSSID());
+
+                                            mManager.disableNetwork(mManager.getConnectionInfo().getNetworkId());
 											mManager.removeNetwork(mManager.getConnectionInfo().getNetworkId());
 											
-											//Clear existing networks TODO: search for existing instead
+											//Clear existing networks
 											//clearNetwork(target.SSID);
 											mManager.enableNetwork(searchNetwork(target), true);
 											
@@ -269,7 +276,9 @@ public class PrintNetworkManager {
 													Log.i("MANAGER","Registering again with " + target.SSID + "!");
 
                                                     DevicesListController.removeElement(mPosition);
-													//DevicesListController.getList().remove(mPosition);
+
+
+                                                    DatabaseController.handlePreference("Network", "Last", origin, true);
 
                                                     //Remove ad-hoc network
                                                     clearNetwork("OctoPi-Dev");
@@ -404,5 +413,56 @@ public class PrintNetworkManager {
 		return mController.getActivity();
 	}
 
+
+
+    /**
+     * EXCLUSIVE TO THIS IMPLEMENTATION
+     *
+     * Parse the network ID to search in the preference list
+     * @param s ssid to get the number
+     * @return the parsed number
+     */
+    public static String getNetworkId(String s){
+
+        String ssid = s.replaceAll("[^A-Za-z0-9]", "");
+
+        if (ssid.length() >= 4) return ssid.substring(ssid.length() - 4,(ssid.length()));
+        else return "0000";
+
+    }
+
+
+    /**
+     * Check if the network was on the preference list to link it to the service
+     * @param ssid
+     * @param result
+     */
+    public static void checkNetworkId(String ssid, boolean result){
+
+        final int message;
+
+        if (result) message = R.string.devices_discovery_toast_success;
+        else message = R.string.devices_discovery_toast_error;
+
+        /**
+         * Check for pending networks in the preference list
+         */
+        if (DatabaseController.isPreference("Network","Last")){
+
+            if (DatabaseController.getPreference("Network","Last").equals(getNetworkId(ssid))){
+
+                DatabaseController.handlePreference("Network", "Last", null, false);
+
+
+                mController.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(mController.getActivity(), message, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            }
+        }
+    }
 
 }

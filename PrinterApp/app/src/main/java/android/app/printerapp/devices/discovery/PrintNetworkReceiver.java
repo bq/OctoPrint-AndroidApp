@@ -100,7 +100,10 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			//unregister();
 	        			
 	        			ModelPrinter m = new ModelPrinter(s.SSID,"/octopi-dev.local",DevicesListController.searchAvailablePosition());
-	        			
+
+
+                        mController.checkNetworkId(s.SSID,false);
+
 	        			//Check if network is already on the list
 	        			if (!DevicesListController.checkExisting(m)){
 	        				mController.addElementController(m);
