@@ -16,7 +16,6 @@
     <item
         android:id="@+id/viewer_save_gcode"
         android:showAsAction="never"
-        android:visible="false"
         android:icon="@drawable/ic_action_save"
         android:title="@string/viewer_menu_save_gcode"/>
 

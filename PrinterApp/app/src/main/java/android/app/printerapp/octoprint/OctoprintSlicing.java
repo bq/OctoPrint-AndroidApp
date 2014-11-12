@@ -293,7 +293,6 @@ public class OctoprintSlicing {
 
                                         }
 
-                                        //TODO we can actually use the null field to hold the original project name
                                         DatabaseController.handlePreference("Slicing","Last", file.getName(), true);
 
                                     }

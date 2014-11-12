@@ -1,6 +1,5 @@
 package android.app.printerapp.viewer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
@@ -106,8 +105,6 @@ public class ViewerMainFragment extends Fragment {
      */
     private static SlicingHandler mSlicingHandler;
     private SidePanelHandler mSidePanelHandler;
-
-    private static boolean mLayerMode = false;
 
     private static TextView mRotationText;
     private static TextView mAxisText;
@@ -442,9 +439,6 @@ public class ViewerMainFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.print_panel_menu, menu);
 
-        if (mLayerMode) menu.findItem(R.id.viewer_save_gcode).setVisible(true);
-        else menu.findItem(R.id.viewer_save_gcode).setVisible(false);
-
     }
 
     @Override
@@ -481,17 +475,6 @@ public class ViewerMainFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * Switch to layer mode if there is a gcode loaded to show the save gcode option
-     * @param mode true if there is a gcode, false if not
-     */
-    public static void setLayerMode(boolean mode){
-
-        mLayerMode = mode;
-        ((Activity)mContext).invalidateOptionsMenu();
-
     }
 
     /**
@@ -565,11 +548,15 @@ public class ViewerMainFragment extends Fragment {
                             openFile(tempFile.getAbsolutePath());
                         } else {
 
-                            if (mFile != null) {
+                            /*if (mFile != null) {
                                 showGcodeFiles();
                             } else
-                                Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();*/
 
+                            Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+
+                            //TODO hardcoded
+                            tabs.setCurrentTab(0);
                         }
                         break;
 
@@ -607,14 +594,12 @@ public class ViewerMainFragment extends Fragment {
 
             data = new DataStorage();
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
-            setLayerMode(false);
 
 
         } else if (LibraryController.hasExtension(1, filePath)) {
 
             data = new DataStorage();
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
-            setLayerMode(true);
 
         }
         mDataList.add(data);
@@ -862,17 +847,25 @@ public class ViewerMainFragment extends Fragment {
                 //TODO move rename/move logic to LibraryController
                 //Save gcode
                 File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString() + ".gcode");
-                File fileFrom = mFile;
 
-                //Delete file if success
-                if (!mFile.renameTo(fileTo)) {
+                File fileFrom = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
 
-                    openFile(fileTo.getAbsolutePath());
+                if (fileFrom.exists()) {
 
-                    if (mFile.delete()) {
-                        Log.i("OUT", "File deletedillo");
-                    };
+                    //Delete file if success
+                    if (!fileFrom.renameTo(fileTo)) {
+
+                        openFile(fileTo.getAbsolutePath());
+
+                        if (fileFrom.delete()) {
+                            Log.i("OUT", "File deletedillo");
+                        }else Log.i("OUT", "ERROR WHEN File deletedillo");
+                    }else Log.i("OUT", "ERROR WHEN File renameihn");
+                } else {
+                    Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
                 }
+
+
 
                 /**
                  * Use an intent because it's an asynchronous static method without any reference (yet)
