@@ -22,7 +22,7 @@ import java.util.TimerTask;
  */
 public class SlicingHandler {
 
-    private static final int DELAY = 10; //timer delay just in case
+    private static final int DELAY = 1000; //timer delay just in case
 
     //Data array to send to the server
     private byte[] mData = null;

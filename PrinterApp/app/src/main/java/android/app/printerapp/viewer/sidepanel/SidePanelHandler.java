@@ -209,6 +209,9 @@ public class SidePanelHandler {
 
                             mSlicingHandler.setPrinter(mPrinter);
 
+
+
+
                         }
 
                         @Override
@@ -244,6 +247,9 @@ public class SidePanelHandler {
                                 mSlicingHandler.setExtras("profile", key);
 
                                 parseJson(i);
+
+                                ViewerMainFragment.slicingCallback();
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -280,6 +286,8 @@ public class SidePanelHandler {
                             Log.i("OUT","Infill: " + infill);
 
                             mSlicingHandler.setExtras("profile.fill_density", infill);
+
+                            ViewerMainFragment.slicingCallback();
                         }
 
                         @Override
@@ -294,6 +302,8 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
+
+                            ViewerMainFragment.slicingCallback();
                         }
 
                         @Override
@@ -628,13 +638,5 @@ public class SidePanelHandler {
         }
 
     }
-
-    public void notifyAdapter(){
-
-        printerAdapter.notifyDataSetChanged();
-        if (profileAdapter!=null)profileAdapter.notifyDataSetChanged();
-
-    }
-
 
 }

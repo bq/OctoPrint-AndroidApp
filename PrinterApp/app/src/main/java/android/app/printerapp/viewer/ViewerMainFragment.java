@@ -149,12 +149,14 @@ public class ViewerMainFragment extends Fragment {
 //            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-            mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT);
-            draw();
-
             //Init slicing elements
             mSlicingHandler = new SlicingHandler(getActivity());
             mSidePanelHandler = new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
+
+            mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT, mSlicingHandler);
+            draw();
+
+
 
 
         }
@@ -316,6 +318,8 @@ public class ViewerMainFragment extends Fragment {
                         default: return;
 
                     }
+
+                    slicingCallback();
                 }
 
 
@@ -478,8 +482,7 @@ public class ViewerMainFragment extends Fragment {
     }
 
     /**
-     * Constructor for the tab host
-     * TODO: Should be moved to a View class since it only handles ui.
+     * Constructor for the tab host.
      */
     public void setTabHost(View v) {
         final TabHost tabs = (TabHost) v.findViewById(R.id.tabhost_views);
@@ -540,8 +543,6 @@ public class ViewerMainFragment extends Fragment {
                         break;
                     case LAYER:
 
-
-                        //TODO  what the f*ck did i do here
                         File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
                         if (tempFile.exists()) {
                             //Open desired file
@@ -626,9 +627,6 @@ public class ViewerMainFragment extends Fragment {
 
         String pathStl;
 
-
-        //TODO   still fucking up stuff
-
         if (mSlicingHandler.getLastReference() != null) {
 
             pathStl = mSlicingHandler.getLastReference();
@@ -636,7 +634,7 @@ public class ViewerMainFragment extends Fragment {
 
         } else {
 
-            //Here's the new stuff! //TODO Should make a method to get parent file
+            //Here's the new stuff!
             pathStl = //LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + name + "/_stl/";
                     mFile.getParentFile().getParent() + "/_stl/";
             File f = new File(pathStl);
@@ -827,30 +825,32 @@ public class ViewerMainFragment extends Fragment {
 
     public void saveGcodeDialog() {
 
-
-        //TODO check for null after printing
-        final File actualFile = new File(mSlicingHandler.getOriginalProject());
-
-        AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-        adb.setTitle(R.string.library_create_dialog_title);
-
-        final EditText et = new EditText(mContext);
-        et.setText(actualFile.getName());
-
-        adb.setView(et);
-
-        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        //Original file to save
+        final File fileFrom = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
 
 
-                //TODO move rename/move logic to LibraryController
-                //Save gcode
-                File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString() + ".gcode");
+        //if there is a temporary sliced gcode
+        if (fileFrom.exists()) {
 
-                File fileFrom = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+            //Get original project
+            final File actualFile = new File(mSlicingHandler.getOriginalProject());
 
-                if (fileFrom.exists()) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+            adb.setTitle(R.string.library_create_dialog_title);
+
+
+            //Select new name for the gcode
+            final EditText et = new EditText(mContext);
+            et.setText(actualFile.getName());
+
+            adb.setView(et);
+
+            adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    //Save gcode
+                    File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString() + ".gcode");
 
                     //Delete file if success
                     if (!fileFrom.renameTo(fileTo)) {
@@ -859,18 +859,12 @@ public class ViewerMainFragment extends Fragment {
 
                         if (fileFrom.delete()) {
                             Log.i("OUT", "File deletedillo");
-                        }else Log.i("OUT", "ERROR WHEN File deletedillo");
-                    }else Log.i("OUT", "ERROR WHEN File renameihn");
-                } else {
-                    Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-                }
-
-
+                        }
+                    }
 
                 /**
                  * Use an intent because it's an asynchronous static method without any reference (yet)
                  */
-                //TODO What have I done -_-
                 Intent intent = new Intent("notify");
                 intent.putExtra("message", "Files");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
@@ -880,7 +874,9 @@ public class ViewerMainFragment extends Fragment {
 
         adb.show();
 
-
+        } else {
+            Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -947,6 +943,9 @@ public class ViewerMainFragment extends Fragment {
                 case R.id.mirror:
                     mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
                     mSurface.doMirror();
+
+                    slicingCallback();
+
                     return true;
                 case R.id.multiply:
                     shoMultiplyDialog();
@@ -965,10 +964,6 @@ public class ViewerMainFragment extends Fragment {
             mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.INVISIBLE);
             mActionMode = null;
-
-            //TODO temp callback for slicing
-            if (mSlicingHandler!=null)StlFile.saveModel(mDataList, null, mSlicingHandler);
-
 
         }
     };
@@ -1011,9 +1006,6 @@ public class ViewerMainFragment extends Fragment {
 
         draw();
     }
-
-
-    //TODO HIGHLY EXPERIMENTAL BE CAREFUL!!!!11
 
     /**
      * **************************** PROGRESS BAR FOR SLICING ******************************************
@@ -1060,7 +1052,6 @@ public class ViewerMainFragment extends Fragment {
      */
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
-            //TODO set a slicing boolean to print
             showProgressBar(-1);
         }
     };
@@ -1084,9 +1075,13 @@ public class ViewerMainFragment extends Fragment {
         }
 
 
+    }
 
 
+    //TODO callback for a slicing request
+    public static void slicingCallback(){
 
+        if ((mSlicingHandler!=null) && (mDataList.get(0)!=null)) StlFile.saveModel(mDataList, null, mSlicingHandler);
 
     }
 

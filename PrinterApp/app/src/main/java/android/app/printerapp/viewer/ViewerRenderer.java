@@ -236,7 +236,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				else mDataList.get(i).setStateObject(INSIDE_TOUCHED);
 			} else {
 				if (!Geometry.isValidPosition(d.getMaxX(), d.getMinX(), d.getMaxY(), d.getMinY(), mDataList, i)) mDataList.get(i).setStateObject(OUT_NOT_TOUCHED);
-				else mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);	
+				else mDataList.get(i).setStateObject(INSIDE_NOT_TOUCHED);
 			}
 		}
 	}
