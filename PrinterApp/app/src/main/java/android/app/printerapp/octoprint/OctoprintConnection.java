@@ -417,6 +417,7 @@ public class OctoprintConnection {
 		
 		try {
             //Search for files waiting for slice
+            if (DatabaseController.getPreference("Slicing","Last")!=null)
             if (DatabaseController.getPreference("Slicing","Last").equals( payload.getString("stl")))
             {
 
