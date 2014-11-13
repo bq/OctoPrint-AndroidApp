@@ -652,6 +652,8 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
+
+    //TODO remove
     private void showGcodeFiles() {
         //Logic for getting file type
         String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
@@ -1081,7 +1083,18 @@ public class ViewerMainFragment extends Fragment {
     //TODO callback for a slicing request
     public static void slicingCallback(){
 
-        if ((mSlicingHandler!=null) && (mDataList.get(0)!=null)) StlFile.saveModel(mDataList, null, mSlicingHandler);
+        //Check if the file is not yet loaded
+        for (int i=0; i<mDataList.size(); i++){
+
+            if (mDataList.get(i).getVertexArray()==null) {
+
+                Log.i("OUT","HAHA!");
+                return;
+            }
+
+        }
+
+        if (mSlicingHandler!=null) StlFile.saveModel(mDataList, null, mSlicingHandler);
 
     }
 

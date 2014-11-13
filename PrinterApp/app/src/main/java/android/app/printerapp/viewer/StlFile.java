@@ -212,7 +212,8 @@ public class StlFile {
     		//Finish
 			if (mMode== ViewerMainFragment.DONT_SNAPSHOT) {
 				ViewerMainFragment.draw();
-				mProgressDialog.dismiss();  
+				mProgressDialog.dismiss();
+                ViewerMainFragment.slicingCallback();
 			} else if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
 				LibraryModelCreation.takeSnapshot();
 			}
