@@ -1,8 +1,9 @@
 package android.app.printerapp.viewer;
 
 
-import java.util.List;
 import android.opengl.Matrix;
+
+import java.util.List;
 
 public class Geometry {
 	 private static final float OFFSET = 0.1f;
@@ -245,15 +246,19 @@ public class Geometry {
 				if (isValidPosition(newMaxX, newMinX, newMaxY, newMinY, objects, objectToFit)) {
 					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
 					break;
-				} else if (i==objects.size()-2) {					
-					newMaxX = setMinX - OFFSET;
+				} else if (i==objects.size()-2) {
+
+                    return false;
+
+					/*newMaxX = setMinX - OFFSET;
 					newMinX = setMinX - (width + OFFSET);
 					newMaxY = objects.get(index).getMaxY()+OFFSET;
 					newMinY = objects.get(index).getMinY()+OFFSET;	
 					
 					data.setStateObject(ViewerRenderer.OUT_NOT_TOUCHED);
-					
-					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);
+
+
+					changeModelToFit(newMaxX, newMinX, newMaxY, newMinY, data);*/
 				}					
 			}
 		}

@@ -130,6 +130,7 @@
     <string name="viewer_printer_selected">Sin impresora</string>
     <string name="viewer_profile_delete">¿Quieres eliminar este perfil?</string>
     <string name="viewer_profile_delete_error">No se puede eliminar ese perfil</string>
+    <string name="viewer_multiply_error">No se pueden añadir mas modelos al plato</string>
     
     <string name="settings_network">Red por defecto</string>
     <string name="settings_printers">Conexiones enlazadas de Witbox/Witclon</string>

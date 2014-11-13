@@ -981,6 +981,9 @@ public class ViewerMainFragment extends Fragment {
         numPicker.setMaxValue(10);
         numPicker.setMinValue(0);
 
+        //Remove soft-input from number picker
+        numPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
         adb.setView(dialogText)
                 .setTitle(mContext.getString(R.string.project_name))
@@ -988,6 +991,7 @@ public class ViewerMainFragment extends Fragment {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         drawCopies(numPicker.getValue());
+                        slicingCallback();
                     }
                 });
 
@@ -1002,7 +1006,17 @@ public class ViewerMainFragment extends Fragment {
             final DataStorage newData = new DataStorage();
             newData.copyData(mDataList.get(model));
             mDataList.add(newData);
-            Geometry.relocateIfOverlaps(mDataList);
+
+            /**
+             * Check if the piece is out of the plate and stop multiplying
+             */
+            if (!Geometry.relocateIfOverlaps(mDataList)){
+
+                Toast.makeText(mContext,R.string.viewer_multiply_error,Toast.LENGTH_LONG).show();
+                mDataList.remove(newData);
+                break;
+
+            };
             num++;
         }
 
