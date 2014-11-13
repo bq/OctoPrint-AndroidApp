@@ -23,6 +23,7 @@ public class ModelPrinter {
 	//Service info
 	private String mName;
 	private String mDisplayName;
+    private int mDisplayColor = 0;
 	private String mAddress;
 	private int mStatus = StateUtils.STATE_NONE;
     private String mPort;
@@ -119,6 +120,7 @@ public class ModelPrinter {
 	public String getDisplayName(){
 		return mDisplayName;
 	}
+    public int getDisplayColor() { return mDisplayColor; }
 	
 	public boolean getLoaded(){
 		return mJobLoaded;
@@ -174,7 +176,8 @@ public class ModelPrinter {
 	public void startUpdate(Context context){
 		//Initialize web socket connection
 		//OctoprintConnection.getConnection(context, this, false);
-		OctoprintConnection.getSettings(this,context);
+		OctoprintConnection.openSocket(this, context);
+        OctoprintConnection.getSettings(this);
 	}
 	
 	public void setConnecting(){
@@ -212,6 +215,7 @@ public class ModelPrinter {
 	public void setDisplayName(String name){
 		mDisplayName = name;
 	}
+    public void setDisplayColor(int color) { mDisplayColor = color; }
 	
 	public void setLoaded(boolean load){
 		mJobLoaded = load;

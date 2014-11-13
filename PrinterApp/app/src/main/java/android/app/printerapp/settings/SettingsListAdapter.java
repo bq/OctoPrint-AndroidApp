@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.List;
  *
  */
 public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
+
+    private final String[] colorArray ={"default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
 
 	public SettingsListAdapter(Context context, int resource,
 			List<ModelPrinter> objects) {
@@ -128,9 +131,18 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
 		adb.setTitle(R.string.settings_edit_name);
+
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View v = inflater.inflate(R.layout.settings_edit_layout, null);
 		
-		final EditText et = new EditText(getContext());
-		adb.setView(et);
+		final EditText et = (EditText) v.findViewById(R.id.settings_edit_name_edit);
+        et.setText(m.getDisplayName());
+
+        final Spinner spinner = (Spinner) v.findViewById(R.id.settings_edit_color_spinner);
+        spinner.setAdapter(new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, colorArray));
+
+		adb.setView(v);
 		
 		adb.setPositiveButton(R.string.ok, new OnClickListener() {
 			
@@ -138,10 +150,14 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 			public void onClick(DialogInterface dialog, int which) {
 				
 				String newName = et.getText().toString();
-				
-				m.setDisplayName(newName);
+                String newColor = colorArray[spinner.getSelectedItemPosition()];
+
+				if (!newName.equals("")) m.setDisplayName(newName);
 				DatabaseController.updateDB(FeedEntry.DEVICES_DISPLAY, m.getId(), newName);
                 notifyDataSetChanged();
+
+                //Set the new name on the server
+                OctoprintConnection.setSettings(m,newName,newColor,getContext());
 				
 			}
 		});
