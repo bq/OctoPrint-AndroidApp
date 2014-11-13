@@ -154,7 +154,7 @@ public class LibraryModelCreation {
 			GcodeFile.openGcodeFile(context, file, data, ViewerMainFragment.DO_SNAPSHOT);
 		}
 		
-		mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMainFragment.DO_SNAPSHOT);
+		mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMainFragment.DO_SNAPSHOT, null);
 		list.add(data);
 	}
 	

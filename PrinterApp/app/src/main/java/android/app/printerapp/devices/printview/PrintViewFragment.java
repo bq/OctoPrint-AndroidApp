@@ -390,7 +390,7 @@ public class PrintViewFragment extends Fragment {
         List<DataStorage> gcodeList = new ArrayList<DataStorage>();
         gcodeList.add(mDataGcode);
 
-        mSurface = new ViewerSurfaceView(mContext, gcodeList, ViewerSurfaceView.LAYERS, ViewerMainFragment.PRINT_PREVIEW);
+        mSurface = new ViewerSurfaceView(mContext, gcodeList, ViewerSurfaceView.LAYERS, ViewerMainFragment.PRINT_PREVIEW, null);
         mLayout.removeAllViews();
         mLayout.addView(mSurface, 0);
 
