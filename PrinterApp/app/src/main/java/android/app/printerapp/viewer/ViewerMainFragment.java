@@ -319,7 +319,7 @@ public class ViewerMainFragment extends Fragment {
 
                     }
 
-                    slicingCallback();
+                    //slicingCallback();
                 }
 
 

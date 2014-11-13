@@ -9,6 +9,7 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -218,6 +219,92 @@ public class OctoprintConnection {
 		
 		
 	}
+
+    /*************************************************
+     * SETTINGS
+     **************************************************/
+
+    private static int convertColor(String color){
+
+        if (color.equals("default")) return Color.TRANSPARENT;
+        if (color.equals("red")) return Color.RED;
+        if (color.equals("orange")) return Color.rgb(255,165,0);
+        if (color.equals("yellow")) return Color.YELLOW;
+        if (color.equals("green")) return Color.GREEN;
+        if (color.equals("blue")) return Color.BLUE;
+        if (color.equals("violet")) return Color.rgb(138,43,226);
+
+        return Color.BLACK;
+
+    }
+
+    /**
+     * Function to get the settings from the server
+     * @param p
+     */
+    public static void getSettings(final ModelPrinter p){
+
+        HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SETTINGS, null, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    JSONObject appearance = response.getJSONObject("appearance");
+
+                    String newName = appearance.getString("name");
+                    if(!newName.equals(""))p.setDisplayName(newName);
+                    p.setDisplayColor(convertColor(appearance.getString("color")));
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        });
+
+    }
+
+    /**
+     * Function to set the settings to the server
+     */
+    public static void setSettings(final ModelPrinter p, String newName, final String newColor, Context context){
+
+        JSONObject object = new JSONObject();
+        JSONObject appearance = new JSONObject();
+        StringEntity entity = null;
+        try {
+            appearance.put("name", newName);
+            appearance.put("color", newColor);
+            object.put("appearance",appearance);
+            entity = new StringEntity(object.toString(), "UTF-8");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpClientHandler.post(context, p.getAddress() + HttpUtils.URL_SETTINGS,
+                entity, "application/json", new JsonHttpResponseHandler() {
+
+                    //Override onProgress because it's faulty
+                    @Override
+                    public void onProgress(int bytesWritten, int totalSize) {
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+
+                        p.setDisplayColor(convertColor(newColor));
+                    }
+                });
+
+    }
 	
 	
 	/**
@@ -228,7 +315,7 @@ public class OctoprintConnection {
 	 * New client implementation uses Websockets to receive status updates from the server
 	 * so we only need to open a new connection and parse the payload.
 	 */
-	public static void getSettings(final ModelPrinter p, final Context context){
+	public static void openSocket(final ModelPrinter p, final Context context){
 		
 		p.setConnecting();
 		
@@ -264,7 +351,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 		            
-		        	 //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	 Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 		        	 
 		        	  try {
 		        		  

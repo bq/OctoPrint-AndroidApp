@@ -112,8 +112,10 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             //Intialize visual parameters
             convertView.setOnDragListener(new DevicesDragListener(mContext, m, this));
             holder.textViewTag.setText(m.getDisplayName());
+            //holder.textViewTag.setTextColor(m.getDisplayColor());
             holder.textViewIp.setText(m.getAddress().replace("/", ""));
             holder.imageIcon.setVisibility(View.VISIBLE);
+            holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.SRC_ATOP);
 
             int status = m.getStatus();
 
