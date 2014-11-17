@@ -227,6 +227,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	public void setRotationVector (int mode) {
 		switch (mode) {
+
 		case ROTATE_X:
 			mRotateMode = ROTATE_X;
 			mRenderer.setRotationVector(new Vector (1,0,0));
@@ -239,16 +240,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			mRotateMode = ROTATE_Z;
 			mRenderer.setRotationVector(new Vector (0,0,1));
 			break;
-		}		
+
+
+		}
+
+        //Reset current angle to do a new calculation on 0º
+        mCurrentAngle = new float[]{0, 0, 0};
 	}
 
-    /**
-     * Return the current angle rotation for every axis
-     * @return
-     */
-    public float[] getCurrentAngle(){
-        return mCurrentAngle;
-    }
 		
 	/**
 	 * Rotate the object in the X axis
@@ -340,7 +339,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					mPreviousX = event.getX();
 					mPreviousY = event.getY();
 				}												
-				break;			
+				break;
 			case MotionEvent.ACTION_MOVE:	
 					float dx = x - mPreviousX;
 					float dy = y - mPreviousY;

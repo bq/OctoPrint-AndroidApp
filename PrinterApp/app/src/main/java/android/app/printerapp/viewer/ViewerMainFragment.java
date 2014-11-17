@@ -296,8 +296,9 @@ public class ViewerMainFragment extends Fragment {
         mRotationText = (TextView) mRootView.findViewById(R.id.text_rotation);
         mAxisText = (TextView) mRootView.findViewById(R.id.text_axis);
         mRotationSeekbar = (SeekBar) mRootView.findViewById(R.id.rotation_seek_bar);
-        mRotationSeekbar.setProgress(50);
-        mRotationText.setText("0º");
+        mRotationSeekbar.setProgress(12);
+        mRotationText.setText("");
+        mRotationSeekbar.setMax(24);
         mRotationSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             boolean lock = true;
@@ -305,7 +306,8 @@ public class ViewerMainFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                float newAngle = convertProgressToDegrees(i);
+                //Calculation on a 12 point seekbar
+                float newAngle = (i - 12) * POSITIVE_ANGLE;
 
 
                 if (!lock){
@@ -319,7 +321,6 @@ public class ViewerMainFragment extends Fragment {
 
                     }
 
-                    //slicingCallback();
                 }
 
 
@@ -363,7 +364,7 @@ public class ViewerMainFragment extends Fragment {
         mCurrentAxis++;
         if (mCurrentAxis>2) mCurrentAxis = 0;
 
-        float currentAngle = 0;
+        float currentAngle = 12;
 
         switch(mCurrentAxis){
 
@@ -371,30 +372,22 @@ public class ViewerMainFragment extends Fragment {
 
                 mAxisText.setText("Eje X");
 
-                currentAngle = mSurface.getCurrentAngle()[0];
-
                 break;
 
             case 1:
                 mAxisText.setText("Eje Y");
 
-                currentAngle = mSurface.getCurrentAngle()[1];
-
                 break;
             case 2:
                 mAxisText.setText("Eje Z");
-
-                currentAngle = mSurface.getCurrentAngle()[2];
 
                 break;
             default: mAxisText.setText(""); break;
 
         }
 
-        Log.i("OUT","Current axis is " + mCurrentAxis + " lets " + convertDegreesToProgress((int)currentAngle));
-
-        mRotationSeekbar.setProgress(convertDegreesToProgress((int)currentAngle));
-        mRotationText.setText((int)currentAngle + "º");
+        mRotationSeekbar.setProgress((int)currentAngle);
+        mRotationText.setText("");
 
     }
 
@@ -407,14 +400,20 @@ public class ViewerMainFragment extends Fragment {
     private float convertProgressToDegrees(int i){
 
         Double number = (i * 3.6) - 180;
+
+        Log.i("SLICING","Precision loss: " + i + " to " + number.intValue());
+
         return number.intValue();
+
+
+
     }
 
     private static int convertDegreesToProgress(int f){
 
         Double number = (f  + 180) / 3.6;
 
-        Log.i("OUT","Precision loss: " + number + " to " + number.intValue());
+        Log.i("SLICING","Precision loss: " + f + " to " + number.intValue());
 
         return number.intValue();
     }
