@@ -341,7 +341,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         Matrix.multiplyMM(mFinalMatrix, 0, mTemporaryMatrix, 0, rotateObjectMatrix, 0);
 
 
-
         //Set the new rotation matrix
         data.setRotationMatrix(mFinalMatrix);
 	}
@@ -500,7 +499,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
 			
-        mSceneAngleX = -40f;	
+        //mSceneAngleX = -40f;
         
         if (mDataList.size()>0)
 			if (isStl()) {
@@ -526,7 +525,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public void onSurfaceChanged(GL10 unused, int width, int height) {
 		mWidth = width;
 		mHeight = height;
-				
+
+        Log.i("OUT","Width: " + width + " ; Height: " + height);
+
 		// Adjust the viewport based on geometry changes,
         // such as screen rotation
         GLES20.glViewport(0, 0, width, height);
@@ -584,18 +585,42 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+        /**
+         * ROTATE FIRST THE X AXIS AROUND ITSELF MODEL X ROTATION
+         */
                         
         //Set Identity
         Matrix.setIdentityM(mRotationMatrix, 0);
 
+        //Move the matrix to the origin
+        Matrix.translateM(mRotationMatrix, 0, 0.0f, 0.0f, 0.0f);
+
         //Rotation x
         Matrix.rotateM(mRotationMatrix, 0, mSceneAngleX, 0.0f, 0.0f, 1.0f);
 
-        //RotationY
-        Matrix.rotateM(mRotationMatrix, 0, mSceneAngleY, 1.0f, 0.0f, 0.0f);
-        
+
         //Reset angle, we store the rotation in the matrix
         mSceneAngleX=0;
+
+        //Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
+        Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mRotationMatrix, 0);
+        System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
+
+
+        /**
+         * ROTATE SECOND THE Y AXIS AROUND THE SCENE ROTATION X MODEL
+         */
+
+        //Set Identity
+        Matrix.setIdentityM(mRotationMatrix, 0);
+
+        //Move the matrix to the origin
+        Matrix.translateM(mRotationMatrix, 0, 0.0f, 0.0f, 0.0f);
+
+        //RotationY
+        Matrix.rotateM(mRotationMatrix, 0, mSceneAngleY, 1.0f, 0.0f, 0.0f);
+
         mSceneAngleY=0;
 
         //Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
