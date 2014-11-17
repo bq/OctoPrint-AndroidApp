@@ -30,13 +30,15 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
@@ -206,12 +208,7 @@ import it.sephiroth.android.library.widget.HListView;
 
         switch (item.getItemId()) {
 
-            case R.id.menu_filter: //Filter grid / list
-
-                optionFilter();
-                return true;
-
-            case R.id.menu_reload: //Reload service discovery
+            case R.id.devices_menu_reload: //Reload service discovery
 
                 optionReload();
                 return true;
@@ -283,9 +280,36 @@ import it.sephiroth.android.library.widget.HListView;
             @Override
             public void onTabChanged(String tabId) {
 
+                View currentView = tabs.getCurrentView();
+                currentView.setAnimation(inFromRightAnimation());
+
+                /*View currentView = tabs.getCurrentView();
+                if (tabs.getCurrentTab() > currentTab)
+                {
+                    currentView.setAnimation( inFromRightAnimation() );
+                }
+                else
+                {
+                    currentView.setAnimation( outToRightAnimation() );
+                }
+
+                currentTab = tabs.getCurrentTab();*/
+
             }
         });
 
+    }
+
+    public Animation inFromRightAnimation()
+    {
+        Animation inFromRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, +1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromRight.setDuration(240);
+        inFromRight.setInterpolator(new AccelerateInterpolator());
+        return inFromRight;
     }
 
 
@@ -339,8 +363,8 @@ import it.sephiroth.android.library.widget.HListView;
     /**
      * Filter options
      */
-    //TODO check if one adapter is possible
-    public void optionFilter() {
+
+    /*public void optionFilter() {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle(R.string.devices_filter_dialog_title);
@@ -381,7 +405,7 @@ import it.sephiroth.android.library.widget.HListView;
                     }
                     break;
                     case R.id.dv_radio3: {
-                        mGridAdapter.getFilter().filter(null);    //TODO Groups
+                        mGridAdapter.getFilter().filter(null);
                     }
                     break;
                     case R.id.dv_radio4: {
@@ -401,7 +425,7 @@ import it.sephiroth.android.library.widget.HListView;
 
         adb.show();
 
-    }
+    }*/
 
     /**
      * Method to reload the service discovery and reload the devices

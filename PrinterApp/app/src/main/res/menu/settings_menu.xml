@@ -3,10 +3,16 @@
     
      <item
         android:id="@+id/settings_menu_add"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:visible="true"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/devices_menu_add"/>
+
+    <item
+        android:id="@+id/settings_menu_help"
+        android:showAsAction="never"
+        android:visible="true"
+        android:title="@string/help"/>
     
 
 </menu>

@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/library_thingiverse"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/logo_thingiverse"
-        android:title="@string/library_menu_thingiverse"/>
 
+    <item
+        android:id="@+id/library_search"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/icon_buscar"
+        android:title="@string/library_menu_search"/>
     <item
         android:id="@+id/library_reload"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/stat_notify_sync"
         android:title="@string/devices_menu_filter"/>
-    
-     <item
-        android:id="@+id/library_search"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/icon_buscar"
-        android:title="@string/library_menu_search"/>
-      
-    <item
-        android:id="@+id/library_filter"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/icon_filtro"
-        android:title="@string/library_menu_filter" />
-    
+
     <item
         android:id="@+id/library_list"
         android:showAsAction="never"
@@ -39,11 +27,21 @@
         android:id="@+id/library_create"
         android:showAsAction="never"
         android:title="@string/library_menu_folder"/>
+
+    <item
+        android:id="@+id/library_models"
+        android:showAsAction="never"
+        android:title="@string/library_menu_models"/>
+
+    <item
+        android:id="@+id/library_help"
+        android:showAsAction="never"
+        android:title="@string/help"/>
         
-        <item 
-            android:id="@+id/library_paste"
-            android:showAsAction="never"
-            android:title="@string/library_menu_paste"/>
+    <item
+        android:id="@+id/library_paste"
+        android:showAsAction="never"
+        android:title="@string/library_menu_paste"/>
     
 
 </menu>

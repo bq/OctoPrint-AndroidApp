@@ -169,7 +169,7 @@ public class LibraryFragment extends Fragment {
             case R.id.library_reload:
                 refreshFiles();
                 return true;
-            case R.id.library_thingiverse:
+            case R.id.library_models:
                 optionThingiverse();
                 return true;
             default:

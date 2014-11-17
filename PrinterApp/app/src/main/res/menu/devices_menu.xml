@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
         
     <item
-        android:id="@+id/menu_filter"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/icon_filtro"
-        android:title="@string/devices_menu_filter"/>
-
-    <item
-        android:id="@+id/menu_reload"
+        android:id="@+id/devices_menu_reload"
         android:showAsAction="ifRoom"
         android:icon="@android:drawable/stat_notify_sync"
         android:title="@string/devices_menu_filter"/>
+
+    <item
+        android:id="@+id/devices_menu_help"
+        android:showAsAction="never"
+        android:icon="@android:drawable/stat_notify_sync"
+        android:title="@string/help"/>
  
   
 </menu>
