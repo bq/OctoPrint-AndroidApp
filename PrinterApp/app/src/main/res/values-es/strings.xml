@@ -11,6 +11,7 @@
     <string name="create">Crear</string>
     <string name="delete">Eliminar</string>
     <string name="error">Error</string>
+    <string name="help">Ayuda</string>
     
     <string name="fragment_devices">Dispositivos</string>
     <string name="fragment_print">Panel de impresión</string>
@@ -103,7 +104,7 @@
     <string name="library_menu_add">Añadir modelo</string>
     <string name="library_menu_folder">Crear nueva carpeta</string>
     <string name="library_menu_paste">Pegar</string>
-    <string name="library_menu_thingiverse">Buscar en Thingiverse</string>
+    <string name="library_menu_models">Obtener modelos</string>
     
     <string name="library_tabhost_tab_all">Todos los modelos</string>
     <string name="library_tabhost_tab_local">Local</string>

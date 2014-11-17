@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
@@ -146,10 +144,6 @@ public class LibraryFragment extends Fragment {
                 optionSearchLibrary();
                 return true;
 
-            case R.id.library_filter:
-                optionFilterLibrary();
-                return true;
-
             case R.id.library_add:
                 optionAddLibrary();
                 return true;
@@ -169,7 +163,7 @@ public class LibraryFragment extends Fragment {
             case R.id.library_reload:
                 refreshFiles();
                 return true;
-            case R.id.library_thingiverse:
+            case R.id.library_models:
                 optionThingiverse();
                 return true;
             default:
@@ -256,7 +250,7 @@ public class LibraryFragment extends Fragment {
 
 
     //Filter elements in the current tab from the menu option
-    public void optionFilterLibrary() {
+    /*public void optionFilterLibrary() {
 
         //Dialog to filter
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
@@ -304,7 +298,7 @@ public class LibraryFragment extends Fragment {
         adb.setNegativeButton(R.string.cancel, null);
 
         adb.show();
-    }
+    }*/
 
     //Search an item within the library applying a filter to the adapter
     public void optionSearchLibrary() {

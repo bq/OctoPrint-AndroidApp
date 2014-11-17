@@ -13,6 +13,7 @@
     <string name="create">Create</string>
     <string name="delete">Delete</string>
     <string name="error">Error</string>
+    <string name="help">Help</string>
     
     <string name="fragment_devices">Devices</string>
     <string name="fragment_print">Print panel</string>
@@ -108,7 +109,7 @@
     <string name="library_menu_add">Add model</string>
     <string name="library_menu_folder">Create new folder</string>
     <string name="library_menu_paste">Paste</string>
-    <string name="library_menu_thingiverse">Search in Thingiverse</string>
+    <string name="library_menu_models">Get models</string>
     
     <string name="library_tabhost_tab_all">All the models</string>
     <string name="library_tabhost_tab_local">Local</string>

@@ -34,4 +34,9 @@
         android:showAsAction="never"
         android:title="@string/viewer_menu_restore"/>
 
+    <item
+        android:id="@+id/viewer_help"
+        android:showAsAction="never"
+        android:title="@string/help"/>
+
 </menu>
