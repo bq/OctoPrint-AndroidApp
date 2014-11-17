@@ -42,6 +42,8 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 import it.sephiroth.android.library.widget.HListView;
 
 /**
@@ -617,31 +619,55 @@ import it.sephiroth.android.library.widget.HListView;
 
         //Constructor
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(getActivity().getString(R.string.finish_dialog_title) + m.getJob().getFilename());
-        adb.setMessage(R.string.finish_dialog_text);
+        adb.setTitle(getActivity().getString(R.string.finish_dialog_title) + " " + m.getJob().getFilename());
 
-        adb.setPositiveButton(R.string.finish_dialog_remove, new OnClickListener() {
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.print_finished_dialog, null, false);
+
+        final CheckBox cb_server = (CheckBox) v.findViewById(R.id.checkbox_keep_server);
+        final CheckBox cb_local = (CheckBox) v.findViewById(R.id.checkbox_keep_local);
+
+        adb.setView(v);
+
+        adb.setPositiveButton(R.string.ok, new OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                if (cb_server.isChecked()){
+
+                    //Select the same file again to reset progress
+                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false);
+
+                } else {
+
+                    //Remove file from server
+                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true);
+                }
+
+                if (cb_local.isChecked()){
+
+
+
+                } else {
+
+                    //Delete file locally
+                    File fileDelete = new File(m.getJobPath());
+                    if (fileDelete.delete()){
+
+                        Log.i("OUT","File deleted!");
+
+                    }
+
+                }
 
                 m.setJobPath(null);
 
-                //Remove file from server
-                OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true);
             }
         });
 
-        adb.setNegativeButton(R.string.finish_dialog_notremove, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //Select the same file again to reset progress
-                OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false);
-
-            }
-        });
+        adb.setNegativeButton(R.string.cancel, null);
 
         adb.show();
     }
