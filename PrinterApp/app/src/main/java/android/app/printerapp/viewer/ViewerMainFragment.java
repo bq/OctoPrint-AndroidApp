@@ -1108,7 +1108,13 @@ public class ViewerMainFragment extends Fragment {
 
         }
 
-        if (mSlicingHandler!=null) StlFile.saveModel(mDataList, null, mSlicingHandler);
+        if ((mSlicingHandler!=null)&&(mFile!=null)) {
+
+            if (LibraryController.hasExtension(0,mFile.getName())){
+                StlFile.saveModel(mDataList, null, mSlicingHandler);
+            }
+
+        }
 
     }
 

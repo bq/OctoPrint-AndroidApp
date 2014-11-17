@@ -5,6 +5,7 @@ import android.app.printerapp.model.ModelJob;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class DevicesListAdapter extends ArrayAdapter<ModelPrinter> {
         tag.setText(m.getDisplayName());
 
         ImageView icon = (ImageView) v.findViewById(R.id.printer_icon_imageview);
+        icon.setColorFilter(m.getDisplayColor(), PorterDuff.Mode.SRC_ATOP);
 
         ModelJob job = m.getJob();
 

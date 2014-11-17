@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/finish_dialog_message"
+        android:layout_margin="10dp"
+        android:id="@+id/tv_keep_file_tag" />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/finish_dialog_option_1"
+        android:layout_margin="10dp"
+        android:id="@+id/checkbox_keep_server"
+        android:checked="false"
+        android:button="@null"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"/>
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/finish_dialog_option_2"
+        android:id="@+id/checkbox_keep_local"
+        android:layout_margin="10dp"
+        android:checked="true"
+        android:button="@null"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"/>
+</LinearLayout>

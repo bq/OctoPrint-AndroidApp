@@ -404,8 +404,11 @@ public class SidePanelHandler {
                         //If we have a gcode which is temporary, we use that
                         if (tempFile.exists()){
 
+                            //Get original project
+                            final File actualFile = new File(mSlicingHandler.getOriginalProject());
+
                             //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                            finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + tempFile.getName());
+                            finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName()+"_tmp.gcode");
 
                             Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
 
