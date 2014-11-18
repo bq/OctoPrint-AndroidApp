@@ -2,6 +2,7 @@ package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
@@ -10,7 +11,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;

@@ -140,6 +140,7 @@
     <string name="settings_default_name">Impresora nueva</string>
     <string name="settings_text_name">Nombre de la impresora:</string>
     <string name="settings_text_address">Dirección de la impresora:</string>
+    <string name="settings_default_color">Mantener color actual</string>
      
     <string name="settings_tabhost_tab_connection">Conexión y red</string>
     <string name="settings_tabhost_tab_devices">Dispositivos</string>

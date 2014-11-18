@@ -1,5 +1,8 @@
 package android.app.printerapp;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
@@ -14,12 +17,10 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,7 +77,7 @@ public class ItemListActivity extends FragmentActivity implements
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((ItemListFragment) getSupportFragmentManager().findFragmentById(
+            ((ItemListFragment) getFragmentManager().findFragmentById(
                     R.id.item_list)).setActivateOnItemClick(true);
 
             /***************************************************************
@@ -123,20 +124,27 @@ public class ItemListActivity extends FragmentActivity implements
         }
 
         //Initialize variables
-        mManager = getSupportFragmentManager();
+        mManager = getFragmentManager();
         mDialog = new DialogController(this);
 
         //Initialize fragments
-        mDevicesFragment = (DevicesFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_devices));
-        mLibraryFragment = (LibraryFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
-        mViewerFragment = (ViewerMainFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
-        mSettingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
+        mDevicesFragment = (DevicesFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_devices));
+        mLibraryFragment = (LibraryFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
+        mViewerFragment = (ViewerMainFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
+        mSettingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
 
         ItemListFragment.performClick(0);
 
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(mAdapterNotification,
                 new IntentFilter("notify"));
+
+        mManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Log.i("OUT", "SOMETHING IN BACKSTACK " + mManager.getBackStackEntryCount());
+            }
+        });
 
 
     }
@@ -176,6 +184,8 @@ public class ItemListActivity extends FragmentActivity implements
             //start transaction
             FragmentTransaction fragmentTransaction = mManager.beginTransaction();
 
+            //fragmentTransaction.setCustomAnimations(R.anim.slide_out_down, R.anim.slide_out_left);
+
             //Pop backstack to avoid having bad references when coming from a Detail view
             mManager.popBackStack();
 
@@ -195,7 +205,7 @@ public class ItemListActivity extends FragmentActivity implements
             switch (Integer.valueOf(id)) {
                 case 1: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_devices)) == null) {
+                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_devices)) == null) {
                         mDevicesFragment = new DevicesFragment();
                         fragmentTransaction.add(R.id.item_detail_container, mDevicesFragment, getString(R.string.fragment_devices));
                     }
@@ -204,7 +214,7 @@ public class ItemListActivity extends FragmentActivity implements
                 break;
                 case 2: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_print)) == null) {
+                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_print)) == null) {
                         mViewerFragment = new ViewerMainFragment();
                         fragmentTransaction.add(R.id.item_detail_container, mViewerFragment, getString(R.string.fragment_print));
                     }
@@ -213,7 +223,7 @@ public class ItemListActivity extends FragmentActivity implements
                 break;
                 case 3: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_models)) == null) {
+                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_models)) == null) {
                         mLibraryFragment = new LibraryFragment();
                         fragmentTransaction.add(R.id.item_detail_container, mLibraryFragment, getString(R.string.fragment_models));
                     }
@@ -226,7 +236,7 @@ public class ItemListActivity extends FragmentActivity implements
                 break;
                 case 5: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.fragment_settings)) == null) {
+                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_settings)) == null) {
                         mSettingsFragment = new SettingsFragment();
                         fragmentTransaction.add(R.id.item_detail_container, mSettingsFragment, getString(R.string.fragment_settings));
                     }
@@ -294,6 +304,7 @@ public class ItemListActivity extends FragmentActivity implements
 
         //New transaction
         FragmentTransaction mTransaction = mManager.beginTransaction();
+        mTransaction.setCustomAnimations(0, 0 , 0, R.anim.slide_out_left);
 
         //Add current fragment to the backstack and hide it (will show again later)
         mTransaction.addToBackStack(mCurrent.getTag());
@@ -344,11 +355,31 @@ public class ItemListActivity extends FragmentActivity implements
     @Override
     public void onBackPressed() {
         if (mCurrent != null) {
+
+            Log.i("FRAGMENT","Current not null");
+
             if (mCurrent == mLibraryFragment) {
-                if (!mLibraryFragment.goBack()) super.onBackPressed();
+
+                Log.i("FRAGMENT","Curent is libray");
+
+                if (!mLibraryFragment.goBack()) {
+
+                    if (mManager.popBackStackImmediate());
+                    else super.onBackPressed();
+                }
                 else return;
-            } else super.onBackPressed();
-        } else super.onBackPressed();
+            } else {
+                Log.i("FRAGMENT","Current is not libray");
+
+                if (mManager.popBackStackImmediate());
+                else super.onBackPressed();
+            }
+        } else {
+
+            Log.i("FRAGMENT","Current is null");
+            super.onBackPressed();
+        }
+
         //Turn on the Navigation Drawer image; this is called in the LowerLevelFragments
         mDrawerToggle.setDrawerIndicatorEnabled(true);
     }
@@ -401,23 +432,16 @@ public class ItemListActivity extends FragmentActivity implements
 
             if (message.equals("Devices")){
 
-
                 mDevicesFragment.notifyAdapter();
                 if (mSettingsFragment!=null)mSettingsFragment.notifyAdapter();
-
-
-                //We have to update the viewer fragment here because status change comes after event
-                if (mViewerFragment!=null) mViewerFragment.notifyAdapter(0);
 
                 //Refresh printview fragment if exists
                 Fragment fragment = mManager.findFragmentByTag("Printer");
                 if (fragment != null) ((PrintViewFragment) fragment).refreshData();
 
-
-
             } else if (message.equals("Profile")){
 
-                if (mViewerFragment!=null) mViewerFragment.notifyAdapter(1);
+                if (mViewerFragment!=null) mViewerFragment.notifyAdapter();
 
             } else if (message.equals("Files")){
 

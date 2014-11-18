@@ -1,6 +1,7 @@
 package android.app.printerapp.devices.printview;
 
 
+import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.SlidingUpPanelLayout;
@@ -14,7 +15,6 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.app.printerapp.viewer.ViewerSurfaceView;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;

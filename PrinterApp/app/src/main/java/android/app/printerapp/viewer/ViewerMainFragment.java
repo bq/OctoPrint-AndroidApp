@@ -3,6 +3,7 @@ package android.app.printerapp.viewer;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.util.ui.ExpandCollapseAnimation;
@@ -14,7 +15,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -391,32 +391,6 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-
-    /**
-     * Convert a seekbar progress to +/-180º being 50 -> 0º
-     * @param i percentage integer
-     * @return
-     */
-    private float convertProgressToDegrees(int i){
-
-        Double number = (i * 3.6) - 180;
-
-        Log.i("SLICING","Precision loss: " + i + " to " + number.intValue());
-
-        return number.intValue();
-
-
-
-    }
-
-    private static int convertDegreesToProgress(int f){
-
-        Double number = (f  + 180) / 3.6;
-
-        Log.i("SLICING","Precision loss: " + f + " to " + number.intValue());
-
-        return number.intValue();
-    }
 
     /*****************************************************************************/
 
@@ -1073,17 +1047,13 @@ public class ViewerMainFragment extends Fragment {
 
     /**
      * Notify the side panel adapters, check for null if they're not available yet (rare case)
-     * @param type
      */
-    public void notifyAdapter(int type){
+    public void notifyAdapter(){
 
         try {
-            if (mSidePanelHandler!=null) {
-                switch (type){
-                    case 0: mSidePanelHandler.printerAdapter.notifyDataSetChanged(); break;
-                    case 1: mSidePanelHandler.profileAdapter.notifyDataSetChanged(); break;
-                }
-            }
+             mSidePanelHandler.printerAdapter.notifyDataSetChanged();
+             mSidePanelHandler.profileAdapter.notifyDataSetChanged();
+
         } catch (NullPointerException e ){
 
             e.printStackTrace();
