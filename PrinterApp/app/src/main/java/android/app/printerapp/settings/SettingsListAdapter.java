@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
-    private final String[] colorArray ={"default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
+    private final String[] colorArray ={getContext().getResources().getString(R.string.settings_default_color),"default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
 
 	public SettingsListAdapter(Context context, int resource,
 			List<ModelPrinter> objects) {
@@ -150,8 +150,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 			public void onClick(DialogInterface dialog, int which) {
 				
 				String newName = et.getText().toString();
-                String newColor = colorArray[spinner.getSelectedItemPosition()];
-
+                String newColor = null;
+                if (spinner.getSelectedItemPosition()!=0) newColor = colorArray[spinner.getSelectedItemPosition()];
 				if (!newName.equals("")) m.setDisplayName(newName);
 				DatabaseController.updateDB(FeedEntry.DEVICES_DISPLAY, m.getId(), newName);
                 notifyDataSetChanged();

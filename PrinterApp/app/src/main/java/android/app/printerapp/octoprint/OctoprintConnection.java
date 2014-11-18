@@ -300,7 +300,7 @@ public class OctoprintConnection {
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
 
-                        p.setDisplayColor(convertColor(newColor));
+                        if (newColor!=null) p.setDisplayColor(convertColor(newColor));
                     }
                 });
 
@@ -323,12 +323,12 @@ public class OctoprintConnection {
 		final String wsuri = "ws:/" + p.getAddress() + HttpUtils.URL_SOCKET;
 
 		   try {
-			   
+
 			  final WebSocketConnection mConnection = new WebSocketConnection();
-			   
+
 			   //mConnection is a new websocket connection
 		      mConnection.connect(wsuri, new WebSocketHandler() {
-		 
+
 		    	  //When the websocket opens
 		         @Override
 		         public void onOpen() {
@@ -345,23 +345,23 @@ public class OctoprintConnection {
 
 
 		         }
-		 
-		         
+
+
 		         //On message received
 		         @Override
 		         public void onTextMessage(String payload) {
-		            
+
 		        	 Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
-		        	 
+
 		        	  try {
-		        		  
+
 		        	 JSONObject object = new JSONObject(payload);
-		            		          
+
 		            	//Get the json string for "current" status
 		            	if (object.has("current")){
-		            		
+
 		            		JSONObject response = new JSONObject(payload).getJSONObject("current");
-			            	
+
 							//Update job with current status
 			            	//We'll add every single parameter
 							p.updatePrinter(response.getJSONObject("state").getString("text"), createStatus(response.getJSONObject("state").getJSONObject("flags")),
@@ -379,7 +379,7 @@ public class OctoprintConnection {
 
                          //Check for events in the server
 		            	if (object.has("event")){
-		            			            		
+
 		            		JSONObject response = new JSONObject(payload).getJSONObject("event");
 
                             //Slicing finished should be handled in another method
@@ -394,15 +394,21 @@ public class OctoprintConnection {
                             //A file was uploaded
                             //TODO we don't always receive this confirmation
 		            		if (response.getString("type").equals("Upload")){
-		            			
+
 		            			p.setLoaded(true);
-		            			
+
 		            		}
 
                             if (response.getString("type").equals("Connected")){
                                 p.setPort(response.getJSONObject("payload").getString("port"));
                                 Log.i("OUT","UPDATED PORT " + p.getPort());
                             }
+
+                            //SEND NOTIFICATION
+
+                            Intent intent = new Intent("notify");
+                            intent.putExtra("message", "Profile");
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
 		            	}
 
@@ -427,46 +433,46 @@ public class OctoprintConnection {
                           }
 
 
-												
+
 		            } catch (JSONException e) {
 						e.printStackTrace();
 						Log.i("CONNECTION","Invalid JSON");
-												
+
 					}
 
 
 
 
-					
-		        
-  
+
+
+
 		         }
-		 
+
 		         @Override
 		         public void onClose(int code, String reason) {
 		            Log.i("SOCK", "Connection lost at " + code + " because " + reason);
-		            
+
 		            	mConnection.disconnect();
-		            	
+
 		            	//Timeout for reconnection
 		            	Handler handler = new Handler();
 		            	handler.postDelayed(new Runnable() {
-							
+
 							@Override
 							public void run() {
 
                                 Log.i("OUT","Timeout expired, reconnecting to " + p.getAddress());
-								
+
 								 p.startUpdate(context);
-								
+
 							}
 						}, SOCKET_TIMEOUT);
-			           
-		            
+
+
 		         }
 		      });
 		   } catch (WebSocketException e) {
-		 
+
 		      Log.i("SOCK", e.toString());
 		   }
 

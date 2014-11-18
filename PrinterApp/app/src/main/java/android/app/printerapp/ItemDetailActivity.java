@@ -13,7 +13,6 @@ import android.view.MenuItem;
  * side-by-side with a list of items in a {@link ItemListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing more than
- * a {@link ItemDetailFragment}.
  */
 public class ItemDetailActivity extends FragmentActivity {
 
@@ -39,7 +38,7 @@ public class ItemDetailActivity extends FragmentActivity {
 			// using a fragment transaction.
 			
 			DevicesFragment fragment = new DevicesFragment();
-			getSupportFragmentManager().beginTransaction()
+			getFragmentManager().beginTransaction()
 					.add(R.id.item_detail_container, fragment).commit();
 		}
 	}

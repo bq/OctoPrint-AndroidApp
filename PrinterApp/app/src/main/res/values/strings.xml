@@ -146,6 +146,7 @@
     <string name="settings_default_name">New printer</string>
     <string name="settings_text_name">Set printer name:</string>
     <string name="settings_text_address">Set printer address:</string>
+    <string name="settings_default_color">Keep current color</string>
     
     <string name="settings_tabhost_tab_connection">Connection and network</string>
     <string name="settings_tabhost_tab_devices">Devices</string>

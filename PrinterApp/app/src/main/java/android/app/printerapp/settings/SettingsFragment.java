@@ -1,6 +1,7 @@
 package android.app.printerapp.settings;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -11,7 +12,6 @@ import android.content.pm.ApplicationInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class SettingsFragment extends Fragment{
+public class SettingsFragment extends Fragment {
 	
 	private SettingsListAdapter mAdapter;
 	
