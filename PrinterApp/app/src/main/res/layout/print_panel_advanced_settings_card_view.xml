@@ -95,7 +95,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -112,7 +113,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -159,7 +161,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -188,7 +191,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -205,7 +209,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -234,7 +239,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -251,7 +257,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -280,7 +287,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -297,7 +305,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number" />
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789." />
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -314,7 +323,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -331,7 +341,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -348,7 +359,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="numberDecimal"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
@@ -377,7 +389,8 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:inputType="number"/>
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."/>
                     </TableRow>
 
                     <TableRow android:gravity="center_vertical">
