@@ -151,7 +151,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                         }
                     } finally { 
                         if (c != null) {
-                            mSurfaceHolder.unlockCanvasAndPost(c); 
+                            mSurfaceHolder.unlockCanvasAndPost(c);
                         }
                     }
                 }
@@ -213,12 +213,12 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void surfaceDestroyed(SurfaceHolder holder) { 
         surfaceDone = false; 
-        stopPlayback(); 
+        //stopPlayback();
     }
 
     public MjpegView(Context context) { 
         super(context);
-        init(context); 
+        init(context);
     }
 
     public void surfaceCreated(SurfaceHolder holder) {

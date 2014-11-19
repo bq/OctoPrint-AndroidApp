@@ -371,6 +371,10 @@ public class ItemListActivity extends FragmentActivity implements
             } else {
                 Log.i("FRAGMENT","Current is not libray");
 
+                //Refresh printview fragment if exists
+                Fragment fragment = mManager.findFragmentByTag("Printer");
+                if (fragment != null) ((PrintViewFragment) fragment).stopCameraPlayback();
+
                 if (mManager.popBackStackImmediate());
                 else super.onBackPressed();
             }

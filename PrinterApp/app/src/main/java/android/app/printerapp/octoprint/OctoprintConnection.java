@@ -351,7 +351,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	 Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	 //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 

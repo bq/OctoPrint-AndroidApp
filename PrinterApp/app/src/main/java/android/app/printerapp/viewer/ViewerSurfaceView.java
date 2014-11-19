@@ -74,7 +74,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 	private int mObjectPressed = -1;
 
-    //TODO TEMP
     private float[] mCurrentAngle = {0,0,0};
 
 	public ViewerSurfaceView(Context context) {
@@ -326,7 +325,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						touchMode = TOUCH_ZOOM;
 					}
 				}
-				break;				
+				break;
 			case MotionEvent.ACTION_DOWN:
 				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
 					int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);

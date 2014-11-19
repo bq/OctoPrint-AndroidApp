@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.SlidingUpPanelLayout;
+import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintControl;
@@ -47,6 +48,7 @@ public class PrintViewFragment extends Fragment {
 
     //Current Printer and status
     private static ModelPrinter mPrinter;
+    private CameraHandler mCamera;
     private boolean isPrinting = false;
 
     //View references
@@ -154,14 +156,17 @@ public class PrintViewFragment extends Fragment {
             }
 
 
+            mCamera = new CameraHandler(mContext,mPrinter.getAddress());
             //Get video
             mLayoutVideo = (FrameLayout) rootView.findViewById(R.id.printview_video);
 
-            if (mPrinter.getVideo().getParent() != null) {
+            /* if (mPrinter.getVideo().getParent() != null) {
                 mPrinter.getVideo().stopPlayback();
                 ((ViewGroup) mPrinter.getVideo().getParent()).removeAllViews();
-            }
-            mLayoutVideo.addView(mPrinter.getVideo());
+            }*/
+            mLayoutVideo.addView(mCamera.getView());
+
+            mCamera.startVideo();
 
 
             /***************************************************************************/
@@ -256,7 +261,6 @@ public class PrintViewFragment extends Fragment {
             slidePanel.setDragView(imageButton);
 
             refreshData();
-
 
         }
         return rootView;
@@ -357,11 +361,17 @@ public class PrintViewFragment extends Fragment {
 
     }
 
+    public void stopCameraPlayback(){
+
+        mCamera.getView().stopPlayback();
+        mCamera.getView().setVisibility(View.GONE);
+
+
+    }
+
     //TODO Properly close the video when destroying the view
     @Override
     public void onDestroy() {
-        mPrinter.getVideo().stopPlayback();
-        ((ViewGroup) mPrinter.getVideo().getParent()).removeAllViews();
         super.onDestroy();
     }
 
