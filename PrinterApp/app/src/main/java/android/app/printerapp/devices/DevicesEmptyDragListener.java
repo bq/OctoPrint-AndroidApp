@@ -6,6 +6,7 @@ import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
@@ -84,12 +85,22 @@ public class DevicesEmptyDragListener implements OnDragListener{
 
         case DragEvent.ACTION_DRAG_ENTERED:{
 
-            CharSequence tag = event.getClipDescription().getLabel();
-            //If it's a printer
-            if (tag.equals("printer")){
+            //TODO NullPointerException
+            try{
 
-                //Highlight on hover
-                v.setBackgroundColor(v.getContext().getResources().getColor(R.color.drag_and_drop_hover_background));
+                CharSequence tag = event.getClipDescription().getLabel();
+                //If it's a printer
+                if (tag.equals("printer")){
+
+                    //Highlight on hover
+                    v.setBackgroundColor(v.getContext().getResources().getColor(R.color.drag_and_drop_hover_background));
+                }
+
+            } catch (NullPointerException e){
+
+                e.printStackTrace();
+                Log.i("OUT", "Random NPE");
+
             }
 
         }break;

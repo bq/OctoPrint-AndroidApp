@@ -510,9 +510,10 @@ public class SidePanelHandler {
      * @param s
      * @return
      */
-    public Float getFloatValue(String s){
+    public Float getFloatValue(String s) throws NumberFormatException{
 
         Float f = Float.parseFloat(s);
+       
         return f;
     }
 
@@ -567,6 +568,14 @@ public class SidePanelHandler {
 
         } catch (JSONException e) {
             e.printStackTrace();
+
+        } catch (NumberFormatException e){
+
+            //Check if there was an invalid numner
+            e.printStackTrace();
+            Toast.makeText(mActivity,e.getMessage(),Toast.LENGTH_LONG).show();
+            profile = null;
+
         }
 
         if (profile!=null){
