@@ -77,6 +77,8 @@ import it.sephiroth.android.library.widget.HListView;
     //Save current filter
     private int mFilter;
 
+    private GridView mCameraGrid;
+
 
     //Empty constructor
     public DevicesFragment() {
@@ -157,10 +159,10 @@ import it.sephiroth.android.library.widget.HListView;
 
             /*************** VIDEO HANDLER ****************************/
 
-            mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
+            //mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
 
-            GridView cameraView = (GridView) rootView.findViewById(R.id.devices_camera);
-            cameraView.setAdapter(mCameraAdapter);
+            mCameraGrid = (GridView) rootView.findViewById(R.id.devices_camera);
+            //cameraView.setAdapter(mCameraAdapter);
 
 
             /***************** SLIDE PANEL ************************************/
@@ -283,17 +285,30 @@ import it.sephiroth.android.library.widget.HListView;
                 View currentView = tabs.getCurrentView();
                 currentView.setAnimation(inFromRightAnimation());
 
-                /*View currentView = tabs.getCurrentView();
-                if (tabs.getCurrentTab() > currentTab)
-                {
-                    currentView.setAnimation( inFromRightAnimation() );
-                }
-                else
-                {
-                    currentView.setAnimation( outToRightAnimation() );
+
+                //TODO Camera shutdown handling
+                if (tabs.getCurrentTab()!=2){
+
+                    if (mCameraAdapter!=null){
+
+                        mCameraAdapter.hideSurfaces();
+                        mCameraAdapter = null;
+                        mCameraGrid.setAdapter(null);
+
+
+                    }
+
+
+
+
+                } else {
+
+                    mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
+                    mCameraGrid.setAdapter(mCameraAdapter);
+
                 }
 
-                currentTab = tabs.getCurrentTab();*/
+
 
             }
         });
@@ -349,7 +364,9 @@ import it.sephiroth.android.library.widget.HListView;
         try {
             mListAdapter.notifyDataSetChanged();
             mGridAdapter.notifyDataSetChanged();
-            mCameraAdapter.notifyDataSetChanged();
+
+            //TODO removed for list video bugs
+            //mCameraAdapter.notifyDataSetChanged();
         } catch (NullPointerException e) {
             //Random adapter crash
             e.printStackTrace();

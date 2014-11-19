@@ -1,18 +1,18 @@
 package android.app.printerapp.devices.camera;
 
-import java.io.IOException;
-import java.net.URI;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * This class will handle the Camera connection.
@@ -28,7 +28,7 @@ public class CameraHandler {
 	private MjpegView mv = null;
 	
 	//Boolean to check if the stream was already started
-	private boolean isRunning = false;
+	public boolean isRunning = false;
 	
    //sample public cam
    private String URL;
@@ -73,6 +73,18 @@ public class CameraHandler {
 	   
 	}
 
+    public void startVideo(){
+
+        if (!mv.isRunning()){
+
+            if (!isRunning) {
+                new DoRead().execute(URL);
+                isRunning = true;
+            }
+
+        } else Log.i("CAMERA","Is running already!");
+    }
+
 	/**
 	 * This class will send a http get request to the server's stream
 	 * @author alberto-baeza
@@ -114,6 +126,7 @@ public class CameraHandler {
 	            mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
           
 	            mv.showFps(true);
+
 	        }
 	    }
 	    
