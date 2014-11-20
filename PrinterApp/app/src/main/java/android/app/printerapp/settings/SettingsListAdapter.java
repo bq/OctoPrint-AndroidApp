@@ -152,8 +152,10 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 				String newName = et.getText().toString();
                 String newColor = null;
                 if (spinner.getSelectedItemPosition()!=0) newColor = colorArray[spinner.getSelectedItemPosition()];
-				if (!newName.equals("")) m.setDisplayName(newName);
+
+                if (!newName.equals("")) m.setDisplayName(newName);
 				DatabaseController.updateDB(FeedEntry.DEVICES_DISPLAY, m.getId(), newName);
+
                 notifyDataSetChanged();
 
                 //Set the new name on the server
