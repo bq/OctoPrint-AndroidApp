@@ -54,6 +54,12 @@
                 android:value=".ItemListActivity" />
         </activity>
 
+        <receiver android:name=".NotificationReceiver">
+            <intent-filter>
+                <action android:name="android.app.printerapp.NotificationReceiver" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

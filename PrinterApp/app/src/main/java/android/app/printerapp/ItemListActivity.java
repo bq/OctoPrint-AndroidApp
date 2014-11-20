@@ -3,10 +3,14 @@ package android.app.printerapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
+import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.BroadcastReceiver;
@@ -18,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -450,7 +455,15 @@ public class ItemListActivity extends FragmentActivity implements
             } else if (message.equals("Files")){
 
                 if (mLibraryFragment!=null) mLibraryFragment.refreshFiles();
+
             }
+            /*else if (message.equals("Notification")){
+
+                long id = intent.getLongExtra("printer", 0);
+
+               notificationManager(id);
+
+            }*/
 
         }
     };
@@ -463,4 +476,57 @@ public class ItemListActivity extends FragmentActivity implements
 
         super.onDestroy();
     }
+
+
+    /*********************************************************************************
+     *                  NOTIFICATION MANAGEMENT
+     *********************************************************************************/
+
+    /**
+     * This method will handle notifications when printing is finished
+     * @param id id of the printer
+     */
+    private void notificationManager(long id){
+
+        //Target printer
+        ModelPrinter p = DevicesListController.getPrinter(id);
+
+
+        // Sets an ID for the notification
+        int mNotificationId = (int)id;
+
+
+        Intent resultIntent = new Intent(this, SplashScreenActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        ItemListActivity.this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        //Creates notification
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.notification_logo)
+                        .setContentTitle("Finished printing: " + p.getJob().getFilename())
+                        .setContentText(p.getDisplayName());
+
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+    }
+
 }

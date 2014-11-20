@@ -157,6 +157,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                         if (!m.getJob().getProgress().equals("null")) {
 
                             if (m.getJob().getFinished()) {
+
                                 holder.progressBarPrinting.setVisibility(View.VISIBLE);
                                 holder.progressBarPrinting.setProgress(100);
                                 holder.progressBarPrinting.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
