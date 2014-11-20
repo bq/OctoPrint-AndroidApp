@@ -442,7 +442,6 @@ public class ItemListActivity extends FragmentActivity implements
             if (message.equals("Devices")){
 
                 mDevicesFragment.notifyAdapter();
-                if (mSettingsFragment!=null)mSettingsFragment.notifyAdapter();
 
                 //Refresh printview fragment if exists
                 Fragment fragment = mManager.findFragmentByTag("Printer");
@@ -456,7 +455,11 @@ public class ItemListActivity extends FragmentActivity implements
 
                 if (mLibraryFragment!=null) mLibraryFragment.refreshFiles();
 
+            } else if (message.equals("Settings")){
+
+                if (mSettingsFragment!=null)mSettingsFragment.notifyAdapter();
             }
+
             /*else if (message.equals("Notification")){
 
                 long id = intent.getLongExtra("printer", 0);

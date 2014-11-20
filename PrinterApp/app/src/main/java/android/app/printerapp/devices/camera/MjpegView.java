@@ -113,18 +113,21 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             Paint p = new Paint();
             String fps;
             while (mRun) {
+
+                Log.i(TAG,"Framecito");
+
                 if(surfaceDone) {
                     try {
                         c = mSurfaceHolder.lockCanvas();
+
                         synchronized (mSurfaceHolder) {
+
                             try {
                                 bm = mIn.readMjpegFrame();
                                 destRect = destRect(bm.getWidth(),bm.getHeight());
                                 c.drawColor(Color.BLACK);
                                 c.drawBitmap(bm, null, destRect, p);
-                                
-                                
-                                
+
                                 
                                 if(showFps) {
                                     p.setXfermode(mode);
@@ -144,15 +147,23 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                                 }
                             } catch (Exception e) {
                                 e.getStackTrace();
-                                Log.d(TAG, "catch IOException hit in run", e);
+                                Log.i(TAG, "catch IOException hit in run", e);
                                 return;
                                 //stopPlayback();
                             }
                         }
-                    } finally { 
+                    } finally {
                         if (c != null) {
                             mSurfaceHolder.unlockCanvasAndPost(c);
                         }
+                    }
+                } else {
+
+                    try {
+                        join();
+                        Log.i("OUT","JOINED ALREADY");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -184,7 +195,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     	
         if(mIn != null) {
             mRun = true;
-            thread.start();         
+            thread.start();
         } 
     }
 
@@ -192,11 +203,25 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     	Log.i("CAMERA","Stopped Playback!!");
         mRun = false;
         boolean retry = true;
+
+        try{
+            mIn.close();
+
+        } catch (Exception e){
+
+            Log.i("OUT","CLOSEDITO");
+
+        }
         while(retry) {
+
+
             try {
+
+
                 thread.join();
                 retry = false;
-            } catch (InterruptedException e) {
+
+            } catch (Exception e) {
                 e.getStackTrace();
                 Log.d(TAG, "catch IOException hit in stopPlayback", e);
             }
@@ -208,11 +233,12 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) { 
-        thread.setSurfaceSize(w, h); 
+        thread.setSurfaceSize(w, h);
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) { 
-        surfaceDone = false; 
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.i("OUT","BUM!");
+        surfaceDone = false;
         //stopPlayback();
     }
 
@@ -222,7 +248,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        surfaceDone = true; 
+        surfaceDone = true;
     }
 
     public void showFps(boolean b) { 

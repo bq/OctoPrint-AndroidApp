@@ -3,6 +3,8 @@ package android.app.printerapp.model;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.camera.MjpegView;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.database.DeviceInfo;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
@@ -27,6 +29,7 @@ public class ModelPrinter {
 	private String mAddress;
 	private int mStatus = StateUtils.STATE_NONE;
     private String mPort;
+    private boolean mHidden = false;
 	
 	//TODO hardcoded string
 	private String mMessage = "Offline";
@@ -65,7 +68,7 @@ public class ModelPrinter {
 		mJobPath = null;
 		
 		//Set new position according to the position in the DB, or the first available
-		if ((position<0) || (Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
+		if ((Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
 		else mPosition = position;
 		
 		Log.i("OUT","Creating service @"+position);
@@ -135,6 +138,10 @@ public class ModelPrinter {
     public long getId() { return mId; }
 
     public String getPort() { return mPort; }
+
+    public boolean isHidden() {
+        return mHidden;
+    }
 	
 	/**********
 	 *  Sets
@@ -210,6 +217,7 @@ public class ModelPrinter {
 	//change position
 	public void setPosition(int pos){	
 		mPosition = pos;
+        DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_POSITION, getId(), String.valueOf(mPosition));
 	}
 	
 	public void setDisplayName(String name){
@@ -228,5 +236,11 @@ public class ModelPrinter {
     public void setId(long id) { mId = id; }
 
     public void setPort(String port) { mPort = port; }
+
+    public void setHidden(boolean hidden){
+
+        mHidden = hidden;
+
+    }
 
 }

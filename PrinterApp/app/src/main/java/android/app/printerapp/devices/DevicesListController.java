@@ -124,8 +124,8 @@ public class DevicesListController {
 		}
 		
 		for (ModelPrinter p : mList){
-			
-			mFree[p.getPosition()] = true;
+
+            if (p.getPosition()!=-1)mFree[p.getPosition()] = true;
 			
 		}
 		
