@@ -33,18 +33,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
+
+
 
                     <GridView
                         android:id="@+id/devices_grid"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:numColumns="5"></GridView>
-                </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:id="@+id/hide_icon"
+                        android:src="@android:drawable/ic_menu_view"
+                        android:layout_margin="30dp"
+                        android:scaleType="centerInside"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/tab2"

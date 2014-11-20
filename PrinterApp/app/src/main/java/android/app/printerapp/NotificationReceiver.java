@@ -45,22 +45,31 @@ public class NotificationReceiver extends BroadcastReceiver {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        //Creates notification
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.notification_logo)
-                        .setContentTitle(context.getString(R.string.finish_dialog_title) + " " + p.getJob().getFilename())
-                        .setContentText(p.getDisplayName())
-                        .setAutoCancel(true);
+        //TODO random crash
+        try{
+            //Creates notification
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.notification_logo)
+                            .setContentTitle(context.getString(R.string.finish_dialog_title) + " " + p.getJob().getFilename())
+                            .setContentText(p.getDisplayName())
+                            .setAutoCancel(true);
 
-        mBuilder.setContentIntent(resultPendingIntent);
+            mBuilder.setContentIntent(resultPendingIntent);
 
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+            // Builds the notification and issues it.
+            mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+        } catch (NullPointerException e){
+
+            e.printStackTrace();
+        }
+
+
 
     }
 }

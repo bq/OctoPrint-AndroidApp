@@ -12,17 +12,21 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.util.ui.AnimationHelper;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,14 +34,12 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -69,6 +71,8 @@ import it.sephiroth.android.library.widget.HListView;
     //Network manager contoller
     private PrintNetworkManager mNetworkManager;
     private JmdnsServiceListener mServiceListener;
+
+    private ImageView mHideOption;
 
     /**
      * Additional variables
@@ -181,12 +185,17 @@ import it.sephiroth.android.library.widget.HListView;
 
             /***************************************************************/
 
-            //Custom service listener
+            mHideOption = (ImageView) rootView.findViewById(R.id.hide_icon);
+            hideOptionHandler();
+
+                    //Custom service listener
             mServiceListener = new JmdnsServiceListener(this);
             mNetworkManager = new PrintNetworkManager(this);
 
             //Default filter
             mFilter = R.id.dv_radio0;
+
+
 
             /**
              * MUSIC!!!
@@ -283,7 +292,7 @@ import it.sephiroth.android.library.widget.HListView;
             public void onTabChanged(String tabId) {
 
                 View currentView = tabs.getCurrentView();
-                currentView.setAnimation(inFromRightAnimation());
+                AnimationHelper.inFromRightAnimation(currentView);
 
 
                 //TODO Camera shutdown handling
@@ -314,20 +323,6 @@ import it.sephiroth.android.library.widget.HListView;
         });
 
     }
-
-    public Animation inFromRightAnimation()
-    {
-        Animation inFromRight = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromRight.setDuration(240);
-        inFromRight.setInterpolator(new AccelerateInterpolator());
-        return inFromRight;
-    }
-
-
     //TODO get rid of this
     /**
      * Add a new element to the list and notify the adapter
@@ -377,72 +372,7 @@ import it.sephiroth.android.library.widget.HListView;
 
 
 
-    /**
-     * Filter options
-     */
 
-    /*public void optionFilter() {
-
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.devices_filter_dialog_title);
-
-
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
-
-        final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
-
-        rg.check(mFilter);
-
-        adb.setView(v);
-
-        adb.setPositiveButton(R.string.filter, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                switch (rg.getCheckedRadioButtonId()) {
-
-                    case R.id.dv_radio0: {
-                        mGridAdapter.getFilter().filter(null);//Show all devices
-                        mListAdapter.getFilter().filter(null);//Show all devices
-
-                    }
-                    break;
-                    case R.id.dv_radio1: {
-                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
-                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
-
-                    }
-                    break;
-                    case R.id.dv_radio2: {
-                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));    //Inactive printers
-                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));    //Inactive printers
-
-                    }
-                    break;
-                    case R.id.dv_radio3: {
-                        mGridAdapter.getFilter().filter(null);
-                    }
-                    break;
-                    case R.id.dv_radio4: {
-                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
-                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
-                    }
-                    break;
-
-                }
-
-                mFilter = rg.getCheckedRadioButtonId();
-
-
-            }
-        });
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.show();
-
-    }*/
 
     /**
      * Method to reload the service discovery and reload the devices
@@ -559,6 +489,8 @@ import it.sephiroth.android.library.widget.HListView;
 
                 ModelPrinter m = null;
 
+                createFloatingIcon();
+
                 for (ModelPrinter mp : DevicesListController.getList()) {
                     if (mp.getPosition() == arg2) m = mp;
                 }
@@ -571,6 +503,9 @@ import it.sephiroth.android.library.widget.HListView;
                     data = ClipData.newPlainText("printer", "" + m.getId());
                     DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(arg1);
                     arg1.startDrag(data, shadowBuilder, arg1, 0);
+
+
+
                 }
 
 
@@ -615,6 +550,86 @@ import it.sephiroth.android.library.widget.HListView;
         adb.setView(v);
 
         adb.show();
+
+    }
+
+    /********************************************************************
+     *          HIDE PRINTER OPTION
+     ********************************************************************/
+
+    public void createFloatingIcon(){
+            mHideOption.setVisibility(View.VISIBLE);
+           AnimationHelper.slideToLeft(mHideOption);
+    }
+
+    //Method to create and handle the hide option icon
+    public void hideOptionHandler(){
+
+        mHideOption.setVisibility(View.GONE);
+        mHideOption.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent event) {
+
+                //Get the drop event
+                int action = event.getAction();
+                switch (action) {
+
+                    case DragEvent.ACTION_DRAG_ENTERED:
+
+                        //Highlight on hover
+                        view.setBackgroundColor(getActivity().getResources().getColor(android.R.color.holo_orange_light));
+
+                        break;
+
+                    //If it's a drop
+                    case DragEvent.ACTION_DROP:
+
+                        CharSequence tag = event.getClipDescription().getLabel();
+
+
+                        //If it's a file (avoid draggable printers)
+                        if (tag.equals("printer")) {
+
+                            ClipData.Item item = event.getClipData().getItemAt(0);
+
+                            //Find a printer from it's name
+                            ModelPrinter p = DevicesListController.getPrinter(Integer.parseInt(item.getText().toString()));
+
+                            if (p!=null){
+
+                                p.setPosition(-1);
+                                Toast.makeText(getActivity(),"Hiding " + p.getDisplayName(), Toast.LENGTH_SHORT).show();
+
+                                notifyAdapter();
+
+                                //SEND NOTIFICATION
+                                Intent intent = new Intent("notify");
+                                intent.putExtra("message", "Settings");
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                            }
+
+                        }
+
+                        //Highlight on hover
+                        view.setBackgroundColor(getActivity().getResources().getColor(android.R.color.transparent));
+
+                        break;
+
+                    case DragEvent.ACTION_DRAG_EXITED:
+
+                        //Highlight on hover
+                        view.setBackgroundColor(getActivity().getResources().getColor(android.R.color.transparent));
+
+                        break;
+
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        mHideOption.setVisibility(View.GONE);
+                        break;
+                }
+
+                return true;
+            }
+        });
 
     }
 
@@ -721,4 +736,72 @@ import it.sephiroth.android.library.widget.HListView;
 
         adb.show();
     }
+
+
+    /**
+     * Filter options
+     */
+
+    /*public void optionFilter() {
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        adb.setTitle(R.string.devices_filter_dialog_title);
+
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
+
+        final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
+
+        rg.check(mFilter);
+
+        adb.setView(v);
+
+        adb.setPositiveButton(R.string.filter, new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                switch (rg.getCheckedRadioButtonId()) {
+
+                    case R.id.dv_radio0: {
+                        mGridAdapter.getFilter().filter(null);//Show all devices
+                        mListAdapter.getFilter().filter(null);//Show all devices
+
+                    }
+                    break;
+                    case R.id.dv_radio1: {
+                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
+                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
+
+                    }
+                    break;
+                    case R.id.dv_radio2: {
+                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));    //Inactive printers
+                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));    //Inactive printers
+
+                    }
+                    break;
+                    case R.id.dv_radio3: {
+                        mGridAdapter.getFilter().filter(null);
+                    }
+                    break;
+                    case R.id.dv_radio4: {
+                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
+                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
+                    }
+                    break;
+
+                }
+
+                mFilter = rg.getCheckedRadioButtonId();
+
+
+            }
+        });
+        adb.setNegativeButton(R.string.cancel, null);
+
+        adb.show();
+
+    }*/
 }

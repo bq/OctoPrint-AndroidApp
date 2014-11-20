@@ -3,6 +3,7 @@ package android.app.printerapp.octoprint;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.database.DeviceInfo;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.viewer.ViewerMainFragment;
@@ -254,7 +255,11 @@ public class OctoprintConnection {
                     JSONObject appearance = response.getJSONObject("appearance");
 
                     String newName = appearance.getString("name");
-                    if(!newName.equals(""))p.setDisplayName(newName);
+                    if(!newName.equals("")) {
+
+                        p.setDisplayName(newName);
+                        DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, p.getId(), newName);
+                    }
                     p.setDisplayColor(convertColor(appearance.getString("color")));
 
 
@@ -351,7 +356,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	    Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	    //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 
@@ -420,6 +425,11 @@ public class OctoprintConnection {
 
 
                                 OctoprintConnection.getSettings(p);
+
+                                //SEND NOTIFICATION
+                                Intent intent = new Intent("notify");
+                                intent.putExtra("message", "Settings");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
                             }
 

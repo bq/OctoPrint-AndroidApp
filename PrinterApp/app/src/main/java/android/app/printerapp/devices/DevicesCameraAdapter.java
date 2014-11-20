@@ -48,7 +48,7 @@ public class DevicesCameraAdapter extends ArrayAdapter<ModelPrinter> {
 
 
             if ((m.getStatus() != StateUtils.STATE_NEW) && (m.getStatus() != StateUtils.STATE_ADHOC)
-                    && (m.getStatus() != StateUtils.STATE_NONE))
+                    && (m.getStatus() != StateUtils.STATE_NONE) && (m.getPosition()>=0))
             {
 
 

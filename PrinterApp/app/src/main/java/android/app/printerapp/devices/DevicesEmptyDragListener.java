@@ -1,8 +1,6 @@
 package android.app.printerapp.devices;
 
 import android.app.printerapp.R;
-import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
 import android.content.res.Resources;
@@ -65,7 +63,7 @@ public class DevicesEmptyDragListener implements OnDragListener{
                     //update position
                     p.setPosition(mPosition);
                     //update database
-                    DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getId(), String.valueOf(mPosition));
+                    //DatabaseController.updateDB(FeedEntry.DEVICES_POSITION, p.getId(), String.valueOf(mPosition));
 
                     //static notification of the adapters
 ;

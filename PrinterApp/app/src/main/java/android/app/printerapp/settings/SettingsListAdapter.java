@@ -67,6 +67,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
             tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
 
             final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.settings_connection);
+            final ImageButton hideButton = (ImageButton) v.findViewById(R.id.settings_hide);
 
             switch (m.getStatus()) {
 
@@ -76,6 +77,17 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                     break;
                 default:
                     connectionButton.setImageResource(R.drawable.ic_settings_connect);
+                    break;
+
+            }
+
+            switch (m.getPosition()) {
+
+                case -1: hideButton.setImageResource(android.R.drawable.ic_menu_view);
+
+                    break;
+                default:
+                    hideButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
                     break;
 
             }
@@ -117,6 +129,25 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                         connectionButton.setImageResource(R.drawable.ic_settings_connect);
                     }
 
+
+                }
+            });
+
+            //Hide / show printer
+            hideButton.findViewById(R.id.settings_hide).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (m.getPosition()==-1){
+
+                        m.setPosition(DevicesListController.searchAvailablePosition());
+
+                    } else {
+
+                        m.setPosition(-1);
+                    }
+
+                    notifyDataSetChanged();
 
                 }
             });
