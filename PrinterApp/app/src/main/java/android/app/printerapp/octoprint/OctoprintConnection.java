@@ -446,16 +446,24 @@ public class OctoprintConnection {
 
                               JSONObject response = new JSONObject(payload).getJSONObject("slicingProgress");
 
+                              //TODO random crash
+                              try{
+                                  //Check if it's our file
+                                  if (DatabaseController.getPreference("Slicing","Last").equals( response.getString("source_path"))){
 
-                              //Check if it's our file
-                              if (DatabaseController.getPreference("Slicing","Last").equals( response.getString("source_path"))){
-
-                                  int progress = response.getInt("progress");
+                                      int progress = response.getInt("progress");
 
 
-                                  //TODO
-                                  ViewerMainFragment.showProgressBar(progress);
+                                      //TODO
+                                      ViewerMainFragment.showProgressBar(progress);
+                                  }
+                              } catch (NullPointerException e){
+
+                                  e.printStackTrace();
+                                  Log.i("OUT","Null slicing");
                               }
+
+
 
 
 

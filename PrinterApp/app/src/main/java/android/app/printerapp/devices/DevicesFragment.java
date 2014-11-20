@@ -40,7 +40,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
@@ -60,7 +59,6 @@ import it.sephiroth.android.library.widget.HListView;
 
     //Controllers and adapters
     private DevicesGridAdapter mGridAdapter;
-    private DevicesListAdapter mListAdapter;
     private DevicesCameraAdapter mCameraAdapter;
 
     //MUSIC!!!11!!1
@@ -146,20 +144,6 @@ import it.sephiroth.android.library.widget.HListView;
             gridView.setOnItemLongClickListener(gridLongClickListener());
 
             gridView.setAdapter(mGridAdapter);
-
-
-            /*******************************************************************/
-
-            //List
-
-            mListAdapter = new DevicesListAdapter(getActivity(),
-                    R.layout.list_item_drawer, DevicesListController.getList());
-
-            ListView listView = (ListView) rootView.findViewById(R.id.devices_list);
-//            listView.addHeaderView(inflater.inflate(R.layout.devices_list_header, null));
-            listView.setOnItemClickListener(listClickListener());
-            listView.setAdapter(mListAdapter);
-
 
             /*************** VIDEO HANDLER ****************************/
 
@@ -266,14 +250,9 @@ import it.sephiroth.android.library.widget.HListView;
         spec.setContent(R.id.tab1);
         tabs.addTab(spec);
 
-        spec = tabs.newTabSpec("List");
-        spec.setIndicator(getString(R.string.devices_tabhost_tab_list));
-        spec.setContent(R.id.tab2);
-        tabs.addTab(spec);
-
         spec = tabs.newTabSpec("Videowall");
         spec.setIndicator(getString(R.string.devices_tabhost_tab_video));
-        spec.setContent(R.id.tab3);
+        spec.setContent(R.id.tab2);
         tabs.addTab(spec);
 
 
@@ -296,7 +275,7 @@ import it.sephiroth.android.library.widget.HListView;
 
 
                 //TODO Camera shutdown handling
-                if (tabs.getCurrentTab()!=2){
+                if (tabs.getCurrentTab()!=1){
 
                     if (mCameraAdapter!=null){
 
@@ -306,9 +285,6 @@ import it.sephiroth.android.library.widget.HListView;
 
 
                     }
-
-
-
 
                 } else {
 
@@ -357,7 +333,6 @@ import it.sephiroth.android.library.widget.HListView;
     public void notifyAdapter() {
 
         try {
-            mListAdapter.notifyDataSetChanged();
             mGridAdapter.notifyDataSetChanged();
 
             //TODO removed for list video bugs

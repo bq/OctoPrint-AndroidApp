@@ -1,15 +1,15 @@
 package android.app.printerapp.devices.camera;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 
 /**
@@ -61,11 +61,15 @@ public class MjpegInputStream extends DataInputStream {
     }   
 
     public Bitmap readMjpegFrame() throws IOException {
+
+        Log.i("STREAM","1");
         mark(FRAME_MAX_LENGTH);
         int headerLen = getStartOfSequence(this, SOI_MARKER);
         reset();
+        Log.i("STREAM","2");
         byte[] header = new byte[headerLen];
         readFully(header);
+        Log.i("STREAM","3");
         try {
             mContentLength = parseContentLength(header);
         } catch (NumberFormatException nfe) { 
@@ -73,10 +77,13 @@ public class MjpegInputStream extends DataInputStream {
             Log.d(TAG, "catch NumberFormatException hit", nfe);
             mContentLength = getEndOfSeqeunce(this, EOF_MARKER); 
         }
+        Log.i("STREAM","4");
         reset();
+        Log.i("STREAM","5");
         byte[] frameData = new byte[mContentLength];
         skipBytes(headerLen);
         readFully(frameData);
+        Log.i("STREAM","6 readed " + frameData.length);
         return BitmapFactory.decodeStream(new ByteArrayInputStream(frameData));
     }
 }
