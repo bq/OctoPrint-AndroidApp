@@ -351,7 +351,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	 //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	    Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 
@@ -404,6 +404,18 @@ public class OctoprintConnection {
                                 Log.i("OUT","UPDATED PORT " + p.getPort());
                             }
 
+                            if (response.getString("type").equals("PrintDone")){
+
+                                //SEND NOTIFICATION
+
+                                Intent intent = new Intent();
+                                intent.setAction("android.app.printerapp.NotificationReceiver");
+                                intent.putExtra("printer", p.getId());
+                                context.sendBroadcast(intent);
+
+
+                            }
+
                             //SEND NOTIFICATION
 
                             Intent intent = new Intent("notify");
@@ -431,6 +443,7 @@ public class OctoprintConnection {
 
 
                           }
+
 
 
 

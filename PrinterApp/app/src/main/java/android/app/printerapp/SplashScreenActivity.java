@@ -37,11 +37,19 @@ public class SplashScreenActivity extends Activity {
         //Initialize db and lists
         new DatabaseController(this);
         DevicesListController.loadList(this);
-        //new LibraryController();
 
-        //Simulate a long loading process on application startup
-        Timer timer = new Timer();
-        timer.schedule(splashDelay, SPLASH_SCREEN_DELAY);
+
+        if (isTaskRoot()){
+
+
+            //Simulate a long loading process on application startup
+            Timer timer = new Timer();
+            timer.schedule(splashDelay, SPLASH_SCREEN_DELAY);
+
+
+        }else finish();
+
+
     }
 
     TimerTask splashDelay = new TimerTask() {

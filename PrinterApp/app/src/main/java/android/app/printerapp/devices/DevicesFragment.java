@@ -693,13 +693,22 @@ import it.sephiroth.android.library.widget.HListView;
 
                 } else {
 
-                    //Delete file locally
-                    File fileDelete = new File(m.getJobPath());
-                    if (fileDelete.delete()){
+                    try{
+                        //Delete file locally
+                        File fileDelete = new File(m.getJobPath());
+                        if (fileDelete.delete()){
 
-                        Log.i("OUT","File deleted!");
+                            Log.i("OUT","File deleted!");
+
+                        }
+
+                    } catch (NullPointerException e){
+
+                        Log.i("OUT","Error deleting the file");
 
                     }
+
+
 
                 }
 
