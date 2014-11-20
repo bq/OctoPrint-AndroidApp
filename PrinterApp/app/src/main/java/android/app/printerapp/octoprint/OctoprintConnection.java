@@ -300,7 +300,7 @@ public class OctoprintConnection {
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
 
-                        if (newColor!=null) p.setDisplayColor(convertColor(newColor));
+                        //if (newColor!=null) p.setDisplayColor(convertColor(newColor));
                     }
                 });
 
@@ -413,6 +413,13 @@ public class OctoprintConnection {
                                 intent.putExtra("printer", p.getId());
                                 context.sendBroadcast(intent);
 
+
+                            }
+
+                            if (response.getString("type").equals("SettingsUpdated")){
+
+
+                                OctoprintConnection.getSettings(p);
 
                             }
 
