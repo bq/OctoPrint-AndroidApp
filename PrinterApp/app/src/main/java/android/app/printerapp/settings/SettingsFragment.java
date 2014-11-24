@@ -26,14 +26,23 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * Class to manage the application and printer settings
+ */
 public class SettingsFragment extends Fragment {
 	
 	private SettingsListAdapter mAdapter;
-	
+    private SettingsHiddenAdapter mHiddenAdapter;
+
+    //Blacklist created by the new printers
+    private ArrayList<String> mBlackList;
+
 	public SettingsFragment(){}
 	
 	@Override
@@ -69,25 +78,22 @@ public class SettingsFragment extends Fragment {
 			
 			getNetworkSsid(rootView);
 			
-			//Populate list with linked printers
-			/*ArrayList<ModelPrinter> mTempList = new ArrayList<ModelPrinter>();
-			for (ModelPrinter p : DevicesListController.getList()){
-				
-				if (DatabaseController.checkExisting(p)){
-					
-					mTempList.add(p);
-					
-				}
-				
-			}*/
-			
-			
 			mAdapter = new SettingsListAdapter(getActivity(), R.layout.settings_row, DevicesListController.getList());
 			ListView l = (ListView) rootView.findViewById(R.id.lv_settings);
 			l.setAdapter(mAdapter);
-			
+
+            mBlackList = new ArrayList<String>();
+
+
+
+            mHiddenAdapter = new SettingsHiddenAdapter(getActivity(), R.layout.settings_row, mBlackList);
+            ListView lh = (ListView) rootView.findViewById(R.id.lv_hidden);
+            lh.setAdapter(mHiddenAdapter);
+
 			TextView tv = (TextView) rootView.findViewById(R.id.tv_version);
 			tv.setText(setBuildVersion());
+
+            notifyAdapter();
 			
 			
 			
@@ -160,6 +166,7 @@ public class SettingsFragment extends Fragment {
 		    	
 		    	//TODO Notify adapters elsewhere
 		    	mAdapter.notifyDataSetChanged();
+                mHiddenAdapter.notifyDataSetChanged();
 		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
 		    }
 		});
@@ -214,6 +221,21 @@ public class SettingsFragment extends Fragment {
 
     public void notifyAdapter(){
         mAdapter.notifyDataSetChanged();
+        loadBlacklist();
+        mHiddenAdapter.notifyDataSetChanged();
+    }
+
+    //Load/reload blacklist
+    public void loadBlacklist(){
+
+        //Update blacklist
+        mBlackList.clear();
+
+        for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Blacklist").entrySet()) {
+
+            mBlackList.add(entry.getKey());
+        }
+
     }
 
 

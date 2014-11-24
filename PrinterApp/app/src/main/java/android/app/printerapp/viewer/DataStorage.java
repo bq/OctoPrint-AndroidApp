@@ -1,10 +1,10 @@
 package android.app.printerapp.viewer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.printerapp.viewer.Geometry.Point;
 import android.opengl.Matrix;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataStorage {		
 	private List<Float> mVertexList = new ArrayList<Float>();
@@ -132,7 +132,7 @@ public class DataStorage {
 	
 	public void fillVertexArray () {
 		mVertexArray = new float [mVertexList.size()];
-		
+
 		centerSTL();
 	}
 	
@@ -150,11 +150,11 @@ public class DataStorage {
 		float distY = mMinY + (mMaxY - mMinY)/2;
 		float distZ = mMinZ;
 				
-		for (int i = 0; i < mVertexList.size(); i=i+3) {		
+		for (int i = 0; i < mVertexList.size(); i=i+3) {
 			mVertexArray[i] = mVertexList.get(i)   - distX;
 			mVertexArray[i+1] = mVertexList.get(i+1) - distY;
 			mVertexArray[i+2] = mVertexList.get(i+2) - distZ;		
-		}	
+		}
 		
 		//Adjust max, min
 		mMinX = mMinX - distX;

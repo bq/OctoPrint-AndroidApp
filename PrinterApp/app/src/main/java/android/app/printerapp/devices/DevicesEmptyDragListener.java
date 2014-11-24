@@ -56,8 +56,19 @@ public class DevicesEmptyDragListener implements OnDragListener{
             if (tag.equals("printer")){
 
 
+                int id = Integer.parseInt(item.getText().toString());
                 //Find a printer from it's name
-                ModelPrinter p = DevicesListController.getPrinter(Integer.parseInt(item.getText().toString()));
+                ModelPrinter p = null;
+
+                if (id>=0){
+
+                   p = DevicesListController.getPrinter(id);
+
+                } else {
+
+                   p = DevicesListController.getPrinterByPosition(-(id + 1));
+
+                }
 
                 if (p!=null){
                     //update position

@@ -21,7 +21,6 @@
         android:layout_weight="0.83"
         android:gravity="center_vertical"
         android:padding="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FF000000" />
 
     <ImageButton
