@@ -479,11 +479,11 @@ public class SidePanelHandler {
 
             minimalLayerTime.setText(data.getString("cool_min_layer_time"));
 
-            if (data.getBoolean("retraction_enable")){
+            if (data.has("retraction_enable"))
+            if (data.getString("retraction_enable").equals("true")){
                 enableRetraction.setChecked(true);
                 Log.i("OUT", "Checked true");
-            }
-            else {
+            }else {
                 enableRetraction.setChecked(false);
                 Log.i("OUT","Checked false" );
             }

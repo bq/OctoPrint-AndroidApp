@@ -308,23 +308,34 @@ import it.sephiroth.android.library.widget.HListView;
      */
     public void addElement(final ModelPrinter m) {
 
-        getActivity().runOnUiThread(new Runnable() {
+        //Don't add element if it's blacklisted
+        if (!DatabaseController.isPreference("Blacklist", m.getName() + " " + m.getAddress())){
 
-            @Override
-            public void run() {
 
-                if (!DevicesListController.checkExisting(m.getAddress())) {
+            getActivity().runOnUiThread(new Runnable() {
 
-                    DevicesListController.addToList(m);
+                @Override
+                public void run() {
 
-                    //TODO Change linked switch
-                    m.setNotLinked();
-                    notifyAdapter();
+                    if (!DevicesListController.checkExisting(m.getAddress())) {
+
+                        DevicesListController.addToList(m);
+
+                        //TODO Change linked switch
+                        m.setNotLinked();
+                        notifyAdapter();
+
+                    }
 
                 }
+            });
+        } else {
 
-            }
-        });
+            Log.i("OUT","Blacklisted " + m.getName());
+
+        }
+
+
 
     }
 
@@ -470,12 +481,25 @@ import it.sephiroth.android.library.widget.HListView;
                     if (mp.getPosition() == arg2) m = mp;
                 }
 
-                //Log.i("DEVICES","Dude im touching " + m.getDisplayName());
+                Log.i("DEVICES","Dude im touching " + m.getDisplayName());
 
                 if (m != null) {
 
                     ClipData data = null;
-                    data = ClipData.newPlainText("printer", "" + m.getId());
+
+                    if ((m.getStatus() == StateUtils.STATE_ADHOC) || (m.getStatus() == StateUtils.STATE_NEW)){
+
+                        //Calculate a negative number to differentiate between position search and id search
+                        //Must be always < 0 since it's a valid position
+                        data = ClipData.newPlainText("printer", "" + (((-1) * m.getPosition()) - 1));
+
+                    }else {
+                        data = ClipData.newPlainText("printer", "" + m.getId());
+
+                    }
+
+
+
                     DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(arg1);
                     arg1.startDrag(data, shadowBuilder, arg1, 0);
 
@@ -567,13 +591,35 @@ import it.sephiroth.android.library.widget.HListView;
 
                             ClipData.Item item = event.getClipData().getItemAt(0);
 
+                            int id = Integer.parseInt(item.getText().toString());
                             //Find a printer from it's name
-                            ModelPrinter p = DevicesListController.getPrinter(Integer.parseInt(item.getText().toString()));
+                            ModelPrinter p = null;
 
+                            if (id>=0){
+
+                                p = DevicesListController.getPrinter(id);
+
+                            } else {
+
+                                p = DevicesListController.getPrinterByPosition(-(id + 1));
+
+                            }
                             if (p!=null){
 
-                                p.setPosition(-1);
-                                Toast.makeText(getActivity(),"Hiding " + p.getDisplayName(), Toast.LENGTH_SHORT).show();
+                                if ((p.getStatus() == StateUtils.STATE_ADHOC) || (p.getStatus() == StateUtils.STATE_NEW)){
+
+                                    DatabaseController.handlePreference("Blacklist",p.getName() + " " + p.getAddress(),null,true);
+                                    DevicesListController.removeElement(p.getPosition());
+
+
+                                } else {
+
+                                     p.setPosition(-1);
+
+                                }
+
+                                Toast.makeText(getActivity(),getString(R.string.devices_toast_hide) + " " + p.getDisplayName(), Toast.LENGTH_SHORT).show();
+
 
                                 notifyAdapter();
 

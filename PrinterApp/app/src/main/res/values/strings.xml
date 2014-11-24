@@ -73,6 +73,7 @@
     <string name="devices_toast_no_gcode">No .gcode found</string>
     <string name="devices_toast_upload_1">Uploaded&#8230;</string>
     <string name="devices_toast_upload_2">Failure while uploading&#8230;</string>
+    <string name="devices_toast_hide">Hiding</string>
     <string name="storage_toast_corrupted">File is corrupted</string>
     <string name="viewer_toast_not_available">This view is not available.</string>
     <string name="viewer_toast_not_available_2">This view is not available. Open a file first</string>
@@ -140,7 +141,8 @@
     <string name="viewer_multiply_error">No more models can be added to the plate</string>
     
     <string name="settings_network">Default network</string>
-    <string name="settings_printers">Linked Witbox/Witclon connections</string>
+    <string name="settings_printers">Linked Witbox</string>
+    <string name="settings_hidden">Hidden elements</string>
     <string name="settings_add_title">Add new printer</string>
     <string name="settings_edit_name">Set printer new name</string>
     <string name="settings_default_name">New printer</string>

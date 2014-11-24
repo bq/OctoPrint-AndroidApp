@@ -58,19 +58,37 @@ public class DevicesListController {
 		return null;
 	}*/
 
-    //Return a specific printer
+    //Return a specific printer by id
     public static ModelPrinter getPrinter(long id) {
 
+        //If it's a linked printer, retrieve id
         for (ModelPrinter p : mList){
 
-            if (p.getId()==id){
+            if (DatabaseController.checkExisting(p)){
+
+                if (p.getId()==id){
+                    return p;
+                }
+            }
+
+        }
+
+        return null;
+    }
+
+    //Return a specific printer by position
+    public static ModelPrinter getPrinterByPosition(int pos) {
+        //Else just retrieve position since it's a new printer
+        for (ModelPrinter p : mList){
+
+            if (p.getPosition()==pos){
                 return p;
             }
         }
 
         return null;
     }
-	
+
 	//Load device list from the Database
 	public static void loadList(final Context context){
 		

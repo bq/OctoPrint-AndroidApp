@@ -499,17 +499,23 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
 			
-        //mSceneAngleX = -40f;
+        mSceneAngleX = -40f;
         
         if (mDataList.size()>0)
 			if (isStl()) {
+
 				//First, reset the stl object list
 				mStlObjectList.clear();
 	
 				//Add the new ones.
 				for (int i=0; i<mDataList.size(); i++) {
-					mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
-				}
+					if (mDataList.get(i).getVertexArray()!=null) {
+
+                        Log.i("VERTEX", "adding");
+                        mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
+                    }
+				    else Log.i("VERTEX","ONE NULL " + i);
+                }
 				
 			} else if (mDataList.size()>0) mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
 		
