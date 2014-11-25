@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ import java.util.List;
 
 public class StlFile {
 		
-	private static final String TAG = "STLFile";
+	private static final String TAG = "gcode";
 	
 	private static File mFile;
 
@@ -226,6 +227,9 @@ public class StlFile {
 			int maxLines=0;
 			StringBuilder allLines = new StringBuilder ("");
 			BufferedReader countReader = new BufferedReader(new FileReader(file));
+
+            float milis = SystemClock.currentThreadTimeMillis();
+
 			while ((line = countReader.readLine()) != null && mContinueThread) {
 				if (line.trim().startsWith("vertex ")) {
 					line = line.replaceFirst("vertex ", "").trim();
@@ -234,6 +238,8 @@ public class StlFile {
 					if (maxLines%1000==0 && mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 				}
 			}
+
+            Log.i(TAG,"STL [Text] Read in: " + (SystemClock.currentThreadTimeMillis() - milis));
 				
 			if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setMax(maxLines);
 			
@@ -246,6 +252,8 @@ public class StlFile {
 			int secondVertexIndex = 0;
 			int thirdVertexIndex = 0;
 			int initialVertexIndex = -1;
+
+            float milis2 = SystemClock.currentThreadTimeMillis();
 
 			while (lines < maxLines && mContinueThread) {
 				firstVertexIndex =  allLines.indexOf("\n", thirdVertexIndex+1);
@@ -262,6 +270,8 @@ public class StlFile {
 					if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setProgress(lines);
 				}
 			}
+
+            Log.i(TAG,"STL [Text] Processed in: " + (SystemClock.currentThreadTimeMillis() - milis2));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -315,6 +325,9 @@ public class StlFile {
 		int vectorSize = getIntWithLittleEndian(stlBytes, 80);
 
             if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setMax(vectorSize);
+
+        float milis = SystemClock.currentThreadTimeMillis();
+
             for (int i = 0; i < vectorSize; i++) {
                 if(!mContinueThread) break;
 
@@ -360,7 +373,7 @@ public class StlFile {
                 if (i % (vectorSize / 10) == 0) {
                     if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setProgress(i);
                 }
-            }
+            } Log.i(TAG,"STL [BINARY] Read & Processed in: " + (SystemClock.currentThreadTimeMillis() - milis));
 
 
 				

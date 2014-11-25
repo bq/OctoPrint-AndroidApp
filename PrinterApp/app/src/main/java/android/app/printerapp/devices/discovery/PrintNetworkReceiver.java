@@ -75,7 +75,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 			 if (activeNetwork!=null){
 				 
 				 Log.i("NETWORK","Network connectivity change " + activeNetwork.getState());
-				 mController.dismissNetworkDialog();	
+				 mController.dismissNetworkDialog();
 				 
 			 }
 		}
@@ -99,7 +99,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			Log.i("Network","New printer found! " + s.SSID);
 	        			//unregister();
 	        			
-	        			ModelPrinter m = new ModelPrinter(s.SSID,"/octopi-dev.local",DevicesListController.searchAvailablePosition());
+	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1",DevicesListController.searchAvailablePosition());
 
 
                         mController.checkNetworkId(s.SSID,false);

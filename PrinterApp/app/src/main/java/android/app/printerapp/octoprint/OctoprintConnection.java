@@ -201,7 +201,7 @@ public class OctoprintConnection {
                     } else {
 
                         p.setPort(current.getString("port"));
-                        Log.i("OUT","Printer already connected to " + p.getPort());
+                        Log.i("Connection","Printer already connected to " + p.getPort());
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -211,8 +211,10 @@ public class OctoprintConnection {
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
-				Log.i("OUT","Failure while connecting " + responseString);
+				Log.i("Connection","Failure while connecting " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
+
+                OctoprintAuthentication.getAuth(context, p);
 			}
 			
 		});
@@ -254,12 +256,14 @@ public class OctoprintConnection {
                 try {
                     JSONObject appearance = response.getJSONObject("appearance");
 
+                    Log.i("Connection",appearance.toString());
+
                     String newName = appearance.getString("name");
                     if(!newName.equals("")) {
 
                         p.setDisplayName(newName);
                         DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, p.getId(), newName);
-                    }
+                        }
                     p.setDisplayColor(convertColor(appearance.getString("color")));
 
 
@@ -269,6 +273,18 @@ public class OctoprintConnection {
 
 
 
+            }
+
+            @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Log.i("Connection","Settings failure: " + responseString);
             }
         });
 
@@ -307,6 +323,13 @@ public class OctoprintConnection {
 
                         //if (newColor!=null) p.setDisplayColor(convertColor(newColor));
                     }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+
+                        Log.i("Connection","Settings failure: " + responseString);
+                    }
                 });
 
     }
@@ -339,14 +362,11 @@ public class OctoprintConnection {
 		         public void onOpen() {
 
 
-		            Log.i("SOCK", "Status: Connected to " + wsuri);
-                    getConnection(context,p,false);
 
-                     //Get a new set of files
-                    OctoprintFiles.getFiles(p);
+                     //TODO unify this method
+		            Log.i("Connection", "Status: Connected to " + wsuri);
+                    doConnection(context,p);
 
-                     //Get a new set of profiles
-                     OctoprintSlicing.retrieveProfiles(context,p);
 
 
 		         }
@@ -515,6 +535,23 @@ public class OctoprintConnection {
 		   }
 
 	}
+
+    //TODO
+    //Method to invoke connection handling
+    public static void doConnection(Context context, ModelPrinter p){
+
+        getConnection(context,p,false);
+
+        //Get printer settings
+        OctoprintConnection.getSettings(p);
+
+        //Get a new set of files
+        OctoprintFiles.getFiles(p);
+
+        //Get a new set of profiles
+        OctoprintSlicing.retrieveProfiles(context,p);
+
+    }
 
     public static int createStatus(JSONObject flags){
 		

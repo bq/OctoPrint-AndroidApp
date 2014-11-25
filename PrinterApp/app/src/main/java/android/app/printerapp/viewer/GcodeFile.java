@@ -1,19 +1,20 @@
 package android.app.printerapp.viewer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.app.printerapp.R;
+import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
-import android.app.printerapp.R;
-import android.app.printerapp.devices.printview.PrintViewFragment;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 public class GcodeFile  {
 	private static final String TAG = "gcode";
@@ -56,11 +57,17 @@ public class GcodeFile  {
 				try {
 					int maxLines=0;
 					BufferedReader countReader = new BufferedReader(new FileReader(mFile));
+
+                    float milis = SystemClock.currentThreadTimeMillis();
+
 					while ((line = countReader.readLine()) != null && mContinueThread) {
 						allLines.append(line + "\n");
 						maxLines++;
+                       // Log.i("gcode","HI! " + maxLines);
 					}
 					countReader.close();
+
+                    Log.i(TAG,"GCODE Read in: " + (SystemClock.currentThreadTimeMillis() - milis));
 					
 
 					if(mMode== ViewerMainFragment.PRINT_PREVIEW) mData.setMaxLinesFile(maxLines);
@@ -124,8 +131,12 @@ public class GcodeFile  {
 		int type = -1;
 		int length = 0;
 		int layer = 0;
-		
-		while (lines<maxLines && mContinueThread) {	
+
+        float milis = SystemClock.currentThreadTimeMillis();
+
+		while (lines<maxLines && mContinueThread) {
+
+            //Log.i("gcode","Processing!! " + lines);
 			index = allLines.indexOf("\n", lastIndex);
 			line = allLines.substring(lastIndex, index);
 
@@ -210,7 +221,9 @@ public class GcodeFile  {
 			 lastIndex = index+1;
 
 			 if (mMode!= ViewerMainFragment.DO_SNAPSHOT && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);
-		}		
+		}
+
+        Log.i(TAG,"GCODE Processed in: " + (SystemClock.currentThreadTimeMillis() - milis));
 	}
 	
     private static Handler mHandler = new Handler() {

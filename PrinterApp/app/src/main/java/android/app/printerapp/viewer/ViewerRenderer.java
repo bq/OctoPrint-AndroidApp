@@ -517,7 +517,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 				    else Log.i("VERTEX","ONE NULL " + i);
                 }
 				
-			} else if (mDataList.size()>0) mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
+			} else if (mDataList.size()>0) {
+
+                //TODO Random crash
+                try {
+                    mGcodeObject = new GcodeObject (mDataList.get(0), mContext);
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+
+            }
 		
 		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true);
 
