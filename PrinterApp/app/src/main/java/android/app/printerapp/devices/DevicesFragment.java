@@ -376,31 +376,6 @@ import it.sephiroth.android.library.widget.HListView;
      */
 
 
-    //TODO: Click listeners should be moved to another class
-    public OnItemClickListener listClickListener() {
-
-        return new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-
-                //avoid header
-                if (arg2 > 0) {
-                    ModelPrinter m = DevicesListController.getList().get(arg2 - 1);
-                    if (m.getStatus() == StateUtils.STATE_NEW) {
-                        codeDialog(m);
-                    } else if (m.getStatus() == StateUtils.STATE_ADHOC) {
-                        mNetworkManager.setupNetwork(m.getName(), arg2);
-                    }
-                }
-
-
-            }
-        };
-
-    }
-
     //onclick listener will open the action mode
     public OnItemClickListener gridClickListener() {
 
@@ -426,7 +401,7 @@ import it.sephiroth.android.library.widget.HListView;
                     if (m.getStatus() == StateUtils.STATE_NEW) {
                         codeDialog(m);
                     } else if (m.getStatus() == StateUtils.STATE_ADHOC) {
-                        mNetworkManager.setupNetwork(m.getName(), arg2);
+                        mNetworkManager.setupNetwork(m, arg2);
                     } else {
                         //show custom dialog
                         if (m.getStatus() == StateUtils.STATE_ERROR) {
@@ -480,8 +455,6 @@ import it.sephiroth.android.library.widget.HListView;
                 for (ModelPrinter mp : DevicesListController.getList()) {
                     if (mp.getPosition() == arg2) m = mp;
                 }
-
-                Log.i("DEVICES","Dude im touching " + m.getDisplayName());
 
                 if (m != null) {
 

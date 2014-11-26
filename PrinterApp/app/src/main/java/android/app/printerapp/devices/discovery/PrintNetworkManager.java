@@ -59,35 +59,33 @@ public class PrintNetworkManager {
 		
 		private PrintNetworkReceiver mReceiver;
 		
-		//TODO TENTATIVE CHANGES!!!!!!1111!!ONEONE
-		
 		//position for the current printer being selected
 		private int mPosition = -1;
+        private ModelPrinter mPrinter = null;
 				
 		
 		//Constructor
 		public PrintNetworkManager(DevicesFragment context){
 			
 			mController = context;
+
 			//Create a new Network Receiver
 			mReceiver = new PrintNetworkReceiver(this);
-			
-			
-			
+
 		}
 		
 		/**
 		 * Method to connect to the AP
-		 * @param ssid
 		 * @param position
 		 */
-		public void setupNetwork(final String ssid, int position){
+		public void setupNetwork(ModelPrinter p, int position){
 			
 			//Get connection parameters
 			WifiConfiguration conf = new WifiConfiguration();
-			conf.SSID = "\"" + ssid + "\"";  
+			conf.SSID = "\"" + p.getName() + "\"";
 			conf.preSharedKey = "\""+ PASS +"\"";
-			
+
+            mPrinter = p;
 			mPosition = position;
 
 			//Add the new network
@@ -102,26 +100,7 @@ public class PrintNetworkManager {
 	         mManager.disconnect();
 	         mManager.enableNetwork(nId, true);
 	         mManager.reconnect();
-	         
-	         /****************************NOPENOPENOPENOPENOPE*****************************/
-	         
-	        /*
-	         Log.i("OUT","UNREGISTER COJONES");
-	     	mReceiver.unregister();
-	       //Remove ad-hoc network
-	     	 Log.i("OUT","REMOVE " + mPosition + " COJONES");
-	     	DevicesListController.getList().remove(mPosition);
-			mPosition = -1;
-			ItemListActivity.notifyAdapters();
-			
-			 Log.i("OUT","CLEAN COJONES");
-				clearNetwork("OctoPi-Dev");
 
-				*/
-				
-			/******************************************************************************/
-	         
-	         //TODO hardcoded dialog
 	         createNetworkDialog(getContext().getString(R.string.devices_discovery_connect));
     
 		}
@@ -283,6 +262,7 @@ public class PrintNetworkManager {
                                                     //Remove ad-hoc network
                                                     clearNetwork("OctoPi-Dev");
 													mPosition = -1;
+                                                    mPrinter = null;
 
                                                     mController.notifyAdapter();
                                                    // mReceiver.register();
@@ -348,9 +328,9 @@ public class PrintNetworkManager {
                         //TODO HARDCODED ACCESS POINT
 						String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
 						Log.i("OUT","Numerito_ " +hostaddr);
-					
-					
-					OctoprintNetwork.getNetworkList(this, "/" + hostaddr);
+
+                        if (mPrinter!=null)OctoprintNetwork.getNetworkList(this, mPrinter);
+
 					
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
@@ -360,7 +340,7 @@ public class PrintNetworkManager {
 				
 				
 			}
-						
+
 			/**
 			 * This method will clear the existing Networks with the same name as the new inserted
 			 * @param ssid

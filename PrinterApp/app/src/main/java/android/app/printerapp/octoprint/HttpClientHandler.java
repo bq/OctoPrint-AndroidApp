@@ -1,11 +1,15 @@
 package android.app.printerapp.octoprint;
 
-import org.apache.http.HttpEntity;
-
 import android.content.Context;
 import android.util.Log;
 
-import com.loopj.android.http.*;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.ResponseHandlerInterface;
+import com.loopj.android.http.SyncHttpClient;
+
+import org.apache.http.HttpEntity;
 
 /**
  * Static class to handle Http requests with the old API or the new one (with API_KEY)
@@ -18,11 +22,17 @@ public class HttpClientHandler {
   private static final String BASE_URL = "http:/";
 
   private static AsyncHttpClient client = new AsyncHttpClient();
+  private static SyncHttpClient sync_client = new SyncHttpClient();
   
   //GET method for both APIs
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
 	  client.get(getAbsoluteUrl(url), params, responseHandler);
 
+  }
+
+    //GET method for synchronous calls
+  public static void sync_get(String url, RequestParams params, ResponseHandlerInterface responseHandler){
+        sync_client.get(getAbsoluteUrl(url), params, responseHandler);
   }
   
   //POST method for multipart forms
@@ -34,6 +44,11 @@ public class HttpClientHandler {
   public static void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
 	  client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
+
+    //POST method for synchronous calls
+    public static void sync_post(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
+        sync_client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+    }
   
   //PUT method for the new API
   public static void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
@@ -47,9 +62,14 @@ public class HttpClientHandler {
   
 
   private static String getAbsoluteUrl(String relativeUrl) {
-	  client.addHeader("X-Api-Key", HttpUtils.API_KEY);
-	  Log.i("OUT","Http resuqekjlraj " +BASE_URL + relativeUrl);
+	  if (!relativeUrl.contains(HttpUtils.URL_AUTHENTICATION)){
+          client.addHeader("X-Api-Key", HttpUtils.getApiKey(relativeUrl));
+      }
+
+      Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));
       return BASE_URL + relativeUrl;
   }
+
+
 
 }

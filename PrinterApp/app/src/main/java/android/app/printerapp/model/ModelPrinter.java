@@ -2,7 +2,6 @@ package android.app.printerapp.model;
 
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.camera.CameraHandler;
-import android.app.printerapp.devices.camera.MjpegView;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
 import android.app.printerapp.octoprint.OctoprintConnection;
@@ -72,7 +71,7 @@ public class ModelPrinter {
 		else mPosition = position;
 		
 		Log.i("OUT","Creating service @"+position);
-			
+
 	}
 	
 	/*********
@@ -110,12 +109,7 @@ public class ModelPrinter {
 	public ArrayList<File> getFiles(){
 		return mFileList;
 	}
-	
-	public MjpegView getVideo(){
-			
-		return mCam.getView();
-	}
-	
+
 	public int getPosition(){
 		return mPosition;
 	}
@@ -139,10 +133,6 @@ public class ModelPrinter {
 
     public String getPort() { return mPort; }
 
-    public boolean isHidden() {
-        return mHidden;
-    }
-	
 	/**********
 	 *  Sets
 	 **********/
@@ -184,7 +174,6 @@ public class ModelPrinter {
 		//Initialize web socket connection
 		//OctoprintConnection.getConnection(context, this, false);
 		OctoprintConnection.openSocket(this, context);
-        OctoprintConnection.getSettings(this);
 	}
 	
 	public void setConnecting(){
@@ -236,11 +225,5 @@ public class ModelPrinter {
     public void setId(long id) { mId = id; }
 
     public void setPort(String port) { mPort = port; }
-
-    public void setHidden(boolean hidden){
-
-        mHidden = hidden;
-
-    }
 
 }
