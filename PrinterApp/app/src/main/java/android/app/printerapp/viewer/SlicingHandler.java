@@ -2,8 +2,10 @@ package android.app.printerapp.viewer;
 
 import android.app.Activity;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.util.Log;
@@ -22,7 +24,7 @@ import java.util.TimerTask;
  */
 public class SlicingHandler {
 
-    private static final int DELAY = 5000; //timer delay just in case
+    private static final int DELAY = 1000; //timer delay just in case
 
     //Data array to send to the server
     private byte[] mData = null;
@@ -87,9 +89,13 @@ public class SlicingHandler {
 
         File tempFile = null;
 
+
+
         try {
 
             File tempPath =  new File(LibraryController.getParentFolder().getAbsolutePath() + "/temp");
+
+            Log.i("Slicer","Creating temporary file " + tempPath);
 
             tempPath.mkdir();
 
@@ -98,15 +104,28 @@ public class SlicingHandler {
 
             //delete previous file
             try{
+
+                OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference("Slicing", "Last"), "/local/");
+
+
                 File lastFile = new File(mLastReference);
                 lastFile.delete();
-            } catch (NullPointerException e){
+
+                Log.i("Slicer","Deleted " + mLastReference);
+            }
+            catch (NullPointerException e){
 
                 e.printStackTrace();
             }
 
 
             mLastReference = tempFile.getAbsolutePath();
+
+            Log.i("Slicer","Setting new PREFERENCE [Last]: " + tempFile.getName());
+
+            DatabaseController.handlePreference("Slicing", "Last", tempFile.getName(), true);
+
+            Log.i("Slicer","New reference is " + mLastReference);
 
 
             FileOutputStream fos = new FileOutputStream(tempFile);
@@ -129,6 +148,8 @@ public class SlicingHandler {
 
         //Reset timer in case it was on progress
         if (isRunning) {
+
+            Log.i("Slicer","Cancelling previous timer");
             mTimer.cancel();
             mTimer.purge();
             isRunning = false;
@@ -163,14 +184,21 @@ public class SlicingHandler {
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("OUT","TASKEANDO" );
+                    Log.i("Slicer","Starting task" );
 
                     if (mPrinter!=null){
 
                         if (mPrinter.getStatus()== StateUtils.STATE_OPERATIONAL){
+
+                            Log.i("Slicer","Sending slice command");
                             OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
+
+                            Log.i("Slicer","Showing progress bar");
                             ViewerMainFragment.showProgressBar(0);
+
                         } else {
+
+                            Log.i("Slicer","No printer available");
 
                             Toast.makeText(mActivity, R.string.viewer_printer_unavailable,Toast.LENGTH_LONG).show();
 

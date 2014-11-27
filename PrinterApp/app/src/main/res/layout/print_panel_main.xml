@@ -90,7 +90,7 @@
         android:background="@color/almost_white"
         android:orientation="horizontal"
         android:padding="@dimen/content_padding_small"
-        android:weightSum="5">
+        android:weightSum="4">
 
         <!-- Left panel. Contains options to apply on the model in the right panel -->
         <RelativeLayout
@@ -98,7 +98,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|right"
             android:layout_marginRight="@dimen/content_margin_small"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="right"
             android:orientation="vertical"
             android:weightSum="4">
@@ -134,7 +134,7 @@
                     android:id="@+id/advanced_options_expandable_panel"
                     layout="@layout/print_panel_advanced_settings_card_view"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp" />
+                    android:layout_height="match_parent" />
             </LinearLayout>
 
             <!-- Print button -->

@@ -124,7 +124,7 @@ android:orientation="vertical">
             <com.material.widget.PaperButton
                 android:id="@+id/printview_pause_button"
                 style="@style/MaterialDesignButton.Flat"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 widget:paper_text="@string/printview_start_button"
                 widget:paper_text_color="@android:color/holo_blue_dark"/>
 

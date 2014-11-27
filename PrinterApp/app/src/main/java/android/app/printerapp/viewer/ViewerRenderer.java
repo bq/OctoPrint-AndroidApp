@@ -493,7 +493,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		// Set the background frame color
 		GLES20.glClearColor( 0.9f, 0.9f, 0.9f, 1.0f);
-		
+
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		
@@ -702,8 +702,18 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	    				mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace, modelMatrix);
 	    			}
 	    		}
-	        else 
-	        	mGcodeObject.draw(mMVPMatrix); 
+	        else {
+
+                //TODO Random crash
+                try{
+
+
+                    if (mGcodeObject!=null) mGcodeObject.draw(mMVPMatrix);
+                } catch (NullPointerException e){
+
+                    e.printStackTrace();
+                }
+            }
         }
         
 

@@ -233,6 +233,9 @@ public class OctoprintSlicing {
             e.printStackTrace();
         }
 
+
+        Log.i("Slicer","Uploading " + file.getAbsolutePath());
+
         HttpClientHandler.post(url + HttpUtils.URL_FILES + "/local",
                 params, new JsonHttpResponseHandler(){
 
@@ -248,7 +251,7 @@ public class OctoprintSlicing {
                         super.onSuccess(statusCode, headers, response);
 
 
-                        Log.i("SUCCESS", response.toString());
+                        Log.i("Slicer","Upload successful");
 
                         JSONObject object = extras ;
                         StringEntity entity = null;
@@ -270,6 +273,11 @@ public class OctoprintSlicing {
                         }
 
 
+
+                        Log.i("Slicer","Send slice command for " + file.getName());
+
+                        if (DatabaseController.getPreference("Slicing","Last")!=null)
+                        if ((DatabaseController.getPreference("Slicing","Last")).equals(file.getName()))
                         HttpClientHandler.post(context,url + HttpUtils.URL_FILES + "/local/" + file.getName(),
                                 entity, "application/json", new JsonHttpResponseHandler(){
 
@@ -284,16 +292,20 @@ public class OctoprintSlicing {
                                         super.onSuccess(statusCode, headers, response);
 
 
-                                        Log.i("OUT","Slicing @" + response.toString());
 
-                                        if (DatabaseController.isPreference("Slicing","Last")){
+                                        Log.i("Slicer","Slicing started");
 
+                                        /*if (DatabaseController.isPreference("Slicing","Last")){
+
+                                            Log.i("Slicer","Deleting original STL");
                                             Log.i("OUT","We have a preference already yo! deleting yo! " + DatabaseController.getPreference("Slicing","Last"));
                                             OctoprintFiles.deleteFile(context,url,DatabaseController.getPreference("Slicing","Last"), "/local/");
 
-                                        }
+                                        }*/
 
-                                        DatabaseController.handlePreference("Slicing","Last", file.getName(), true);
+
+
+                                        //DatabaseController.handlePreference("Slicing","Last", file.getName(), true);
 
                                     }
 

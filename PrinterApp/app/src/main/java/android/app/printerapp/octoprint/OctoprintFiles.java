@@ -54,6 +54,8 @@ public class OctoprintFiles {
 				    	
 				    //Retrieve every file	
 				     JSONObject object = json.getJSONObject(i);
+
+                    //TODO check pending files
 				     
 				     
 				     File m;
@@ -252,7 +254,7 @@ public class OctoprintFiles {
 				super.onSuccess(statusCode, headers, response);
 				
 				
-				Log.i("SUCCESS", "DELETED FROM THE SERVERCITO: " + response.toString());
+				Log.i("Slicer", "DELETED FROM THE SERVERCITO: " + response.toString());
 
 			}
 			
@@ -282,6 +284,8 @@ public class OctoprintFiles {
 	 * @param filename
 	 */
 	public static void downloadFile(Context context, String url, String path, String filename){
+
+        Log.i("Slicer","Downloading " + filename);
 		
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http:/" + url + filename));
 

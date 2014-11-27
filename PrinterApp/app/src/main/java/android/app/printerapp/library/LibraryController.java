@@ -5,6 +5,7 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.StateUtils;
 import android.os.Environment;
 
 import java.io.File;
@@ -191,9 +192,10 @@ public class LibraryController {
 			if ((path.equals("printer"))){
 				
 				for (ModelPrinter p : DevicesListController.getList()){
-					
-					//we add a printer/ parent to determine inside a printer
-					addToList(new File("printer/" + p.getId()));
+
+                    if ((p.getStatus()!= StateUtils.STATE_ADHOC)&&(p.getStatus()!=StateUtils.STATE_NEW))
+                        //we add a printer/ parent to determine inside a printer
+                        addToList(new File("printer/" + p.getId()));
 				}
 								
 			} else {

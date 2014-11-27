@@ -5,14 +5,16 @@ import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.printerapp.R;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
-import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -30,8 +32,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -198,7 +198,7 @@ public class ViewerMainFragment extends Fragment {
                 mSettingsPanelMinHeight = expandablePanel.getMeasuredHeight();
             }
         });
-        final CheckBox expandPanelButton = (CheckBox) mRootView.findViewById(R.id.expand_button_checkbox);
+        /*final CheckBox expandPanelButton = (CheckBox) mRootView.findViewById(R.id.expand_button_checkbox);
         expandPanelButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -206,7 +206,7 @@ public class ViewerMainFragment extends Fragment {
                 if (isChecked) ExpandCollapseAnimation.collapse(expandablePanel, mSettingsPanelMinHeight);
                 else ExpandCollapseAnimation.expand(expandablePanel);
             }
-        });
+        });*/
 
         //Set elements to handle the model
         mSeekBar = (SeekBar) mRootView.findViewById(R.id.barLayer);
@@ -518,8 +518,17 @@ public class ViewerMainFragment extends Fragment {
 
                         File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
                         if (tempFile.exists()) {
-                            //Open desired file
-                            openFile(tempFile.getAbsolutePath());
+
+                            //It's the last file
+                            if (DatabaseController.getPreference("Slicing","Last")==null){
+
+                                //Open desired file
+                                openFile(tempFile.getAbsolutePath());
+
+                            } else {
+                                Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+                            }
+
                         } else {
 
                             /*if (mFile != null) {
@@ -1015,10 +1024,17 @@ public class ViewerMainFragment extends Fragment {
 
             if (i==0) {
                 pb.setIndeterminate(true);
-            } else {
 
-                pb.setProgress(i);
+            } else if (i==100) {
+
+                pb.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
                 pb.setIndeterminate(false);
+
+            }else {
+
+                    pb.setProgress(i);
+                    pb.setIndeterminate(false);
+
 
             }
 
@@ -1041,7 +1057,20 @@ public class ViewerMainFragment extends Fragment {
      */
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
-            showProgressBar(-1);
+
+           if (DatabaseController.getPreference("Slicing","Last")!=null)
+           if ((DatabaseController.getPreference("Slicing","Last")).equals("temp.gco")){
+
+               Log.i("Slicer","Removing PREFERENCE [Last]");
+               DatabaseController.handlePreference("Slicing", "Last", null, false);
+
+               showProgressBar(-1);
+           } else {
+
+               Log.i("Slicer", "That ain't my file");
+           }
+
+
         }
     };
 
@@ -1076,6 +1105,8 @@ public class ViewerMainFragment extends Fragment {
             }
 
         }
+
+        Log.i("Slicer", "Sending callback");
 
         if ((mSlicingHandler!=null)&&(mFile!=null)) {
 
