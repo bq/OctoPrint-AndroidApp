@@ -14,9 +14,11 @@ import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -592,92 +594,119 @@ public class SidePanelHandler {
     public void saveProfile(){
 
 
-        //Init UI elements
 
-        JSONObject profile = null;
+        AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
+        adb.setTitle(R.string.devices_setup_title);
 
-        //Parse the JSON element
-        try {
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View v = inflater.inflate(R.layout.setup_dialog, null, false);
 
-            //Profile info
-            profile = new JSONObject();
-
-            //profile.put("displayName", profileText.getText().toString());
-            profile.put("description", "Test profile created from App"); //TODO
-            //profile.put("key", profileText.getText().toString().replace(" ","_").toLowerCase());
+        final EditText et = (EditText) v.findViewById(R.id.et_setup);
+        et.setText("Custom");
 
 
-            //Data info
-            JSONObject data = new JSONObject();
-;
-            data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
-            data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
-            data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
+        //On insertion write the printer onto the database and start updating the socket
+        adb.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
 
-            data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
-            data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
-            data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
-            data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
-            data.put("retraction_enabled", enableRetraction.isChecked());
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-            data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
-            data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
-            data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
-            data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
-            data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+                //Init UI elements
 
-            data.put("cool_min_layer_time",getFloatValue( minimalLayerTime.getText().toString()));
-            data.put("fan_enabled", enableCoolingFan.isChecked());
-
-            profile.put("data",data);
+                JSONObject profile = null;
 
 
-            Log.i("OUT", profile.toString());
 
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-
-        } catch (NumberFormatException e){
-
-            //Check if there was an invalid numner
-            e.printStackTrace();
-            Toast.makeText(mActivity,e.getMessage(),Toast.LENGTH_LONG).show();
-            profile = null;
-
-        }
-
-        if (profile!=null){
-
-            //check if name already exists to avoid overwriting
-            for(JSONObject o : mPrinter.getProfiles()){
-
+                //Parse the JSON element
                 try {
-                    if (profile.get("displayName").equals(o.get("displayName"))){
+
+                    //Profile info
+                    profile = new JSONObject();
+
+                    profile.put("displayName", et.getText().toString());
+                    profile.put("description", "Test profile created from App"); //TODO
+                    profile.put("key", et.getText().toString().replace(" ","_").toLowerCase());
+
+                    //Data info
+                    JSONObject data = new JSONObject();
+
+                    data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
+                    data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
+                    data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
+
+                    data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
+                    data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
+                    data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
+                    data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
+                    data.put("retraction_enabled", enableRetraction.isChecked());
+
+                    data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
+                    data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
+                    data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
+                    data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
+                    data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+
+                    data.put("cool_min_layer_time",getFloatValue( minimalLayerTime.getText().toString()));
+                    data.put("fan_enabled", enableCoolingFan.isChecked());
+
+                    profile.put("data",data);
 
 
-                        //set error and focus
-                        //profileText.setError(mActivity.getString(R.string.viewer_button_save_error));
-                        //profileText.requestFocus();
-                        return;
+                    Log.i("OUT", profile.toString());
 
-                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+
+                } catch (NumberFormatException e){
+
+                    //Check if there was an invalid numner
+                    e.printStackTrace();
+                    Toast.makeText(mActivity,e.getMessage(),Toast.LENGTH_LONG).show();
+                    profile = null;
+
                 }
 
+                if (profile!=null){
+
+                    //check if name already exists to avoid overwriting
+                    for(JSONObject o : mPrinter.getProfiles()){
+
+                        try {
+                            if (profile.get("displayName").equals(o.get("displayName"))) {
+
+                                Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
+
+                                return;
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
+
+                }
+
+                //Send profile to server
+                OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);
+
+                Toast.makeText(mActivity, "Profile saved successfully", Toast.LENGTH_LONG).show();
+
+
             }
+        });
 
-            //Clear error and focus
-            //profileText.setError(null);
-            //profileText.clearFocus();
+        adb.setNegativeButton(R.string.cancel, null);
 
-            //Send profile to server
-            OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);
+        adb.setView(v);
 
-        }
-
-
+        adb.show();
 
     }
 
