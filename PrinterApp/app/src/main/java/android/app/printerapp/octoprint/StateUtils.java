@@ -20,4 +20,10 @@ public class StateUtils {
 	public static final int	STATE_ERROR = 9;
 	public static final int	STATE_CLOSED_WITH_ERROR = 10;
 	public static final int	STATE_TRANSFERING_FILE = 11;
+
+    public static final int SLICER_HIDE = -1;
+    public static final int SLICER_UPLOAD = 0;
+    public static final int SLICER_SLICE = 1;
+    public static final int SLICER_DOWNLOAD = 2;
+
 }

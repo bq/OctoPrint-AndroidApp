@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
+import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -1013,39 +1015,74 @@ public class ViewerMainFragment extends Fragment {
      * Static method to show the progress bar by sending an integer when receiving data from the socket
      * @param i either -1 to hide the progress bar, 0 to show an indefinite bar, or a normal integer
      */
-    public static void showProgressBar(int i) {
+    public static void showProgressBar(int status, int i) {
 
-        ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
 
-        if (i>=0){
+        if (mRootView!=null){
 
-            pb.bringToFront();
-            pb.setVisibility(View.VISIBLE);
+            LinearLayout ll = (LinearLayout) mRootView.findViewById(R.id.layout_progress_slice);
 
-            if (i==0) {
-                pb.setIndeterminate(true);
+            ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
+            TextView tv = (TextView) mRootView.findViewById(R.id.text_progress_slice);
 
-            } else if (i==100) {
+            ll.bringToFront();
+            ll.setVisibility(View.VISIBLE);
 
-                pb.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
-                pb.setIndeterminate(false);
+            switch (status){
 
-            }else {
+                case StateUtils.SLICER_HIDE:
 
-                    pb.setProgress(i);
-                    pb.setIndeterminate(false);
+                    ll.setVisibility(View.GONE);
+
+                    break;
+
+                case StateUtils.SLICER_UPLOAD:
+
+                    tv.setText("Uploading...");
+                    pb.setIndeterminate(true);
+
+
+                    break;
+
+                case StateUtils.SLICER_SLICE:
+
+                    tv.setText("Slicing...");
+
+                    if (i==0) {
+                        pb.setIndeterminate(true);
+
+                    } else if (i==100) {
+
+                        pb.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+                        pb.setIndeterminate(false);
+
+                    }else {
+
+                        pb.setProgress(i);
+                        pb.setIndeterminate(false);
+
+                    }
+
+                    mRootView.invalidate();
+
+                    break;
+
+                case StateUtils.SLICER_DOWNLOAD:
+
+                    tv.setText("Downloading...");
+                    pb.setIndeterminate(true);
+
+                    break;
+
+                default:
+
+                    break;
 
 
             }
 
-
-            mRootView.invalidate();
-            
-
-
-        } else {
-            pb.setVisibility(View.GONE);
         }
+
 
         Log.i("OUT", "Progress @" + i);
 
@@ -1064,7 +1101,7 @@ public class ViewerMainFragment extends Fragment {
                Log.i("Slicer","Removing PREFERENCE [Last]");
                DatabaseController.handlePreference("Slicing", "Last", null, false);
 
-               showProgressBar(-1);
+               showProgressBar(StateUtils.SLICER_HIDE,0);
            } else {
 
                Log.i("Slicer", "That ain't my file");
@@ -1095,28 +1132,48 @@ public class ViewerMainFragment extends Fragment {
     //TODO callback for a slicing request
     public static void slicingCallback(){
 
-        //Check if the file is not yet loaded
-        for (int i=0; i<mDataList.size(); i++){
+        Log.i("Slicer","Starting thread");
 
-            if (mDataList.get(i).getVertexArray()==null) {
+        SliceTask task = new SliceTask();
+        task.execute();
 
-                Log.i("OUT","HAHA!");
-                return;
-            }
 
-        }
-
-        Log.i("Slicer", "Sending callback");
-
-        if ((mSlicingHandler!=null)&&(mFile!=null)) {
-
-            if (LibraryController.hasExtension(0,mFile.getName())){
-                StlFile.saveModel(mDataList, null, mSlicingHandler);
-            }
-
-        }
-
+        Log.i("Slicer","Ending thread");
     }
+
+   static class SliceTask extends AsyncTask{
+
+
+       @Override
+       protected Object doInBackground(Object[] objects) {
+
+           final List<DataStorage> newList = new ArrayList<DataStorage>(mDataList);
+
+           //Code to update the UI
+           //Check if the file is not yet loaded
+           for (int i=0; i<newList.size(); i++){
+
+               if (newList.get(i).getVertexArray()==null) {
+
+                   Log.i("OUT","HAHA!");
+                   return null;
+               }
+
+           }
+
+           Log.i("Slicer", "Sending callback");
+
+           if ((mSlicingHandler!=null)&&(mFile!=null)) {
+
+               if (LibraryController.hasExtension(0,mFile.getName())){
+                   StlFile.saveModel(newList, null, mSlicingHandler);
+               }
+
+           }
+
+           return null;
+       }
+   }
 
 
 

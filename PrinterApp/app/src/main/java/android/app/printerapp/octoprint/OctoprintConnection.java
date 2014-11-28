@@ -464,7 +464,7 @@ public class OctoprintConnection {
 
                               JSONObject response = new JSONObject(payload).getJSONObject("slicingProgress");
 
-                              //TODO random crash
+                              //TODO random crash because not yet created
                               try{
                                   //Check if it's our file
                                   if (DatabaseController.getPreference("Slicing","Last").equals( response.getString("source_path"))){
@@ -475,7 +475,7 @@ public class OctoprintConnection {
 
 
                                       //TODO
-                                      ViewerMainFragment.showProgressBar(progress);
+                                      ViewerMainFragment.showProgressBar(StateUtils.SLICER_SLICE, progress);
                                   }
                               } catch (NullPointerException e){
 
@@ -546,7 +546,7 @@ public class OctoprintConnection {
         OctoprintConnection.getSettings(p);
 
         //Get a new set of files
-        OctoprintFiles.getFiles(p);
+        OctoprintFiles.getFiles(context, p);
 
         //Get a new set of profiles
         OctoprintSlicing.retrieveProfiles(context,p);
@@ -592,6 +592,8 @@ public class OctoprintConnection {
 
                 Log.i("Slicer","Changed PREFERENCE [Last]: " + payload.getString("gcode"));
                 DatabaseController.handlePreference("Slicing","Last",payload.getString("gcode"), true);
+
+                ViewerMainFragment.showProgressBar(StateUtils.SLICER_DOWNLOAD, 0);
 
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
                 LibraryController.getParentFolder() + "/temp/", payload.getString("gcode"));

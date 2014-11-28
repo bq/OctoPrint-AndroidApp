@@ -458,6 +458,7 @@ public class StlFile {
 			coordinates = data.getVertexArray();
 			
 		    for (int j=0; j<coordinates.length; j+=9) {
+
 		    	//Normal data. It is not necessary to store the info
 		    	bb.putFloat(0);
 		    	bb.putFloat(0);
@@ -482,7 +483,7 @@ public class StlFile {
 		    	bb.putShort((short)0); // end of triangle
 		    }
 		}
-		
+
 		bb.position(0);
 	    byte[] data = bb.array();
 

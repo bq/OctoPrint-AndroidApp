@@ -5,6 +5,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -143,7 +144,6 @@ public class OctoprintSlicing {
                 p.getProfiles().clear();
 
                 Iterator<String> keys = response.keys();
-
 
                 while(keys.hasNext()) {
 
@@ -292,20 +292,9 @@ public class OctoprintSlicing {
                                         super.onSuccess(statusCode, headers, response);
 
 
-
+                                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_SLICE, 0);
                                         Log.i("Slicer","Slicing started");
 
-                                        /*if (DatabaseController.isPreference("Slicing","Last")){
-
-                                            Log.i("Slicer","Deleting original STL");
-                                            Log.i("OUT","We have a preference already yo! deleting yo! " + DatabaseController.getPreference("Slicing","Last"));
-                                            OctoprintFiles.deleteFile(context,url,DatabaseController.getPreference("Slicing","Last"), "/local/");
-
-                                        }*/
-
-
-
-                                        //DatabaseController.handlePreference("Slicing","Last", file.getName(), true);
 
                                     }
 
@@ -317,11 +306,20 @@ public class OctoprintSlicing {
 
                                         super.onFailure(statusCode, headers, responseString, throwable);
                                         Log.i("OUT",responseString.toString());
+
+                                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
                                     }
                                 });
 
                     }
 
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+
+                        Log.i("OUT","FAILURESLICING");
+                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
+                    }
                 });
 
 

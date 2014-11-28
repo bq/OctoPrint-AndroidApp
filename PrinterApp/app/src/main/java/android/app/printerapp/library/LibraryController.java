@@ -48,6 +48,8 @@ public class LibraryController {
 	public static void retrieveFiles(File path, boolean recursive){
 			
 		File[] files = path.listFiles();
+
+        if (files !=null)
 		for (File file : files){
 			
 			//If folder

@@ -354,63 +354,74 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 			@Override
 			protected Void doInBackground(Void... params) {
-				DataStorage data = mDataList.get(mObjectPressed);
 
-				data.initMaxMin();
-				float [] coordinatesArray = data.getVertexArray();
-				float x,y,z;
-				
-				float [] vector = new float [4];
-				float [] result = new float [4];
-				float [] aux = new float [16];
-				
-				float[] rotationMatrix = data.getRotationMatrix();
-				
-				for (int i=0; i<coordinatesArray.length; i+=3) {
-					vector[0] = coordinatesArray[i];
-					vector[1] = coordinatesArray[i+1];
-					vector[2] = coordinatesArray[i+2];
-										
-					Matrix.setIdentityM(aux, 0);
-					Matrix.multiplyMM(aux, 0, rotationMatrix, 0, aux, 0);
-					Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
-									
-					x = result [0];
-					y = result [1];
-					z = result [2];
-							
-					data.adjustMaxMin(x, y, z);
-				}		
-							
-				float maxX = data.getMaxX();
-				float minX = data.getMinX();
-				float minY = data.getMinY();
-				float maxY = data.getMaxY();
-				float maxZ = data.getMaxZ();
-				float minZ = data.getMinZ();
-								
-				Point lastCenter = data.getLastCenter();
-				//We have to introduce the rest of transformations.
-				maxX = maxX*Math.abs(mScaleFactorX)+lastCenter.x;
-				maxY = maxY*mScaleFactorY+lastCenter.y;
-				maxZ = maxZ*mScaleFactorZ+lastCenter.z;
-				
-				minX = minX*Math.abs(mScaleFactorX)+lastCenter.x;
-				minY = minY*mScaleFactorY+lastCenter.y;			
-				minZ = minZ*mScaleFactorZ+lastCenter.z;	
-				
-				data.setMaxX(maxX);
-				data.setMaxY(maxY);
-				
-				data.setMinX(minX);
-				data.setMinY(minY);
-			
-				float adjustZ = 0;
-				if (minZ!=0) adjustZ= -data.getMinZ();
-				
-				data.setAdjustZ(adjustZ);
-				data.setMinZ(data.getMinZ()+adjustZ);			
-				data.setMaxZ(data.getMaxZ()+adjustZ);
+                //TODO Random crash
+                try{
+
+                    DataStorage data = mDataList.get(mObjectPressed);
+
+                    data.initMaxMin();
+                    float [] coordinatesArray = data.getVertexArray();
+                    float x,y,z;
+
+                    float [] vector = new float [4];
+                    float [] result = new float [4];
+                    float [] aux = new float [16];
+
+                    float[] rotationMatrix = data.getRotationMatrix();
+
+                    for (int i=0; i<coordinatesArray.length; i+=3) {
+                        vector[0] = coordinatesArray[i];
+                        vector[1] = coordinatesArray[i+1];
+                        vector[2] = coordinatesArray[i+2];
+
+                        Matrix.setIdentityM(aux, 0);
+                        Matrix.multiplyMM(aux, 0, rotationMatrix, 0, aux, 0);
+                        Matrix.multiplyMV(result, 0, aux, 0, vector, 0);
+
+                        x = result [0];
+                        y = result [1];
+                        z = result [2];
+
+                        data.adjustMaxMin(x, y, z);
+                    }
+
+                    float maxX = data.getMaxX();
+                    float minX = data.getMinX();
+                    float minY = data.getMinY();
+                    float maxY = data.getMaxY();
+                    float maxZ = data.getMaxZ();
+                    float minZ = data.getMinZ();
+
+                    Point lastCenter = data.getLastCenter();
+                    //We have to introduce the rest of transformations.
+                    maxX = maxX*Math.abs(mScaleFactorX)+lastCenter.x;
+                    maxY = maxY*mScaleFactorY+lastCenter.y;
+                    maxZ = maxZ*mScaleFactorZ+lastCenter.z;
+
+                    minX = minX*Math.abs(mScaleFactorX)+lastCenter.x;
+                    minY = minY*mScaleFactorY+lastCenter.y;
+                    minZ = minZ*mScaleFactorZ+lastCenter.z;
+
+                    data.setMaxX(maxX);
+                    data.setMaxY(maxY);
+
+                    data.setMinX(minX);
+                    data.setMinY(minY);
+
+                    float adjustZ = 0;
+                    if (minZ!=0) adjustZ= -data.getMinZ();
+
+                    data.setAdjustZ(adjustZ);
+                    data.setMinZ(data.getMinZ()+adjustZ);
+                    data.setMaxZ(data.getMaxZ()+adjustZ);
+
+                } catch (ArrayIndexOutOfBoundsException e ){
+
+                    e.printStackTrace();
+                }
+
+
 
 				return null;
 			}

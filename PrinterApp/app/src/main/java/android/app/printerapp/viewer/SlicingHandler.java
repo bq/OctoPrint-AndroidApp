@@ -24,7 +24,7 @@ import java.util.TimerTask;
  */
 public class SlicingHandler {
 
-    private static final int DELAY = 1000; //timer delay just in case
+    private static final int DELAY = 3000; //timer delay just in case
 
     //Data array to send to the server
     private byte[] mData = null;
@@ -67,6 +67,14 @@ public class SlicingHandler {
 
         //mProfile = profile;
         try {
+
+            if (mExtras.has(tag))
+            if (!mExtras.get(tag).equals(value)){
+
+                Log.i("Slicer","No profile change");
+                ViewerMainFragment.slicingCallback();
+            }
+
             mExtras.put(tag,value);
 
             Log.i("OUT","Added extra " + tag + ":" + value + " [" + mExtras.length()+"]");
@@ -118,21 +126,34 @@ public class SlicingHandler {
                 e.printStackTrace();
             }
 
+            if (tempFile.exists()){
 
-            mLastReference = tempFile.getAbsolutePath();
+                mLastReference = tempFile.getAbsolutePath();
 
-            Log.i("Slicer","Setting new PREFERENCE [Last]: " + tempFile.getName());
+                Log.i("Slicer","Setting new PREFERENCE [Last]: " + tempFile.getName());
 
-            DatabaseController.handlePreference("Slicing", "Last", tempFile.getName(), true);
+                DatabaseController.handlePreference("Slicing", "Last", tempFile.getName(), true);
 
-            Log.i("Slicer","New reference is " + mLastReference);
+                Log.i("Slicer","New reference is " + mLastReference);
 
 
-            FileOutputStream fos = new FileOutputStream(tempFile);
-            fos.write(mData);
-            fos.close();
+                FileOutputStream fos = new FileOutputStream(tempFile);
+                fos.write(mData);
+                fos.getFD().sync();
+                fos.close();
+
+            } else {
+
+                Log.i("Slicer","File was deleted when finished saving");
+
+            }
+
+
+
 
         } catch (Exception e) {
+
+            Log.i("Slicer","I FUCKING CRASHED WTF");
             e.printStackTrace();
         }
 
@@ -194,7 +215,7 @@ public class SlicingHandler {
                             OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
 
                             Log.i("Slicer","Showing progress bar");
-                            ViewerMainFragment.showProgressBar(0);
+                            ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
 
                         } else {
 

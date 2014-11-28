@@ -51,6 +51,8 @@ public class SidePanelHandler {
     private static final String[] PRINTER_TYPE = {"WITBOX","PRUSA 3","3DMAKER"};
     private static final String[] PREDEFINED_PROFILES = {"bq"}; //filter for profile deletion
 
+    private static final int DEFAULT_INFILL = 20;
+
     //Printer to send the files
     private ModelPrinter mPrinter;
 
@@ -266,7 +268,6 @@ public class SidePanelHandler {
 
                                 parseJson(i);
 
-                                ViewerMainFragment.slicingCallback();
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -290,8 +291,6 @@ public class SidePanelHandler {
 
                             mSlicingHandler.setExtras("profile.platform_adhesion",s_adhesion.getItemAtPosition(i).toString());
 
-
-                            ViewerMainFragment.slicingCallback();
                         }
 
                         @Override
@@ -307,7 +306,6 @@ public class SidePanelHandler {
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
 
-                            ViewerMainFragment.slicingCallback();
                         }
 
                         @Override
@@ -349,7 +347,8 @@ public class SidePanelHandler {
                         }
                     });
 
-                    seek_infill.setProgress(20);
+                    seek_infill.setProgress(DEFAULT_INFILL);
+                    infillText.setText(DEFAULT_INFILL+"%");
 
                     /**************************************************************************/
 
@@ -454,7 +453,7 @@ public class SidePanelHandler {
                                 Log.i("Slicer", "Final file is: STL or Sliced STL");
 
 
-                                //tempFile.renameTo(finalFile);
+                                tempFile.renameTo(finalFile);
 
                                 //if we don't have a temporary gcode, means we are currently watching an original gcode from a project
                             } else {

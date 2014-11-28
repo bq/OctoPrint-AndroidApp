@@ -16,16 +16,31 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
-    <ProgressBar
-        android:id="@+id/progress_slice"
-        style="?android:attr/progressBarStyleHorizontal"
+    <LinearLayout
+        android:id="@+id/layout_progress_slice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tabhost_views"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="30dp"
-        />
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:id="@+id/text_progress_slice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+
+        <ProgressBar
+            android:id="@+id/progress_slice"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/down"
