@@ -24,45 +24,6 @@
                 android:orientation="vertical"
                 android:padding="@dimen/content_padding_normal">
 
-                <TextView
-                    android:id="@+id/advanced_options_title_view"
-                    style="@style/TextHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="@string/viewer_settings_advanced" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <!-- Profile -->
-                    <TextView
-                        android:id="@+id/profile_title_textview"
-                        style="@style/TextHeaderSub"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/viewer_settings_profile" />
-
-                    Spinner
-                        android:id="@+id/profile_spinner"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp" />
-
-                    <EditText
-                        android:id="@+id/profile_edittext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/selectable_oval_background_green"
-                        android:src="@drawable/ic_add_circle" />
-                </LinearLayout>
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -440,30 +401,6 @@
             </LinearLayout>
         </ScrollView>
     </android.support.v7.widget.CardView>
-
-    <FrameLayout
-        android:id="@+id/expand_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:foregroundGravity="center">
-
-        <ImageView
-            android:id="@+id/expand_button_imageview"
-            android:layout_width="@dimen/fab_diameter_big"
-            android:layout_height="@dimen/fab_diameter_big"
-            android:layout_gravity="center"
-            android:background="@drawable/floating_action_button" />
-
-        <CheckBox
-            android:id="@+id/expand_button_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:checked="true"
-            android:button="@drawable/floating_checkbox_selector" />
-
-    </FrameLayout>
 
 
 </FrameLayout>

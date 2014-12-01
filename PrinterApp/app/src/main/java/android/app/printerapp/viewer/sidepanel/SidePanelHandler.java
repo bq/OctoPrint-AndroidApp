@@ -6,6 +6,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
@@ -13,9 +14,11 @@ import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +26,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.material.widget.PaperButton;
@@ -42,8 +47,13 @@ public class SidePanelHandler {
 
     //static parameters
     private static final String[] INFILL_OPTIONS = {"Low","Medium","High","Full", "None"}; //quality options
+    private static final String[] PROFILE_OPTIONS = {"High Settings", "Medium Settings", "Low Settings", "Custom"}; //support options
     private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"}; //support options
+    private static final String[] ADHESION_OPTIONS = {"none", "brim", "raft"}; //adhesion options
+    private static final String[] PRINTER_TYPE = {"WITBOX","PRUSA 3","3DMAKER"};
     private static final String[] PREDEFINED_PROFILES = {"bq"}; //filter for profile deletion
+
+    private static final int DEFAULT_INFILL = 20;
 
     //Printer to send the files
     private ModelPrinter mPrinter;
@@ -61,9 +71,12 @@ public class SidePanelHandler {
     private PaperButton restoreButton;
     private PaperButton deleteButton;
 
-    private Spinner s_quality;
-    private Spinner s_infill;
+    private Spinner s_profile;
+    private Spinner s_adhesion;
     private Spinner s_support;
+
+    private TextView infillText;
+    private SeekBar seek_infill;
 
     public SidePanelPrinterAdapter printerAdapter;
     public SidePanelProfileAdapter profileAdapter;
@@ -86,7 +99,8 @@ public class SidePanelHandler {
     private EditText minimalLayerTime;
     private com.material.widget.CheckBox enableCoolingFan;
 
-    private EditText profileText;
+    //private EditText profileText;
+
 
 
     //Constructor
@@ -106,9 +120,12 @@ public class SidePanelHandler {
     public void initUiElements(){
 
         s_printer = (Spinner) mRootView.findViewById(R.id.printer_spinner);
-        s_quality = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
-        s_infill = (Spinner) mRootView.findViewById(R.id.infill_spinner);
+        s_profile = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
+        s_adhesion = (Spinner) mRootView.findViewById(R.id.adhesion_spinner);
         s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
+
+        seek_infill = (SeekBar) mRootView.findViewById(R.id.seekBar_infill);
+        infillText = (TextView) mRootView.findViewById(R.id.infill_number_view);
 
         printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
         saveButton = (PaperButton) mRootView.findViewById(R.id.save_settings_button);
@@ -133,7 +150,8 @@ public class SidePanelHandler {
         minimalLayerTime = (EditText)mRootView.findViewById(R.id.minimal_layer_time_edittext);
         enableCoolingFan = (com.material.widget.CheckBox)mRootView.findViewById(R.id.enable_cooling_fan_checkbox);
 
-        profileText = (EditText) mRootView.findViewById(R.id.profile_edittext);
+
+        //profileText = (EditText) mRootView.findViewById(R.id.profile_edittext);
 
         // SCROLL VIEW HACK
 
@@ -200,7 +218,7 @@ public class SidePanelHandler {
                                 profileAdapter = new SidePanelProfileAdapter(mActivity,
                                         R.layout.print_panel_spinner_item,  mPrinter.getProfiles());
 
-                                s_quality.setAdapter(profileAdapter);
+                                s_profile.setAdapter(profileAdapter);
 
                                 profileAdapter.notifyDataSetChanged();
 
@@ -224,6 +242,10 @@ public class SidePanelHandler {
                     });
 
                     printerAdapter = new SidePanelPrinterAdapter(mActivity,R.layout.print_panel_spinner_item,DevicesListController.getList());
+                    /*ArrayAdapter<String> adapter_printer = new ArrayAdapter<String>(mActivity,
+                            R.layout.print_panel_spinner_item, PRINTER_TYPE);*/
+
+
                     s_printer.setAdapter(printerAdapter);
 
 
@@ -238,7 +260,7 @@ public class SidePanelHandler {
                     //Set slicing parameters to send to the server
 
                     //The quality adapter is set by the printer spinner
-                    s_quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    s_profile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -248,7 +270,6 @@ public class SidePanelHandler {
 
                                 parseJson(i);
 
-                                ViewerMainFragment.slicingCallback();
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -264,30 +285,14 @@ public class SidePanelHandler {
 
 
 
-                    //Infill
-                    s_infill.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    //Adhesion type
+                    s_adhesion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                            float infill = 0;
 
-                            switch(i){
+                            mSlicingHandler.setExtras("profile.platform_adhesion",s_adhesion.getItemAtPosition(i).toString());
 
-                                case 0: infill = 20; break;
-                                case 1: infill = 50; break;
-                                case 2: infill = 80; break;
-                                case 3: infill = 100; break;
-                                case 4: infill = 0; break;
-                                default: infill = 0; break;
-
-
-                            }
-
-                            Log.i("OUT","Infill: " + infill);
-
-                            mSlicingHandler.setExtras("profile.fill_density", infill);
-
-                            ViewerMainFragment.slicingCallback();
                         }
 
                         @Override
@@ -303,7 +308,6 @@ public class SidePanelHandler {
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
 
-                            ViewerMainFragment.slicingCallback();
                         }
 
                         @Override
@@ -313,14 +317,40 @@ public class SidePanelHandler {
                     });
 
 
-
-                    ArrayAdapter<String> adapter_infill = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, INFILL_OPTIONS);
+                    ArrayAdapter<String> adapter_profile = new ArrayAdapter<String>(mActivity,
+                            R.layout.print_panel_spinner_item, PROFILE_OPTIONS);
+                    ArrayAdapter<String> adapter_adhesion = new ArrayAdapter<String>(mActivity,
+                            R.layout.print_panel_spinner_item, ADHESION_OPTIONS);
                     ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, SUPPORT_OPTIONS);
 
-                    s_infill.setAdapter(adapter_infill);
+                   // s_profile.setAdapter(adapter_profile);
+                    s_adhesion.setAdapter(adapter_adhesion);
                     s_support.setAdapter(adapter_support);
+
+                    seek_infill.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                            infillText.setText(i+"%");
+
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
+                            mSlicingHandler.setExtras("profile.fill_density",seek_infill.getProgress());
+
+                        }
+                    });
+
+                    seek_infill.setProgress(DEFAULT_INFILL);
+                    infillText.setText(DEFAULT_INFILL+"%");
 
                     /**************************************************************************/
 
@@ -348,7 +378,7 @@ public class SidePanelHandler {
                     restoreButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            parseJson(s_quality.getSelectedItemPosition());
+                            parseJson(s_profile.getSelectedItemPosition());
                         }
                     });
 
@@ -390,58 +420,99 @@ public class SidePanelHandler {
 
                 if (mFile!=null) {
 
-                    if (mRootView.findViewById(R.id.progress_slice).isShown()){
 
-                        //TODO Check for slicing or what?
-                        Toast.makeText(mActivity, R.string.viewer_slice_wait, Toast.LENGTH_LONG).show();
+                    Log.i("Slicer", "Current file: " + mFile.getAbsolutePath());
 
-                    } else {
+                    File actualFile = new File(mSlicingHandler.getOriginalProject());
+                    File finalFile = null;
 
-                        //Check for temporary gcode
-                        File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-                        File finalFile = null;
+                    Log.i("Slicer", "Current project: " + mSlicingHandler.getOriginalProject());
 
-                        //If we have a gcode which is temporary, we use that
-                        if (tempFile.exists()){
+                    if (LibraryController.isProject(actualFile)){
 
-                            //Get original project
-                            final File actualFile = new File(mSlicingHandler.getOriginalProject());
+                        //It's the last file
+                        if (DatabaseController.getPreference("Slicing", "Last")!=null){
 
-                            //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                            finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName()+"_tmp.gcode");
+                            Toast.makeText(mActivity, R.string.viewer_slice_wait, Toast.LENGTH_LONG).show();
 
-                            Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
-
-                            tempFile.renameTo(finalFile);
-                            //renameFile = tempFile;
-
-                            //if we don't have a temporary gcode, means we are currently watching an original gcode
                         } else {
 
-                            if (LibraryController.hasExtension(1, mFile.getName())){
+                            //Check for temporary gcode
+                            File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
 
-                                finalFile = mFile;
+
+                            //If we have a gcode which is temporary it's either a stl or sliced gcode
+                            if (tempFile.exists()) {
+
+                                //Get original project
+                                //final File actualFile = new File(mSlicingHandler.getOriginalProject());
+
+                                //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+                                finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName() + "_tmp.gcode");
+
+                                Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
+
+                                Log.i("Slicer", "Final file is: STL or Sliced STL");
+
+
+                                tempFile.renameTo(finalFile);
+
+                                //if we don't have a temporary gcode, means we are currently watching an original gcode from a project
+                            } else {
+
+                                if (LibraryController.hasExtension(1, mFile.getName())) {
+
+
+                                    Log.i("Slicer", "Final file is: Project GCODE");
+                                    finalFile = mFile;
+
+                                }
 
                             }
 
                         }
 
-                        //either case if the file exists, we send it to the printer
-                        if (finalFile.exists()) {
 
-                            OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
-                            ItemListFragment.performClick(0);
-                            ItemListActivity.showExtraFragment(1, mPrinter.getId());
+                        //Not a project
+                    } else {
 
+                        //Check for temporary gcode
+                        File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+
+
+                        //If we have a gcode which is temporary it's a sliced gcode
+                        if (tempFile.exists()) {
+
+                            Log.i("Slicer", "Final file is: Random STL or Random Sliced STL");
+                            finalFile =  tempFile;
+
+
+                         //It's a random gcode
                         } else {
 
-                            Toast.makeText(mActivity,R.string.viewer_slice_error,Toast.LENGTH_LONG).show();
-
+                            Log.i("Slicer", "Final file is: Random GCODE");
+                            finalFile = mFile;
                         }
 
 
+                    }
+
+
+                    if (finalFile!=null)
+                    //either case if the file exists, we send it to the printer
+                    if (finalFile.exists()) {
+
+                        OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
+                        ItemListFragment.performClick(0);
+                        ItemListActivity.showExtraFragment(1, mPrinter.getId());
+
+                    } else {
+
+                        Toast.makeText(mActivity, R.string.viewer_slice_error, Toast.LENGTH_LONG).show();
 
                     }
+
+
                 }
                 else {Toast.makeText(mActivity,R.string.devices_toast_no_gcode,Toast.LENGTH_LONG).show();};
 
@@ -462,7 +533,7 @@ public class SidePanelHandler {
          //Parse the JSON element
         try {
 
-            profileText.setText(mPrinter.getProfiles().get(i).getString("displayName"));
+            //profileText.setText(mPrinter.getProfiles().get(i).getString("displayName"));
             JSONObject data = mPrinter.getProfiles().get(i).getJSONObject("data");
             layerHeight.setText(data.getString("layer_height"));
             shellThickness.setText(data.getString("wall_thickness"));
@@ -523,92 +594,119 @@ public class SidePanelHandler {
     public void saveProfile(){
 
 
-        //Init UI elements
 
-        JSONObject profile = null;
+        AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
+        adb.setTitle(R.string.devices_setup_title);
 
-        //Parse the JSON element
-        try {
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View v = inflater.inflate(R.layout.setup_dialog, null, false);
 
-            //Profile info
-            profile = new JSONObject();
-
-            profile.put("displayName", profileText.getText().toString());
-            profile.put("description", "Test profile created from App"); //TODO
-            profile.put("key", profileText.getText().toString().replace(" ","_").toLowerCase());
+        final EditText et = (EditText) v.findViewById(R.id.et_setup);
+        et.setText("Custom");
 
 
-            //Data info
-            JSONObject data = new JSONObject();
-;
-            data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
-            data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
-            data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
+        //On insertion write the printer onto the database and start updating the socket
+        adb.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
 
-            data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
-            data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
-            data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
-            data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
-            data.put("retraction_enabled", enableRetraction.isChecked());
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-            data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
-            data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
-            data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
-            data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
-            data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+                //Init UI elements
 
-            data.put("cool_min_layer_time",getFloatValue( minimalLayerTime.getText().toString()));
-            data.put("fan_enabled", enableCoolingFan.isChecked());
-
-            profile.put("data",data);
+                JSONObject profile = null;
 
 
-            Log.i("OUT", profile.toString());
 
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-
-        } catch (NumberFormatException e){
-
-            //Check if there was an invalid numner
-            e.printStackTrace();
-            Toast.makeText(mActivity,e.getMessage(),Toast.LENGTH_LONG).show();
-            profile = null;
-
-        }
-
-        if (profile!=null){
-
-            //check if name already exists to avoid overwriting
-            for(JSONObject o : mPrinter.getProfiles()){
-
+                //Parse the JSON element
                 try {
-                    if (profile.get("displayName").equals(o.get("displayName"))){
+
+                    //Profile info
+                    profile = new JSONObject();
+
+                    profile.put("displayName", et.getText().toString());
+                    profile.put("description", "Test profile created from App"); //TODO
+                    profile.put("key", et.getText().toString().replace(" ","_").toLowerCase());
+
+                    //Data info
+                    JSONObject data = new JSONObject();
+
+                    data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
+                    data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
+                    data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
+
+                    data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
+                    data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
+                    data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
+                    data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
+                    data.put("retraction_enabled", enableRetraction.isChecked());
+
+                    data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
+                    data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
+                    data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
+                    data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
+                    data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+
+                    data.put("cool_min_layer_time",getFloatValue( minimalLayerTime.getText().toString()));
+                    data.put("fan_enabled", enableCoolingFan.isChecked());
+
+                    profile.put("data",data);
 
 
-                        //set error and focus
-                        profileText.setError(mActivity.getString(R.string.viewer_button_save_error));
-                        profileText.requestFocus();
-                        return;
+                    Log.i("OUT", profile.toString());
 
-                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+
+                } catch (NumberFormatException e){
+
+                    //Check if there was an invalid numner
+                    e.printStackTrace();
+                    Toast.makeText(mActivity,e.getMessage(),Toast.LENGTH_LONG).show();
+                    profile = null;
+
                 }
 
+                if (profile!=null){
+
+                    //check if name already exists to avoid overwriting
+                    for(JSONObject o : mPrinter.getProfiles()){
+
+                        try {
+                            if (profile.get("displayName").equals(o.get("displayName"))) {
+
+                                Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
+
+                                return;
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
+
+                }
+
+                //Send profile to server
+                OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);
+
+                Toast.makeText(mActivity, "Profile saved successfully", Toast.LENGTH_LONG).show();
+
+
             }
+        });
 
-            //Clear error and focus
-            profileText.setError(null);
-            profileText.clearFocus();
+        adb.setNegativeButton(R.string.cancel, null);
 
-            //Send profile to server
-            OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);
+        adb.setView(v);
 
-        }
-
-
+        adb.show();
 
     }
 
@@ -616,12 +714,12 @@ public class SidePanelHandler {
     public void deleteProfile(){
 
         try {
-            final String profile = mPrinter.getProfiles().get(s_quality.getSelectedItemPosition()).getString("key");
+            final String profile = mPrinter.getProfiles().get(s_profile.getSelectedItemPosition()).getString("key");
 
 
             AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
             adb.setTitle(R.string.viewer_profile_delete);
-            adb.setMessage(mPrinter.getProfiles().get(s_quality.getSelectedItemPosition()).getString("displayName"));
+            adb.setMessage(mPrinter.getProfiles().get(s_profile.getSelectedItemPosition()).getString("displayName"));
             adb.setPositiveButton(R.string.delete,new DialogInterface.OnClickListener() {
 
             @Override

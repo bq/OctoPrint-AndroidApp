@@ -367,8 +367,6 @@ public class OctoprintConnection {
 		            Log.i("Connection", "Status: Connected to " + wsuri);
                     doConnection(context,p);
 
-
-
 		         }
 
 
@@ -466,16 +464,18 @@ public class OctoprintConnection {
 
                               JSONObject response = new JSONObject(payload).getJSONObject("slicingProgress");
 
-                              //TODO random crash
+                              //TODO random crash because not yet created
                               try{
                                   //Check if it's our file
                                   if (DatabaseController.getPreference("Slicing","Last").equals( response.getString("source_path"))){
+
+                                      Log.i("Slicer","Progress received for " + response.getString("source_path"));
 
                                       int progress = response.getInt("progress");
 
 
                                       //TODO
-                                      ViewerMainFragment.showProgressBar(progress);
+                                      ViewerMainFragment.showProgressBar(StateUtils.SLICER_SLICE, progress);
                                   }
                               } catch (NullPointerException e){
 
@@ -546,7 +546,7 @@ public class OctoprintConnection {
         OctoprintConnection.getSettings(p);
 
         //Get a new set of files
-        OctoprintFiles.getFiles(p);
+        OctoprintFiles.getFiles(context, p);
 
         //Get a new set of profiles
         OctoprintSlicing.retrieveProfiles(context,p);
@@ -580,23 +580,28 @@ public class OctoprintConnection {
 	 * @param url server address
 	 */
 	private static void sliceHandling(final Context context, final JSONObject payload, final String url){
-		
-		
-		
+
 		try {
+
+            Log.i("Slicer","Slice done received for " + payload.getString("stl"));
+
             //Search for files waiting for slice
             if (DatabaseController.getPreference("Slicing","Last")!=null)
             if (DatabaseController.getPreference("Slicing","Last").equals( payload.getString("stl")))
             {
 
+                Log.i("Slicer","Changed PREFERENCE [Last]: " + payload.getString("gcode"));
+                DatabaseController.handlePreference("Slicing","Last",payload.getString("gcode"), true);
+
+                ViewerMainFragment.showProgressBar(StateUtils.SLICER_DOWNLOAD, 0);
+
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
                 LibraryController.getParentFolder() + "/temp/", payload.getString("gcode"));
-                DatabaseController.handlePreference("Slicing","Last",null, false);
                 OctoprintFiles.deleteFile(context,url,payload.getString("stl"), "/local/");
 
             }else {
 
-                Log.i("OUT","Slicing NOPE for me!");
+                Log.i("Slicer","Slicing NOPE for me!");
 
             }
 
@@ -605,4 +610,5 @@ public class OctoprintConnection {
 		}
 		
 	}
+
 }

@@ -5,6 +5,7 @@ import android.app.printerapp.ItemListActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -144,7 +145,6 @@ public class OctoprintSlicing {
 
                 Iterator<String> keys = response.keys();
 
-
                 while(keys.hasNext()) {
 
                     String current = keys.next();
@@ -233,6 +233,9 @@ public class OctoprintSlicing {
             e.printStackTrace();
         }
 
+
+        Log.i("Slicer","Uploading " + file.getAbsolutePath());
+
         HttpClientHandler.post(url + HttpUtils.URL_FILES + "/local",
                 params, new JsonHttpResponseHandler(){
 
@@ -248,7 +251,7 @@ public class OctoprintSlicing {
                         super.onSuccess(statusCode, headers, response);
 
 
-                        Log.i("SUCCESS", response.toString());
+                        Log.i("Slicer","Upload successful");
 
                         JSONObject object = extras ;
                         StringEntity entity = null;
@@ -270,6 +273,11 @@ public class OctoprintSlicing {
                         }
 
 
+
+                        Log.i("Slicer","Send slice command for " + file.getName());
+
+                        if (DatabaseController.getPreference("Slicing","Last")!=null)
+                        if ((DatabaseController.getPreference("Slicing","Last")).equals(file.getName()))
                         HttpClientHandler.post(context,url + HttpUtils.URL_FILES + "/local/" + file.getName(),
                                 entity, "application/json", new JsonHttpResponseHandler(){
 
@@ -284,16 +292,9 @@ public class OctoprintSlicing {
                                         super.onSuccess(statusCode, headers, response);
 
 
-                                        Log.i("OUT","Slicing @" + response.toString());
+                                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_SLICE, 0);
+                                        Log.i("Slicer","Slicing started");
 
-                                        if (DatabaseController.isPreference("Slicing","Last")){
-
-                                            Log.i("OUT","We have a preference already yo! deleting yo! " + DatabaseController.getPreference("Slicing","Last"));
-                                            OctoprintFiles.deleteFile(context,url,DatabaseController.getPreference("Slicing","Last"), "/local/");
-
-                                        }
-
-                                        DatabaseController.handlePreference("Slicing","Last", file.getName(), true);
 
                                     }
 
@@ -305,11 +306,20 @@ public class OctoprintSlicing {
 
                                         super.onFailure(statusCode, headers, responseString, throwable);
                                         Log.i("OUT",responseString.toString());
+
+                                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
                                     }
                                 });
 
                     }
 
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+
+                        Log.i("OUT","FAILURESLICING");
+                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
+                    }
                 });
 
 

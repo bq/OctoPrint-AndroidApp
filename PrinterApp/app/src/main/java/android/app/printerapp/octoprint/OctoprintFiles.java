@@ -3,6 +3,7 @@ package android.app.printerapp.octoprint;
 import android.app.DownloadManager;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.Uri;
@@ -28,7 +29,7 @@ public class OctoprintFiles {
 	/**
 	 * Get the whole filelist from the server.
 	 */
-	public static void getFiles(final ModelPrinter p){
+	public static void getFiles(final Context context , final ModelPrinter p){
 				
 		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_FILES, null, new JsonHttpResponseHandler(){
 			
@@ -54,9 +55,11 @@ public class OctoprintFiles {
 				    	
 				    //Retrieve every file	
 				     JSONObject object = json.getJSONObject(i);
+
+                    //TODO check pending files
 				     
 				     
-				     File m;
+				     File m = null;
 				     
 				     //If it has an origin we need to set it for the printer
 				     if (object.getString("origin").equals("sdcard")){
@@ -65,14 +68,49 @@ public class OctoprintFiles {
 				    	 m = new File("sd/" +object.getString("name"));
 				     }
 				     else   {
+
+                         if (object.getString("name").contains(".stl")){
+
+                             if (DatabaseController.getPreference("Slicing","Last")!=null){
+
+                                 if (DatabaseController.getPreference("Slicing","Last").equals(object.getString("name"))){
+
+                                     Log.i("Slicer","Hey that's my fucking file");
+
+                                     if (object.has("links")){
+
+                                         Log.i("Slicer","And it's fucking done!!");
+
+                                         Log.i("Slicer","Changed PREFERENCE [Last]: " + "temp.gco");
+                                         DatabaseController.handlePreference("Slicing","Last","temp.gco", true);
+
+                                         OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
+                                                 LibraryController.getParentFolder() + "/temp/", "temp.gco");
+                                         OctoprintFiles.deleteFile(context,p.getAddress(),object.getString("name"), "/local/");
+
+                                     } else {
+
+                                         Log.i("Slicer","Ah not yet nigga");
+
+                                     }
+
+                                 }
+
+                             }
+
+
+                         }else {
+
+                             //Set the storage to Witbox
+                             m = new File("local/" +object.getString("name"));
+                         }
 				    	 
-				    	//Set the storage to Witbox
-				    	 m = new File("local/" +object.getString("name"));
+
 					     
 				     }
 				     
 				     //Add to storage file list
-				     p.updateFiles(m);
+				     if (m!=null) p.updateFiles(m);
 
 				    } 
 				 } 
@@ -252,7 +290,7 @@ public class OctoprintFiles {
 				super.onSuccess(statusCode, headers, response);
 				
 				
-				Log.i("SUCCESS", "DELETED FROM THE SERVERCITO: " + response.toString());
+				Log.i("Slicer", "DELETED FROM THE SERVERCITO: " + response.toString());
 
 			}
 			
@@ -282,6 +320,8 @@ public class OctoprintFiles {
 	 * @param filename
 	 */
 	public static void downloadFile(Context context, String url, String path, String filename){
+
+        Log.i("Slicer","Downloading " + filename);
 		
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http:/" + url + filename));
 

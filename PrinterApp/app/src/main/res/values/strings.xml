@@ -175,7 +175,8 @@
     <string name="viewer_settings_quality">Quality</string>
     <string name="viewer_settings_infill">Infill</string>
     <string name="viewer_settings_support">Support</string>
-    <string name="viewer_settings_advanced">Advanced settings</string>
+    <string name="viewer_settings_adhesion">Adhesion</string>
+    <string name="viewer_settings_advanced">Profile settings</string>
     <string name="viewer_settings_profile">Profile</string>
     <string name="viewer_settings_layer_height">Layer height (mm)</string>
     <string name="viewer_settings_shell_thickness">Shell thickness (mm)</string>

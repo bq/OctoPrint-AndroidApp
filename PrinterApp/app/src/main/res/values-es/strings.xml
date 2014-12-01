@@ -167,7 +167,8 @@
     <string name="viewer_settings_quality">Calidad</string>
     <string name="viewer_settings_infill">Relleno</string>
     <string name="viewer_settings_support">Soporte</string>
-    <string name="viewer_settings_advanced">Opciones avanzadas</string>
+    <string name="viewer_settings_adhesion">Adhesión</string>
+    <string name="viewer_settings_advanced">Ajustes del perfil</string>
     <string name="viewer_settings_profile">Perfil</string>
     <string name="viewer_settings_layer_height">Altura de capa (mm)</string>
     <string name="viewer_settings_shell_thickness">Grosor del recubrimiento (mm)</string>

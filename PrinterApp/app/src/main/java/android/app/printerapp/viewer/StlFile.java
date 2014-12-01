@@ -214,7 +214,9 @@ public class StlFile {
 			if (mMode== ViewerMainFragment.DONT_SNAPSHOT) {
 				ViewerMainFragment.draw();
 				mProgressDialog.dismiss();
-                ViewerMainFragment.slicingCallback();
+
+                //TODO better filtering
+                if (!(mFile.getName().substring(0,3)).contains("tmp"))ViewerMainFragment.slicingCallback();
 			} else if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
 				LibraryModelCreation.takeSnapshot();
 			}
@@ -442,6 +444,8 @@ public class StlFile {
 	   
 	    //Number of triangles
 	    bb.putInt(coordinateCount/COORDS_PER_TRIANGLE);
+
+        Log.i("Slicer","Saving new model");
 	    
 		for (int i=0;i<dataList.size(); i++) {
 			DataStorage data = dataList.get(i);
@@ -454,6 +458,7 @@ public class StlFile {
 			coordinates = data.getVertexArray();
 			
 		    for (int j=0; j<coordinates.length; j+=9) {
+
 		    	//Normal data. It is not necessary to store the info
 		    	bb.putFloat(0);
 		    	bb.putFloat(0);
@@ -478,13 +483,16 @@ public class StlFile {
 		    	bb.putShort((short)0); // end of triangle
 		    }
 		}
-		
+
 		bb.position(0);
 	    byte[] data = bb.array();
 
+        Log.i("Slicer","Saved");
 
         if (slicer!=null){
 
+
+            Log.i("Slicer","Restart timer");
             slicer.setData(data);
             slicer.sendTimer();
 
