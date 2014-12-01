@@ -577,7 +577,7 @@ public class ViewerMainFragment extends Fragment {
     /**
      * Clean the print panel and delete all references
      */
-    public void optionClean(){
+    public static void optionClean(){
 
         mDataList.clear();
         mFile = null;
