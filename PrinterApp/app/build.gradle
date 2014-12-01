@@ -8,6 +8,8 @@ android {
         applicationId "android.app.printerapp"
         minSdkVersion 14
         targetSdkVersion 19
+        versionName computeVersionName()
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 1
     }
 
     buildTypes {
@@ -20,6 +22,16 @@ android {
     lintOptions {
         abortOnError false
     }
+
+}
+
+def computeVersionName() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'log', '-n', '1', '--pretty=format:%h%x09%ad'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }
 
 dependencies {
