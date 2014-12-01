@@ -196,6 +196,8 @@ public class SlicingHandler {
         Log.i("OUT","Workspace: " + path);
     }
 
+    public void setLastReference(String path) { mLastReference = path; }
+
     private class SliceTask extends TimerTask {
 
         @Override

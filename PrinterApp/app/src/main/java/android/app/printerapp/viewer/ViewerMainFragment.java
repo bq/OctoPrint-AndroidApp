@@ -447,6 +447,9 @@ public class ViewerMainFragment extends Fragment {
 
             case R.id.viewer_clean:
                 mDataList.clear();
+                mFile = null;
+                mSlicingHandler.setOriginalProject(null);
+                mSlicingHandler.setLastReference(null);
                 mSeekBar.setVisibility(View.INVISIBLE);
                 mSurface.requestRender();
                 return true;
@@ -563,10 +566,14 @@ public class ViewerMainFragment extends Fragment {
      */
     public void optionRestoreView(){
 
-        String pathStl = mDataList.get(0).getPathFile();
-        mDataList.clear();
 
-        openFile(pathStl);
+        if (mDataList.size()>0){
+            String pathStl = mDataList.get(0).getPathFile();
+            mDataList.clear();
+
+            openFile(pathStl);
+        }
+
 
     }
 
