@@ -8,7 +8,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -29,8 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Class to manage the application and printer settings
@@ -204,13 +202,25 @@ public class SettingsFragment extends Fragment {
 		String s = "Version v.";
 
 		 try{
-		     ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(getActivity().getPackageName(), 0);
+		     /*ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(getActivity().getPackageName(), 0);
 		     ZipFile zf = new ZipFile(ai.sourceDir);
 		     ZipEntry ze = zf.getEntry("classes.dex");
 		     long time = ze.getTime();
 		     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm",new Locale("es", "ES"));
 		     s = s + sdf.format(new java.util.Date(time));
-		     zf.close();
+		     zf.close();*/
+
+             PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+             String fString = pInfo.versionName;
+
+             String hash = fString.substring(0,fString.indexOf(" "));
+             String date = fString.substring(fString.indexOf(" "), fString.length());
+
+             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm",new Locale("es", "ES"));
+             String fDate = sdf.format(new java.util.Date(date));
+
+             s = s + pInfo.versionCode + "_" + fDate + "_" + hash;
+
 		  }catch(Exception e){
 			  
 			  e.printStackTrace();
