@@ -174,7 +174,20 @@ public class Geometry {
 	 
 	 public static boolean relocateIfOverlaps (List<DataStorage> objects) {
 		 int objectToFit = objects.size()-1;
-		 DataStorage data = objects.get(objectToFit);
+
+         DataStorage data;
+
+         //TODO random crash
+         try{
+
+             data = objects.get(objectToFit);
+
+         } catch (ArrayIndexOutOfBoundsException e){
+
+             e.printStackTrace();
+             return false;
+         }
+
 		 boolean overlaps = false;
 		 
 		 for (int i=0;i<objects.size();i++) {

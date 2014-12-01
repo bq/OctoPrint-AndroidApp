@@ -505,6 +505,7 @@ public class SidePanelHandler {
                         OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
                         ItemListFragment.performClick(0);
                         ItemListActivity.showExtraFragment(1, mPrinter.getId());
+                        ViewerMainFragment.optionClean();
 
                     } else {
 
