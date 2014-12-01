@@ -8,8 +8,9 @@ android {
         applicationId "android.app.printerapp"
         minSdkVersion 14
         targetSdkVersion 19
-        versionName computeVersionName()
-        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 1
+        versionName 1.0 + ";" + computeVersionName()
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 0
+
     }
 
     buildTypes {
