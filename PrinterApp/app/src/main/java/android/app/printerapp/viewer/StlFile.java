@@ -264,6 +264,8 @@ public class StlFile {
 							
 				line = allLines.substring(initialVertexIndex+1, thirdVertexIndex);			
 				initialVertexIndex = thirdVertexIndex;
+
+                Log.i("Slicer", "Processing triangle: " + lines + line);
 				
 				processTriangle(line);
 				lines+=3;
@@ -283,7 +285,7 @@ public class StlFile {
 	public static void processTriangle (String line) throws Exception {		
 		String[] vertex = line.split("\n");
 				
-		String[] vertexValues = vertex[0].split(" ");	
+		String[] vertexValues = vertex[0].split("\\s+");
 		float x = Float.parseFloat(vertexValues [0]);
 		float y = Float.parseFloat(vertexValues [1]);
 		float z = Float.parseFloat(vertexValues [2]);
@@ -293,7 +295,7 @@ public class StlFile {
 		mData.addVertex(y);
 		mData.addVertex(z);
 		
-		vertexValues = vertex[1].split(" ");	
+		vertexValues = vertex[1].split("\\s+");
 		x = Float.parseFloat(vertexValues [0]);
 		y = Float.parseFloat(vertexValues [1]);
 		z = Float.parseFloat(vertexValues [2]);
@@ -303,7 +305,7 @@ public class StlFile {
 		mData.addVertex(y);
 		mData.addVertex(z);
 		
-		vertexValues = vertex[2].split(" ");	
+		vertexValues = vertex[2].split("\\s+");
 		x = Float.parseFloat(vertexValues [0]);
 		y = Float.parseFloat(vertexValues [1]);
 		z = Float.parseFloat(vertexValues [2]);
