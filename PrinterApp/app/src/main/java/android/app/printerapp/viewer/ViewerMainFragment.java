@@ -446,12 +446,9 @@ public class ViewerMainFragment extends Fragment {
                 return true;
 
             case R.id.viewer_clean:
-                mDataList.clear();
-                mFile = null;
-                mSlicingHandler.setOriginalProject(null);
-                mSlicingHandler.setLastReference(null);
-                mSeekBar.setVisibility(View.INVISIBLE);
-                mSurface.requestRender();
+
+                optionClean();
+
                 return true;
 
             default:
@@ -574,6 +571,20 @@ public class ViewerMainFragment extends Fragment {
             openFile(pathStl);
         }
 
+
+    }
+
+    /**
+     * Clean the print panel and delete all references
+     */
+    public void optionClean(){
+
+        mDataList.clear();
+        mFile = null;
+        mSlicingHandler.setOriginalProject(null);
+        mSlicingHandler.setLastReference(null);
+        mSeekBar.setVisibility(View.INVISIBLE);
+        mSurface.requestRender();
 
     }
 

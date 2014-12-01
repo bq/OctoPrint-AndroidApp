@@ -43,7 +43,7 @@ import de.tavendo.autobahn.WebSocketHandler;
 public class OctoprintConnection {
 
     private static final int SOCKET_TIMEOUT = 10000;
-    private static final String DEFAULT_PORT = null;
+    private static final String DEFAULT_PORT = "/dev/ttyUSB0";
 
 	/**
 	 * 
