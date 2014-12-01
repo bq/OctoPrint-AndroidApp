@@ -944,13 +944,13 @@ public class ViewerMainFragment extends Fragment {
                 case R.id.scale:
                     mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
                     return true;
-                case R.id.mirror:
+                /*case R.id.mirror:
                     mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
                     mSurface.doMirror();
 
                     slicingCallback();
 
-                    return true;
+                    return true;*/
                 case R.id.multiply:
                     shoMultiplyDialog();
                     return true;
@@ -988,7 +988,7 @@ public class ViewerMainFragment extends Fragment {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
         adb.setView(dialogText)
-                .setTitle(mContext.getString(R.string.project_name))
+                .setTitle(mContext.getString(R.string.viewer_menu_multiply_title))
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

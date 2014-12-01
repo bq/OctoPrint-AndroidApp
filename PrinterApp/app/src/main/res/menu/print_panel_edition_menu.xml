@@ -18,22 +18,16 @@
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_scale"
         android:title="@string/edition_menu_resize"/>
-      
-    <item
-        android:id="@+id/mirror"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_mirror"
-        android:title="@string/edition_menu_mirror"/>
     
     <item
         android:id="@+id/multiply"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_action_multiply_objects"
         android:title="@string/edition_menu_multiply"/>
         
     <item
         android:id="@+id/delete"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_action_delete"
         android:title="@string/edition_menu_delete"/>
 

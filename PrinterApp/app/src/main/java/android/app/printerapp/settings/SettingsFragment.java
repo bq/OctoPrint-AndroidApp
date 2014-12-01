@@ -195,36 +195,34 @@ public class SettingsFragment extends Fragment {
 		} else iv.setImageResource(R.drawable.stat_sys_wifi_signal_0);
 
 	}
-	
-	//TODO Remove build version
+
 	public String setBuildVersion(){
 		
 		String s = "Version v.";
 
 		 try{
-		     /*ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(getActivity().getPackageName(), 0);
-		     ZipFile zf = new ZipFile(ai.sourceDir);
-		     ZipEntry ze = zf.getEntry("classes.dex");
-		     long time = ze.getTime();
-		     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm",new Locale("es", "ES"));
-		     s = s + sdf.format(new java.util.Date(time));
-		     zf.close();*/
 
+             //Get version name from package
              PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
              String fString = pInfo.versionName;
 
+             //Parse version and date
              String hash = fString.substring(0,fString.indexOf(" "));
              String date = fString.substring(fString.indexOf(" "), fString.length());
 
+             //Format hash
              String [] fHash = hash.split(";");
 
+             //Format date
              SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm",new Locale("es", "ES"));
              String fDate = sdf.format(new java.util.Date(date));
 
+             //Get version code / Jenkins build
              String code;
              if (pInfo.versionCode == 0) code = "IDE";
              else code = "#"+ pInfo.versionCode;
 
+             //Build string
              s = s + fHash[0] + " " + fHash[1] + " " + fDate + " " + code;
 
 		  }catch(Exception e){

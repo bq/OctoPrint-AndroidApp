@@ -125,6 +125,7 @@
     <string name="viewer_menu_restore">Restaurar panel</string>
     <string name="viewer_menu_autofit">Auto ajustar</string>
     <string name="viewer_menu_clean">Limpiar panel</string>
+    <string name="viewer_menu_multiply_title">Número de copias a añadir</string>
 
     <string name="viewer_slice_wait">Espere a que termine de laminar</string>
     <string name="viewer_slice_error">Error subiendo el fichero</string>

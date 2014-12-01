@@ -457,14 +457,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	/**
 	 * Mirror option
 	 */
-	public void doMirror () {
+	/*public void doMirror () {
 		float fx = mDataList.get(mObjectPressed).getLastScaleFactorX();
 		float fy = mDataList.get(mObjectPressed).getLastScaleFactorY();
 		float fz = mDataList.get(mObjectPressed).getLastScaleFactorZ();
 		
 		mRenderer.scaleObject(-1*fx, fy, fz);
 		requestRender();
-	}
+	}*/
 	
 	/**
 	 * Do rotation (plate rotation, not model rotation)
