@@ -157,6 +157,7 @@ public class OctoprintFiles {
 		
 		try {
 			object.put("command", "select");
+            object.put("print", "true");
 			entity = new StringEntity(object.toString(), "UTF-8");
 			
 		} catch (JSONException e) {		e.printStackTrace();
