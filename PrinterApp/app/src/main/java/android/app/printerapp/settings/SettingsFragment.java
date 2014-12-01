@@ -216,10 +216,16 @@ public class SettingsFragment extends Fragment {
              String hash = fString.substring(0,fString.indexOf(" "));
              String date = fString.substring(fString.indexOf(" "), fString.length());
 
+             String [] fHash = hash.split(";");
+
              SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm",new Locale("es", "ES"));
              String fDate = sdf.format(new java.util.Date(date));
 
-             s = s + pInfo.versionCode + "_" + fDate + "_" + hash;
+             String code;
+             if (pInfo.versionCode == 0) code = "IDE";
+             else code = "#"+ pInfo.versionCode;
+
+             s = s + fHash[0] + " " + fHash[1] + " " + fDate + " " + code;
 
 		  }catch(Exception e){
 			  
