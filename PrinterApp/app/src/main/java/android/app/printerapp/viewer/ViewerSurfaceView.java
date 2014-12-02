@@ -259,7 +259,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle[0] = mCurrentAngle[0] + (angle - mCurrentAngle[0]);
 
 		mRenderer.setRotationObject (rotation);
-	    mRenderer.refreshRotatedObjectCoordinates();
+	    //mRenderer.refreshRotatedObjectCoordinates();
 
 	}
 	
@@ -274,7 +274,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle[1] = mCurrentAngle[1] + (angle - mCurrentAngle[1]);
 
 		mRenderer.setRotationObject (rotation);
-		mRenderer.refreshRotatedObjectCoordinates();
+		//mRenderer.refreshRotatedObjectCoordinates();
 	}
 	
 	/**
@@ -288,8 +288,24 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle[2] = mCurrentAngle[2] + (angle - mCurrentAngle[2]);
 
         mRenderer.setRotationObject (rotation);
-        mRenderer.refreshRotatedObjectCoordinates();
+        //mRenderer.refreshRotatedObjectCoordinates();
 	}
+
+    /*
+    Refresh only when the user stops tracking the angle
+     */
+    public void refreshRotatedObject(){
+        mRenderer.refreshRotatedObjectCoordinates();
+    }
+
+    /*
+    Set new axis to request a render from here
+     */
+    public void setRendererAxis(int axis){
+        mRenderer.setCurrentaxis(axis);
+        requestRender();
+
+    }
 	
 	/**
 	 * On touch events

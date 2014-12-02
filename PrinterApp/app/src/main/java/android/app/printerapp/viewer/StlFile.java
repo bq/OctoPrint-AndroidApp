@@ -264,8 +264,6 @@ public class StlFile {
 							
 				line = allLines.substring(initialVertexIndex+1, thirdVertexIndex);			
 				initialVertexIndex = thirdVertexIndex;
-
-                Log.i("Slicer", "Processing triangle: " + lines + line);
 				
 				processTriangle(line);
 				lines+=3;
