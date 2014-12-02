@@ -345,6 +345,7 @@ public class ViewerMainFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
                 lock = true;
+                mSurface.refreshRotatedObject();
 
             }
         });
@@ -373,6 +374,7 @@ public class ViewerMainFragment extends Fragment {
             case 0:
 
                 mAxisText.setText("Eje X");
+                mSurface.setRendererAxis(Lines.X_AXIS);
 
                 break;
 
@@ -387,6 +389,8 @@ public class ViewerMainFragment extends Fragment {
             default: mAxisText.setText(""); break;
 
         }
+
+        mSurface.setRendererAxis(mCurrentAxis);
 
         mRotationSeekbar.setProgress((int)currentAngle);
         mRotationText.setText("");

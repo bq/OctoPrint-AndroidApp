@@ -234,8 +234,6 @@ public class OctoprintSlicing {
         }
 
 
-        Log.i("Slicer","Uploading " + file.getAbsolutePath());
-
         HttpClientHandler.post(url + HttpUtils.URL_FILES + "/local",
                 params, new JsonHttpResponseHandler(){
 

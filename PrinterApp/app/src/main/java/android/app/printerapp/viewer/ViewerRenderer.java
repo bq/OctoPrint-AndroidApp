@@ -128,6 +128,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public final static int OUT_NOT_TOUCHED = 1;
 	public final static int INSIDE_TOUCHED = 2;
 	public final static int OUT_TOUCHED = 3;
+
+    private Lines mLine;
+    private int mAxis = 0;
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode) {	
 		this.mDataList = dataList;
@@ -187,6 +190,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public void setRotationVector (Vector vector) {
 		mVector = vector;
 	}
+
+    public void setCurrentaxis ( int axis) {
+
+        mAxis = axis;
+
+    }
 	
 	public void setObjectPressed (int i) {
 		mObjectPressed = i;
@@ -545,6 +554,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		mWitboxFaceRight = new WitboxFaces (RIGHT);
 		mWitboxFaceLeft = new WitboxFaces (LEFT);
 		mWitboxFaceDown = new WitboxPlate (mContext, false);
+        mLine = new Lines();
 	}
 
 	@Override
@@ -687,6 +697,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		        Matrix.multiplyMM(mMVObjectMatrix, 0,mMVMatrix, 0, mObjectModel, 0);   
 		        Matrix.transposeM(mTransInvMVMatrix, 0, mMVObjectMatrix, 0);
 		        Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
+
+                mLine.draw(data, mMVPMatrix, mAxis);
 	        }
         
 	                                                                                              
@@ -732,10 +744,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
         	takeSnapshot(unused);
         } else {
+
         	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mMVPMatrix, mMVMatrix);      
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mMVPMatrix);
         	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mMVPMatrix);
         	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mMVPMatrix);
+
         } 
 	}
 	
