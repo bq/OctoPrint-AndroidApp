@@ -65,6 +65,7 @@
     <string name="printview_start_button">COMENZAR / PAUSAR</string>
     <string name="printview_stop_button">DETENER</string>
     <string name="printview_download_dialog">Archivo no disponible, descargando</string>
+    <string name="printview_download_toast_error">Error al descargar el archivo</string>
 
     <string name="devices_toast_no_gcode">No se ha encontrado .gcode</string>
     <string name="storage_toast_corrupted">El fichero está corrupto</string>

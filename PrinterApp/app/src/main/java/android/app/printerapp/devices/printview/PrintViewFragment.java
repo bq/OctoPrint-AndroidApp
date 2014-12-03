@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.material.widget.PaperButton;
 
@@ -365,72 +366,78 @@ public class PrintViewFragment extends Fragment {
      */
     public void retrieveGcode(){
 
-        if ((mPrinter.getJobPath()!=null) && (!isPrinting)){
 
-            Log.i(TAG,"Sigh, loading " + mPrinter.getJobPath());
+        //If we have a jobpath, we've uploaded the file ourselves
+        if (mPrinter.getJobPath()!=null) {
 
-            openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
+            //Get filename
+            File currentFile = new File(mPrinter.getJobPath());
 
-        }else {
-            //if (mPrinter.getJobPath()==null) mPrinter.setJobPath("null");
+            //if it's the same as the server or it's in process of being uploaded
+            if ((mPrinter.getJob().getFilename().equals(currentFile.getName())) ||
+                    (!mPrinter.getLoaded())) {
 
+                Log.i(TAG, "Sigh, loading " + mPrinter.getJobPath());
 
-            //File tempFile = new File(mPrinter.getJobPath());
+                openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
 
-            //Log.i(TAG,"My path is " + mPrinter.getJobPath());
+                //end process
+                return;
 
-            if (!mPrinter.getJob().getFilename().equals("null"))
-                /*if ((mPrinter.getJob().getFilename().equals(tempFile.getName())) && (tempFile.exists())){
+                //Not the same file
+            } else Log.i(TAG, "FAIL ;D " + mPrinter.getJobPath());
+        }
 
-                    Log.i(TAG,"It's the same and I have it, DO OPEN");
+         //The server actually has a job
+        if (!mPrinter.getJob().getFilename().equals("null"))
+            {
 
-                    //openGcode();
-                    openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
-
-
-                } else*/ {
-
-                    Log.i(TAG,"Either it's not the same or I don't have it, download: " + mPrinter.getJob().getFilename());
-
-
-                    File downloadPath = new File(LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
-
-                    if (downloadPath.exists()){
-
-                        Log.i(TAG,"Wait, I downloaded it once!");
-                        openGcodePrintView(getActivity(), downloadPath.getAbsolutePath(), mRootView, R.id.view_gcode);
+                Log.i(TAG,"Either it's not the same or I don't have it, download: " + mPrinter.getJob().getFilename());
 
 
-                    } else {
+                //Check if we've downloaded the same file before
+                File downloadPath = new File(LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
 
-                        if (!downloadPath.getParentFile().exists()) downloadPath.getParentFile().mkdirs();
+                if (downloadPath.exists()){
 
-                        OctoprintFiles.downloadFile(mContext, mPrinter.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
-                                LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
+                    Log.i(TAG,"Wait, I downloaded it once!");
+                    openGcodePrintView(getActivity(), downloadPath.getAbsolutePath(), mRootView, R.id.view_gcode);
 
-                        DatabaseController.handlePreference("References", mPrinter.getName(),
-                                LibraryController.getParentFolder() + "/temp/" + mPrinter.getJob().getFilename(), true);
+                //We have to download it again
+                } else {
 
-                        Log.i(TAG, "Downloading and adding to preferences");
+                    //Remake temp folder if it's not available
+                    if (!downloadPath.getParentFile().exists()) downloadPath.getParentFile().mkdirs();
 
-                        //Progress dialog to notify command events
-                        mDownloadDialog = new ProgressDialog(getActivity());
-                        mDownloadDialog.setMessage(getActivity().getString(R.string.printview_download_dialog));
-                        mDownloadDialog.show();
+                    //Download file
+                    OctoprintFiles.downloadFile(mContext, mPrinter.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
+                            LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
 
-                        //Register receiver
-                        mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                    //Add it to the reference list
+                    DatabaseController.handlePreference("References", mPrinter.getName(),
+                            LibraryController.getParentFolder() + "/temp/" + mPrinter.getJob().getFilename(), true);
+
+                    Log.i(TAG, "Downloading and adding to preferences");
+
+                    //Progress dialog to notify command events
+                    mDownloadDialog = new ProgressDialog(getActivity());
+                    mDownloadDialog.setMessage(getActivity().getString(R.string.printview_download_dialog) + "...");
+                    mDownloadDialog.show();
+
+                    //Register receiver
+                    mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
-                    }
-                    //downloadGcode();
-                    mPrinter.setJobPath(null);
+                }
 
-            }
-
-
+                //File changed, remove jobpath
+                mPrinter.setJobPath(null);
 
         }
+
+
+
+
 
     }
 
@@ -499,6 +506,8 @@ public class PrintViewFragment extends Fragment {
 
                 } else {
                     Log.i(TAG,"But file didn't download ok");
+
+                    Toast.makeText(getActivity(),R.string.printview_download_toast_error,Toast.LENGTH_LONG).show();
 
                     //Register receiver
                     mContext.unregisterReceiver(onComplete);

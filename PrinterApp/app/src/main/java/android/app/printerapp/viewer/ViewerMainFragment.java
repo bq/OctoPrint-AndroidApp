@@ -581,6 +581,9 @@ public class ViewerMainFragment extends Fragment {
      */
     public static void optionClean(){
 
+        //Delete slicing reference
+        DatabaseController.handlePreference("Slicing", "Last", null, false);
+
         mDataList.clear();
         mFile = null;
         mSlicingHandler.setOriginalProject(null);
@@ -592,18 +595,20 @@ public class ViewerMainFragment extends Fragment {
 
     public static void openFile(String filePath) {
         DataStorage data = null;
-        mFile = new File(filePath);
 
         //Open the file
         if (LibraryController.hasExtension(0, filePath)) {
 
             data = new DataStorage();
+            mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
 
 
         } else if (LibraryController.hasExtension(1, filePath)) {
 
             data = new DataStorage();
+            optionClean();
+            mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
 
         }

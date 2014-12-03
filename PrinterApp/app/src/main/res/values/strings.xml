@@ -69,6 +69,7 @@
     <string name="printview_start_button">START / PAUSE</string>
     <string name="printview_stop_button">STOP PRINTING</string>
     <string name="printview_download_dialog">File not available, downloading</string>
+    <string name="printview_download_toast_error">Error while downloading the file</string>
 
     <string name="devices_toast_no_stl">No .stl found</string>
     <string name="devices_toast_no_gcode">No .gcode found</string>
