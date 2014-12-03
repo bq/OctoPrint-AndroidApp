@@ -111,6 +111,13 @@ public class DevicesListController {
 			
 			addToList(m);
 
+            if (DatabaseController.isPreference("References", m.getName())) {
+
+                m.setJobPath(DatabaseController.getPreference("References",m.getName()));
+
+            }
+
+
             //Timeout for reconnection
             Handler handler = new Handler();
             handler.post(new Runnable() {
@@ -125,8 +132,9 @@ public class DevicesListController {
 			
 			c.moveToNext();
 		}
-	   
 	   DatabaseController.closeDb();
+
+
 
 	}
 	
@@ -264,10 +272,15 @@ public class DevicesListController {
 		for (ModelPrinter p : mList){
 			
 			if (p.getAddress().equals(ip)){
+
+                if (p.getStatus()!=StateUtils.STATE_ADHOC){
+
+                    Log.i("OUT","Printer " + ip + " already added.");
+
+                    return true;
+                }
 				
-				Log.i("OUT","Printer " + ip + " already added.");
-				
-				return true;
+
 			}
 			
 		}

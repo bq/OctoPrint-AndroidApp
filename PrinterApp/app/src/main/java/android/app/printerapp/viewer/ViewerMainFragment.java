@@ -372,9 +372,7 @@ public class ViewerMainFragment extends Fragment {
         switch(mCurrentAxis){
 
             case 0:
-
                 mAxisText.setText("Eje X");
-                mSurface.setRendererAxis(Lines.X_AXIS);
 
                 break;
 
@@ -935,7 +933,10 @@ public class ViewerMainFragment extends Fragment {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
             mRotationLayout.setVisibility(View.INVISIBLE);
+            mSurface.setRendererAxis(-1);
+
             switch (item.getItemId()) {
                 case R.id.move:
                     mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
@@ -972,6 +973,8 @@ public class ViewerMainFragment extends Fragment {
             mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.INVISIBLE);
             mActionMode = null;
+
+            mSurface.setRendererAxis(-1);
 
         }
     };

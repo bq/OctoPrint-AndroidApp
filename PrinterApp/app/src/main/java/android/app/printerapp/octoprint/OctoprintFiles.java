@@ -150,15 +150,14 @@ public class OctoprintFiles {
 	 * @param target
 	 * @param delete
 	 */
-	public static void fileCommand(final Context context, final String url, final String filename, final String target, final boolean delete){
+	public static void fileCommand(final Context context, final String url, final String filename, final String target, final boolean delete, boolean print){
 		
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
 		
 		try {
 			object.put("command", "select");
-
-            //object.put("print", "true");
+            if (print)object.put("print", "true");
 			entity = new StringEntity(object.toString(), "UTF-8");
 			
 		} catch (JSONException e) {		e.printStackTrace();
@@ -243,7 +242,7 @@ public class OctoprintFiles {
 
 						
                     //p.setLoaded(true);
-                    fileCommand(context, p.getAddress(), file.getName(), "/local/", false);
+                    fileCommand(context, p.getAddress(), file.getName(), "/local/", false, true);
 
                     Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
 							

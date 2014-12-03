@@ -130,7 +130,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public final static int OUT_TOUCHED = 3;
 
     private Lines mLine;
-    private int mAxis = 0;
+    private int mAxis = -1;
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode) {	
 		this.mDataList = dataList;
@@ -698,7 +698,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		        Matrix.transposeM(mTransInvMVMatrix, 0, mMVObjectMatrix, 0);
 		        Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
 
-                mLine.draw(data, mMVPMatrix, mAxis);
 	        }
         
 	                                                                                              
@@ -709,7 +708,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	    				mDataList.get(i).setModelMatrix(mObjectModel);
 	
 	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
-	    			} else  {
+
+                        mLine.draw(mDataList.get(i), mMVPMatrix, mAxis);
+
+                    } else  {
 	    				float [] modelMatrix = mDataList.get(i).getModelMatrix();
 	    				float [] mvpMatrix = new float[16];
 	    				float [] mvMatrix = new float[16];
