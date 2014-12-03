@@ -239,6 +239,9 @@ public class GcodeFile  {
     			//Toast.makeText(mContext, R.string.error_opening_invalid_file, Toast.LENGTH_SHORT).show();
     			ViewerMainFragment.resetWhenCancel();
     			if(mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.dismiss();
+
+
+                Log.i("PrintView", "This BROKE for some rison");
     			return;
     		}
     		

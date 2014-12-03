@@ -108,7 +108,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			if (!DevicesListController.checkExisting(m)){
 	        				mController.addElementController(m);
 	        			}
-	        			else Log.i("OUT","QUe existo ya coño");
+
 	       			 
 	        			
 	        		}

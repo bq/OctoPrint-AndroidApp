@@ -688,12 +688,12 @@ import it.sephiroth.android.library.widget.HListView;
                 if (cb_server.isChecked()){
 
                     //Select the same file again to reset progress
-                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false);
+                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false, false);
 
                 } else {
 
                     //Remove file from server
-                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true);
+                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
                 }
 
                 if (cb_local.isChecked()){

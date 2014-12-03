@@ -182,34 +182,41 @@ public class Lines {
                 mCoordsArray = drawZAxis(data.getLastCenter(), data.getAdjustZ());
                 mCurrentColor = Z_COLOR;
                 break;
+            default:
+                mCoordsArray = null;
+                break;
 
         }
 
-        mVertexBuffer.put(mCoordsArray);
-        mVertexBuffer.position(0);
+        if (mCoordsArray!=null) {
 
-        // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false, vertexStride, mVertexBuffer);
+            mVertexBuffer.put(mCoordsArray);
+            mVertexBuffer.position(0);
 
-        // get handle to fragment shader's vColor member
-        mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
-        // Set color for drawing the triangle
-        GLES20.glUniform4fv(mColorHandle, 1, mCurrentColor, 0);
+            // Prepare the triangle coordinate data
+            GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
+                    GLES20.GL_FLOAT, false, vertexStride, mVertexBuffer);
 
-        // get handle to shape's transformation matrix
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
-        ViewerRenderer.checkGlError("glGetUniformLocation");
+            // get handle to fragment shader's vColor member
+            mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 
-        // Apply the projection and view transformation
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
-        ViewerRenderer.checkGlError("glUniformMatrix4fv");
+            // Set color for drawing the triangle
+            GLES20.glUniform4fv(mColorHandle, 1, mCurrentColor, 0);
 
-        GLES20.glDrawArrays(GLES20.GL_LINES, 0, vertexCount);
+            // get handle to shape's transformation matrix
+            mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+            ViewerRenderer.checkGlError("glGetUniformLocation");
 
-        // Disable vertex array
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
+            // Apply the projection and view transformation
+            GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+            ViewerRenderer.checkGlError("glUniformMatrix4fv");
+
+            GLES20.glDrawArrays(GLES20.GL_LINES, 0, vertexCount);
+
+            // Disable vertex array
+            GLES20.glDisableVertexAttribArray(mPositionHandle);
+        }
     }
 
     }

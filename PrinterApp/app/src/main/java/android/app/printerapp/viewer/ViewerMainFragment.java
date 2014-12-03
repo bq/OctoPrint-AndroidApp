@@ -372,9 +372,7 @@ public class ViewerMainFragment extends Fragment {
         switch(mCurrentAxis){
 
             case 0:
-
                 mAxisText.setText("Eje X");
-                mSurface.setRendererAxis(Lines.X_AXIS);
 
                 break;
 
@@ -583,6 +581,9 @@ public class ViewerMainFragment extends Fragment {
      */
     public static void optionClean(){
 
+        //Delete slicing reference
+        DatabaseController.handlePreference("Slicing", "Last", null, false);
+
         mDataList.clear();
         mFile = null;
         mSlicingHandler.setOriginalProject(null);
@@ -594,18 +595,20 @@ public class ViewerMainFragment extends Fragment {
 
     public static void openFile(String filePath) {
         DataStorage data = null;
-        mFile = new File(filePath);
 
         //Open the file
         if (LibraryController.hasExtension(0, filePath)) {
 
             data = new DataStorage();
+            mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
 
 
         } else if (LibraryController.hasExtension(1, filePath)) {
 
             data = new DataStorage();
+            optionClean();
+            mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
 
         }
@@ -935,7 +938,10 @@ public class ViewerMainFragment extends Fragment {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
             mRotationLayout.setVisibility(View.INVISIBLE);
+            mSurface.setRendererAxis(-1);
+
             switch (item.getItemId()) {
                 case R.id.move:
                     mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
@@ -972,6 +978,8 @@ public class ViewerMainFragment extends Fragment {
             mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.INVISIBLE);
             mActionMode = null;
+
+            mSurface.setRendererAxis(-1);
 
         }
     };
