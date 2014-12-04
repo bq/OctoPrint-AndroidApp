@@ -102,12 +102,14 @@ public class DevicesListController {
 			
 			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3));
 			
-			final ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(3)));
+			final ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , StateUtils.TYPE_WITBOX);
 
             m.setId(c.getInt(0));
 
 			//Custom name
 			m.setDisplayName(c.getString(4));
+
+            m.setPosition(Integer.parseInt(c.getString(3)));
 			
 			addToList(m);
 

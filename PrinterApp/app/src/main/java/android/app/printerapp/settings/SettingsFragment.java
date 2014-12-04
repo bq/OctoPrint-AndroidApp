@@ -6,6 +6,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
@@ -278,13 +279,13 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), DevicesListController.searchAvailablePosition());
+                ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), StateUtils.TYPE_WITBOX);
 
                 if (!DevicesListController.checkExisting(m)) {
 
                     DevicesListController.addToList(m);
                     m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
-                    m.setLinked(getActivity());
+                    //m.setLinked(getActivity());
                     notifyAdapter();
 
                 }

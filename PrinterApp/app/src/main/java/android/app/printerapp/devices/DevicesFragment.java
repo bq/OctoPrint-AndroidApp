@@ -299,7 +299,7 @@ import it.sephiroth.android.library.widget.HListView;
         });
 
     }
-    //TODO get rid of this
+
     /**
      * Add a new element to the list and notify the adapter
      * It's handled on this Fragment to allow dynamic addition
@@ -321,8 +321,7 @@ import it.sephiroth.android.library.widget.HListView;
 
                         DevicesListController.addToList(m);
 
-                        //TODO Change linked switch
-                        m.setNotLinked();
+                        //m.setNotLinked();
                         notifyAdapter();
 
                     }

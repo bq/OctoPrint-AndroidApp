@@ -2,6 +2,7 @@ package android.app.printerapp.devices.discovery;
 
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -99,7 +100,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			Log.i("Network","New printer found! " + s.SSID);
 	        			//unregister();
 	        			
-	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1",DevicesListController.searchAvailablePosition());
+	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1", StateUtils.STATE_ADHOC);
 
 
                         mController.checkNetworkId(s.SSID,false);

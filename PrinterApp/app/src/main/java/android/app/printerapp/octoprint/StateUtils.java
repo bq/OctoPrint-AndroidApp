@@ -26,4 +26,7 @@ public class StateUtils {
     public static final int SLICER_SLICE = 1;
     public static final int SLICER_DOWNLOAD = 2;
 
+    public static final int TYPE_WITBOX = 1;
+    public static final int TYPE_PRUSA = 2;
+
 }

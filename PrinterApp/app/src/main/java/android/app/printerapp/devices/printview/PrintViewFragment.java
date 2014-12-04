@@ -373,6 +373,7 @@ public class PrintViewFragment extends Fragment {
             //Get filename
             File currentFile = new File(mPrinter.getJobPath());
 
+            if (currentFile.exists())
             //if it's the same as the server or it's in process of being uploaded
             if ((mPrinter.getJob().getFilename().equals(currentFile.getName())) ||
                     (!mPrinter.getLoaded())) {
