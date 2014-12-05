@@ -33,7 +33,7 @@ public class DatabaseController {
 	}
 	
 	//Add a new element to the permanent database
-	public static long writeDb(String name, String address, String position){
+	public static long writeDb(String name, String address, String position, String type){
 		
 		// Gets the data repository in write mode
 		mDb = mDbHelper.getWritableDatabase();
@@ -45,6 +45,7 @@ public class DatabaseController {
 		values.put(FeedEntry.DEVICES_ADDRESS, address);
 		values.put(FeedEntry.DEVICES_POSITION, position);
 		values.put(FeedEntry.DEVICES_DISPLAY, name);
+        values.put(FeedEntry.DEVICES_TYPE, type);
 		
 		long id = mDb.insert(FeedEntry.TABLE_NAME, null, values);
 		mDb.close();

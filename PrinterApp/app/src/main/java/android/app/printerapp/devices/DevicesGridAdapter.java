@@ -4,7 +4,6 @@ import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,6 +116,9 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             holder.imageIcon.setVisibility(View.VISIBLE);
             holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.SRC_ATOP);
 
+
+
+
             int status = m.getStatus();
 
 
@@ -126,19 +128,67 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             //Printer icon
             switch (status) {
 
-                case StateUtils.STATE_NONE: {
+                /*case StateUtils.STATE_NONE: {
                     holder.imageIcon.setImageResource(R.drawable.icon_printer);
                 }
-                break;
+                break;*/
 
                 case StateUtils.STATE_NEW:
-                case StateUtils.STATE_ADHOC: {
+
                     holder.imageIcon.setImageResource(R.drawable.icon_detectedprinter);
-                }
+
+                    break;
+                case StateUtils.STATE_ADHOC:
+                    holder.imageIcon.setImageResource(R.drawable.octopidev_wifi);
+
                 break;
 
                 default: {
-                    holder.imageIcon.setImageResource(R.drawable.icon_selectedprinter);
+
+
+
+                    switch(m.getType()){
+
+                        case StateUtils.TYPE_WITBOX:
+
+                            if (m.getDisplayColor()!=0){
+
+                                holder.imageIcon.setImageResource(R.drawable.witbox_transparent);
+                                holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.DST_ATOP);
+
+                            } else holder.imageIcon.setImageResource(R.drawable.icon_witbox);
+
+                            break;
+
+                        case StateUtils.TYPE_PRUSA:
+
+                            if (m.getDisplayColor()!=0) {
+
+                                holder.imageIcon.setImageResource(R.drawable.prusa_transparent);
+                                holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.DST_ATOP);
+
+                            } else holder.imageIcon.setImageResource(R.drawable.icon_prusa);
+                            break;
+
+                        case StateUtils.TYPE_CUSTOM:
+
+                            if (m.getDisplayColor()!=0) {
+
+                                holder.imageIcon.setImageResource(R.drawable.icon_custom_transparent);
+                                holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.DST_ATOP);
+
+                            } else holder.imageIcon.setImageResource(R.drawable.icon_custom_generic);
+
+                            break;
+
+
+                        default:
+                            holder.imageIcon.setImageResource(R.drawable.icon_custom_generic);
+                            break;
+
+
+                    }
+
                 }
                 break;
 
@@ -160,7 +210,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
                                 holder.progressBarPrinting.setVisibility(View.VISIBLE);
                                 holder.progressBarPrinting.setProgress(100);
-                                holder.progressBarPrinting.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
+                                //holder.progressBarPrinting.getProgressDrawable().setColorFilter(Color.parseColor("#ff009900"), Mode.SRC_IN);
                                 holder.textViewLoading.setText(R.string.devices_text_completed);
                                 holder.textViewLoading.setVisibility(View.VISIBLE);
                             }
@@ -195,12 +245,18 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                 }
                 break;
 
+
+
                 //When printing, show status bar and update progress
                 case StateUtils.STATE_PRINTING: {
 
                     holder.progressBarPrinting.setVisibility(View.VISIBLE);
-                    Double n = Double.valueOf(m.getJob().getProgress());
-                    holder.progressBarPrinting.setProgress(n.intValue());
+                    if (!m.getJob().getProgress().equals("null")) {
+
+                        Double n = Double.valueOf(m.getJob().getProgress());
+
+                        holder.progressBarPrinting.setProgress(n.intValue());
+                    }
 
                 }
                 break;

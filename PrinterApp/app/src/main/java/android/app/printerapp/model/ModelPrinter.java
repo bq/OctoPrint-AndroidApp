@@ -7,7 +7,6 @@ import android.app.printerapp.devices.database.DeviceInfo;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +19,8 @@ public class ModelPrinter {
 
     //Id for database interaction
     private long mId;
+
+    private int mPrinterType;
 	
 	//Service info
 	private String mName;
@@ -53,7 +54,7 @@ public class ModelPrinter {
     //TODO temporary profile handling
     private ArrayList<JSONObject> mProfiles;
 	
-	public ModelPrinter(String name, String address, int position){
+	public ModelPrinter(String name, String address, int type){
 		
 		mName = name;
 		mDisplayName = name;
@@ -67,10 +68,23 @@ public class ModelPrinter {
 		mJobPath = null;
 		
 		//Set new position according to the position in the DB, or the first available
-		if ((Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
-		else mPosition = position;
-		
-		Log.i("OUT","Creating service @"+position);
+		//if ((Integer.valueOf(position)==null)) mPosition = DevicesListController.searchAvailablePosition();
+		//else mPosition = position;
+
+        mPosition = DevicesListController.searchAvailablePosition();
+
+        //TODO predefine network types
+
+        switch (type){
+
+            case StateUtils.STATE_ADHOC:
+            case StateUtils.STATE_NEW: mStatus = type; break;
+
+            default: mStatus = StateUtils.STATE_NONE; break;
+
+        }
+
+        mPrinterType = type;
 
 	}
 	
@@ -133,6 +147,8 @@ public class ModelPrinter {
 
     public String getPort() { return mPort; }
 
+    public int getType() { return mPrinterType; }
+
 	/**********
 	 *  Sets
 	 **********/
@@ -180,19 +196,19 @@ public class ModelPrinter {
 		mStatus = StateUtils.STATE_NONE;
 	}
 	
-	public void setNotConfigured(){
+	/*public void setNotConfigured(){
 		mStatus = StateUtils.STATE_ADHOC;
 		mMessage = "Not configured";
-	}
+	}*/
 	
-	public void setNotLinked(){	
+	/*public void setNotLinked(){
 		mStatus = StateUtils.STATE_NEW;
 		mMessage = "New";
-	}
+	}*/
 	
 	public void setLinked(Context context){
-		mStatus = StateUtils.STATE_NONE;
-		mMessage = "";
+		//mStatus = StateUtils.STATE_NONE;
+		//mMessage = "";
 		startUpdate(context);
 		mCam = new CameraHandler(context,mAddress);
 		
@@ -204,8 +220,11 @@ public class ModelPrinter {
 	}*/
 	
 	//change position
-	public void setPosition(int pos){	
-		mPosition = pos;
+	public void setPosition(int pos){
+
+        if ((Integer.valueOf(pos)==null)) mPosition = DevicesListController.searchAvailablePosition();
+		else mPosition = pos;
+
         DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_POSITION, getId(), String.valueOf(mPosition));
 	}
 	
@@ -225,5 +244,7 @@ public class ModelPrinter {
     public void setId(long id) { mId = id; }
 
     public void setPort(String port) { mPort = port; }
+
+    public void setType(int type) { mPrinterType = type; }
 
 }

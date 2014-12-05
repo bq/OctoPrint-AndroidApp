@@ -31,6 +31,7 @@
     <string name="devices_progress_dialog_title">Progress</string>
     <string name="devices_tabhost_tab_map">Map</string>
     <string name="devices_tabhost_tab_list">List</string>
+    <string name="devices_tabhost_tab_video">Video panel</string>
     <string name="devices_error_dialog_title">Error message</string>
     <string name="devices_setup_title">Set up printer </string>
     <string name="devices_setup_message">Insert printer code or scan the QR located in the back of your device</string>
@@ -147,7 +148,7 @@
     <string name="settings_printers">Linked Witbox</string>
     <string name="settings_hidden">Hidden elements</string>
     <string name="settings_add_title">Add new printer</string>
-    <string name="settings_edit_name">Set printer new name</string>
+    <string name="settings_edit_name">Edit printer</string>
     <string name="settings_default_name">New printer</string>
     <string name="settings_text_name">Set printer name:</string>
     <string name="settings_text_address">Set printer address:</string>

@@ -36,7 +36,7 @@ def computeVersionName() {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:support-v4:20.0.0'
     compile files('libs/android-async-http-1.4.5-20131110.125018-1.jar')
     compile files('libs/autobahn-0.5.0.jar')
     compile files('libs/devsmartlib.jar')

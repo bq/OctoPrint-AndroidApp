@@ -381,7 +381,7 @@ public class PrintNetworkManager {
 	public void addElementController(ModelPrinter p){
 		
 		mController.addElement(p);
-		p.setNotConfigured();
+		//p.setNotConfigured();
 		
 	}
 	
