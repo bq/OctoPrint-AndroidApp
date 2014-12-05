@@ -147,6 +147,8 @@ public class ModelPrinter {
 
     public String getPort() { return mPort; }
 
+    public int getType() { return mPrinterType; }
+
 	/**********
 	 *  Sets
 	 **********/
@@ -242,5 +244,7 @@ public class ModelPrinter {
     public void setId(long id) { mId = id; }
 
     public void setPort(String port) { mPort = port; }
+
+    public void setType(int type) { mPrinterType = type; }
 
 }

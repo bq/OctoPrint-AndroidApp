@@ -1,0 +1,10 @@
+{'id':1,
+ 'name':'Witbox',
+ 'color':'default',
+ 'volume.formFactor':'rectangular',
+ 'volume.width':297,
+ 'volume.depth':210,
+ 'volume.height':200,
+ 'heatedBed':false,
+ 'extruder.nozzleDiameter':0.4,
+ 'extruder.count':1}

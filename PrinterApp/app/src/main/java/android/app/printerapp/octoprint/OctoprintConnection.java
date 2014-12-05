@@ -227,7 +227,7 @@ public class OctoprintConnection {
      * SETTINGS
      **************************************************/
 
-    private static int convertColor(String color){
+    public static int convertColor(String color){
 
         if (color.equals("default")) return Color.TRANSPARENT;
         if (color.equals("red")) return Color.RED;
@@ -264,6 +264,7 @@ public class OctoprintConnection {
                         p.setDisplayName(newName);
                         DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, p.getId(), newName);
                         }
+
                     p.setDisplayColor(convertColor(appearance.getString("color")));
 
 

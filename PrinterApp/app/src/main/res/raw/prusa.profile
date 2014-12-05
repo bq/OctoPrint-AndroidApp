@@ -1,0 +1,10 @@
+{'id':2,
+ 'name':'Prusa',
+ 'color':'default',
+ 'volume.formFactor':'rectangular',
+ 'volume.width':215,
+ 'volume.depth':210,
+ 'volume.height':180,
+ 'heatedBed':false,
+ 'extruder.nozzleDiameter':0.4,
+ 'extruder.count':1}

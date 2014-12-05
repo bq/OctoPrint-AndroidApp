@@ -304,8 +304,11 @@ public class PrintViewFragment extends Fragment {
             tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) +
                     " left / " + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed) - ");
 
-            Double n = Double.valueOf(mPrinter.getJob().getProgress());
-            pb_prog.setProgress(n.intValue());
+            if (!mPrinter.getJob().getProgress().equals("null")) {
+                Double n = Double.valueOf(mPrinter.getJob().getProgress());
+                pb_prog.setProgress(n.intValue());
+
+            }
 
             if (mDataGcode!=null)
                 changeProgress(Double.valueOf(mPrinter.getJob().getProgress()));

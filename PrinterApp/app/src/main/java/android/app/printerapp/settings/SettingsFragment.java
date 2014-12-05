@@ -279,12 +279,12 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), StateUtils.TYPE_WITBOX);
+                ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), StateUtils.TYPE_CUSTOM);
 
                 if (!DevicesListController.checkExisting(m)) {
 
                     DevicesListController.addToList(m);
-                    m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
+                    m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(m.getType())));
                     //m.setLinked(getActivity());
                     notifyAdapter();
 

@@ -102,7 +102,7 @@ public class DevicesListController {
 			
 			Log.i("OUT","Entry: " + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3));
 			
-			final ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , StateUtils.TYPE_WITBOX);
+			final ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(5)));
 
             m.setId(c.getInt(0));
 

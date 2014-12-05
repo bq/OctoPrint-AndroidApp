@@ -12,6 +12,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.settings.EditPrinterDialog;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.content.ClipData;
 import android.content.Context;
@@ -493,7 +494,7 @@ import it.sephiroth.android.library.widget.HListView;
      */
     public void codeDialog(final ModelPrinter m) {
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        /*AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle(R.string.devices_setup_title);
 
         //Inflate the view
@@ -507,11 +508,9 @@ import it.sephiroth.android.library.widget.HListView;
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition())));
-                m.setLinked(getActivity());
 
-                //TODO not notifying will wait til the socket opens
-                notifyAdapter();
+
+
 
             }
         });
@@ -520,7 +519,15 @@ import it.sephiroth.android.library.widget.HListView;
 
         adb.setView(v);
 
-        adb.show();
+        adb.show();*/
+
+        m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(StateUtils.TYPE_CUSTOM)));
+        m.setType(StateUtils.TYPE_CUSTOM);
+        m.setLinked(getActivity());
+
+        new EditPrinterDialog(mGridAdapter,m);
+
+        notifyAdapter();
 
     }
 
