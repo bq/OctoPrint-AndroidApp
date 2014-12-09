@@ -37,12 +37,32 @@
                 android:id="@+id/settings_edit_type_tag" />
 
 
-
-            <Spinner
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/settings_edit_type_spinner"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp"
+                android:weightSum="2">
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settings_edit_type_spinner"
+                    android:layout_weight="1"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/settings_delete_button"
+                    android:background="@null"
+                    android:visibility="gone"
+                    android:src="@android:drawable/ic_delete"/>
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"

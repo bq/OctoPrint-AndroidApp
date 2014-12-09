@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -58,6 +59,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
             TextView tv = (TextView) v.findViewById(R.id.settings_text);
             tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
 
+            ImageView iv = (ImageView) v.findViewById(R.id.imageView_settings);
+
             final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.settings_connection);
             final ImageButton hideButton = (ImageButton) v.findViewById(R.id.settings_hide);
 
@@ -80,6 +83,20 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                     break;
                 default:
                     hideButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                    break;
+
+            }
+
+            switch (m.getType()){
+
+                case StateUtils.TYPE_WITBOX:
+                    iv.setImageResource(R.drawable.icon_witbox);
+                    break;
+                case StateUtils.TYPE_PRUSA:
+                    iv.setImageResource(R.drawable.icon_prusa);
+                    break;
+                case StateUtils.TYPE_CUSTOM:
+                    iv.setImageResource(R.drawable.icon_custom_generic);
                     break;
 
             }

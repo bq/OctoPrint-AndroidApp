@@ -104,6 +104,12 @@ public class DevicesListController {
 			
 			final ModelPrinter m = new ModelPrinter(c.getString(1),c.getString(2) , Integer.parseInt(c.getString(5)));
 
+            if (Integer.parseInt(c.getString(5)) == StateUtils.TYPE_CUSTOM){
+
+                m.setType(StateUtils.TYPE_CUSTOM, c.getString(6));
+                Log.i("OUT",m.getDisplayName() + " SOY " + m.getProfile());
+            }
+
             m.setId(c.getInt(0));
 
 			//Custom name
@@ -127,7 +133,7 @@ public class DevicesListController {
                 @Override
                 public void run() {
 
-                    m.setLinked(context);
+                    m.startUpdate(context);
                 }
             });
 

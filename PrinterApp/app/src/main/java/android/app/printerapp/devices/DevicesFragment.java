@@ -522,8 +522,8 @@ import it.sephiroth.android.library.widget.HListView;
         adb.show();*/
 
         m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(StateUtils.TYPE_CUSTOM)));
-        m.setType(StateUtils.TYPE_CUSTOM);
-        m.setLinked(getActivity());
+        m.setType(StateUtils.TYPE_CUSTOM, "defaultprinter");
+        m.startUpdate(getActivity());
 
         new EditPrinterDialog(mGridAdapter,m);
 

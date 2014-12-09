@@ -20,7 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         FeedEntry.DEVICES_ADDRESS + TEXT_TYPE + COMMA_SEP +
         FeedEntry.DEVICES_POSITION + TEXT_TYPE + COMMA_SEP +
         FeedEntry.DEVICES_DISPLAY + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_TYPE + TEXT_TYPE +
+        FeedEntry.DEVICES_TYPE + TEXT_TYPE + COMMA_SEP +
+        FeedEntry.DEVICES_PROFILE + TEXT_TYPE +
         ")";
 
     private static final String SQL_DELETE_ENTRIES =
