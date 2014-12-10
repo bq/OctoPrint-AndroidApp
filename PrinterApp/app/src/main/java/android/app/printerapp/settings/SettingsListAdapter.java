@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -58,6 +59,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
             TextView tv = (TextView) v.findViewById(R.id.settings_text);
             tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
 
+            ImageView iv = (ImageView) v.findViewById(R.id.imageView_settings);
+
             final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.settings_connection);
             final ImageButton hideButton = (ImageButton) v.findViewById(R.id.settings_hide);
 
@@ -84,6 +87,20 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
             }
 
+            switch (m.getType()){
+
+                case StateUtils.TYPE_WITBOX:
+                    iv.setImageResource(R.drawable.icon_witbox);
+                    break;
+                case StateUtils.TYPE_PRUSA:
+                    iv.setImageResource(R.drawable.icon_prusa);
+                    break;
+                case StateUtils.TYPE_CUSTOM:
+                    iv.setImageResource(R.drawable.icon_custom_generic);
+                    break;
+
+            }
+
             v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -99,13 +116,13 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                 }
             });
 
-            v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
+            /*v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    new EditPrinterDialog(SettingsListAdapter.this,m);
+                    new EditPrinterDialog(getContext(),m);
                 }
-            });
+            });*/
 
 
             //TODO notify adapter instead of changing icons
@@ -117,7 +134,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                         OctoprintConnection.disconnect(getContext(), m.getAddress());
                         connectionButton.setImageResource(R.drawable.ic_settings_disconnect);
                     } else {
-                        OctoprintConnection.getConnection(getContext(), m, true);
+                        OctoprintConnection.getNewConnection(getContext(), m);
                         connectionButton.setImageResource(R.drawable.ic_settings_connect);
                     }
 

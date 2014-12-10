@@ -6,14 +6,14 @@
         <shape>
 
             <solid
-                android:color="#8717cb2a" />
+                android:color="#a5db9a" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
                 <solid
-                    android:color="#ff00a80f" />
+                    android:color="#169300" />
             </shape>
         </clip>
     </item>

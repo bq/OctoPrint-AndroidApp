@@ -1,34 +1,29 @@
 package android.app.printerapp.octoprint;
 
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.model.ModelProfile;
+import android.app.printerapp.settings.EditPrinterDialog;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -43,7 +38,8 @@ import de.tavendo.autobahn.WebSocketHandler;
 public class OctoprintConnection {
 
     private static final int SOCKET_TIMEOUT = 10000;
-    private static final String DEFAULT_PORT = "/dev/ttyUSB0";
+    public static final String DEFAULT_PORT = "/dev/ttyUSB0";
+    private static final String DEFAULT_PROFILE = "_default";
 
 	/**
 	 * 
@@ -51,13 +47,14 @@ public class OctoprintConnection {
 	 * but never used.
 	 * 
 	 */
-	private static void startConnection(String url, Context context, String port){
+	public static void startConnection(String url, final Context context, String port, String profile ){
 					
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
 		try {
 			object.put("command","connect");
-            if (port!=null) object.put("port",port);
+            object.put("port",port);
+            object.put("printerProfile", profile);
             object.put("save", true);
 			object.put("autoconnect","true");
 			entity = new StringEntity(object.toString(), "UTF-8");
@@ -68,9 +65,7 @@ public class OctoprintConnection {
 		}
 		
 		HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION, 
-				entity, "application/json", new JsonHttpResponseHandler()
-		
-		/*HttpClientHandler.post(url + POST_CONNECTION, params, new JsonHttpResponseHandler()*/{				
+				entity, "application/json", new JsonHttpResponseHandler(){
 
 			//Override onProgress because it's faulty
 			@Override
@@ -114,15 +109,46 @@ public class OctoprintConnection {
                     }
                 });
     }
+
+    public static void getLinkedConnection(final Context context, final ModelPrinter p){
+
+        HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+
+                JSONObject current = null;
+                try {
+                    current = response.getJSONObject("current");
+                    p.setPort(current.getString("port"));
+                    convertType(p, current.getString("printerProfile"));
+                    Log.i("Connection","Printer already connected to " + p.getPort());
+                    //p.startUpdate(context);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+    }
 	
 	/**
 	 * Obtains the current state of the machine and issues new connection commands
 	 * @param p printer
-     * @param dialog true for manual connection else automatic
 	 */
-	public static void getConnection(final Context context, final ModelPrinter p, final boolean dialog){
-		
-		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
+	public static void getNewConnection(final Context context, final ModelPrinter p){
+
+        //Progress dialog to notify command events
+        final ProgressDialog pd = new ProgressDialog(context);
+        pd.setMessage(context.getString(R.string.devices_command_waiting) + p.getAddress().replace("/"," "));
+        pd.show();
+
+
+        HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
 						
 			@Override
 			public void onSuccess(int statusCode, Header[] headers,
@@ -130,79 +156,106 @@ public class OctoprintConnection {
 				super.onSuccess(statusCode, headers, response);
 
 
+                pd.dismiss();
+
                 //Check for current status
                 JSONObject current = null;
+                JSONObject options = null;
                 try {
                     current = response.getJSONObject("current");
+                    options = response.getJSONObject("options");
 
                     Log.i("CONNECTION","CURRENT CONNECTION " + response.toString());
 
+                        //if closed or error
+                        if ((current.getString("state").contains("Closed"))
+                                ||(current.getString("state").contains("Error"))
+                                 || (current.getString("printerProfile").equals(DEFAULT_PROFILE))) {
 
-                    //if closed or error
-                    if ((current.getString("state").contains("Closed"))
-                            ||(current.getString("state").contains("Error"))
-                            ) {
+                            new EditPrinterDialog(context, p, response);
 
-                        if (dialog) { //Manual connection
+                            /*if (dialog) { //Manual connection
 
+                                //Create dialog
+                                AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                                adb.setTitle("Select port for " + p.getDisplayName());
 
-                            //Create dialog
-                            AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                            adb.setTitle("Select port for " + p.getDisplayName());
+                                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                            View v = inflater.inflate(R.layout.devices_connection_dialog, null);
-                            final Spinner s_port = (Spinner) v.findViewById(R.id.devices_connection_dialog_spinner);
+                                View v = inflater.inflate(R.layout.devices_connection_dialog, null);
+                                final Spinner s_port = (Spinner) v.findViewById(R.id.devices_connection_dialog_spinner);
 
 
-                            //Show port list
-                            JSONArray ports = response.getJSONObject("options").getJSONArray("ports");
+                                //Show port list
+                                JSONArray ports = response.getJSONObject("options").getJSONArray("ports");
 
-                            ArrayList<String> ports_array = new ArrayList<String>();
+                                ArrayList<String> ports_array = new ArrayList<String>();
 
-                            for (int i = 0; i < ports.length(); i++) {
+                                for (int i = 0; i < ports.length(); i++) {
 
-                                ports_array.add(ports.get(i).toString());
+                                    ports_array.add(ports.get(i).toString());
+
+                                }
+                                ArrayAdapter<String> ports_adapter = new ArrayAdapter<String>(context,
+                                        R.layout.print_panel_spinner_item, ports_array);
+
+                                s_port.setAdapter(ports_adapter);
+
+
+
+                                adb.setView(v);
+
+                                adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        Log.i("CONNECTION", "START CONNECTION MANUALLY ON " + s_port.getSelectedItem().toString());
+
+                                        //Start connection with the selected port
+                                        startConnection(p.getAddress(), context, s_port.getSelectedItem().toString(), null);
+                                    }
+                                });
+
+                                adb.show();
+
+
+                            } else { //Automatic connection
+
+                                Log.i("CONNECTION", "START CONNECTION AUTOMATICALLY ON " + DEFAULT_PORT);
+
+
+                                //startConnection(p.getAddress(), context, DEFAULT_PORT);
+
+                            }*/
+
+                        } else {
+
+
+                            if (p.getStatus() == StateUtils.STATE_NEW){
+
+                                p.setPort(current.getString("port"));
+                                convertType(p, current.getString("printerProfile"));
+                                Log.i("Connection","Printer already connected to " + p.getPort());
+
+                                p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType())));
+
+                                p.startUpdate(context);
 
                             }
-                            ArrayAdapter<String> ports_adapter = new ArrayAdapter<String>(context,
-                                    R.layout.print_panel_spinner_item, ports_array);
 
-                            s_port.setAdapter(ports_adapter);
-
-
-
-                            adb.setView(v);
-
-                            adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                    Log.i("CONNECTION", "START CONNECTION MANUALLY ON " + s_port.getSelectedItem().toString());
-
-                                    //Start connection with the selected port
-                                    startConnection(p.getAddress(), context, s_port.getSelectedItem().toString());
-                                }
-                            });
-
-                            adb.show();
-
-
-                        } else { //Automatic connection
-
-                            Log.i("CONNECTION", "START CONNECTION AUTOMATICALLY ON " + DEFAULT_PORT);
-
-                            //TODO default port should be per machine
-                            startConnection(p.getAddress(), context, DEFAULT_PORT);
 
                         }
 
-                    } else {
 
-                        p.setPort(current.getString("port"));
-                        Log.i("Connection","Printer already connected to " + p.getPort());
-                    }
+                    //}
+
+
+
+
+
+
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -213,7 +266,7 @@ public class OctoprintConnection {
 					String responseString, Throwable throwable) {
 				Log.i("Connection","Failure while connecting " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
-
+                pd.dismiss();
                 OctoprintAuthentication.getAuth(context, p);
 			}
 			
@@ -222,6 +275,15 @@ public class OctoprintConnection {
 		
 		
 	}
+
+    private static void convertType(ModelPrinter p, String type){
+
+        if (type.equals(ModelProfile.WITBOX_PROFILE)) p.setType(1, ModelProfile.WITBOX_PROFILE);
+        else if (type.equals(ModelProfile.PRUSA_PROFILE)) p.setType(2, ModelProfile.PRUSA_PROFILE);
+        else p.setType(3, type);
+
+
+    }
 
     /*************************************************
      * SETTINGS
@@ -541,16 +603,19 @@ public class OctoprintConnection {
     //Method to invoke connection handling
     public static void doConnection(Context context, ModelPrinter p){
 
-        getConnection(context,p,false);
+
+        getLinkedConnection(context,p);
 
         //Get printer settings
-        OctoprintConnection.getSettings(p);
+        getSettings(p);
 
         //Get a new set of files
         OctoprintFiles.getFiles(context, p);
 
         //Get a new set of profiles
         OctoprintSlicing.retrieveProfiles(context,p);
+
+
 
     }
 

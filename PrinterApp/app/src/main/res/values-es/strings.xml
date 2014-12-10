@@ -12,6 +12,7 @@
     <string name="delete">Eliminar</string>
     <string name="error">Error</string>
     <string name="help">Ayuda</string>
+    <string name="warning">Aviso</string>
     
     <string name="fragment_devices">Dispositivos</string>
     <string name="fragment_print">Panel de impresión</string>
@@ -146,7 +147,10 @@
     <string name="settings_text_name">Nombre de la impresora:</string>
     <string name="settings_text_address">Dirección de la impresora:</string>
     <string name="settings_default_color">Mantener color actual</string>
-     
+    <string name="settings_profile_add">Nombre del perfil nuevo</string>
+    <string name="settings_profile_delete">Si borras este perfil, todas las impresoras que lo compartan se desconfigurarán.\nPuedes volver a configurarlas en el panel de Dispositivos.</string>
+
+
     <string name="settings_tabhost_tab_connection">Conexión y red</string>
     <string name="settings_tabhost_tab_devices">Dispositivos</string>
     <string name="settings_tabhost_tab_users">Usuarios</string>

@@ -21,7 +21,8 @@ public class ModelPrinter {
     private long mId;
 
     private int mPrinterType;
-	
+    private String mPrinterProfile = null;
+
 	//Service info
 	private String mName;
 	private String mDisplayName;
@@ -148,6 +149,7 @@ public class ModelPrinter {
     public String getPort() { return mPort; }
 
     public int getType() { return mPrinterType; }
+    public String getProfile() { return mPrinterProfile; }
 
 	/**********
 	 *  Sets
@@ -173,13 +175,7 @@ public class ModelPrinter {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			
-			
 		}
-		
-		
-
 	}
 	
 	public void updateFiles(File m){
@@ -188,7 +184,8 @@ public class ModelPrinter {
 	
 	public void startUpdate(Context context){
 		//Initialize web socket connection
-		//OctoprintConnection.getConnection(context, this, false);
+		//OctoprintConnection.getNewConnection(context, this, false);
+        mStatus = StateUtils.STATE_NONE;
 		OctoprintConnection.openSocket(this, context);
 	}
 	
@@ -206,13 +203,13 @@ public class ModelPrinter {
 		mMessage = "New";
 	}*/
 	
-	public void setLinked(Context context){
+	/*public void setLinked(Context context){
 		//mStatus = StateUtils.STATE_NONE;
 		//mMessage = "";
 		startUpdate(context);
 		mCam = new CameraHandler(context,mAddress);
 		
-	}
+	}*/
 	
 	//Set video stream from the camera
 /*	public void setVideoStream(Context context){
@@ -245,6 +242,9 @@ public class ModelPrinter {
 
     public void setPort(String port) { mPort = port; }
 
-    public void setType(int type) { mPrinterType = type; }
+    public void setType(int type, String profile) {
+        mPrinterType = type;
+        mPrinterProfile = profile;
+    }
 
 }
