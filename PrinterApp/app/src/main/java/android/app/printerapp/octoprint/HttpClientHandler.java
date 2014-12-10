@@ -10,6 +10,20 @@ import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.net.ssl.SSLContext;
 
 /**
  * Static class to handle Http requests with the old API or the new one (with API_KEY)
@@ -54,6 +68,48 @@ public class HttpClientHandler {
   public static void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
 	  client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
+
+    //PUT method for the new API
+    public static void patch(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
+
+
+        CloseableHttpResponse response = null;
+        try {
+            SSLContext sslContext = SSLContexts.createSystemDefault();
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                    sslContext,
+                    SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            CloseableHttpClient  httpClient= HttpClientBuilder.create()
+                    .setSSLSocketFactory(sslsf)
+                    .build();
+
+            //CloseableHttpClient httpClient = HttpClients.custom().build();
+            HttpPatch httpPatch = null;
+            httpPatch = new HttpPatch(new URI(getAbsoluteUrl(url) + "?apikey=" + HttpUtils.getApiKey(url)));
+            httpPatch.setEntity(entity);
+            response = httpClient.execute(httpPatch);
+
+            Log.i("OUT", "Dafux: " + EntityUtils.toString(response.getEntity()));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e){
+
+            e.printStackTrace();
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        //client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+    }
   
   //DELETE method
   public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
@@ -69,6 +125,8 @@ public class HttpClientHandler {
       Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));
       return BASE_URL + relativeUrl;
   }
+
+
 
 
 

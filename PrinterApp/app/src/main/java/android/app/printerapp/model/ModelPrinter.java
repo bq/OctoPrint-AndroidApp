@@ -184,7 +184,8 @@ public class ModelPrinter {
 	
 	public void startUpdate(Context context){
 		//Initialize web socket connection
-		//OctoprintConnection.getConnection(context, this, false);
+		//OctoprintConnection.getNewConnection(context, this, false);
+        mStatus = StateUtils.STATE_NONE;
 		OctoprintConnection.openSocket(this, context);
 	}
 	
@@ -202,13 +203,13 @@ public class ModelPrinter {
 		mMessage = "New";
 	}*/
 	
-	public void setLinked(Context context){
+	/*public void setLinked(Context context){
 		//mStatus = StateUtils.STATE_NONE;
 		//mMessage = "";
 		startUpdate(context);
 		mCam = new CameraHandler(context,mAddress);
 		
-	}
+	}*/
 	
 	//Set video stream from the camera
 /*	public void setVideoStream(Context context){

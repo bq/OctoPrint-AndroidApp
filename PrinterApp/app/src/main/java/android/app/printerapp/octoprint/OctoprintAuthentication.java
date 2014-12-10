@@ -112,7 +112,8 @@ public class OctoprintAuthentication {
                         try {
                             DatabaseController.handlePreference("Keys", PrintNetworkManager.getNetworkId(p.getName()),response.getString("key"),true);
                             Log.i("Connection","Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
-                            OctoprintConnection.doConnection(context,p);
+                            //OctoprintConnection.doConnection(context,p);
+                            OctoprintConnection.getNewConnection(context, p);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

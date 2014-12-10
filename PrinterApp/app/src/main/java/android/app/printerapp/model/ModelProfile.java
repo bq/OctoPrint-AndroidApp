@@ -20,8 +20,8 @@ import java.io.InputStreamReader;
  */
 public class ModelProfile {
 
-    public static final String WITBOX_PROFILE = "WITBOX";
-    public static final String PRUSA_PROFILE = "PRUSA";
+    public static final String WITBOX_PROFILE = "bq_witbox";
+    public static final String PRUSA_PROFILE = "bq_hephestos";
     public static final String DEFAULT_PROFILE = "CUSTOM";
 
     public static JSONObject retrieveProfile(Context context, String resource){

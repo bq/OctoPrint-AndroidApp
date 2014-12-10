@@ -45,6 +45,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:layout_margin="5dp"
+    android:visibility="gone"
     android:src="@android:drawable/ic_menu_edit" />
 
 <ImageButton

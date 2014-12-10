@@ -353,6 +353,8 @@ public class PrintViewFragment extends Fragment {
     //TODO Properly close the video when destroying the view
     @Override
     public void onDestroy() {
+
+        mContext.unregisterReceiver(onComplete);
         super.onDestroy();
     }
 

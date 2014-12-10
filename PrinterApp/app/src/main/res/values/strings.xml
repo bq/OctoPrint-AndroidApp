@@ -14,6 +14,7 @@
     <string name="delete">Delete</string>
     <string name="error">Error</string>
     <string name="help">Help</string>
+    <string name="warning">Warning</string>
     
     <string name="fragment_devices">Devices</string>
     <string name="fragment_print">Print panel</string>
@@ -153,6 +154,8 @@
     <string name="settings_text_name">Set printer name:</string>
     <string name="settings_text_address">Set printer address:</string>
     <string name="settings_default_color">Keep current color</string>
+    <string name="settings_profile_add">Name new profile</string>
+    <string name="settings_profile_delete">If you delete this profile, all printers that share it will be unconfigured.\nYou can configure them again in the Devices panel.</string>
     
     <string name="settings_tabhost_tab_connection">Connection and network</string>
     <string name="settings_tabhost_tab_devices">Devices</string>

@@ -116,13 +116,13 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                 }
             });
 
-            v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
+            /*v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    new EditPrinterDialog(SettingsListAdapter.this,m);
+                    new EditPrinterDialog(getContext(),m);
                 }
-            });
+            });*/
 
 
             //TODO notify adapter instead of changing icons
@@ -134,7 +134,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                         OctoprintConnection.disconnect(getContext(), m.getAddress());
                         connectionButton.setImageResource(R.drawable.ic_settings_disconnect);
                     } else {
-                        OctoprintConnection.getConnection(getContext(), m, true);
+                        OctoprintConnection.getNewConnection(getContext(), m);
                         connectionButton.setImageResource(R.drawable.ic_settings_connect);
                     }
 

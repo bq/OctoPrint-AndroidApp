@@ -4,6 +4,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_gravity="center_horizontal" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -11,7 +17,7 @@
 
         <LinearLayout
             android:padding="10dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="150dp"
             android:layout_height="match_parent">
         <ImageView
@@ -20,9 +26,15 @@
             android:id="@+id/settings_edit_icon"
             android:src="@drawable/icon_custom_generic"
             android:longClickable="false"
-            android:layout_gravity="top" />
+            android:layout_gravity="top"
+            android:layout_marginBottom="20dp"/>
+
+
        </LinearLayout>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -63,6 +75,18 @@
                     android:src="@android:drawable/ic_delete"/>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Port"
+                android:id="@+id/settings_edit_port_tag" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/settings_edit_port_spinner"
+                android:layout_marginBottom="20dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -110,32 +134,56 @@
                 android:id="@+id/settings_edit_color_spinner"
                 android:layout_marginBottom="20dp"/>
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nozzle size"
-                android:id="@+id/settings_edit_nozzle_tag" />
-
-            <EditText
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/settings_edit_nozzle_edit"
-                android:layout_marginBottom="20dp"/>
+                android:weightSum="2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Number of extruders"
-                android:id="@+id/settings_edit_extruders_tag" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nozzle size"
+                        android:id="@+id/settings_edit_nozzle_tag" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/settings_edit_extruders_edit"
-                android:layout_marginBottom="20dp"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/settings_edit_nozzle_edit"
+                        android:layout_marginBottom="20dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Extruders"
+                        android:id="@+id/settings_edit_extruders_tag" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:ems="10"
+                        android:id="@+id/settings_edit_extruders_edit"
+                        android:layout_marginBottom="20dp"/>
+
+                </LinearLayout>
+
+                </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -206,6 +254,8 @@
 
 
         </LinearLayout>
+
+        </ScrollView>
 
 
 

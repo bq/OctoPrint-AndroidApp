@@ -12,7 +12,6 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
-import android.app.printerapp.settings.EditPrinterDialog;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.content.ClipData;
 import android.content.Context;
@@ -429,7 +428,7 @@ import it.sephiroth.android.library.widget.HListView;
                             }
                         } else {
 
-                            OctoprintConnection.getConnection(getActivity(),m, true);
+                            OctoprintConnection.getNewConnection(getActivity(), m);
 
 
                         }
@@ -521,11 +520,11 @@ import it.sephiroth.android.library.widget.HListView;
 
         adb.show();*/
 
-        m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(StateUtils.TYPE_CUSTOM)));
-        m.setType(StateUtils.TYPE_CUSTOM, "defaultprinter");
-        m.startUpdate(getActivity());
+        //m.startUpdate(getActivity());
 
-        new EditPrinterDialog(mGridAdapter,m);
+        //new EditPrinterDialog(getActivity(),m);
+
+        OctoprintConnection.getNewConnection(getActivity(), m);
 
         notifyAdapter();
 
