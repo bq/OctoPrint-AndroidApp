@@ -145,11 +145,18 @@ public class StlObject {
 
 		vertexCount = mVertexArray.length/COORDS_PER_VERTEX;
 			
-		configStlObject(state);	
+		configStlObject(state);
+
+        int[] auxPlate;
+
+        if (ViewerMainFragment.getCurrentPlate()!=null){
+           auxPlate = ViewerMainFragment.getCurrentPlate();
+        } else auxPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
+
 		
 		//Set colour
-		if (mData.getMaxX()>WitboxFaces.WITBOX_LONG || mData.getMinX() < -WitboxFaces.WITBOX_LONG || mData.getMaxY()>WitboxFaces.WITBOX_WITDH 
-			|| mData.getMinY()<-WitboxFaces.WITBOX_WITDH || mData.getMaxZ()>WitboxFaces.WITBOX_HEIGHT || mData.getMinZ()<0) setColor (colorObjectOut);
+		if (mData.getMaxX()>auxPlate[0] || mData.getMinX() < -auxPlate[0] || mData.getMaxY()>auxPlate[1]
+			|| mData.getMinY()<-auxPlate[1] || mData.getMaxZ()>auxPlate[2] || mData.getMinZ()<0) setColor (colorObjectOut);
 		else setColor (colorNormal);
 
 		

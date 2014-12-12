@@ -176,39 +176,16 @@ public class StlFile {
     			return;
     		}
 
-            mData.fillVertexArray();
+            //only center again if it's a new file
+            if((mFile.getName().substring(0,3)).contains("tmp")) {
+                mData.fillVertexArray(true);
+            } else  mData.fillVertexArray(true);
             mData.fillNormalArray();
 
             mData.clearNormalList();
             mData.clearVertexList();
 
 
-            //TODO OUT OF MEMORY HANDLING
-                  /*
-                    OUTOFMEMORy error handling, this must be checked ASAP
-
-            } catch (OutOfMemoryError e){
-
-
-
-
-                 Log.i("OUT","dismissing");
-                 if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.dismiss();
-                 Log.i("OUT","UFCK MEMORUY");
-                 mContinueThread = false;
-                 mThread.interrupt();
-                    /*try {
-
-                        mThread.join();
-                    } catch (InterruptedException i) {
-                        i.printStackTrace();
-                    }
-                 //Toast.makeText(mContext,"Out of memory :(", Toast.LENGTH_LONG).show();
-                 Log.i("OUT","gonna reset");
-
-
-             }*/
-    		  		
 
     		//Finish
 			if (mMode== ViewerMainFragment.DONT_SNAPSHOT) {

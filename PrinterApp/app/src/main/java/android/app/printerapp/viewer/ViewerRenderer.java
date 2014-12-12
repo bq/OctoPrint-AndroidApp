@@ -271,7 +271,27 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		data.setMaxX(maxX);
 		data.setMaxY(maxY);
 		data.setMinX(minX);
-		data.setMinY(minY);				
+		data.setMinY(minY);
+
+        /******
+         * Calculate new center by adding all previous centers
+         ******/
+        float finalx = 0;
+        float finaly = 0;
+        int i = 0;
+
+        for (DataStorage element : mDataList){
+
+            finalx += element.getLastCenter().x;
+            finaly += element.getLastCenter().y;
+            i++;
+
+        }
+
+        finalx = finalx/i;
+        finaly = finaly/i;
+
+        ViewerMainFragment.setSlicingPosition(finalx,finaly);
     }
 	
 
@@ -508,6 +528,23 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			  break;
 		  }
 	  }
+
+    public void generatePlate(int type){
+
+        try{
+
+            mWitboxFaceBack.generatePlaneCoords(BACK, type);
+            mWitboxFaceRight.generatePlaneCoords(RIGHT, type);
+            mWitboxFaceLeft.generatePlaneCoords(LEFT, type);
+            mWitboxFaceDown.generatePlaneCoords(type, false);
+
+        } catch (NullPointerException e){
+
+            Log.i(TAG,"Surface not yet created");
+        }
+
+
+    }
 	  	  
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -547,13 +584,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                 }
 
             }
-		
-		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true);
 
-		mWitboxFaceBack = new WitboxFaces (BACK);
-		mWitboxFaceRight = new WitboxFaces (RIGHT);
-		mWitboxFaceLeft = new WitboxFaces (LEFT);
-		mWitboxFaceDown = new WitboxPlate (mContext, false);
+
+		
+		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true, 0);
+
+        mWitboxFaceBack = new WitboxFaces (BACK, ViewerMainFragment.getCurrentType());
+        mWitboxFaceRight = new WitboxFaces (RIGHT, ViewerMainFragment.getCurrentType());
+        mWitboxFaceLeft = new WitboxFaces (LEFT, ViewerMainFragment.getCurrentType());
+        mWitboxFaceDown = new WitboxPlate (mContext, false, ViewerMainFragment.getCurrentType());
+
         mLine = new Lines();
 	}
 

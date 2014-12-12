@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Class to initialize and handle the side panel in the print panel
@@ -50,7 +51,7 @@ public class SidePanelHandler {
     private static final String[] PROFILE_OPTIONS = {"High Settings", "Medium Settings", "Low Settings", "Custom"}; //support options
     private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"}; //support options
     private static final String[] ADHESION_OPTIONS = {"none", "brim", "raft"}; //adhesion options
-    private static final String[] PRINTER_TYPE = {"WITBOX","PRUSA 3","3DMAKER"};
+    private static final String[] PRINTER_TYPE = {"Witbox","Hephestos"};
     private static final String[] PREDEFINED_PROFILES = {"bq"}; //filter for profile deletion
 
     private static final int DEFAULT_INFILL = 20;
@@ -72,6 +73,7 @@ public class SidePanelHandler {
     private PaperButton deleteButton;
 
     private Spinner s_profile;
+    private Spinner s_type;
     private Spinner s_adhesion;
     private Spinner s_support;
 
@@ -101,7 +103,7 @@ public class SidePanelHandler {
 
     //private EditText profileText;
 
-
+    private ArrayList<ModelPrinter> mTemporaryPrinterList;
 
     //Constructor
     public SidePanelHandler(SlicingHandler handler, Activity activity, View v){
@@ -110,6 +112,7 @@ public class SidePanelHandler {
         mSlicingHandler = handler;
         mRootView = v;
         mPrinter = null;
+        mTemporaryPrinterList = new ArrayList<ModelPrinter>();
 
         initUiElements();
         initSidePanel();
@@ -120,6 +123,7 @@ public class SidePanelHandler {
     public void initUiElements(){
 
         s_printer = (Spinner) mRootView.findViewById(R.id.printer_spinner);
+        s_type = (Spinner) mRootView.findViewById(R.id.type_spinner);
         s_profile = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
         s_adhesion = (Spinner) mRootView.findViewById(R.id.adhesion_spinner);
         s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
@@ -197,9 +201,9 @@ public class SidePanelHandler {
 
                             //Select a printer from the spinner and add a no-printer option
 
-                            if (i < DevicesListController.getList().size()){
+                            if (i <= mTemporaryPrinterList.size()){
 
-                                mPrinter = DevicesListController.getList().get(i);
+                                mPrinter = mTemporaryPrinterList.get(i);
 
 
                                 /**
@@ -241,16 +245,57 @@ public class SidePanelHandler {
                         }
                     });
 
-                    printerAdapter = new SidePanelPrinterAdapter(mActivity,R.layout.print_panel_spinner_item,DevicesListController.getList());
+
+                    //printerAdapter = new SidePanelPrinterAdapter(mActivity,R.layout.print_panel_spinner_item,DevicesListController.getList());
                     /*ArrayAdapter<String> adapter_printer = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, PRINTER_TYPE);*/
 
 
-                    s_printer.setAdapter(printerAdapter);
+ //                   s_printer.setAdapter(printerAdapter);
 
 
 
-                    /*************************************************************************************/
+                    /************************* INITIALIZE TYPE SPINNER ******************************/
+
+                    s_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            ViewerMainFragment.changePlate(i);
+
+                            mTemporaryPrinterList.clear();
+                            for (ModelPrinter p : DevicesListController.getList()){
+
+                                Log.i("OUT","FUCKINTG TPY " + p.getType());
+                                if (p.getType() == i + 1) mTemporaryPrinterList.add(p);
+                            }
+
+                            printerAdapter = new SidePanelPrinterAdapter(mActivity,
+                                    R.layout.print_panel_spinner_item, mTemporaryPrinterList);
+
+                            s_printer.setAdapter(printerAdapter);
+
+                            printerAdapter.notifyDataSetChanged();
+
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+
+
+                        }
+                    });
+
+                   ArrayAdapter<String> type_adapter = new ArrayAdapter<String>(mActivity,
+                            R.layout.print_panel_spinner_item, PRINTER_TYPE);
+
+
+                    s_type.setAdapter(type_adapter);
+
+
 
 
 

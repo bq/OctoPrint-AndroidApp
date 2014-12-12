@@ -417,7 +417,17 @@ public class EditPrinterDialog {
 
         dialog.show();
         Window window = dialog.getWindow();
-        window.setLayout(500, LinearLayout.LayoutParams.MATCH_PARENT);
+
+        //TODO RANDOM CRASH
+        try{
+
+
+            window.setLayout(500, LinearLayout.LayoutParams.MATCH_PARENT);
+
+        }catch(ArrayIndexOutOfBoundsException e){
+
+            e.printStackTrace();
+        }
 
 
     }

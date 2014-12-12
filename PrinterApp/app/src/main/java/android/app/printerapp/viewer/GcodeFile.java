@@ -133,6 +133,7 @@ public class GcodeFile  {
 		int layer = 0;
 
         float milis = SystemClock.currentThreadTimeMillis();
+        int[] auxPlate = ViewerMainFragment.getCurrentPlate();
 
 		while (lines<maxLines && mContinueThread) {
 
@@ -181,10 +182,12 @@ public class GcodeFile  {
 					if (mSplitLine[i].length()<=1) continue;
 					if (mSplitLine[i].startsWith("X")) {
 						mSplitLine[i] = mSplitLine[i].replace("X", "");
-						x= Float.valueOf(mSplitLine[i])-WitboxFaces.WITBOX_LONG;
+						x= Float.valueOf(mSplitLine[i])-auxPlate[0]; //TODO
+
+                        Log.i("Slicer","Coord:"+x);
 					} else if (mSplitLine[i].startsWith("Y")) {
 						mSplitLine[i] = mSplitLine[i].replace("Y", "");
-						y = Float.valueOf(mSplitLine[i])-WitboxFaces.WITBOX_WITDH;
+						y = Float.valueOf(mSplitLine[i])-auxPlate[1]; //TODO
 					} else if (mSplitLine[i].startsWith("Z")) {
 						mSplitLine[i] = mSplitLine[i].replace("Z", "");
 						z = Float.valueOf(mSplitLine[i]);
@@ -247,7 +250,7 @@ public class GcodeFile  {
     		
     		mData.setMaxLayer(mMaxLayer);
      		
-    		mData.fillVertexArray();
+    		mData.fillVertexArray(false);
     		mData.fillTypeArray();
     		mData.fillLayerArray();
     		

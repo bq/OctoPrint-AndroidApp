@@ -5,7 +5,7 @@
     android:versionCode="0"
     android:versionName="1.0">
 
-    <uses-sdk tools:node="replace" />
+    --uses-sdk tools:node="replace" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

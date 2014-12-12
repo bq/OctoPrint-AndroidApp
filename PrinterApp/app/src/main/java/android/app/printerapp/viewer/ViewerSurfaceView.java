@@ -306,6 +306,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
         requestRender();
 
     }
+
+    /*
+    Change plate coords
+     */
+    public void changePlate(int type){
+
+        mRenderer.generatePlate(type);
+
+    }
 	
 	/**
 	 * On touch events

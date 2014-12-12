@@ -78,10 +78,10 @@ public class WitboxPlate {
     
     private final Context mContext;
 	
-    private final FloatBuffer mVertexBuffer;
-    private final ShortBuffer mOrderListBuffer;
-    private final FloatBuffer mTextureBuffer;
-    private final FloatBuffer mNormalBuffer;
+    private FloatBuffer mVertexBuffer;
+    private ShortBuffer mOrderListBuffer;
+    private FloatBuffer mTextureBuffer;
+    private FloatBuffer mNormalBuffer;
 
 
     private final int mProgram;
@@ -110,7 +110,7 @@ public class WitboxPlate {
     
     private static final int INFINITE = 800;
     
-    private final float mCoordsArray[];
+    private float mCoordsArray[];
     
     private static final float mCoordsInfiniteArray[] = {	
         	-INFINITE, INFINITE, 0, 		
@@ -152,45 +152,11 @@ public class WitboxPlate {
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public WitboxPlate(Context context, boolean infinite) {	
+    public WitboxPlate(Context context, boolean infinite, int type) {
     	this.mContext = context;
     	
-    	if (infinite ) this.mCoordsArray = mCoordsInfiniteArray;
-    	else  this.mCoordsArray = mCoordsNormalArray;
+    	generatePlaneCoords(type,infinite);
 
-    	// initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-        // (# of coordinate values * 4 bytes per float)
-        		mCoordsArray.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        mVertexBuffer = bb.asFloatBuffer();
-        mVertexBuffer.put(mCoordsArray);
-        mVertexBuffer.position(0);
-        
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 2 bytes per short)
-                mDrawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        mOrderListBuffer = dlb.asShortBuffer();
-        mOrderListBuffer.put(mDrawOrder);
-        mOrderListBuffer.position(0);
-        
-        ByteBuffer tb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 4 bytes per float)
-        		mTextureCoordinateData.length * 4);
-        tb.order(ByteOrder.nativeOrder());
-        mTextureBuffer = tb.asFloatBuffer();
-        mTextureBuffer.put(mTextureCoordinateData);
-        mTextureBuffer.position(0);
-        
-      //Normal buffer
-  		ByteBuffer nbb = ByteBuffer.allocateDirect(mNormalData.length * 4);
-  		nbb.order(ByteOrder.nativeOrder());
-  		mNormalBuffer = nbb.asFloatBuffer();
-  		mNormalBuffer.put(mNormalData);
-  		mNormalBuffer.position(0);
-  		
         mTextureDataHandle = loadTexture (mContext, R.drawable.texture_blue);
 
         // prepare shaders and OpenGL program
@@ -207,6 +173,90 @@ public class WitboxPlate {
         
         GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
         
+    }
+
+    public void generatePlaneCoords(int type, boolean infinite){
+
+
+
+        float[] auxPlane;
+
+        if (infinite ) auxPlane = mCoordsInfiniteArray;
+        else {
+
+            switch(type){
+
+                case WitboxFaces.TYPE_WITBOX:
+
+                    auxPlane = new float[] {
+                            -WitboxFaces.WITBOX_LONG,  WitboxFaces.WITBOX_WITDH, 0,   // top left
+                            -WitboxFaces.WITBOX_LONG, -WitboxFaces.WITBOX_WITDH, 0,   // bottom left
+                            WitboxFaces.WITBOX_LONG, -WitboxFaces.WITBOX_WITDH, 0,   // bottom right
+                            WitboxFaces.WITBOX_LONG,  WitboxFaces.WITBOX_WITDH, 0    // top right
+                    };
+
+                    break;
+
+                case WitboxFaces.TYPE_HEPHESTOS:
+
+                    auxPlane= new float[] {
+
+                            -WitboxFaces.HEPHESTOS_LONG,  WitboxFaces.HEPHESTOS_WITDH, 0,   // top left
+                            -WitboxFaces.HEPHESTOS_LONG, -WitboxFaces.HEPHESTOS_WITDH, 0,   // bottom left
+                            WitboxFaces.HEPHESTOS_LONG, -WitboxFaces.HEPHESTOS_WITDH, 0,   // bottom right
+                            WitboxFaces.HEPHESTOS_LONG,  WitboxFaces.HEPHESTOS_WITDH, 0    // top right
+
+                    };
+
+                    break;
+
+
+                default:
+
+                    auxPlane = mCoordsNormalArray;
+
+                    break;
+
+
+            }
+
+        }
+
+        this.mCoordsArray = auxPlane;
+
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 4 bytes per float)
+                mCoordsArray.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        mVertexBuffer = bb.asFloatBuffer();
+        mVertexBuffer.put(mCoordsArray);
+        mVertexBuffer.position(0);
+
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 2 bytes per short)
+                mDrawOrder.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        mOrderListBuffer = dlb.asShortBuffer();
+        mOrderListBuffer.put(mDrawOrder);
+        mOrderListBuffer.position(0);
+
+        ByteBuffer tb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 4 bytes per float)
+                mTextureCoordinateData.length * 4);
+        tb.order(ByteOrder.nativeOrder());
+        mTextureBuffer = tb.asFloatBuffer();
+        mTextureBuffer.put(mTextureCoordinateData);
+        mTextureBuffer.position(0);
+
+        //Normal buffer
+        ByteBuffer nbb = ByteBuffer.allocateDirect(mNormalData.length * 4);
+        nbb.order(ByteOrder.nativeOrder());
+        mNormalBuffer = nbb.asFloatBuffer();
+        mNormalBuffer.put(mNormalData);
+        mNormalBuffer.position(0);
+
     }
     
     public static int loadTexture(final Context context, final int resourceId)  {
