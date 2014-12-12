@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -132,6 +133,14 @@ public class OctoprintConnection {
 
 
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Log.i("OUT","STATE WHEN FAILURE " + p.getStatus());
+                OctoprintAuthentication.getAuth(context, p, false);
+            }
         });
 
     }
@@ -141,13 +150,22 @@ public class OctoprintConnection {
 	 * @param p printer
 	 */
 	public static void getNewConnection(final Context context, final ModelPrinter p){
-
         //Progress dialog to notify command events
         final ProgressDialog pd = new ProgressDialog(context);
-        pd.setMessage(context.getString(R.string.devices_command_waiting) + p.getAddress().replace("/"," "));
-        pd.show();
+
+        //Display a dialog to connect to the server
+
+        try{
+
+            pd.setMessage(context.getString(R.string.devices_command_waiting) + p.getAddress().replace("/"," "));
+            pd.show();
+        } catch (WindowManager.BadTokenException e){
+
+            e.printStackTrace();
+        }
 
 
+        //Get connection status
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
 						
 			@Override
@@ -156,14 +174,25 @@ public class OctoprintConnection {
 				super.onSuccess(statusCode, headers, response);
 
 
-                pd.dismiss();
+                //TODO Random crash
+                try{
+                    pd.dismiss();
+                } catch (ArrayIndexOutOfBoundsException e){
+
+                    e.printStackTrace();
+
+                }catch (NullPointerException e){
+
+                    e.printStackTrace();
+
+                }
+
 
                 //Check for current status
                 JSONObject current = null;
-                JSONObject options = null;
+
                 try {
                     current = response.getJSONObject("current");
-                    options = response.getJSONObject("options");
 
                     Log.i("CONNECTION","CURRENT CONNECTION " + response.toString());
 
@@ -172,67 +201,16 @@ public class OctoprintConnection {
                                 ||(current.getString("state").contains("Error"))
                                  || (current.getString("printerProfile").equals(DEFAULT_PROFILE))) {
 
+                            //configure new printer
                             new EditPrinterDialog(context, p, response);
-
-                            /*if (dialog) { //Manual connection
-
-                                //Create dialog
-                                AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                                adb.setTitle("Select port for " + p.getDisplayName());
-
-                                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                                View v = inflater.inflate(R.layout.devices_connection_dialog, null);
-                                final Spinner s_port = (Spinner) v.findViewById(R.id.devices_connection_dialog_spinner);
-
-
-                                //Show port list
-                                JSONArray ports = response.getJSONObject("options").getJSONArray("ports");
-
-                                ArrayList<String> ports_array = new ArrayList<String>();
-
-                                for (int i = 0; i < ports.length(); i++) {
-
-                                    ports_array.add(ports.get(i).toString());
-
-                                }
-                                ArrayAdapter<String> ports_adapter = new ArrayAdapter<String>(context,
-                                        R.layout.print_panel_spinner_item, ports_array);
-
-                                s_port.setAdapter(ports_adapter);
-
-
-
-                                adb.setView(v);
-
-                                adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                                        Log.i("CONNECTION", "START CONNECTION MANUALLY ON " + s_port.getSelectedItem().toString());
-
-                                        //Start connection with the selected port
-                                        startConnection(p.getAddress(), context, s_port.getSelectedItem().toString(), null);
-                                    }
-                                });
-
-                                adb.show();
-
-
-                            } else { //Automatic connection
-
-                                Log.i("CONNECTION", "START CONNECTION AUTOMATICALLY ON " + DEFAULT_PORT);
-
-
-                                //startConnection(p.getAddress(), context, DEFAULT_PORT);
-
-                            }*/
 
                         } else {
 
 
+                            //already connected
                             if (p.getStatus() == StateUtils.STATE_NEW){
 
+                                //load information
                                 p.setPort(current.getString("port"));
                                 convertType(p, current.getString("printerProfile"));
                                 Log.i("Connection","Printer already connected to " + p.getPort());
@@ -247,15 +225,6 @@ public class OctoprintConnection {
                         }
 
 
-                    //}
-
-
-
-
-
-
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -266,8 +235,11 @@ public class OctoprintConnection {
 					String responseString, Throwable throwable) {
 				Log.i("Connection","Failure while connecting " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
+
+                Log.i("OUT","STATE WHEN FAILURE " + p.getStatus());
+
                 pd.dismiss();
-                OctoprintAuthentication.getAuth(context, p);
+                OctoprintAuthentication.getAuth(context, p, true);
 			}
 			
 		});
@@ -604,10 +576,11 @@ public class OctoprintConnection {
     public static void doConnection(Context context, ModelPrinter p){
 
 
-        getLinkedConnection(context,p);
+        getLinkedConnection(context, p);
 
         //Get printer settings
-        getSettings(p);
+
+        //getSettings(p);
 
         //Get a new set of files
         OctoprintFiles.getFiles(context, p);

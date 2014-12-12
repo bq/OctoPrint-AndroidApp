@@ -15,8 +15,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:weightSum="3"
+            android:weightSum="2"
             android:padding="@dimen/content_padding_normal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/type_select_title"
+                    style="@style/TextHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Selecciona tipo de impresora"/>
+
+                <Spinner
+                    android:id="@+id/type_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

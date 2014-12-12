@@ -153,7 +153,6 @@ public class SlicingHandler {
 
         } catch (Exception e) {
 
-            Log.i("Slicer","I FUCKING CRASHED WTF");
             e.printStackTrace();
         }
 

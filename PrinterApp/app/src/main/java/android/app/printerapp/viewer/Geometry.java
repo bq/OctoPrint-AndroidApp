@@ -284,8 +284,10 @@ public class Geometry {
 		 boolean outOfPlate = false;
 		 int k = 0;
 
-		 if (newMaxX > WitboxFaces.WITBOX_LONG || newMinX < -WitboxFaces.WITBOX_LONG 
-				|| newMaxY > WitboxFaces.WITBOX_WITDH || newMinY < -WitboxFaces.WITBOX_WITDH) outOfPlate = true;
+         int[] auxPlate = ViewerMainFragment.getCurrentPlate();
+
+		 if (newMaxX > auxPlate[0] || newMinX < -auxPlate[0]
+				|| newMaxY > auxPlate[1] || newMinY < -auxPlate[1]) outOfPlate = true;
 			
 		 while (!outOfPlate && !overlaps && k <objects.size()) {	
 			 if (k!=object) {

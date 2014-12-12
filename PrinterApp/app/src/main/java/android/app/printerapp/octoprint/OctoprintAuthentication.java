@@ -30,7 +30,14 @@ import javax.crypto.NoSuchPaddingException;
  */
 public class OctoprintAuthentication {
 
-    public static void getAuth(final Context context, final ModelPrinter p){
+    /**
+     * Send an authentication petition to retrieve an unverified api key
+     * @param context
+     * @param p target printer
+     * @param retry whether we should re-display the dialog or not
+     */
+
+    public static void getAuth(final Context context, final ModelPrinter p, final boolean retry){
 
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_AUTHENTICATION, null, new JsonHttpResponseHandler(){
 
@@ -45,7 +52,7 @@ public class OctoprintAuthentication {
                 Log.i("Connection", "Success! " + response.toString());
 
                 try {
-                    postAuth(context,response.getString("unverifiedKey"), p);
+                    postAuth(context,response.getString("unverifiedKey"), p, retry);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -61,7 +68,14 @@ public class OctoprintAuthentication {
 
     }
 
-    public static void postAuth(final Context context, String key, final ModelPrinter p){
+    /**
+     * Add the verified API key to the server
+     * @param context
+     * @param key
+     * @param p
+     * @param retry
+     */
+    public static void postAuth(final Context context, String key, final ModelPrinter p, final boolean retry){
 
 
         Log.i("OUT","Posting auth");
@@ -113,7 +127,13 @@ public class OctoprintAuthentication {
                             DatabaseController.handlePreference("Keys", PrintNetworkManager.getNetworkId(p.getName()),response.getString("key"),true);
                             Log.i("Connection","Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
                             //OctoprintConnection.doConnection(context,p);
-                            OctoprintConnection.getNewConnection(context, p);
+
+
+                            if (!retry){
+
+                                OctoprintConnection.doConnection(context,p);
+
+                            } else OctoprintConnection.getNewConnection(context, p);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

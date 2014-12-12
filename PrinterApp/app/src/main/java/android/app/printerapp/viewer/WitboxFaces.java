@@ -28,13 +28,29 @@ public class WitboxFaces {
             "void main() {" +
             "  gl_FragColor = vColor;" +
             "}";
-    
+
+    /*
+     public static int WITBOX_WITDH = 105;
+	public static int WITBOX_HEIGHT = 200;
+	public static int WITBOX_LONG = 148;
+     */
+
+    public static final int TYPE_WITBOX = 0;
+    public static final int TYPE_HEPHESTOS = 1;
+    public static final int TYPE_CUSTOM = 2;
+
     public static int WITBOX_WITDH = 105;
 	public static int WITBOX_HEIGHT = 200;
 	public static int WITBOX_LONG = 148;
+
+    public static int HEPHESTOS_WITDH = 105;
+    public static int HEPHESTOS_HEIGHT = 180;
+    public static int HEPHESTOS_LONG = 108;
+
+    public int [] mSizeArray;
 	
-    private final FloatBuffer mVertexBuffer;
-    private final ShortBuffer mDrawListBuffer;
+    private FloatBuffer mVertexBuffer;
+    private ShortBuffer mDrawListBuffer;
 
     private final int mProgram;
 
@@ -52,8 +68,14 @@ public class WitboxFaces {
     float color[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
     
     private final short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+
+    private float[] planeCoordsDown;
+    private float[] planeCoordsBack;
+    private float[] planeCoordsRight;
+    private float[] planeCoordsLeft;
+
     
-    static float planeCoordsDown[] = {
+    /*static float planeCoordsDown[] = {
         -WITBOX_LONG,  WITBOX_WITDH, 0,   // top left
         -WITBOX_LONG, -WITBOX_WITDH, 0,   // bottom left
          WITBOX_LONG, -WITBOX_WITDH, 0,   // bottom right
@@ -75,7 +97,7 @@ public class WitboxFaces {
         -WITBOX_LONG, -WITBOX_WITDH, WITBOX_HEIGHT,   // top left
         -WITBOX_LONG, -WITBOX_WITDH, 0,   // bottom left
         -WITBOX_LONG,  WITBOX_WITDH, 0,   // bottom right
-        -WITBOX_LONG,  WITBOX_WITDH, WITBOX_HEIGHT }; // top right
+        -WITBOX_LONG,  WITBOX_WITDH, WITBOX_HEIGHT }; // top right*/
 
     
 
@@ -84,8 +106,9 @@ public class WitboxFaces {
      *
      * Alberto: change alpha according to face
      */
-    public WitboxFaces(int face) {		
-    	switch (face) {
+    public WitboxFaces(int face, int type) {
+
+    	/*switch (face) {
     	case ViewerRenderer.DOWN:
     		mCoordsArray = planeCoordsDown;
     		break;
@@ -101,28 +124,9 @@ public class WitboxFaces {
     		mCoordsArray = planeCoordsLeft;
             color[3] = 0.5f;
     		break;
-    	}
-    		    	
-    	vertexCount = mCoordsArray.length / COORDS_PER_VERTEX;
-    	
-    	// initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-        // (# of coordinate values * 4 bytes per float)
-        		mCoordsArray.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        mVertexBuffer = bb.asFloatBuffer();
-        mVertexBuffer.put(mCoordsArray);
-        mVertexBuffer.position(0);
-        
-     // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 2 bytes per short)
-                drawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        mDrawListBuffer = dlb.asShortBuffer();
-        mDrawListBuffer.put(drawOrder);
-        mDrawListBuffer.position(0);
+    	}*/
 
+        generatePlaneCoords(face,type);
 
         // prepare shaders and OpenGL program
         int vertexShader = ViewerRenderer.loadShader(
@@ -136,6 +140,104 @@ public class WitboxFaces {
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
         GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
         GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
+    }
+
+    public void generatePlaneCoords(int face, int type){
+
+        switch(type){
+
+            case TYPE_WITBOX:
+
+                mSizeArray = new int[]{WITBOX_LONG, WITBOX_WITDH, WITBOX_HEIGHT};
+
+                break;
+
+            case TYPE_HEPHESTOS:
+
+                mSizeArray = new int[]{HEPHESTOS_LONG, HEPHESTOS_WITDH, HEPHESTOS_HEIGHT};
+
+                break;
+        }
+
+        switch (face) {
+            case ViewerRenderer.DOWN:
+                mCoordsArray = new float[]{
+                        -mSizeArray[0],  mSizeArray[1], 0,   // top left
+                        -mSizeArray[0], -mSizeArray[1], 0,   // bottom left
+                        mSizeArray[0], -mSizeArray[1], 0,   // bottom right
+                        mSizeArray[0],  mSizeArray[1], 0 }; // top right
+                break;
+            case ViewerRenderer.BACK:
+                mCoordsArray = new float[]{
+                        -mSizeArray[0],  mSizeArray[1], mSizeArray[2],   // top left
+                        -mSizeArray[0],  mSizeArray[1], 0,   // bottom left
+                        mSizeArray[0],  mSizeArray[1], 0,   // bottom right
+                        mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
+                color[3] = 0.6f;
+                break;
+            case ViewerRenderer.RIGHT:
+                mCoordsArray  = new float[]{
+                        mSizeArray[0], -mSizeArray[1], mSizeArray[2],   // top left
+                        mSizeArray[0], -mSizeArray[1], 0,   // bottom left
+                        mSizeArray[0],  mSizeArray[1], 0,   // bottom right
+                        mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
+                color[3] = 0.5f;
+                break;
+            case ViewerRenderer.LEFT:
+                mCoordsArray = new float[]{
+                        -mSizeArray[0], -mSizeArray[1], mSizeArray[2],   // top left
+                        -mSizeArray[0], -mSizeArray[1], 0,   // bottom left
+                        -mSizeArray[0],  mSizeArray[1], 0,   // bottom right
+                        -mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
+
+                color[3] = 0.5f;
+                break;
+        }
+
+        vertexCount = mCoordsArray.length / COORDS_PER_VERTEX;
+
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 4 bytes per float)
+                mCoordsArray.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        mVertexBuffer = bb.asFloatBuffer();
+        mVertexBuffer.put(mCoordsArray);
+        mVertexBuffer.position(0);
+
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 2 bytes per short)
+                drawOrder.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        mDrawListBuffer = dlb.asShortBuffer();
+        mDrawListBuffer.put(drawOrder);
+        mDrawListBuffer.position(0);
+
+        /*planeCoordsDown = new float[]{
+            -mSizeArray[0],  mSizeArray[1], 0,   // top left
+            -mSizeArray[0], -mSizeArray[1], 0,   // bottom left
+             mSizeArray[0], -mSizeArray[1], 0,   // bottom right
+             mSizeArray[0],  mSizeArray[1], 0 }; // top right
+
+        planeCoordsBack = new float[]{
+            -mSizeArray[0],  mSizeArray[1], mSizeArray[2],   // top left
+            -mSizeArray[0],  mSizeArray[1], 0,   // bottom left
+             mSizeArray[0],  mSizeArray[1], 0,   // bottom right
+             mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
+
+        planeCoordsRight = new float[]{
+            mSizeArray[0], -mSizeArray[1], mSizeArray[2],   // top left
+            mSizeArray[0], -mSizeArray[1], 0,   // bottom left
+            mSizeArray[0],  mSizeArray[1], 0,   // bottom right
+            mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
+
+        planeCoordsLeft = new float[]{
+            -mSizeArray[0], -mSizeArray[1], mSizeArray[2],   // top left
+            -mSizeArray[0], -mSizeArray[1], 0,   // bottom left
+            -mSizeArray[0],  mSizeArray[1], 0,   // bottom right
+            -mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right*/
+
     }
     
     /**

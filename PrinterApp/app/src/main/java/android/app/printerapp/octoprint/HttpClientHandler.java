@@ -40,6 +40,7 @@ public class HttpClientHandler {
   
   //GET method for both APIs
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
+      client.setTimeout(30000);
 	  client.get(getAbsoluteUrl(url), params, responseHandler);
 
   }
@@ -51,12 +52,14 @@ public class HttpClientHandler {
   
   //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
+      client.setTimeout(30000);
 	  client.post( getAbsoluteUrl(url), params, responseHandler);
   }
 
   //POST method for the new API
   public static void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-	  client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+      client.setTimeout(30000);
+      client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
     //POST method for synchronous calls
@@ -66,7 +69,8 @@ public class HttpClientHandler {
   
   //PUT method for the new API
   public static void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-	  client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+      client.setTimeout(30000);
+      client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
     //PUT method for the new API
@@ -113,13 +117,17 @@ public class HttpClientHandler {
   
   //DELETE method
   public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
-	  client.delete(context, getAbsoluteUrl(url), responseHandler);
+      client.setTimeout(30000);
+      client.delete(context, getAbsoluteUrl(url), responseHandler);
   }
   
 
   private static String getAbsoluteUrl(String relativeUrl) {
 	  if (!relativeUrl.contains(HttpUtils.URL_AUTHENTICATION)){
           client.addHeader("X-Api-Key", HttpUtils.getApiKey(relativeUrl));
+          //client.addHeader("X-Api-Key", HttpUtils.API_KEY);
+
+
       }
 
       Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));

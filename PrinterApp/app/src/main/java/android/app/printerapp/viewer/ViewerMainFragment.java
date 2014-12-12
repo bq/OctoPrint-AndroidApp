@@ -48,6 +48,9 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +111,9 @@ public class ViewerMainFragment extends Fragment {
     private static SlicingHandler mSlicingHandler;
     private SidePanelHandler mSidePanelHandler;
 
+    private static int mCurrentType;
+    private static int[] mCurrentPlate;
+
     private static TextView mRotationText;
     private static TextView mAxisText;
     private static int mCurrentAxis;
@@ -154,6 +160,8 @@ public class ViewerMainFragment extends Fragment {
             //Init slicing elements
             mSlicingHandler = new SlicingHandler(getActivity());
             mSidePanelHandler = new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
+            mCurrentType = WitboxFaces.TYPE_WITBOX;
+            mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG,WitboxFaces.WITBOX_WITDH,WitboxFaces.WITBOX_HEIGHT  };
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT, mSlicingHandler);
             draw();
@@ -607,7 +615,7 @@ public class ViewerMainFragment extends Fragment {
         } else if (LibraryController.hasExtension(1, filePath)) {
 
             data = new DataStorage();
-            optionClean();
+            if (!filePath.contains("/temp")) optionClean();
             mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
 
@@ -1210,6 +1218,51 @@ public class ViewerMainFragment extends Fragment {
     /************************************  SIDE PANEL ********************************************************/
 
     public static File getFile(){ return mFile; }
+    public static int[] getCurrentPlate(){
+
+        return mCurrentPlate;
+    }
+
+    public static int getCurrentType(){return mCurrentType;}
+    public static void changePlate(int type){
+
+        switch(type){
+
+            case WitboxFaces.TYPE_WITBOX:
+
+                mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG,WitboxFaces.WITBOX_WITDH,WitboxFaces.WITBOX_HEIGHT  };
+
+                break;
+
+            case WitboxFaces.TYPE_HEPHESTOS:
+
+                mCurrentPlate = new int[]{WitboxFaces.HEPHESTOS_LONG,WitboxFaces.HEPHESTOS_WITDH,WitboxFaces.HEPHESTOS_HEIGHT  };
+
+                break;
+
+        }
+
+        mCurrentType = type;
+        mSurface.changePlate(type);
+        mSurface.requestRender();
+    }
+
+    public static void setSlicingPosition(float x, float y){
+
+        Log.i("Slicer","MOG, new positiong to pront " + x + ":" + y);
+
+        JSONObject position = new JSONObject();
+        try {
+            position.put("x",(int)x + mCurrentPlate[0]);
+            position.put("y",(int)y + mCurrentPlate[1]);
+
+            mSlicingHandler.setExtras("position", position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 
 }

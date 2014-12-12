@@ -354,7 +354,7 @@ public class PrintViewFragment extends Fragment {
     @Override
     public void onDestroy() {
 
-        mContext.unregisterReceiver(onComplete);
+        //mContext.unregisterReceiver(onComplete);
         super.onDestroy();
     }
 
