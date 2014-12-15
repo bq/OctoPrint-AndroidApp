@@ -86,7 +86,7 @@ public class OctoprintNetwork {
 
                                 try {
 
-                                    DatabaseController.handlePreference("Keys", PrintNetworkManager.getNetworkId(p.getName()), response.getString("key"), true);
+                                    DatabaseController.handlePreference(DatabaseController.TAG_KEYS, PrintNetworkManager.getNetworkId(p.getName()), response.getString("key"), true);
                                     Log.i("Connection","Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
 
                                     HttpClientHandler.get(p.getAddress() + HttpUtils.URL_NETWORK, null, new JsonHttpResponseHandler(){

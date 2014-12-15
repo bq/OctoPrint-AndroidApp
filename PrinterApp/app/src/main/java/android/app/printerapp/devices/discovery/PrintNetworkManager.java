@@ -257,7 +257,7 @@ public class PrintNetworkManager {
                                                     DevicesListController.removeElement(mPosition);
 
 
-                                                    DatabaseController.handlePreference("Network", "Last", origin, true);
+                                                    DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", origin, true);
 
                                                     //Remove ad-hoc network
                                                     clearNetwork("OctoPi-Dev");
@@ -427,11 +427,11 @@ public class PrintNetworkManager {
         /**
          * Check for pending networks in the preference list
          */
-        if (DatabaseController.isPreference("Network","Last")){
+        if (DatabaseController.isPreference(DatabaseController.TAG_NETWORK,"Last")){
 
-            if (DatabaseController.getPreference("Network","Last").equals(getNetworkId(ssid))){
+            if (DatabaseController.getPreference(DatabaseController.TAG_NETWORK,"Last").equals(getNetworkId(ssid))){
 
-                DatabaseController.handlePreference("Network", "Last", null, false);
+                DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", null, false);
 
 
                 mController.getActivity().runOnUiThread(new Runnable() {

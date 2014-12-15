@@ -205,8 +205,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                         LibraryController.deleteFiles(f);
                                         LibraryController.getFileList().remove(f);
 
-                                        if (DatabaseController.isPreference("Favorites", f.getName())) {
-                                            DatabaseController.handlePreference("Favorites", f.getName(), null, false);
+                                        if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, f.getName())) {
+                                            DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, f.getName(), null, false);
                                         }
                                         mContext.notifyAdapter();
 

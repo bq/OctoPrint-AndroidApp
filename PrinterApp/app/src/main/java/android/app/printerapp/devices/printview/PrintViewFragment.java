@@ -380,13 +380,14 @@ public class PrintViewFragment extends Fragment {
 
             if (currentFile.exists())
             //if it's the same as the server or it's in process of being uploaded
-            if ((mPrinter.getJob().getFilename().equals(currentFile.getName())) ||
-                    (!mPrinter.getLoaded())) {
+            if ((mPrinter.getJob().getFilename().equals(currentFile.getName()))
+                    //||(!mPrinter.getLoaded())
+                    ) {
 
                 Log.i(TAG, "Sigh, loading " + mPrinter.getJobPath());
 
-                openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
-
+                if (LibraryController.hasExtension(1, currentFile.getName())) openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
+                else Log.i(TAG,"Das not gcode");
                 //end process
                 return;
 
@@ -490,9 +491,9 @@ public class PrintViewFragment extends Fragment {
 
 
             //If we have a stored path
-            if (DatabaseController.isPreference("References", mPrinter.getName())) {
+            if (DatabaseController.isPreference(DatabaseController.TAG_REFERENCES, mPrinter.getName())) {
 
-                String path = DatabaseController.getPreference("References", mPrinter.getName());
+                String path = DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, mPrinter.getName());
 
                 Log.i(TAG, "Hey we had a reference for " + path);
 
@@ -521,7 +522,7 @@ public class PrintViewFragment extends Fragment {
                 }
 
 
-                DatabaseController.handlePreference("References", mPrinter.getName(), null, false);
+                DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(), null, false);
 
             }
 

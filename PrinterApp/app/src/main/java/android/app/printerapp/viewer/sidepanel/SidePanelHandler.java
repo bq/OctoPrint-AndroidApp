@@ -267,7 +267,6 @@ public class SidePanelHandler {
                             mTemporaryPrinterList.clear();
                             for (ModelPrinter p : DevicesListController.getList()){
 
-                                Log.i("OUT","FUCKINTG TPY " + p.getType());
                                 if (p.getType() == i + 1) mTemporaryPrinterList.add(p);
                             }
 
@@ -476,7 +475,17 @@ public class SidePanelHandler {
                     if (LibraryController.isProject(actualFile)){
 
                         //It's the last file
-                        if (DatabaseController.getPreference("Slicing", "Last")!=null){
+                        if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null){
+
+                            mSlicingHandler.setExtras("print",true);
+
+
+                            //mPrinter.setJobPath(mSlicingHandler.getLastReference());
+                            mPrinter.setLoaded(false);
+
+                            ItemListFragment.performClick(0);
+                            ItemListActivity.showExtraFragment(1, mPrinter.getId());
+                            ViewerMainFragment.optionClean();
 
                             Toast.makeText(mActivity, R.string.viewer_slice_wait, Toast.LENGTH_LONG).show();
 
@@ -510,6 +519,10 @@ public class SidePanelHandler {
 
                                     Log.i("Slicer", "Final file is: Project GCODE");
                                     finalFile = mFile;
+
+                                } else {
+
+                                    Log.i("Slicer","Mada mada");
 
                                 }
 
@@ -569,6 +582,7 @@ public class SidePanelHandler {
         } else Toast.makeText(mActivity,R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
 
     }
+
 
     /**
      * Parses a JSON profile to the side panel

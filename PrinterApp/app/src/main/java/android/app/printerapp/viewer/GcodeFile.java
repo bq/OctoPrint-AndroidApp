@@ -133,7 +133,12 @@ public class GcodeFile  {
 		int layer = 0;
 
         float milis = SystemClock.currentThreadTimeMillis();
-        int[] auxPlate = ViewerMainFragment.getCurrentPlate();
+
+        //Default plate size for printview panel
+        int[] auxPlate = {WitboxFaces.WITBOX_LONG,WitboxFaces.WITBOX_WITDH,WitboxFaces.WITBOX_HEIGHT};
+
+        if (ViewerMainFragment.getCurrentPlate() != null)
+         auxPlate = ViewerMainFragment.getCurrentPlate();
 
 		while (lines<maxLines && mContinueThread) {
 
@@ -183,8 +188,6 @@ public class GcodeFile  {
 					if (mSplitLine[i].startsWith("X")) {
 						mSplitLine[i] = mSplitLine[i].replace("X", "");
 						x= Float.valueOf(mSplitLine[i])-auxPlate[0]; //TODO
-
-                        Log.i("Slicer","Coord:"+x);
 					} else if (mSplitLine[i].startsWith("Y")) {
 						mSplitLine[i] = mSplitLine[i].replace("Y", "");
 						y = Float.valueOf(mSplitLine[i])-auxPlate[1]; //TODO

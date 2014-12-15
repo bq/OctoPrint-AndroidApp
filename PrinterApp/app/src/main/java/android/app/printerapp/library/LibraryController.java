@@ -118,7 +118,7 @@ public class LibraryController {
 	public static void retrieveFavorites(){
 
 		
-		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Favorites").entrySet()){
+		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences(DatabaseController.TAG_FAVORITES).entrySet()){
 			
 			ModelFile m = new ModelFile(entry.getValue().toString(), "favorite");
 			mFileList.add(m);

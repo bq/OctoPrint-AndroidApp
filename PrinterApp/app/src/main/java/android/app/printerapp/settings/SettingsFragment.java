@@ -246,7 +246,7 @@ public class SettingsFragment extends Fragment {
         //Update blacklist
         mBlackList.clear();
 
-        for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Blacklist").entrySet()) {
+        for (Map.Entry<String, ?> entry : DatabaseController.getPreferences(DatabaseController.TAG_BLACKLIST).entrySet()) {
 
             mBlackList.add(entry.getKey());
         }

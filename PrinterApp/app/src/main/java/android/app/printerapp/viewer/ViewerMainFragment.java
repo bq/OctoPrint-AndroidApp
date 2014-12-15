@@ -590,7 +590,7 @@ public class ViewerMainFragment extends Fragment {
     public static void optionClean(){
 
         //Delete slicing reference
-        DatabaseController.handlePreference("Slicing", "Last", null, false);
+        //DatabaseController.handlePreference("Slicing", "Last", null, false);
 
         mDataList.clear();
         mFile = null;
@@ -1133,11 +1133,11 @@ public class ViewerMainFragment extends Fragment {
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
-           if (DatabaseController.getPreference("Slicing","Last")!=null)
-           if ((DatabaseController.getPreference("Slicing","Last")).equals("temp.gco")){
+           if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null)
+           if ((DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")).equals("temp.gco")){
 
                Log.i("Slicer","Removing PREFERENCE [Last]");
-               DatabaseController.handlePreference("Slicing", "Last", null, false);
+               DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", null, false);
 
                showProgressBar(StateUtils.SLICER_HIDE,0);
            } else {
@@ -1155,9 +1155,8 @@ public class ViewerMainFragment extends Fragment {
     public void notifyAdapter(){
 
         try {
-             mSidePanelHandler.printerAdapter.notifyDataSetChanged();
-             mSidePanelHandler.profileAdapter.notifyDataSetChanged();
-
+            mSidePanelHandler.profileAdapter.notifyDataSetChanged();
+            if (mSidePanelHandler.printerAdapter!=null)mSidePanelHandler.printerAdapter.notifyDataSetChanged();
         } catch (NullPointerException e ){
 
             e.printStackTrace();

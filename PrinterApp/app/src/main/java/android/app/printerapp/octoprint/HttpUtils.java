@@ -45,9 +45,9 @@ public class HttpUtils {
             if (p.getAddress().equals(parsedUrl)) id = PrintNetworkManager.getNetworkId(p.getName());
         }
 
-        if (DatabaseController.isPreference("Keys",id)){
+        if (DatabaseController.isPreference(DatabaseController.TAG_KEYS,id)){
 
-            return DatabaseController.getPreference("Keys",id);
+            return DatabaseController.getPreference(DatabaseController.TAG_KEYS,id);
 
         } else {
 
