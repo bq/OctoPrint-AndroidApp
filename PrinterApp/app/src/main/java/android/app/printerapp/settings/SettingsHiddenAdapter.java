@@ -68,7 +68,7 @@ public class SettingsHiddenAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View view) {
 
-                DatabaseController.handlePreference("Blacklist",s, null, false);
+                DatabaseController.handlePreference(DatabaseController.TAG_BLACKLIST,s, null, false);
                 mCurrent.remove(position);
                 notifyDataSetChanged();
 

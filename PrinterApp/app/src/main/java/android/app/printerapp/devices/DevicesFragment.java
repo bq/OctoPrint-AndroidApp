@@ -309,7 +309,7 @@ import it.sephiroth.android.library.widget.HListView;
     public void addElement(final ModelPrinter m) {
 
         //Don't add element if it's blacklisted
-        if (!DatabaseController.isPreference("Blacklist", m.getName() + " " + m.getAddress())){
+        if (!DatabaseController.isPreference(DatabaseController.TAG_BLACKLIST, m.getName() + " " + m.getAddress())){
 
 
             getActivity().runOnUiThread(new Runnable() {
@@ -586,7 +586,7 @@ import it.sephiroth.android.library.widget.HListView;
 
                                 if ((p.getStatus() == StateUtils.STATE_ADHOC) || (p.getStatus() == StateUtils.STATE_NEW)){
 
-                                    DatabaseController.handlePreference("Blacklist",p.getName() + " " + p.getAddress(),null,true);
+                                    DatabaseController.handlePreference(DatabaseController.TAG_BLACKLIST,p.getName() + " " + p.getAddress(),null,true);
                                     DevicesListController.removeElement(p.getPosition());
 
 

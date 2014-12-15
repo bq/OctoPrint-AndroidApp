@@ -119,9 +119,9 @@ public class DevicesListController {
 			
 			addToList(m);
 
-            if (DatabaseController.isPreference("References", m.getName())) {
+            if (DatabaseController.isPreference(DatabaseController.TAG_REFERENCES, m.getName())) {
 
-                m.setJobPath(DatabaseController.getPreference("References",m.getName()));
+                m.setJobPath(DatabaseController.getPreference(DatabaseController.TAG_REFERENCES,m.getName()));
 
             }
 

@@ -65,7 +65,7 @@ public class DevicesQuickprint {
      * contain History instead of favorites so it shouldn't matter
      */
     private void addFiles() {
-        for (Map.Entry<String, ?> entry : DatabaseController.getPreferences("Favorites").entrySet()) {
+        for (Map.Entry<String, ?> entry : DatabaseController.getPreferences(DatabaseController.TAG_FAVORITES).entrySet()) {
 
             ModelFile m = new ModelFile(entry.getValue().toString(), "Internal storage");
 

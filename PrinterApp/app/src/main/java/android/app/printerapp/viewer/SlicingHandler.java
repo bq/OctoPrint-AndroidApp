@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -69,15 +70,16 @@ public class SlicingHandler {
         try {
 
             if (mExtras.has(tag))
-            if (!mExtras.get(tag).equals(value)){
+            if (mExtras.get(tag).equals(value)){
 
                 Log.i("Slicer","No profile change");
-                ViewerMainFragment.slicingCallback();
+                return;
             }
 
             mExtras.put(tag,value);
+            ViewerMainFragment.slicingCallback();
 
-            Log.i("OUT","Added extra " + tag + ":" + value + " [" + mExtras.length()+"]");
+            Log.i("Slicer","Added extra " + tag + ":" + value + " [" + mExtras.length()+"]");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -107,17 +109,23 @@ public class SlicingHandler {
 
             tempPath.mkdir();
 
-            tempFile = File.createTempFile("tmp",".stl", tempPath);
+            //add an extra random id
+            int randomInt = new Random().nextInt(100000);
+
+            tempFile = File.createTempFile("tmp",randomInt+".stl", tempPath);
             tempFile.deleteOnExit();
 
             //delete previous file
             try{
 
-                OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference("Slicing", "Last"), "/local/");
 
+                OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last"), "/local/");
+                File lastFile = null;
+                if (mLastReference!=null){
+                    lastFile= new File(mLastReference);
+                    lastFile.delete();
+                }
 
-                File lastFile = new File(mLastReference);
-                lastFile.delete();
 
                 Log.i("Slicer","Deleted " + mLastReference);
             }
@@ -132,7 +140,7 @@ public class SlicingHandler {
 
                 Log.i("Slicer","Setting new PREFERENCE [Last]: " + tempFile.getName());
 
-                DatabaseController.handlePreference("Slicing", "Last", tempFile.getName(), true);
+                DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", tempFile.getName(), true);
 
                 Log.i("Slicer","New reference is " + mLastReference);
 
@@ -193,6 +201,7 @@ public class SlicingHandler {
 
         mOriginalProject = path;
         Log.i("OUT","Workspace: " + path);
+
     }
 
     public void setLastReference(String path) { mLastReference = path; }
@@ -214,6 +223,7 @@ public class SlicingHandler {
 
                             Log.i("Slicer","Sending slice command");
                             OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
+                            //if (mExtras.has("print")) mExtras.remove("print");
 
                             Log.i("Slicer","Showing progress bar");
                             ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);

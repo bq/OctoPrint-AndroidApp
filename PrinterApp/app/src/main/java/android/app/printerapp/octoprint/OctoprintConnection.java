@@ -409,7 +409,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	    //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	    Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 
@@ -453,9 +453,17 @@ public class OctoprintConnection {
                             //TODO we don't always receive this confirmation
 		            		if (response.getString("type").equals("Upload")){
 
-		            			p.setLoaded(true);
+		            			//p.setLoaded(true);
+                                if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null)
+                                    if ((DatabaseController.getPreference("Slicing","Last")).equals(response.getJSONObject("payload").getString("file"))){
+
+                                        Log.i("Slicer","LETS SLICE " + response.getJSONObject("payload").getString("file"));
+                                        }
 
 		            		}
+                            if (response.getString("type").equals("PrintStarted")){
+                                p.setLoaded(true);
+                            }
 
                             if (response.getString("type").equals("Connected")){
                                 p.setPort(response.getJSONObject("payload").getString("port"));
@@ -502,7 +510,8 @@ public class OctoprintConnection {
                               //TODO random crash because not yet created
                               try{
                                   //Check if it's our file
-                                  if (DatabaseController.getPreference("Slicing","Last").equals( response.getString("source_path"))){
+                                  if(!DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(null))
+                                  if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals( response.getString("source_path"))){
 
                                       Log.i("Slicer","Progress received for " + response.getString("source_path"));
 
@@ -625,12 +634,12 @@ public class OctoprintConnection {
             Log.i("Slicer","Slice done received for " + payload.getString("stl"));
 
             //Search for files waiting for slice
-            if (DatabaseController.getPreference("Slicing","Last")!=null)
-            if (DatabaseController.getPreference("Slicing","Last").equals( payload.getString("stl")))
+            if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null)
+            if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals( payload.getString("stl")))
             {
 
                 Log.i("Slicer","Changed PREFERENCE [Last]: " + payload.getString("gcode"));
-                DatabaseController.handlePreference("Slicing","Last",payload.getString("gcode"), true);
+                DatabaseController.handlePreference(DatabaseController.TAG_SLICING,"Last",payload.getString("gcode"), true);
 
                 ViewerMainFragment.showProgressBar(StateUtils.SLICER_DOWNLOAD, 0);
 

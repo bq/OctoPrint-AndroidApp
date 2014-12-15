@@ -71,9 +71,9 @@ public class OctoprintFiles {
 
                          if (object.getString("name").contains(".stl")){
 
-                             if (DatabaseController.getPreference("Slicing","Last")!=null){
+                             if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null){
 
-                                 if (DatabaseController.getPreference("Slicing","Last").equals(object.getString("name"))){
+                                 if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(object.getString("name"))){
 
                                      Log.i("Slicer","Hey that's my fucking file");
 
@@ -82,7 +82,7 @@ public class OctoprintFiles {
                                          Log.i("Slicer","And it's fucking done!!");
 
                                          Log.i("Slicer","Changed PREFERENCE [Last]: " + "temp.gco");
-                                         DatabaseController.handlePreference("Slicing","Last","temp.gco", true);
+                                         DatabaseController.handlePreference(DatabaseController.TAG_SLICING,"Last","temp.gco", true);
 
                                          OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
                                                  LibraryController.getParentFolder() + "/temp/", "temp.gco");
@@ -218,7 +218,7 @@ public class OctoprintFiles {
                     , Toast.LENGTH_LONG).show();
             p.setLoaded(false);
 
-            DatabaseController.handlePreference("References", p.getName(), p.getJobPath(), true);
+            DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, p.getName(), p.getJobPath(), true);
 
 			
 

@@ -40,7 +40,6 @@ public class HttpClientHandler {
   
   //GET method for both APIs
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-      client.setTimeout(30000);
 	  client.get(getAbsoluteUrl(url), params, responseHandler);
 
   }
@@ -52,13 +51,12 @@ public class HttpClientHandler {
   
   //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-      client.setTimeout(30000);
+      client.setTimeout(36000);
 	  client.post( getAbsoluteUrl(url), params, responseHandler);
   }
 
   //POST method for the new API
   public static void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-      client.setTimeout(30000);
       client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
@@ -69,7 +67,6 @@ public class HttpClientHandler {
   
   //PUT method for the new API
   public static void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-      client.setTimeout(30000);
       client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
@@ -117,7 +114,6 @@ public class HttpClientHandler {
   
   //DELETE method
   public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
-      client.setTimeout(30000);
       client.delete(context, getAbsoluteUrl(url), responseHandler);
   }
   
