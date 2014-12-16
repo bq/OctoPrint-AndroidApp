@@ -2,6 +2,7 @@ package android.app.printerapp.viewer;
 
 import android.app.printerapp.viewer.Geometry.Point;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,15 +150,21 @@ public class DataStorage {
 
 		float distX = 0;
 		float distY = 0;
+        float distZ = mMinZ;
 
         if (center){
 
             distX = mMinX + (mMaxX - mMinX)/2;
             distY = mMinY + (mMaxY - mMinY)/2;
 
+            //Show the model slightly above the plate
+            distZ = mMinZ - (float)0.1;
+
         }
 
-		float distZ = mMinZ;
+
+
+        Log.i("PrintView", distZ + "");
 				
 		for (int i = 0; i < mVertexList.size(); i=i+3) {
 		    mVertexArray[i] = mVertexList.get(i)   - distX;
