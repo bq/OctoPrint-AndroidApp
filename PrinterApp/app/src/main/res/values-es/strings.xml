@@ -214,5 +214,30 @@
     <string name="loading_gcode">Cargando archivo GCODE</string>
     
      <string name="be_patient">Esto puede llevar un rato. Por favor, tenga paciencia.</string>
+    <string name="detailview_gcode">gcode</string>
+    <string name="creating_project">Creando proyecto &#8230;</string>
+    <string name="devices_toast_no_stl">No se ha encontrado .stl</string>
+    <string name="edition_menu_delete">Borrar</string>
+    <string name="edition_menu_mirror">Espejo</string>
+    <string name="edition_menu_move">Mover</string>
+    <string name="edition_menu_multiply">Multiplicar</string>
+    <string name="edition_menu_resize">Tamaño</string>
+    <string name="edition_menu_rotate">Rotar</string>
+    <string name="error_opening_invalid_file">Error en el fichero, vuelve a intentarlo.</string>
+    <string name="error_saving_invalid_model">El panel de impresión está vacío, abre un fichero primero.</string>
+    <string name="font_fontFamily_drawer_item">sans-serif</string>
+    <string name="font_fontFamily_medium">sans-serif</string>
+    <string name="fragment_detail_printer"></string>
+    <string name="gcode_viewer">Archivos Gcode</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="new_project">Nuevo proyecto</string>
+    <string name="ok">OK</string>
+    <string name="project_name">Introduzca un nuevo nombre por favor</string>
+    <string name="proyect_name_not_available">Ese nombre ya existe, elija uno distinto</string>
+    <string name="viewer_button_rotate_negative_angle">-15º</string>
+    <string name="viewer_button_rotate_positive_angle">+15º</string>
+    <string name="viewer_text_rx">Eje X</string>
+    <string name="viewer_text_ry">Eje Y</string>
+    <string name="viewer_text_rz">Eje Z</string>
 
 </resources>

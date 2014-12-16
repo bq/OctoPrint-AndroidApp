@@ -1,11 +1,11 @@
 package android.app.printerapp;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import android.content.Context;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -14,6 +14,13 @@ import android.content.Context;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class ListContent {
+
+    public static final String ID_DEVICES = "Devices";
+    public static final String ID_LIBRARY = "Library";
+    public static final String ID_VIEWER = "Viewer";
+    public static final String ID_SETTINGS = "Settings";
+    public static final String ID_DETAIL = "Detail";
+    public static final String ID_PRINTVIEW = "PrintView";
 
 	/**
 	 * An array of sample (dummy) items.
@@ -70,7 +77,7 @@ public class ListContent {
 		//TODO: History fragment
 //		addItem(new DrawerListItem("4", context.getString(R.string.fragment_history), R.drawable.ic_drawer_history));
 		
-		addItem(new DrawerListItem("5", context.getString(R.string.fragment_settings), R.drawable.ic_drawer_settings));
+		addItem(new DrawerListItem("4", context.getString(R.string.fragment_settings), R.drawable.ic_drawer_settings));
 		
 		return ITEMS;
 	
