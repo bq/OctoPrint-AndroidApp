@@ -21,8 +21,6 @@
     <string name="fragment_models">Models</string>
     <string name="fragment_history">History</string>
     <string name="fragment_settings">Settings</string>
-    <string name="fragment_detail_printer">Detail printer</string>
-    <string name="fragment_detail_view">Detail view</string>
     
     
     <string name="devices_quickprint">&#9552;</string>
@@ -232,7 +230,7 @@
     <string name="project_name">Please, insert a new name</string>
     <string name="proyect_name_not_available">That name exists! Please, choose another name</string>
     <string name="creating_project">Creating project &#8230;</string> 
-    <string name="new_project">New project</string> 
+    <string name="new_project">New project</string>
     
     <string name="edition_menu_move">Move</string>
     <string name="edition_menu_rotate">Rotate</string>
@@ -240,6 +238,9 @@
     <string name="edition_menu_mirror">Mirror</string>
     <string name="edition_menu_delete">Delete</string>
     <string name="edition_menu_multiply">Multiply</string>
-    
-    
+    <string name="viewer_button_rx">Rotation X</string>
+    <string name="viewer_button_rz">Rotation Z</string>
+    <string name="viewer_button_ry">Rotation Y</string>
+
+
 </resources>

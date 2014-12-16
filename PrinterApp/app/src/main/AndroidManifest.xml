@@ -41,7 +41,8 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="locale">
         </activity>
         <activity
             android:name="android.app.printerapp.ItemDetailActivity"
@@ -59,6 +60,7 @@
                 <action android:name="android.app.printerapp.NotificationReceiver" />
             </intent-filter>
         </receiver>
+
 
     </application>
 

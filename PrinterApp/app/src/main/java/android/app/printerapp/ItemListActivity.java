@@ -133,16 +133,23 @@ public class ItemListActivity extends FragmentActivity implements
         mDialog = new DialogController(this);
 
         //Initialize fragments
-        mDevicesFragment = (DevicesFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_devices));
-        mLibraryFragment = (LibraryFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_models));
-        mViewerFragment = (ViewerMainFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_print));
-        mSettingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(getString(R.string.fragment_settings));
+        mDevicesFragment = (DevicesFragment) getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES);
+        mLibraryFragment = (LibraryFragment) getFragmentManager().findFragmentByTag(ListContent.ID_LIBRARY);
+        mViewerFragment = (ViewerMainFragment) getFragmentManager().findFragmentByTag(ListContent.ID_VIEWER);
+        mSettingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(ListContent.ID_SETTINGS);
 
         ItemListFragment.performClick(0);
 
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(mAdapterNotification,
                 new IntentFilter("notify"));
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
+
+        this.registerReceiver(mLocaleChange,filter);
+
+
 
         mManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
@@ -179,6 +186,7 @@ public class ItemListActivity extends FragmentActivity implements
          */
         if (Integer.valueOf(id) != 2) ViewerMainFragment.hideActionModeBar();
 
+        Log.i("OUT","Pressed " + id);
 
         if (mTwoPane) {
 
@@ -206,44 +214,42 @@ public class ItemListActivity extends FragmentActivity implements
             //Enable the navigation drawer icon when a new fragment is selected
             mDrawerToggle.setDrawerIndicatorEnabled(true);
 
+
             //Select fragment
             switch (Integer.valueOf(id)) {
                 case 1: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_devices)) == null) {
+                    if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
                         mDevicesFragment = new DevicesFragment();
-                        fragmentTransaction.add(R.id.item_detail_container, mDevicesFragment, getString(R.string.fragment_devices));
+                        fragmentTransaction.add(R.id.item_detail_container, mDevicesFragment, ListContent.ID_DEVICES);
                     }
                     mCurrent = mDevicesFragment;
+                    Log.i("OUT", "Gotten " + mCurrent.getTag());
                 }
                 break;
                 case 2: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_print)) == null) {
+                    if (getFragmentManager().findFragmentByTag(ListContent.ID_VIEWER) == null) {
                         mViewerFragment = new ViewerMainFragment();
-                        fragmentTransaction.add(R.id.item_detail_container, mViewerFragment, getString(R.string.fragment_print));
+                        fragmentTransaction.add(R.id.item_detail_container, mViewerFragment, ListContent.ID_VIEWER);
                     }
                     mCurrent = mViewerFragment;
                 }
                 break;
                 case 3: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_models)) == null) {
+                    if (getFragmentManager().findFragmentByTag(ListContent.ID_LIBRARY) == null) {
                         mLibraryFragment = new LibraryFragment();
-                        fragmentTransaction.add(R.id.item_detail_container, mLibraryFragment, getString(R.string.fragment_models));
+                        fragmentTransaction.add(R.id.item_detail_container, mLibraryFragment, ListContent.ID_LIBRARY);
                     }
                     mCurrent = mLibraryFragment;
                 }
                 break;
                 case 4: {
-
-                }
-                break;
-                case 5: {
                     //Check if we already created the Fragment to avoid having multiple instances
-                    if (getFragmentManager().findFragmentByTag(getString(R.string.fragment_settings)) == null) {
+                    if (getFragmentManager().findFragmentByTag(ListContent.ID_SETTINGS) == null) {
                         mSettingsFragment = new SettingsFragment();
-                        fragmentTransaction.add(R.id.item_detail_container, mSettingsFragment, getString(R.string.fragment_settings));
+                        fragmentTransaction.add(R.id.item_detail_container, mSettingsFragment, ListContent.ID_SETTINGS);
                     }
                     mCurrent = mSettingsFragment;
                 }
@@ -263,8 +269,9 @@ public class ItemListActivity extends FragmentActivity implements
 
             //Show current fragment
             if (mCurrent != null) {
+                Log.i("OUT","Changing " + mCurrent.getTag());
                 fragmentTransaction.show(mCurrent).commit();
-                getActionBar().setTitle(mCurrent.getTag());
+                getActionBar().setTitle(ListContent.ITEMS.get(Integer.valueOf(id) - 1).content);
             }
 
         } else {
@@ -295,9 +302,13 @@ public class ItemListActivity extends FragmentActivity implements
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+
+        Log.i("OUT","Conf changed!");
+
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
 
     /**
      * Method to create a new type of fragment to show special detailed views.
@@ -332,7 +343,7 @@ public class ItemListActivity extends FragmentActivity implements
 
                 //TODO: Use resource for id tag
 
-                mTransaction.replace(R.id.item_detail_container, detail, "Detail").commit();
+                mTransaction.replace(R.id.item_detail_container, detail, ListContent.ID_DETAIL).commit();
                 break;
 
             case 1:
@@ -348,7 +359,7 @@ public class ItemListActivity extends FragmentActivity implements
                 //Transition is made by replacing instead of hiding to allow backstack navigation
 
                 //TODO: Use resource for id tag;
-                mTransaction.replace(R.id.item_detail_container, detailp, "Printer").commit();
+                mTransaction.replace(R.id.item_detail_container, detailp, ListContent.ID_PRINTVIEW).commit();
                 break;
 
         }
@@ -377,7 +388,7 @@ public class ItemListActivity extends FragmentActivity implements
                 Log.i("FRAGMENT","Current is not libray");
 
                 //Refresh printview fragment if exists
-                Fragment fragment = mManager.findFragmentByTag("Printer");
+                Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
                 if (fragment != null) ((PrintViewFragment) fragment).stopCameraPlayback();
 
                 if (mManager.popBackStackImmediate());
@@ -441,7 +452,7 @@ public class ItemListActivity extends FragmentActivity implements
 
             if (message.equals("Devices")){
 
-                mDevicesFragment.notifyAdapter();
+                if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
 
                 //Refresh printview fragment if exists
                 Fragment fragment = mManager.findFragmentByTag("Printer");
@@ -471,6 +482,19 @@ public class ItemListActivity extends FragmentActivity implements
         }
     };
 
+    /*
+    Close app on locale change
+     */
+    private BroadcastReceiver mLocaleChange = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("OUT","Exiting app");
+            finish();
+            System.exit(0);
+
+        }
+    };
+
     @Override
     protected void onDestroy() {
 
@@ -484,6 +508,7 @@ public class ItemListActivity extends FragmentActivity implements
     /*********************************************************************************
      *                  NOTIFICATION MANAGEMENT
      *********************************************************************************/
+
 
     /**
      * This method will handle notifications when printing is finished
