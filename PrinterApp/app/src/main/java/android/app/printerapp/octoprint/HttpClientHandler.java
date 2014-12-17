@@ -34,6 +34,7 @@ public class HttpClientHandler {
 	 
   //Base URL to handle http requests, only needs one slash because services come with another one
   private static final String BASE_URL = "http:/";
+  private static final int DEFAULT_TIMEOUT = 30000;
 
   private static AsyncHttpClient client = new AsyncHttpClient();
   private static SyncHttpClient sync_client = new SyncHttpClient();
@@ -51,7 +52,6 @@ public class HttpClientHandler {
   
   //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-      client.setTimeout(36000);
 	  client.post( getAbsoluteUrl(url), params, responseHandler);
   }
 
@@ -122,9 +122,9 @@ public class HttpClientHandler {
 	  if (!relativeUrl.contains(HttpUtils.URL_AUTHENTICATION)){
           client.addHeader("X-Api-Key", HttpUtils.getApiKey(relativeUrl));
           //client.addHeader("X-Api-Key", HttpUtils.API_KEY);
-
-
       }
+      
+      client.setTimeout(DEFAULT_TIMEOUT);
 
       Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));
       return BASE_URL + relativeUrl;
