@@ -736,6 +736,7 @@ public class SidePanelHandler {
                         try {
                             if (profile.get("displayName").equals(o.get("displayName"))) {
 
+                                //TODO hardcoded
                                 Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
 
                                 return;
@@ -756,6 +757,7 @@ public class SidePanelHandler {
                 //Send profile to server
                 OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);
 
+                //TODO hardcoded
                 Toast.makeText(mActivity, "Profile saved successfully", Toast.LENGTH_LONG).show();
 
 

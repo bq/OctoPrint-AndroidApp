@@ -125,6 +125,14 @@ public class OctoprintConnection {
                     current = response.getJSONObject("current");
                     p.setPort(current.getString("port"));
                     convertType(p, current.getString("printerProfile"));
+
+                    //retrieve settings
+                    getUpdatedSettings(p,current.getString("printerProfile"));
+
+                    Intent intent = new Intent("notify");
+                    intent.putExtra("message", "Devices");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
                     Log.i("Connection","Printer already connected to " + p.getPort());
                     //p.startUpdate(context);
                 } catch (JSONException e) {
@@ -213,6 +221,7 @@ public class OctoprintConnection {
                                 //load information
                                 p.setPort(current.getString("port"));
                                 convertType(p, current.getString("printerProfile"));
+                                getUpdatedSettings(p,current.getString("printerProfile"));
                                 Log.i("Connection","Printer already connected to " + p.getPort());
 
                                 p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType())));
@@ -272,6 +281,42 @@ public class OctoprintConnection {
         if (color.equals("violet")) return Color.rgb(138,43,226);
 
         return Color.BLACK;
+
+    }
+
+    public static void getUpdatedSettings(final ModelPrinter p, String profile){
+
+        HttpClientHandler.get(p.getAddress() + HttpUtils.URL_PROFILES + "/" + profile, null, new JsonHttpResponseHandler(){
+
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    String name = response.getString("name");
+                    String color = response.getString("color");
+
+                    if(!name.equals("")) {
+
+                        p.setDisplayName(name);
+                        DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, p.getId(), name);
+                    }
+
+                    p.setDisplayColor(convertColor(color));
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        });
+
+
 
     }
 
@@ -485,12 +530,8 @@ public class OctoprintConnection {
                             if (response.getString("type").equals("SettingsUpdated")){
 
 
-                                OctoprintConnection.getSettings(p);
+                                getLinkedConnection(context,p);
 
-                                //SEND NOTIFICATION
-                                Intent intent = new Intent("notify");
-                                intent.putExtra("message", "Settings");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
                             }
 
