@@ -950,6 +950,8 @@ public class ViewerMainFragment extends Fragment {
             mRotationLayout.setVisibility(View.INVISIBLE);
             mSurface.setRendererAxis(-1);
 
+            Toast.makeText(mContext,mContext.getString(R.string.viewer_mode_tag) + ": " + item.getTitle(), Toast.LENGTH_SHORT).show();
+
             switch (item.getItemId()) {
                 case R.id.move:
                     mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
@@ -983,6 +985,7 @@ public class ViewerMainFragment extends Fragment {
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+
             mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.INVISIBLE);
             mActionMode = null;
@@ -991,6 +994,13 @@ public class ViewerMainFragment extends Fragment {
 
         }
     };
+
+    //Exit edition mode
+    public static void finishEdition(){
+
+        hideActionModeBar();
+
+    }
 
 
     /**

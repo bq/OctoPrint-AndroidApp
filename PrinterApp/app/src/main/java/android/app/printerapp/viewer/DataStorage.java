@@ -54,6 +54,8 @@ public class DataStorage {
 	private Point mLastCenter = new Point (0,0,0);
 	private int mStateObject;
 	private float mAdjustZ;
+
+    public static final double MIN_Z = 0.1;
 	
 	public DataStorage () {
 		Matrix.setIdentityM(mRotationMatrix, 0);
@@ -158,7 +160,7 @@ public class DataStorage {
             distY = mMinY + (mMaxY - mMinY)/2;
 
             //Show the model slightly above the plate
-            distZ = mMinZ - (float)0.1;
+            distZ = mMinZ - (float)MIN_Z;
 
         }
 

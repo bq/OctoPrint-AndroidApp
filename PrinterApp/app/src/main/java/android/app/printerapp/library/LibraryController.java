@@ -235,7 +235,7 @@ public class LibraryController {
 			@Override
 			public boolean accept(File dir, String filename) {
 				
-				return filename.endsWith("jpg");
+				return filename.endsWith("thumb");
 			}
 		};
 		

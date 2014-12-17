@@ -39,7 +39,7 @@ public class ModelFile extends File {
         //TODO: Move this to the ModelFile code
         setPathStl(LibraryController.retrieveFile(path, "_stl"));
         setPathGcode(LibraryController.retrieveFile(path, "_gcode"));
-        setSnapshot(path + "/" + getName() + ".jpg");
+        setSnapshot(path + "/" + getName() + ".thumb");
 
     }
 
