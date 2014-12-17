@@ -358,7 +358,11 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mEdition = true;
 						mObjectPressed=objPressed;
 						ViewerMainFragment.showActionModeBar();
-					} 
+					}  else {
+
+                       ViewerMainFragment.finishEdition();
+
+                    }
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();
 					mPreviousY = event.getY();

@@ -191,7 +191,7 @@ public class LibraryModelCreation {
         bitmap.copyPixelsFromBuffer(sb);
         
         try {
-            FileOutputStream fos = new FileOutputStream(LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + mName + "/" + mName + ".jpg");
+            FileOutputStream fos = new FileOutputStream(LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + mName + "/" + mName + ".thumb");
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();

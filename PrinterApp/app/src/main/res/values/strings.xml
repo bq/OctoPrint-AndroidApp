@@ -241,6 +241,7 @@
     <string name="viewer_button_rx">Rotation X</string>
     <string name="viewer_button_rz">Rotation Z</string>
     <string name="viewer_button_ry">Rotation Y</string>
+    <string name="viewer_mode_tag">Mode selected</string>
 
 
 </resources>

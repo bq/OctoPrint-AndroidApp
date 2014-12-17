@@ -221,7 +221,7 @@
     <string name="edition_menu_mirror">Espejo</string>
     <string name="edition_menu_move">Mover</string>
     <string name="edition_menu_multiply">Multiplicar</string>
-    <string name="edition_menu_resize">Tamaño</string>
+    <string name="edition_menu_resize">Escalar</string>
     <string name="edition_menu_rotate">Rotar</string>
     <string name="error_opening_invalid_file">Error en el fichero, vuelve a intentarlo.</string>
     <string name="error_saving_invalid_model">El panel de impresión está vacío, abre un fichero primero.</string>
@@ -239,5 +239,6 @@
     <string name="viewer_text_rx">Eje X</string>
     <string name="viewer_text_ry">Eje Y</string>
     <string name="viewer_text_rz">Eje Z</string>
+    <string name="viewer_mode_tag">Modo seleccionado</string>
 
 </resources>

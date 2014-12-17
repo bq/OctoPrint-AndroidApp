@@ -439,7 +439,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                     data.setMinY(minY);
 
                     float adjustZ = 0;
-                    if (minZ!=0) adjustZ= -data.getMinZ();
+                    if (minZ!=0) adjustZ= - data.getMinZ() + (float)DataStorage.MIN_Z; //TODO CHECK
 
                     data.setAdjustZ(adjustZ);
                     data.setMinZ(data.getMinZ()+adjustZ);
