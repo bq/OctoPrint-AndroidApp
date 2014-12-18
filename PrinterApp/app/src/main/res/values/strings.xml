@@ -242,6 +242,7 @@
     <string name="viewer_button_rz">Rotation Z</string>
     <string name="viewer_button_ry">Rotation Y</string>
     <string name="viewer_mode_tag">Mode selected</string>
+    <string name="viewer_file_size">The model you are trying to load is too big</string>
 
 
 </resources>
