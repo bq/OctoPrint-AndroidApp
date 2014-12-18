@@ -3,8 +3,6 @@ package android.app.printerapp.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 /**
  * This class defines a new Printing Job as a Status listener. Basically it's a reference to the current
  * status of the printer. If there is currently an ongoing job, it'll show the printing status, if there's nothing, 
@@ -101,7 +99,7 @@ public class ModelJob {
 				Double n = Double.parseDouble(mProgress);
 				if (n.intValue() == 100) mFinished = true;
 				else mFinished = false;
-			}
+			} else mFinished = false;
 
 			//Log.i("MODEL", "Timelapse: " + mTimelapse + " Height: " + mHeight + " Print time: " + mPrintTime +
 					//" Print time left: " + mPrintTimeLeft);
