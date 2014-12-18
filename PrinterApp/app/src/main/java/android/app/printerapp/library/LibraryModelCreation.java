@@ -147,15 +147,21 @@ public class LibraryModelCreation {
 		File file = new File (path);
 		List<DataStorage> list = new ArrayList<DataStorage> ();
 		DataStorage data = new DataStorage();
-		
-		if(LibraryController.hasExtension(0, path)) {
-			StlFile.openStlFile (context, file, data, ViewerMainFragment.DO_SNAPSHOT);
-		} else if (LibraryController.hasExtension(1, path)) {
-			GcodeFile.openGcodeFile(context, file, data, ViewerMainFragment.DO_SNAPSHOT);
-		}
-		
-		mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMainFragment.DO_SNAPSHOT, null);
-		list.add(data);
+
+        if (StlFile.checkFileSize(file,mContext)){
+
+            if(LibraryController.hasExtension(0, path)) {
+                StlFile.openStlFile (context, file, data, ViewerMainFragment.DO_SNAPSHOT);
+            } else if (LibraryController.hasExtension(1, path)) {
+                GcodeFile.openGcodeFile(context, file, data, ViewerMainFragment.DO_SNAPSHOT);
+            }
+
+            mSnapshotSurface = new ViewerSurfaceView (context, list, ViewerSurfaceView.NORMAL, ViewerMainFragment.DO_SNAPSHOT, null);
+            list.add(data);
+
+        } else mAlert.dismiss();
+
+
 	}
 	
 	/**

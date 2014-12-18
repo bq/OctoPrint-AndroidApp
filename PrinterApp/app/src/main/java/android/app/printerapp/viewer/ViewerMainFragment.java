@@ -604,30 +604,34 @@ public class ViewerMainFragment extends Fragment {
     public static void openFile(String filePath) {
         DataStorage data = null;
 
-        //Open the file
-        if (LibraryController.hasExtension(0, filePath)) {
+        if (StlFile.checkFileSize(new File(filePath),mContext)){
+            //Open the file
+            if (LibraryController.hasExtension(0, filePath)) {
 
-            data = new DataStorage();
-            mFile = new File(filePath);
-            StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
-            mSidePanelHandler.enableProfileSelection(true);
+                data = new DataStorage();
+                mFile = new File(filePath);
+                StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
+                mSidePanelHandler.enableProfileSelection(true);
 
 
-        } else if (LibraryController.hasExtension(1, filePath)) {
+            } else if (LibraryController.hasExtension(1, filePath)) {
 
-            data = new DataStorage();
-            if (!filePath.contains("/temp")) optionClean();
-            mFile = new File(filePath);
-            GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
-            mSidePanelHandler.enableProfileSelection(false);
+                data = new DataStorage();
+                if (!filePath.contains("/temp")) optionClean();
+                mFile = new File(filePath);
+                GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
+                mSidePanelHandler.enableProfileSelection(false);
 
+            }
+            mDataList.add(data);
+
+            //Adding original project //TODO elsewhere?
+            if (mSlicingHandler!=null)
+                if (mSlicingHandler.getOriginalProject() == null)
+                    mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
         }
-        mDataList.add(data);
 
-        //Adding original project //TODO elsewhere?
-        if (mSlicingHandler!=null)
-        if (mSlicingHandler.getOriginalProject() == null)
-            mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
+
     }
 
     private void changeStlViews(int state) {
