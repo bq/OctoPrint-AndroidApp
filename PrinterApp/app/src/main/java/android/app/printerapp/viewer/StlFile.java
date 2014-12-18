@@ -47,23 +47,32 @@ public class StlFile {
 	private static final int COORDS_PER_TRIANGLE = 9;		
 	private static int mMode;
 
+    private static final int MAX_SIZE = 25000000; //25Mb
+
+
 		
 	public static void openStlFile (Context context, File file, DataStorage data, int mode) {
 		Log.i(TAG, "Open STL File");
-		mMode = mode;
-		mContinueThread = true;
 
-		if (mMode != ViewerMainFragment.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
+        mContext = context;
 
-		mData = data;
-		mContext = context;
-		mFile = file;
-		Uri uri = Uri.fromFile(file);
-		
-		mData.setPathFile(mFile.getAbsolutePath());	
-		mData.initMaxMin();
+        mMode = mode;
+        mContinueThread = true;
 
-		startThreadToOpenFile(context, uri);
+        if (mMode != ViewerMainFragment.DO_SNAPSHOT) mProgressDialog = prepareProgressDialog(context);
+
+        mData = data;
+
+        mFile = file;
+        Uri uri = Uri.fromFile(file);
+
+        mData.setPathFile(mFile.getAbsolutePath());
+        mData.initMaxMin();
+
+
+        startThreadToOpenFile(context, uri);
+
+
 	}
 	
 	public static void startThreadToOpenFile (final Context context, final Uri uri) {
@@ -491,4 +500,19 @@ public class StlFile {
 	    
 	    return true;
 	}
+
+    /**************************************************************************************/
+
+    /*
+    Check file size or issue a notification
+     */
+    public static boolean checkFileSize(File file, Context context){
+
+        if (file.length() < MAX_SIZE) return true;
+        else Toast.makeText(context, "File is too big", Toast.LENGTH_SHORT).show();
+
+        return false;
+
+    }
+
 }
