@@ -1165,7 +1165,7 @@ public class ViewerMainFragment extends Fragment {
     public void notifyAdapter(){
 
         try {
-            mSidePanelHandler.profileAdapter.notifyDataSetChanged();
+            if (mSidePanelHandler.profileAdapter!=null)mSidePanelHandler.profileAdapter.notifyDataSetChanged();
             if (mSidePanelHandler.printerAdapter!=null)mSidePanelHandler.printerAdapter.notifyDataSetChanged();
         } catch (NullPointerException e ){
 

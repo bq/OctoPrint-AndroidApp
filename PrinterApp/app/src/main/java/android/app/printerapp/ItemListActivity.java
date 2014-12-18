@@ -455,7 +455,7 @@ public class ItemListActivity extends FragmentActivity implements
                 if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
 
                 //Refresh printview fragment if exists
-                Fragment fragment = mManager.findFragmentByTag("Printer");
+                Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
                 if (fragment != null) ((PrintViewFragment) fragment).refreshData();
 
             } else if (message.equals("Profile")){
