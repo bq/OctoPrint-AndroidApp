@@ -75,15 +75,16 @@ public class SlicingHandler {
                 Log.i("Slicer","No profile change");
                 return;
             }
-
             mExtras.put(tag,value);
-            ViewerMainFragment.slicingCallback();
 
-            Log.i("Slicer","Added extra " + tag + ":" + value + " [" + mExtras.length()+"]");
+
+
+            Log.i("Slicer","Added extra " + tag + ":" + value + " [" + mExtras.toString()+"]");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        ViewerMainFragment.slicingCallback();
     }
 
     //Set the printer dynamically to send the files

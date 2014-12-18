@@ -109,7 +109,7 @@ public class ViewerMainFragment extends Fragment {
      * ****************************************************************************
      */
     private static SlicingHandler mSlicingHandler;
-    private SidePanelHandler mSidePanelHandler;
+    private static SidePanelHandler mSidePanelHandler;
 
     private static int mCurrentType;
     private static int[] mCurrentPlate;
@@ -610,6 +610,7 @@ public class ViewerMainFragment extends Fragment {
             data = new DataStorage();
             mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
+            mSidePanelHandler.enableProfileSelection(true);
 
 
         } else if (LibraryController.hasExtension(1, filePath)) {
@@ -618,6 +619,7 @@ public class ViewerMainFragment extends Fragment {
             if (!filePath.contains("/temp")) optionClean();
             mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
+            mSidePanelHandler.enableProfileSelection(false);
 
         }
         mDataList.add(data);

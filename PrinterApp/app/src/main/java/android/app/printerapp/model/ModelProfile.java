@@ -16,26 +16,38 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
+ * This class will define the profile type that will be used by the printers / quality types
  * Created by alberto-baeza on 12/4/14.
  */
 public class ModelProfile {
 
+    //Printer profiles
     public static final String WITBOX_PROFILE = "bq_witbox";
     public static final String PRUSA_PROFILE = "bq_hephestos";
     public static final String DEFAULT_PROFILE = "CUSTOM";
 
+    //Quality profiles
+    public static final String LOW_PROFILE = "low_bq";
+    public static final String MEDIUM_PROFILE = "medium_bq";
+    public static final String HIGH_PROFILE = "high_bq";
+
+    //Retrieve a profile in JSON format
     public static JSONObject retrieveProfile(Context context, String resource){
 
         int id = 0;
 
+        //Select a predefined profile
         if (resource.equals(WITBOX_PROFILE)) id = R.raw.witbox;
         if (resource.equals(PRUSA_PROFILE)) id = R.raw.prusa;
         if (resource.equals(DEFAULT_PROFILE)) id = R.raw.defaultprinter;
+        if (resource.equals(LOW_PROFILE)) id = R.raw.low;
+        if (resource.equals(MEDIUM_PROFILE)) id = R.raw.medium;
+        if (resource.equals(HIGH_PROFILE)) id = R.raw.high;
 
         InputStream fis = null;
 
         if (id != 0)  fis = context.getResources().openRawResource(id);
-        else {
+        else { //Custom profile
 
             try {
 
@@ -77,6 +89,8 @@ public class ModelProfile {
 
     }
 
+
+    //Save a new custom profile
     public static boolean saveProfile(Context context, String name, JSONObject json){
 
         String filename = name + ".profile";

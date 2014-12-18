@@ -9,6 +9,7 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
@@ -48,7 +49,7 @@ public class SidePanelHandler {
 
     //static parameters
     private static final String[] INFILL_OPTIONS = {"Low","Medium","High","Full", "None"}; //quality options
-    private static final String[] PROFILE_OPTIONS = {"High Settings", "Medium Settings", "Low Settings", "Custom"}; //support options
+    private static final String[] PROFILE_OPTIONS = {ModelProfile.HIGH_PROFILE, ModelProfile.MEDIUM_PROFILE, ModelProfile.LOW_PROFILE}; //support options
     private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"}; //support options
     private static final String[] ADHESION_OPTIONS = {"none", "brim", "raft"}; //adhesion options
     private static final String[] PRINTER_TYPE = {"Witbox","Hephestos"};
@@ -176,6 +177,16 @@ public class SidePanelHandler {
 
     }
 
+    //Enable/disable profile options depending on the model type
+    public void enableProfileSelection(boolean enable){
+
+        s_profile.setEnabled(enable);
+        s_support.setEnabled(enable);
+        s_adhesion.setEnabled(enable);
+        seek_infill.setEnabled(enable);
+
+    }
+
     //Initializes the side panel with the printer data
     public void initSidePanel(){
 
@@ -213,18 +224,20 @@ public class SidePanelHandler {
 
                                     if (mPrinter.getProfiles().size()==0)
                                     {
-                                        OctoprintSlicing.retrieveProfiles(mActivity,mPrinter);
+                                        //TODO previously retrieve custom profiles
+                                        //OctoprintSlicing.retrieveProfiles(mActivity,mPrinter);
                                     }
 
                                 }
 
+                                //TODO Remove profile updating
 
-                                profileAdapter = new SidePanelProfileAdapter(mActivity,
+                                /*profileAdapter = new SidePanelProfileAdapter(mActivity,
                                         R.layout.print_panel_spinner_item,  mPrinter.getProfiles());
 
                                 s_profile.setAdapter(profileAdapter);
 
-                                profileAdapter.notifyDataSetChanged();
+                                profileAdapter.notifyDataSetChanged();*/
 
                             } else mPrinter = null;
 
@@ -308,7 +321,7 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                            try {
+                            /*try {
                                 String key = mPrinter.getProfiles().get(i).getString("key");
                                 mSlicingHandler.setExtras("profile", key);
 
@@ -317,7 +330,10 @@ public class SidePanelHandler {
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
+
+                            parseJson(ModelProfile.retrieveProfile(mActivity,s_profile.getSelectedItem().toString()));
+                            mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
 
                         }
 
@@ -326,6 +342,11 @@ public class SidePanelHandler {
                             mSlicingHandler.setExtras("profile", null);
                         }
                     });
+
+                    ArrayAdapter<String> profile_adapter = new ArrayAdapter<String>(mActivity,
+                            R.layout.print_panel_spinner_item, PROFILE_OPTIONS);
+
+                    s_profile.setAdapter(profile_adapter);
 
 
 
@@ -422,7 +443,8 @@ public class SidePanelHandler {
                     restoreButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            parseJson(s_profile.getSelectedItemPosition());
+                            //parseJson(s_profile.getSelectedItemPosition());
+                            parseJson(ModelProfile.retrieveProfile(mActivity,s_profile.getSelectedItem().toString()));
                         }
                     });
 
@@ -588,13 +610,14 @@ public class SidePanelHandler {
      * Parses a JSON profile to the side panel
      * @i printer index in the list
      */
-    public void parseJson(int i){
+    public void parseJson/*(int i)*/(JSONObject profile){
 
          //Parse the JSON element
         try {
 
-            //profileText.setText(mPrinter.getProfiles().get(i).getString("displayName"));
-            JSONObject data = mPrinter.getProfiles().get(i).getJSONObject("data");
+
+            //JSONObject data = mPrinter.getProfiles().get(i).getJSONObject("data");
+            JSONObject data = profile.getJSONObject("data");
             layerHeight.setText(data.getString("layer_height"));
             shellThickness.setText(data.getString("wall_thickness"));
             bottomTopThickness.setText(data.getString("solid_layer_thickness"));
