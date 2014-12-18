@@ -309,8 +309,6 @@ public class SidePanelHandler {
 
 
 
-
-
                     /******************** INITIALIZE SECONDARY PANEL ************************************/
 
 
@@ -465,6 +463,17 @@ public class SidePanelHandler {
                     e.printStackTrace();
                 }
 
+
+                /**
+                 * Set preferred settings
+                 */
+                String prefType = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"type");
+                String prefQuality = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"quality");
+                //String prefPrinter = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"type");
+                if (prefType!=null) s_type.setSelection(Integer.parseInt(prefType));
+                if (prefQuality!=null) s_profile.setSelection(Integer.parseInt(prefQuality));
+                //if (prefPrinter!=null) s_printer.setSelection(Integer.parseInt(prefPrinter));
+
             }
         });
 
@@ -602,6 +611,15 @@ public class SidePanelHandler {
 
 
         } else Toast.makeText(mActivity,R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
+
+
+
+        /**
+         * Save the printer profile settings
+         */
+        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "type",String.valueOf(s_type.getSelectedItemPosition()), true);
+        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "printer",String.valueOf(s_printer.getSelectedItemPosition()), true);
+        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "quality",String.valueOf(s_profile.getSelectedItemPosition()), true);
 
     }
 
