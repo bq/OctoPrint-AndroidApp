@@ -636,7 +636,7 @@ public class OctoprintConnection {
         OctoprintFiles.getFiles(context, p);
 
         //Get a new set of profiles
-        OctoprintSlicing.retrieveProfiles(context,p);
+        //OctoprintSlicing.retrieveProfiles(context,p); //Don't retrieve profiles yet
 
 
 
