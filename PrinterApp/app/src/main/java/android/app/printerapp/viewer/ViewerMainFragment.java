@@ -1260,7 +1260,7 @@ public class ViewerMainFragment extends Fragment {
 
     public static void setSlicingPosition(float x, float y){
 
-        Log.i("Slicer","MOG, new positiong to pront " + x + ":" + y);
+        Log.i("Slicer","MOG, new positiong to pr0nt " + x + ":" + y);
 
         JSONObject position = new JSONObject();
         try {
