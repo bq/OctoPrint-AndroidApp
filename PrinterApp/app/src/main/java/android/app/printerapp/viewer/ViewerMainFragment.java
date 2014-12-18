@@ -451,10 +451,6 @@ public class ViewerMainFragment extends Fragment {
                 optionRestoreView();
                 return true;
 
-            case R.id.viewer_autofit:
-                //Autofit
-                return true;
-
             case R.id.viewer_clean:
 
                 optionClean();

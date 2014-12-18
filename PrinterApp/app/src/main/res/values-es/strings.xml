@@ -240,5 +240,6 @@
     <string name="viewer_text_ry">Eje Y</string>
     <string name="viewer_text_rz">Eje Z</string>
     <string name="viewer_mode_tag">Modo seleccionado</string>
+    <string name="viewer_file_size">El modelo que intentas cargar es demasiado grande</string>
 
 </resources>

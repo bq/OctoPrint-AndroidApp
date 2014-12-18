@@ -509,7 +509,7 @@ public class StlFile {
     public static boolean checkFileSize(File file, Context context){
 
         if (file.length() < MAX_SIZE) return true;
-        else Toast.makeText(context, "File is too big", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(context, R.string.viewer_file_size, Toast.LENGTH_SHORT).show();
 
         return false;
 
