@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -454,9 +455,35 @@ public class PrintViewFragment extends Fragment {
         mLayout = (FrameLayout) rootView.findViewById(frameLayoutId);
         File file = new File(filePath);
 
-        mDataGcode = new DataStorage();
-        GcodeFile.openGcodeFile(context, file, mDataGcode, ViewerMainFragment.PRINT_PREVIEW);
-        mDataGcode.setActualLayer(0);
+        DataStorage tempData = GcodeCache.retrieveGcodeFromCache(file.getAbsolutePath());
+
+        if (tempData != null){
+
+            mDataGcode = tempData;
+            drawPrintView();
+
+            Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
+            Debug.getMemoryInfo(memoryInfo);
+
+            String memMessage = String.format(
+                    "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
+                    memoryInfo.getTotalPss() / 1024.0,
+                    memoryInfo.getTotalPrivateDirty() / 1024.0,
+                    memoryInfo.getTotalSharedDirty() / 1024.0);
+
+            Log.i(TAG,memMessage);
+
+        } else {
+
+            mDataGcode = new DataStorage();
+            GcodeFile.openGcodeFile(context, file, mDataGcode, ViewerMainFragment.PRINT_PREVIEW);
+
+            GcodeCache.addGcodeToCache(mDataGcode);
+
+        }
+
+
+        mDataGcode.setActualLayer(mActualProgress);
 
     }
 

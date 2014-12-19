@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
@@ -157,6 +158,9 @@ public class ItemListActivity extends FragmentActivity implements
                 Log.i("OUT", "SOMETHING IN BACKSTACK " + mManager.getBackStackEntryCount());
             }
         });
+
+        //TODO Temp gcodecache init
+        new GcodeCache();
 
 
     }
