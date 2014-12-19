@@ -36,12 +36,12 @@ public class HttpClientHandler {
   private static final String BASE_URL = "http:/";
   private static final int DEFAULT_TIMEOUT = 30000;
 
-  private static AsyncHttpClient client = new AsyncHttpClient();
+  //private AsyncHttpClient client;
   private static SyncHttpClient sync_client = new SyncHttpClient();
   
   //GET method for both APIs
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-	  client.get(getAbsoluteUrl(url), params, responseHandler);
+	  generateAsyncHttpClient(url).get(getAbsoluteUrl(url), params, responseHandler);
 
   }
 
@@ -49,15 +49,15 @@ public class HttpClientHandler {
   public static void sync_get(String url, RequestParams params, ResponseHandlerInterface responseHandler){
         sync_client.get(getAbsoluteUrl(url), params, responseHandler);
   }
-  
+
   //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-	  client.post( getAbsoluteUrl(url), params, responseHandler);
+      generateAsyncHttpClient(url).post( getAbsoluteUrl(url), params, responseHandler);
   }
 
   //POST method for the new API
   public static void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-      client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+      generateAsyncHttpClient(url).post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
     //POST method for synchronous calls
@@ -67,7 +67,7 @@ public class HttpClientHandler {
   
   //PUT method for the new API
   public static void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-      client.put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+      generateAsyncHttpClient(url).put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
     //PUT method for the new API
@@ -86,7 +86,8 @@ public class HttpClientHandler {
 
             //CloseableHttpClient httpClient = HttpClients.custom().build();
             HttpPatch httpPatch = null;
-            httpPatch = new HttpPatch(new URI(getAbsoluteUrl(url) + "?apikey=" + HttpUtils.getApiKey(url)));
+            //TODO
+            httpPatch = new HttpPatch(new URI(getAbsoluteUrl( url) + "?apikey=" + HttpUtils.getApiKey(url)));
             httpPatch.setEntity(entity);
             response = httpClient.execute(httpPatch);
 
@@ -114,24 +115,36 @@ public class HttpClientHandler {
   
   //DELETE method
   public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
-      client.delete(context, getAbsoluteUrl(url), responseHandler);
+      generateAsyncHttpClient(url).delete(context, getAbsoluteUrl(url), responseHandler);
   }
   
 
   private static String getAbsoluteUrl(String relativeUrl) {
-	  if (!relativeUrl.contains(HttpUtils.URL_AUTHENTICATION)){
-          client.addHeader("X-Api-Key", HttpUtils.getApiKey(relativeUrl));
-          //client.addHeader("X-Api-Key", HttpUtils.API_KEY);
-      }
-      
-      client.setTimeout(DEFAULT_TIMEOUT);
+
 
       Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));
       return BASE_URL + relativeUrl;
   }
 
+    /**
+     * Generate a client for this session
+     * @param relativeUrl
+     * @return
+     */
 
+    private static AsyncHttpClient generateAsyncHttpClient(String relativeUrl){
 
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        if (!relativeUrl.contains(HttpUtils.URL_AUTHENTICATION)){
+            client.addHeader("X-Api-Key", HttpUtils.getApiKey(relativeUrl));
+        }
+
+        client.setTimeout(DEFAULT_TIMEOUT);
+
+        return client;
+
+    }
 
 
 }
