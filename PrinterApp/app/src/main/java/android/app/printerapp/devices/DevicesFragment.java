@@ -367,6 +367,16 @@ import it.sephiroth.android.library.widget.HListView;
 
         mServiceListener.reloadListening();
 
+        for (ModelPrinter p : DevicesListController.getList()){
+
+            if((p.getStatus()!=StateUtils.STATE_NEW)&&(p.getStatus()!=StateUtils.STATE_ADHOC)){
+
+                OctoprintConnection.doConnection(getActivity(),p);
+
+            }
+
+        }
+
     }
 
 

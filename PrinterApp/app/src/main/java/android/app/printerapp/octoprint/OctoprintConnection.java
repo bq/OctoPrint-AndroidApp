@@ -116,6 +116,11 @@ public class OctoprintConnection {
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
 
             @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
 
@@ -146,7 +151,7 @@ public class OctoprintConnection {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
 
-                Log.i("OUT","STATE WHEN FAILURE " + p.getStatus());
+                Log.i("OUT","STATE WHEN FAILURE " + p.getStatus() + "REASON " + responseString);
                 OctoprintAuthentication.getAuth(context, p, false);
             }
         });
@@ -290,8 +295,16 @@ public class OctoprintConnection {
 
 
             @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+
+
+                Log.i("Connection",response.toString());
 
                 try {
                     String name = response.getString("name");
@@ -313,6 +326,13 @@ public class OctoprintConnection {
 
 
 
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Log.i("Connection","Can't retrieve settings for " + p.getAddress() + ": " + responseString);
             }
         });
 
