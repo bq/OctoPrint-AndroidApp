@@ -17,7 +17,7 @@ public class GcodeCache {
     //Generic constructor
     public GcodeCache(){
 
-        mGcodeCacheList = new ArrayList<>();
+        mGcodeCacheList = new ArrayList<DataStorage>();
 
     }
 
