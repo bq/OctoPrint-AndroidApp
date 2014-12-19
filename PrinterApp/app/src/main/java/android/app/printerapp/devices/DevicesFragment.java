@@ -8,6 +8,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintFiles;
@@ -726,7 +727,10 @@ import it.sephiroth.android.library.widget.HListView;
 
                 }
 
+
+                GcodeCache.removeGcodeFromCache(m.getJobPath());
                 m.setJobPath(null);
+
 
             }
         });
