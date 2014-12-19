@@ -533,7 +533,7 @@ public class SidePanelHandler {
                                 //final File actualFile = new File(mSlicingHandler.getOriginalProject());
 
                                 //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                                finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName() + "_tmp.gcode");
+                                finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName().replace(" ","_") + "_tmp.gcode");
 
                                 Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
 

@@ -857,7 +857,7 @@ public class ViewerMainFragment extends Fragment {
             final File actualFile = new File(mSlicingHandler.getOriginalProject());
 
             AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-            adb.setTitle(R.string.library_create_dialog_title);
+            adb.setTitle(R.string.viewer_menu_save_gcode);
 
 
             //Select new name for the gcode
@@ -871,7 +871,7 @@ public class ViewerMainFragment extends Fragment {
                 public void onClick(DialogInterface dialogInterface, int i) {
 
                     //Save gcode
-                    File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString() + ".gcode");
+                    File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString().replace(" ","_") + ".gcode");
 
                     //Delete file if success
                     if (!fileFrom.renameTo(fileTo)) {

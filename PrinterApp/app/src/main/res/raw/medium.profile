@@ -3,7 +3,6 @@
   "description": "Print profile Cura PLA MD",
   "key": "medium_bq",
   "default": true,
-  "resource": "http://192.168.11.187/api/slicing/cura/profiles/medium_bq",
   "data": {
     "fan_speed_max": 100,
     "end_gcode": [

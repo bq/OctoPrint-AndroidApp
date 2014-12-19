@@ -36,8 +36,6 @@ public class HttpClientHandler {
   private static final String BASE_URL = "http:/";
   private static final int DEFAULT_TIMEOUT = 30000;
 
-  //private AsyncHttpClient client;
-  private static SyncHttpClient sync_client = new SyncHttpClient();
   
   //GET method for both APIs
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
@@ -47,12 +45,15 @@ public class HttpClientHandler {
 
     //GET method for synchronous calls
   public static void sync_get(String url, RequestParams params, ResponseHandlerInterface responseHandler){
-        sync_client.get(getAbsoluteUrl(url), params, responseHandler);
+
+      SyncHttpClient sync_client = new SyncHttpClient();
+      sync_client.addHeader("X-Api-Key", HttpUtils.getApiKey(url));
+      sync_client.get(getAbsoluteUrl(url), params, responseHandler);
   }
 
   //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-      generateAsyncHttpClient(url).post( getAbsoluteUrl(url), params, responseHandler);
+      generateAsyncHttpClient(url).post(getAbsoluteUrl(url), params, responseHandler);
   }
 
   //POST method for the new API
@@ -62,7 +63,7 @@ public class HttpClientHandler {
 
     //POST method for synchronous calls
     public static void sync_post(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
-        sync_client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
+       // sync_client.post(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
     }
   
   //PUT method for the new API
@@ -114,7 +115,7 @@ public class HttpClientHandler {
     }
   
   //DELETE method
-  public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+  public static void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) throws IllegalArgumentException{
       generateAsyncHttpClient(url).delete(context, getAbsoluteUrl(url), responseHandler);
   }
   

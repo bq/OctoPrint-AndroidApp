@@ -54,28 +54,35 @@ public class LibraryController {
 			
 			//If folder
 			if (file.isDirectory()){	
-				
-				//If project
-				if (isProject(file)){
-					
-					
-					//Create new project
-					ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
-					
-					addToList(m);
-					
-				//Normal folder
-				} else {
-					
-					if (recursive) {
-						
-						//Retrieve files for the folder
-						retrieveFiles(new File(file.getAbsolutePath()),true);
-						
-					} else addToList(file);
-					
-					
-				}
+
+                //exclude files from the temporary folder
+                if (!file.getAbsolutePath().equals(getParentFolder() + "/temp")){
+
+                    //If project
+                    if (isProject(file)){
+
+
+                        //Create new project
+                        ModelFile m = new ModelFile(file.getAbsolutePath(), "Internal storage");
+
+                        addToList(m);
+
+                        //Normal folder
+                    } else {
+
+                        if (recursive) {
+
+                            //Retrieve files for the folder
+                            retrieveFiles(new File(file.getAbsolutePath()),true);
+
+                        } else addToList(file);
+
+
+                    }
+
+
+                }
+
 				
 			//TODO this will eventually go out
 			} else {
