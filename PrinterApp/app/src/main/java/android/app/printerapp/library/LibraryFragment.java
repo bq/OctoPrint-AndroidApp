@@ -13,12 +13,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -72,7 +70,7 @@ public class LibraryFragment extends Fragment {
                     container, false);
 
             rootView.setFocusableInTouchMode(true);
-            rootView.setOnKeyListener(new OnKeyListener() {
+            /*rootView.setOnKeyListener(new OnKeyListener() {
 
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -83,7 +81,7 @@ public class LibraryFragment extends Fragment {
                     }
                     return false;
                 }
-            });
+            });*/
 
             /**
              * CUSTOM VIEW METHODS

@@ -240,12 +240,19 @@ public class OctoprintFiles {
 
 					Log.i("SUCCESS", response.toString());
 
-						
-                    //p.setLoaded(true);
-                    fileCommand(context, p.getAddress(), file.getName(), "/local/", false, true);
 
-                    Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
-							
+                    try{
+                        //p.setLoaded(true);
+                        fileCommand(context, p.getAddress(), file.getName(), "/local/", false, true);
+
+                        Toast.makeText(context, p.getDisplayName() + ": " + context.getString(R.string.devices_toast_upload_1) + file.getName(), Toast.LENGTH_LONG).show();
+
+                    } catch (IllegalArgumentException e){
+
+                       e.printStackTrace();
+                       p.setLoaded(true);
+                    }
+
 						
 
 

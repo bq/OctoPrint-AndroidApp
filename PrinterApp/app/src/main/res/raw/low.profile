@@ -3,7 +3,6 @@
   "description": "Print profile Cura PLA LD",
   "key": "low_bq",
   "default": false,
-  "resource": "http://192.168.11.187/api/slicing/cura/profiles/low_bq",
   "data": {
     "fan_speed_max": 100,
     "end_gcode": [
