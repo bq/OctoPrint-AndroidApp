@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Visibility values -->
+    <string-array name="models_visibility_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <array name="models_visibility_icons" translatable="false">
+        <item>@drawable/visual_normal_24dp</item>
+        <item>@drawable/visual_triangles_24dp</item>
+        <item>@drawable/visual_transparent_24dp</item>
+        <item>@drawable/visual_layers_24dp</item>
+    </array>
+
+    <!-- Rotate action values -->
+    <string-array name="rotate_model_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <array name="rotate_model_icons" translatable="false">
+        <item>@drawable/ic_viewer_rotation_x</item>
+        <item>@drawable/ic_viewer_rotation_y</item>
+        <item>@drawable/ic_viewer_rotation_z</item>
+    </array>
+
+</resources>

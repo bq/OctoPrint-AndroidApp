@@ -124,7 +124,7 @@ public class SidePanelHandler {
 
         s_printer = (Spinner) mRootView.findViewById(R.id.printer_spinner);
         s_type = (Spinner) mRootView.findViewById(R.id.type_spinner);
-        s_profile = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
+        s_profile = (Spinner)  mRootView.findViewById(R.id.profile_spinner);
         s_adhesion = (Spinner) mRootView.findViewById(R.id.adhesion_spinner);
         s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
 

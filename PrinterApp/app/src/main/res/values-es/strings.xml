@@ -239,5 +239,8 @@
     <string name="viewer_text_rx">Eje X</string>
     <string name="viewer_text_ry">Eje Y</string>
     <string name="viewer_text_rz">Eje Z</string>
+    <string name="viewer_progress_time">Tiempo estimado: </string>
+    <string name="viewer_progress_task_slicing">Generando laminado (%1$s)</string>
+    <string name="viewer_settings_select_profile">Selecciona un perfil de impresión</string>
 
 </resources>
