@@ -87,7 +87,7 @@ public class DetailViewAdapter extends ArrayAdapter<File> {
 			public void onClick(View v) {
 
                 if ((LibraryController.hasExtension(0, f.getName()))) ItemListActivity.requestOpenFile(f.getAbsolutePath());
-                else DevicesListController.selectPrinter(v.getContext(), f);
+                else DevicesListController.selectPrinter(v.getContext(), f, null);
 
 				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");
 				

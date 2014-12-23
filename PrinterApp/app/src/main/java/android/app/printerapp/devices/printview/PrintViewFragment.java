@@ -241,6 +241,9 @@ public class PrintViewFragment extends Fragment {
 
             refreshData();
 
+            //Register receiver
+            mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
         }
         return mRootView;
     }
@@ -382,8 +385,7 @@ public class PrintViewFragment extends Fragment {
             if (currentFile.exists())
             //if it's the same as the server or it's in process of being uploaded
             if ((mPrinter.getJob().getFilename().equals(currentFile.getName()))
-                    //||(!mPrinter.getLoaded())
-                    ) {
+                    ||(!mPrinter.getLoaded())) {
 
                 Log.i(TAG, "Sigh, loading " + mPrinter.getJobPath());
 
@@ -393,9 +395,11 @@ public class PrintViewFragment extends Fragment {
                 return;
 
                 //Not the same file
-            } else Log.i(TAG, "FAIL ;D " + mPrinter.getJobPath());
+            } else  Log.i(TAG, "FAIL ;D " + mPrinter.getJobPath());
+
         }
 
+        if (mPrinter.getLoaded())
          //The server actually has a job
         if (!mPrinter.getJob().getFilename().equals("null"))
             {
@@ -432,8 +436,7 @@ public class PrintViewFragment extends Fragment {
                     mDownloadDialog.setMessage(getActivity().getString(R.string.printview_download_dialog) + "...");
                     mDownloadDialog.show();
 
-                    //Register receiver
-                    mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
 
 
                 }
@@ -508,6 +511,14 @@ public class PrintViewFragment extends Fragment {
         if (mSurface != null) mSurface.requestRender();
     }
 
+    @Override
+    public void onDestroyView() {
+
+        mContext.unregisterReceiver(onComplete);
+
+        super.onDestroyView();
+    }
+
     /**
      * Receives the "download complete" event asynchronously
      */
@@ -524,32 +535,35 @@ public class PrintViewFragment extends Fragment {
 
                 Log.i(TAG, "Hey we had a reference for " + path);
 
+                //In case there was a previous cached file with the same path
+                GcodeCache.removeGcodeFromCache(path);
+
                 File file = new File(path);
 
                 if (file.exists()) {
 
-
-
                     Log.i(TAG, "Cool, let's show it");
 
                     openGcodePrintView(mRootView.getContext(), path, mRootView, R.id.view_gcode);
-                    //mPrinter.setJobPath(path);
+                    mPrinter.setJobPath(path);
 
                     //Register receiver
                     mContext.unregisterReceiver(onComplete);
 
+                    //DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(), null, false);
+
                 } else {
+
                     Log.i(TAG,"But file didn't download ok");
 
                     Toast.makeText(getActivity(),R.string.printview_download_toast_error,Toast.LENGTH_LONG).show();
 
                     //Register receiver
                     mContext.unregisterReceiver(onComplete);
-
                 }
 
 
-                DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(), null, false);
+
 
             }
 

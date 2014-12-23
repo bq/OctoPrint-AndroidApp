@@ -45,16 +45,20 @@ public class GcodeCache {
     //Remove a gcode from the list
     public static void removeGcodeFromCache(String path){
 
-        for(DataStorage data : mGcodeCacheList){
+        int index = -1;
 
-            if (data.getPathFile().equals(path)) {
+        for (int i = 0; i < mGcodeCacheList.size() ; i++){
+
+            if (mGcodeCacheList.get(i).getPathFile().equals(path)) {
 
                 Log.i("PrintView", mGcodeCacheList.size() + " Removed " + path);
-                mGcodeCacheList.remove(data);
-                Log.i("PrintView", mGcodeCacheList.size()+"");
+                index = i;
+
             }
 
         }
+
+        if (index>=0) mGcodeCacheList.remove(index);
 
     }
 

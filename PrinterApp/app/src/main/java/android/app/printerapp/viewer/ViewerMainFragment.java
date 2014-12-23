@@ -1216,9 +1216,9 @@ public class ViewerMainFragment extends Fragment {
 
                if (LibraryController.hasExtension(0,mFile.getName())){
                    StlFile.saveModel(newList, null, mSlicingHandler);
-               }
+               } else Log.i("Slicer","I dont even " + mFile.getName());
 
-           }
+           } else Log.i("Slicer","SOMETHING AWS NULL");
 
            return null;
        }

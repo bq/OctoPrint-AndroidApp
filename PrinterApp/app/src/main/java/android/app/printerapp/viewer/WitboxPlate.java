@@ -360,7 +360,7 @@ public class WitboxPlate {
 	    
 	    // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "u_MVPMatrix");
-        ViewerRenderer.checkGlError("glGetUniformLocation");
+        ViewerRenderer.checkGlError("glGetUniformLocation"); //TODO error
 
         // Apply the projection and view transformation
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);

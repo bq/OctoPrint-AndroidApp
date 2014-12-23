@@ -563,6 +563,8 @@ public class OctoprintConnection {
 
 		            	}
 
+
+
                           //update slicing progress in the print panel fragment
                           if (object.has("slicingProgress")){
 

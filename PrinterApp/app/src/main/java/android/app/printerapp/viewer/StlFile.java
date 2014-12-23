@@ -414,7 +414,10 @@ public class StlFile {
 		//Calculating buffer size
 		for (int i=0; i<dataList.size(); i++) coordinateCount+= dataList.get(i).getVertexArray().length;
 				
-		if (coordinateCount==0) return false;
+		if (coordinateCount==0) {
+            Log.i("Slicer","NOPE COORDINATES");
+            return false;
+        }
 		
 		//Each triangle has 3 vertex with 3 coordinates each. COORDS_PER_TRIANGLE = 9
 		int normals=(coordinateCount/COORDS_PER_TRIANGLE)*3; //number of normals coordinates in the file

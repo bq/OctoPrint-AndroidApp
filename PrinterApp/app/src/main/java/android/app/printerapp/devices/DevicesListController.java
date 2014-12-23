@@ -9,6 +9,7 @@ import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.viewer.SlicingHandler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -219,7 +220,7 @@ public class DevicesListController {
      * @param c App context
      * @param f File to upload/open
      */
-    public static void selectPrinter(Context c, File f){
+    public static void selectPrinter(Context c, File f, final SlicingHandler slicer){
 
         final ArrayList<ModelPrinter> tempList = new ArrayList<ModelPrinter>();
         final File file = f;
@@ -245,7 +246,7 @@ public class DevicesListController {
             i++;
         }
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(context);
+        final AlertDialog.Builder adb = new AlertDialog.Builder(context);
         adb.setTitle(R.string.library_select_printer_title);
 
         adb.setSingleChoiceItems(nameList,0,new OnClickListener() {
@@ -254,7 +255,16 @@ public class DevicesListController {
 
                 ModelPrinter m = tempList.get(i);
 
-                OctoprintFiles.uploadFile(context, file, m);
+                if (slicer!=null){
+
+                    slicer.setPrinter(m);
+                    slicer.setExtras("print",true);
+
+                    m.setLoaded(false);
+
+                }else {
+                    OctoprintFiles.uploadFile(context, file, m);
+                }
                 ItemListFragment.performClick(0);
                 ItemListActivity.showExtraFragment(1, m.getId());
 
@@ -301,12 +311,13 @@ public class DevicesListController {
      * Return the first Operational printer on the list
      * @return
      */
-    public static ModelPrinter selectAvailablePrinter(){
+    public static ModelPrinter selectAvailablePrinter(int type){
 
         //search for operational printers
 
         for (ModelPrinter p : DevicesListController.getList()){
 
+            if (p.getType() == type)
             if (p.getStatus() == StateUtils.STATE_OPERATIONAL)
                 return p;
 
