@@ -16,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/content_padding_normal">
+            android:paddingLeft="@dimen/content_padding_normal"
+            android:paddingRight="@dimen/content_padding_normal"
+            android:paddingTop="@dimen/content_padding_normal">
 
             <!-- Printing profile spinner -->
             <LinearLayout
@@ -39,6 +41,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
+            <!-- Separation line -->
+            <View
+                style="@style/Separator" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -85,9 +91,8 @@
 
                                 <EditText
                                     android:id="@+id/layer_height_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
+                                    android:layout_gravity="center_vertical"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -103,9 +108,7 @@
 
                                 <EditText
                                     android:id="@+id/shell_thickness_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -122,8 +125,7 @@
                                 <com.material.widget.CheckBox
                                     android:id="@+id/enable_retraction_checkbox"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp" />
+                                    android:layout_height="wrap_content" />
                             </TableRow>
 
 
@@ -150,9 +152,7 @@
 
                                 <EditText
                                     android:id="@+id/bottom_top_thickness_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -180,9 +180,7 @@
 
                                 <EditText
                                     android:id="@+id/print_speed_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -198,9 +196,7 @@
 
                                 <EditText
                                     android:id="@+id/print_temperature_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -228,9 +224,7 @@
 
                                 <EditText
                                     android:id="@+id/diameter_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -246,9 +240,7 @@
 
                                 <EditText
                                     android:id="@+id/flow_title_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -276,9 +268,7 @@
 
                                 <EditText
                                     android:id="@+id/travel_speed_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -294,9 +284,7 @@
 
                                 <EditText
                                     android:id="@+id/bottom_layer_speed_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -312,9 +300,7 @@
 
                                 <EditText
                                     android:id="@+id/infill_speed_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -330,9 +316,7 @@
 
                                 <EditText
                                     android:id="@+id/outher_shell_speed_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -348,9 +332,7 @@
 
                                 <EditText
                                     android:id="@+id/inner_shell_speed_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -378,9 +360,7 @@
 
                                 <EditText
                                     android:id="@+id/minimal_layer_time_edittext"
-                                    android:layout_width="70dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
+                                    style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
                                     android:inputType="number|numberDecimal" />
                             </TableRow>
@@ -397,14 +377,21 @@
                                 <com.material.widget.CheckBox
                                     android:id="@+id/enable_cooling_fan_checkbox"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp" />
+                                    android:layout_height="wrap_content" />
                             </TableRow>
                         </TableLayout>
 
                     </LinearLayout>
 
                 </ScrollView>
+
+                <View
+                    style="@style/Separator"
+                    android:layout_below="@+id/advanced_options_scroll_view"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:paddingBottom="@dimen/content_padding_small"/>
+
                 <!-- Buttons container -->
                 <LinearLayout
                     android:id="@id/advanced_settings_buttons_container"
@@ -416,6 +403,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true">
 
+
                     <com.material.widget.PaperButton
                         android:id="@+id/restore_settings_button"
                         style="@style/MaterialDesignButton.Flat"
@@ -425,7 +413,7 @@
                     <com.material.widget.PaperButton
                         android:id="@+id/save_settings_button"
                         style="@style/MaterialDesignButton.Flat.Default"
-                        android:layout_width="100dp"
+                        android:layout_width="110dp"
                         widget:paper_text="@string/viewer_button_save" />
                 </LinearLayout>
 

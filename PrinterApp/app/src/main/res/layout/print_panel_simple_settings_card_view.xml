@@ -76,10 +76,9 @@
 
             <!-- Separation line -->
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="@dimen/content_padding_small"
-                android:background="@drawable/separation_line_horizontal" />
+                style="@style/Separator"
+                android:layout_marginBottom="@dimen/content_margin_small"
+                android:layout_marginTop="@dimen/content_margin_small"/>
 
             <!-- Simple settings -->
             <LinearLayout
@@ -118,7 +117,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingRight="@dimen/content_padding_small"
+                    android:paddingLeft="@dimen/content_padding_small">
 
                     <TextView
                         android:id="@+id/support_title_view"

@@ -160,19 +160,6 @@
 
                 </FrameLayout>
 
-                <!-- Camera default button-->
-                <ImageButton
-                    android:id="@+id/camera_default_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="@dimen/content_margin_small"
-                    android:background="@drawable/action_button_selector_light"
-                    android:padding="@dimen/content_padding_small"
-                    android:src="@drawable/ic_camera_default_orientation" />
-
                 <!-- Visibility button-->
                 <ImageButton
                     android:id="@+id/visibility_button"
@@ -192,7 +179,8 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/print_button_container"
                     android:layout_alignEnd="@+id/print_button_container"
-                    android:layout_alignRight="@+id/print_button_container">
+                    android:layout_alignRight="@+id/print_button_container"
+                    android:background="@android:color/darker_gray">
 
                     <!-- Bottom bar with the progress and axis info -->
                     <LinearLayout
@@ -200,7 +188,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:background="@android:color/darker_gray"
                         android:orientation="vertical">
 
                         <ProgressBar
@@ -229,42 +216,38 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="@dimen/content_padding_small"
-                        android:visibility="invisible">
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <TextView
                             android:id="@+id/text_axis"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="60dp"
+                            android:layout_height="match_parent"
                             android:layout_gravity="left"
-                            android:layout_weight="1"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            style="@style/TextInfo"
+                            android:textColor="@android:color/white"/>
 
                         <TextView
                             android:id="@+id/text_rotation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            style="@style/TextInfo"
+                            android:textColor="@android:color/white"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/darker_gray"
                             android:gravity="center"
-                            android:orientation="horizontal"
-                            android:weightSum="5">
+                            android:orientation="horizontal">
 
                             <SeekBar
                                 android:id="@+id/rotation_seek_bar"
                                 style="@style/TallerSeekBar"
-                                android:layout_width="400dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/content_margin_small"
-                                android:layout_marginRight="@dimen/content_margin_small"
-                                android:layout_weight="3" />
+                                android:layout_marginRight="@dimen/content_margin_small"/>
 
                         </LinearLayout>
 

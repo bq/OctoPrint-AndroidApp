@@ -7,11 +7,11 @@
         <item>1</item>
         <item>2</item>
         <item>4</item>
-    </string-array>
+    </string-array>visual_
 
     <array name="models_visibility_icons" translatable="false">
         <item>@drawable/visual_normal_24dp</item>
-        <item>@drawable/visual_triangles_24dp</item>
+        <item>@drawable/visual_support_24dp</item>
         <item>@drawable/visual_transparent_24dp</item>
         <item>@drawable/visual_layers_24dp</item>
     </array>

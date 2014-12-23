@@ -98,7 +98,9 @@
     <!-- Progress bar -->
     <style name="ProgressBar.Green" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/green_progress_horizontal_holo_light</item>
-        <item name="android:indeterminateDrawable">@drawable/green_progress_indeterminate_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">
+            @drawable/green_progress_indeterminate_horizontal_holo_light
+        </item>
         <item name="android:minHeight">20dip</item>
         <item name="android:maxHeight">20dip</item>
         <item name="android:layout_marginBottom">-8dp</item>

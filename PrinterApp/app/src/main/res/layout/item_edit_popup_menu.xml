@@ -18,7 +18,7 @@
     <ImageButton
         android:id="@+id/rotate_item_button"
         style="@style/ActionButton"
-        android:src="@drawable/ic_viewer_rotation_x" />
+        android:src="@drawable/ic_viewer_rotation" />
 
     <!-- Scale action button -->
     <ImageButton

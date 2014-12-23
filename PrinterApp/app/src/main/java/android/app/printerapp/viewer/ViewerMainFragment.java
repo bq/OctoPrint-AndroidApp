@@ -71,6 +71,8 @@ public class ViewerMainFragment extends Fragment {
     private static final int XRAY = 3;
     private static final int LAYER = 4;
 
+    private int mCurrentViewMode = 0;
+
     //Constants
     public static final int DO_SNAPSHOT = 0;
     public static final int DONT_SNAPSHOT = 1;
@@ -93,6 +95,7 @@ public class ViewerMainFragment extends Fragment {
     //Buttons
     private RadioGroup mGroupMovement;
 
+    private ImageButton mVisibilityModeButton;
     private Button mBackWitboxFaces;
     private Button mRightWitboxFaces;
     private Button mLeftWitboxFaces;
@@ -235,6 +238,14 @@ public class ViewerMainFragment extends Fragment {
         mUndoButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_undo_bar_linearlayout);
 
         mLayout = (FrameLayout) mRootView.findViewById(R.id.viewer_container_framelayout);
+
+        mVisibilityModeButton = (ImageButton) mRootView.findViewById(R.id.visibility_button);
+        mVisibilityModeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showVisibilityPopUpMenu();
+            }
+        });
 
         mGroupMovement = (RadioGroup) mRootView.findViewById(R.id.radioGroupMovement);
         mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -541,39 +552,12 @@ public class ViewerMainFragment extends Fragment {
                     case TRANSPARENT:
                         changeStlViews(ViewerSurfaceView.TRANSPARENT);
                         break;
-
                     case XRAY:
                         changeStlViews(ViewerSurfaceView.XRAY);
                         break;
                     case LAYER:
-
-                        File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-                        if (tempFile.exists()) {
-
-                            //It's the last file
-                            if (DatabaseController.getPreference("Slicing", "Last") == null) {
-
-                                //Open desired file
-                                openFile(tempFile.getAbsolutePath());
-
-                            } else {
-                                Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-                            }
-
-                        } else {
-
-                            /*if (mFile != null) {
-                                showGcodeFiles();
-                            } else
-                                Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();*/
-
-                            Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-
-                            //TODO hardcoded
-                            tabs.setCurrentTab(0);
-                        }
+                        changeStlViews(LAYER);
                         break;
-
                     default:
                         break;
                 }
@@ -648,12 +632,38 @@ public class ViewerMainFragment extends Fragment {
     }
 
     private void changeStlViews(int state) {
-        if (mFile != null) {
-            if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL"))
-                openStlFile();
-            else mSurface.configViewMode(state);
-        } else
-            Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+
+        mCurrentViewMode = state;
+
+        //Handle the special mode: LAYER
+        if (state == LAYER) {
+            File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+            if (tempFile.exists()) {
+
+                //It's the last file
+                if (DatabaseController.getPreference("Slicing", "Last") == null) {
+
+                    //Open desired file
+                    openFile(tempFile.getAbsolutePath());
+
+                } else {
+                    Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+            }
+        }
+        //Handle TRANSPARENT, NORMAL and OVERHANG modes
+        else {
+            if (mFile != null) {
+                if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL"))
+                    openStlFile();
+                else mSurface.configViewMode(state);
+            } else {
+                Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void openStlFile() {
@@ -772,6 +782,7 @@ public class ViewerMainFragment extends Fragment {
         mLayout.addView(mSeekBar, 1);
 //        mLayout.addView(mUndoButtonBar, 3);
 //        mLayout.addView(mRotationLayout, 2);
+//        mLayout.addView(mStatusBottomBar, 3);
     }
 
     /**
@@ -948,6 +959,8 @@ public class ViewerMainFragment extends Fragment {
      */
     public static void showActionModePopUpWindow() {
 
+        hideCurrentActionPopUpWindow();
+
         if (mActionModePopupWindow == null) {
 
             //Get the content view of the pop up window
@@ -1028,24 +1041,31 @@ public class ViewerMainFragment extends Fragment {
 
         switch (item.getId()) {
             case R.id.move_item_button:
+                hideCurrentActionPopUpWindow();
                 mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
                 break;
             case R.id.rotate_item_button:
-                final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.rotate_model_values);
-                final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.rotate_model_icons);
-                showHorizontalMenuPopUpWindow(item, actionButtonsValues, actionButtonsIcons, new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
-                        mRotationLayout.setVisibility(View.VISIBLE);
-                        mStatusBottomBar.setVisibility(View.INVISIBLE);
-                        mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
-                        hideCurrentActionPopUpWindow();
-                        item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
-                    }
-                });
+                if (mCurrentActionPopupWindow == null) {
+                    final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.rotate_model_values);
+                    final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.rotate_model_icons);
+                    showHorizontalMenuPopUpWindow(item, actionButtonsValues, actionButtonsIcons,
+                            null, new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
+                            mRotationLayout.setVisibility(View.VISIBLE);
+                            mStatusBottomBar.setVisibility(View.INVISIBLE);
+                            mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
+                            hideCurrentActionPopUpWindow();
+                            item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
+                        }
+                    });
+                } else {
+                    hideCurrentActionPopUpWindow();
+                }
                 break;
             case R.id.scale_item_button:
+                hideCurrentActionPopUpWindow();
                 mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
                 break;
                 /*case R.id.mirror:
@@ -1055,9 +1075,11 @@ public class ViewerMainFragment extends Fragment {
                     slicingCallback();
                     break;*/
             case R.id.multiply_item_button:
+                hideCurrentActionPopUpWindow();
                 shoMultiplyDialog();
                 break;
             case R.id.delete_item_button:
+                hideCurrentActionPopUpWindow();
                 mSurface.deleteObject();
                 hideActionModePopUpWindow();
                 break;
@@ -1092,12 +1114,42 @@ public class ViewerMainFragment extends Fragment {
     }
 
     /**
+     * Show a pop up window with the visibility options: Normal, overhang, transparent and layers.
+     */
+    public void showVisibilityPopUpMenu() {
+
+        //Hide action mode pop up window to show the new menu
+        hideActionModePopUpWindow();
+
+        //Show a menu with the visibility options
+        if (mCurrentActionPopupWindow == null) {
+            final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.models_visibility_values);
+            final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.models_visibility_icons);
+            showHorizontalMenuPopUpWindow(mVisibilityModeButton, actionButtonsValues, actionButtonsIcons,
+                    Integer.toString(mCurrentViewMode), new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //Change the view mode of the model
+                    changeStlViews(Integer.parseInt(actionButtonsValues[position]));
+                    hideCurrentActionPopUpWindow();
+                }
+            });
+        } else {
+            hideCurrentActionPopUpWindow();
+        }
+
+    }
+
+    /**
      * Show a pop up window with a horizontal list view as a content view
      */
-    public static void showHorizontalMenuPopUpWindow(View currentView, String[] actionButtonsValues, TypedArray actionButtonsIcons, AdapterView.OnItemClickListener onItemClickListener) {
+    public static void showHorizontalMenuPopUpWindow(View currentView, String[] actionButtonsValues,
+                                                     TypedArray actionButtonsIcons,
+                                                     String selectedOption,
+                                                     AdapterView.OnItemClickListener onItemClickListener) {
 
         HorizontalListView landscapeList = new HorizontalListView(mContext, null);
-        ListIconPopupWindowAdapter listAdapter = new ListIconPopupWindowAdapter(mContext, actionButtonsValues, actionButtonsIcons, null);
+        ListIconPopupWindowAdapter listAdapter = new ListIconPopupWindowAdapter(mContext, actionButtonsValues, actionButtonsIcons, selectedOption);
         landscapeList.setOnItemClickListener(onItemClickListener);
         landscapeList.setAdapter(listAdapter);
 
