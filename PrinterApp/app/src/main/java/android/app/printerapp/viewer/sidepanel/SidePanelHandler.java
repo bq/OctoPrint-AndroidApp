@@ -2,15 +2,12 @@ package android.app.printerapp.viewer.sidepanel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
-import android.app.printerapp.ItemListFragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
-import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.viewer.SlicingHandler;
@@ -66,8 +63,6 @@ public class SidePanelHandler {
     private Activity mActivity;
 
     //UI elements
-
-    private Spinner s_printer;
     private PaperButton printButton;
     private PaperButton saveButton;
     private PaperButton restoreButton;
@@ -113,7 +108,6 @@ public class SidePanelHandler {
         mSlicingHandler = handler;
         mRootView = v;
         mPrinter = null;
-        mTemporaryPrinterList = new ArrayList<ModelPrinter>();
 
         initUiElements();
         initSidePanel();
@@ -123,7 +117,6 @@ public class SidePanelHandler {
     //Initialize UI references
     public void initUiElements(){
 
-        s_printer = (Spinner) mRootView.findViewById(R.id.printer_spinner);
         s_type = (Spinner) mRootView.findViewById(R.id.type_spinner);
         s_profile = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
         s_adhesion = (Spinner) mRootView.findViewById(R.id.adhesion_spinner);
@@ -202,71 +195,6 @@ public class SidePanelHandler {
 
                     //Initialize item listeners
 
-                    /************************* INITIALIZE PRINTER SPINNER ********************************/
-
-                    s_printer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-                            //Select a printer from the spinner and add a no-printer option
-
-                            if (i <= mTemporaryPrinterList.size()){
-
-                                mPrinter = mTemporaryPrinterList.get(i);
-
-
-                                /**
-                                 * Auto-refresh profiles if there are none available
-                                 */
-                                if (mPrinter.getStatus()==StateUtils.STATE_OPERATIONAL){
-
-                                    if (mPrinter.getProfiles().size()==0)
-                                    {
-                                        //TODO previously retrieve custom profiles
-                                        //OctoprintSlicing.retrieveProfiles(mActivity,mPrinter);
-                                    }
-
-                                }
-
-                                //TODO Remove profile updating
-
-                                /*profileAdapter = new SidePanelProfileAdapter(mActivity,
-                                        R.layout.print_panel_spinner_item,  mPrinter.getProfiles());
-
-                                s_profile.setAdapter(profileAdapter);
-
-                                profileAdapter.notifyDataSetChanged();*/
-
-                            } else mPrinter = null;
-
-
-                            mSlicingHandler.setPrinter(mPrinter);
-
-
-
-
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                            mPrinter = null;
-                            mSlicingHandler.setPrinter(mPrinter);
-
-                        }
-                    });
-
-
-                    //printerAdapter = new SidePanelPrinterAdapter(mActivity,R.layout.print_panel_spinner_item,DevicesListController.getList());
-                    /*ArrayAdapter<String> adapter_printer = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, PRINTER_TYPE);*/
-
-
- //                   s_printer.setAdapter(printerAdapter);
-
-
 
                     /************************* INITIALIZE TYPE SPINNER ******************************/
 
@@ -277,19 +205,10 @@ public class SidePanelHandler {
 
                             ViewerMainFragment.changePlate(i);
 
-                            mTemporaryPrinterList.clear();
-                            for (ModelPrinter p : DevicesListController.getList()){
+                            mPrinter = DevicesListController.selectAvailablePrinter(i + 1);
+                            mSlicingHandler.setPrinter(mPrinter);
 
-                                if (p.getType() == i + 1) mTemporaryPrinterList.add(p);
-                            }
-
-                            printerAdapter = new SidePanelPrinterAdapter(mActivity,
-                                    R.layout.print_panel_spinner_item, mTemporaryPrinterList);
-
-                            s_printer.setAdapter(printerAdapter);
-
-                            printerAdapter.notifyDataSetChanged();
-
+                            ViewerMainFragment.slicingCallback();
 
                         }
 
@@ -304,7 +223,6 @@ public class SidePanelHandler {
                    ArrayAdapter<String> type_adapter = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, PRINTER_TYPE);
 
-
                     s_type.setAdapter(type_adapter);
 
 
@@ -318,17 +236,6 @@ public class SidePanelHandler {
                     s_profile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                            /*try {
-                                String key = mPrinter.getProfiles().get(i).getString("key");
-                                mSlicingHandler.setExtras("profile", key);
-
-                                parseJson(i);
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }*/
 
                             parseJson(ModelProfile.retrieveProfile(mActivity,s_profile.getSelectedItem().toString()));
                             mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
@@ -498,27 +405,34 @@ public class SidePanelHandler {
 
                     Log.i("Slicer", "Current file: " + mFile.getAbsolutePath());
 
-                    File actualFile = new File(mSlicingHandler.getOriginalProject());
+                    File actualFile = null;
+                    if (mSlicingHandler.getOriginalProject()!=null) actualFile = new File(mSlicingHandler.getOriginalProject());
+
                     File finalFile = null;
 
                     Log.i("Slicer", "Current project: " + mSlicingHandler.getOriginalProject());
 
+                    if (actualFile!=null)
                     if (LibraryController.isProject(actualFile)){
 
                         //It's the last file
                         if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null){
 
-                            mSlicingHandler.setExtras("print",true);
-
-
-                            //mPrinter.setJobPath(mSlicingHandler.getLastReference());
-                            mPrinter.setLoaded(false);
-
+                            /*mSlicingHandler.setExtras("print",true);
+                            mPrinter.setJobPath(mSlicingHandler.getLastReference());
+                           /mPrinter.setLoaded(false);
                             ItemListFragment.performClick(0);
-                            ItemListActivity.showExtraFragment(1, mPrinter.getId());
-                            ViewerMainFragment.optionClean();
+                            ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
 
-                            Toast.makeText(mActivity, R.string.viewer_slice_wait, Toast.LENGTH_LONG).show();
+                            //Add it to the reference list
+                            DatabaseController.handlePreference("References", mPrinter.getName(),
+                                    LibraryController.getParentFolder() + "/temp/temp.gco", true);
+
+                            mPrinter.setJobPath(null);
+
+                            DevicesListController.selectPrinter(mActivity,null,mSlicingHandler);
+
+
 
                         } else {
 
@@ -591,10 +505,11 @@ public class SidePanelHandler {
                     //either case if the file exists, we send it to the printer
                     if (finalFile.exists()) {
 
-                        OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
+                        /*OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
                         ItemListFragment.performClick(0);
-                        ItemListActivity.showExtraFragment(1, mPrinter.getId());
-                        ViewerMainFragment.optionClean();
+                        ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
+
+                        DevicesListController.selectPrinter(mActivity, finalFile, null);
 
                     } else {
 
@@ -613,13 +528,13 @@ public class SidePanelHandler {
         } else Toast.makeText(mActivity,R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
 
 
-
         /**
          * Save the printer profile settings
          */
         DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "type",String.valueOf(s_type.getSelectedItemPosition()), true);
-        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "printer",String.valueOf(s_printer.getSelectedItemPosition()), true);
         DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "quality",String.valueOf(s_profile.getSelectedItemPosition()), true);
+
+
 
     }
 
