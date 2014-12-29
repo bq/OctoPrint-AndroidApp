@@ -21,11 +21,11 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -40,7 +40,7 @@ import android.widget.ListView;
  * TODO: Fragments will be made static to access to some methods such as refreshing
  * or loading views.
  */
-public class ItemListActivity extends FragmentActivity implements
+public class ItemListActivity extends ActionBarActivity implements
         ItemListFragment.Callbacks {
 
     /**
@@ -71,8 +71,8 @@ public class ItemListActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -97,7 +97,6 @@ public class ItemListActivity extends FragmentActivity implements
             mDrawerToggle = new ActionBarDrawerToggle(
                     this,                   /* host Activity */
                     mDrawer,                /* DrawerLayout object */
-                    R.drawable.ic_action_menu,   /* nav drawer icon to replace 'Up' caret */
                     R.string.add,            /* "open drawer" description */
                     R.string.cancel         /* "close drawer" description */
             ) {
@@ -188,7 +187,7 @@ public class ItemListActivity extends FragmentActivity implements
          * Marina
          * This is necessary to close the ActionMode edition bar when changing between fragments
          */
-        if (Integer.valueOf(id) != 2) ViewerMainFragment.hideActionModeBar();
+        if (Integer.valueOf(id) != 2) ViewerMainFragment.hideActionModePopUpWindow();
 
         Log.i("OUT","Pressed " + id);
 
@@ -201,7 +200,7 @@ public class ItemListActivity extends FragmentActivity implements
             //start transaction
             FragmentTransaction fragmentTransaction = mManager.beginTransaction();
 
-            //fragmentTransaction.setCustomAnimations(R.anim.slide_out_down, R.anim.slide_out_left);
+            //fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_out_down, R.anim.fragment_slide_out_left);
 
             //Pop backstack to avoid having bad references when coming from a Detail view
             mManager.popBackStack();
@@ -275,7 +274,7 @@ public class ItemListActivity extends FragmentActivity implements
             if (mCurrent != null) {
                 Log.i("OUT","Changing " + mCurrent.getTag());
                 fragmentTransaction.show(mCurrent).commit();
-                getActionBar().setTitle(ListContent.ITEMS.get(Integer.valueOf(id) - 1).content);
+                getSupportActionBar().setTitle(ListContent.ITEMS.get(Integer.valueOf(id) - 1).content);
             }
 
         } else {
@@ -324,7 +323,7 @@ public class ItemListActivity extends FragmentActivity implements
 
         //New transaction
         FragmentTransaction mTransaction = mManager.beginTransaction();
-        mTransaction.setCustomAnimations(0, 0 , 0, R.anim.slide_out_left);
+        mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
 
         //Add current fragment to the backstack and hide it (will show again later)
         mTransaction.addToBackStack(mCurrent.getTag());

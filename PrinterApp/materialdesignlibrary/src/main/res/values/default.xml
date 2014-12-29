@@ -64,10 +64,38 @@
 
     <!-- CircularProgress Default -->
     <color name="circular_progress_color">#ff3f51b5</color>
-    <bool name="circular_progress_indeterminate">false</bool>
+    <bool name="circular_progress_indeterminate">true</bool>
     <dimen name="circular_progress_border_width">4dp</dimen>
     <dimen name="circular_progress_small_size">36dp</dimen>
     <dimen name="circular_progress_normal_size">48dp</dimen>
     <dimen name="circular_progress_large_size">60dp</dimen>
     <integer name="circular_progress_max">100</integer>
+
+    <!-- LinearProgress Default -->
+    <color name="linear_progress_color">#ff3f51b5</color>
+    <dimen name="linear_progress_line_width">4dp</dimen>
+    <integer name="linear_progress_max">100</integer>
+
+    <!-- FloatingEditText Default -->
+    <color name="floating_edit_text_color">#ffc8c8c8</color>
+    <color name="floating_edit_text_highlighted_color">#ff3f51b5</color>
+    <color name="floating_edit_text_error_color">#DB4437</color>
+    <dimen name="floating_edit_text_underline_height">1dp</dimen>
+    <dimen name="floating_edit_text_underline_highlighted_height">2dp</dimen>
+
+    <!-- Slider Default -->
+    <color name="slider_color">#ffc8c8c8</color>
+    <color name="slider_tint_color">#ff3f51b5</color>
+    <color name="slider_ripple_color">#ffd4d4d4</color>
+    <dimen name="slider_thumb_radius">10dp</dimen>
+    <dimen name="slider_thumb_ripple_radius">30dp</dimen>
+    <dimen name="slider_bar_height">2dp</dimen>
+    <dimen name="slider_thumb_border_width">2dp</dimen>
+
+    <!-- TrackSlider Default -->
+    <color name="track_slider_color">#ffc8c8c8</color>
+    <color name="track_slider_tint_color">#ff3f51b5</color>
+    <dimen name="track_slider_thumb_radius">10dp</dimen>
+    <dimen name="track_slider_ripple_radius">20dp</dimen>
+    <dimen name="track_slider_bar_height">2dp</dimen>
 </resources>

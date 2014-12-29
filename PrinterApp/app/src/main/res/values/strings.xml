@@ -177,6 +177,7 @@
     <string name="viewer_text_ry">Y axis</string>
     <string name="viewer_text_rz">Z axis</string>
     <string name="viewer_settings_printer">Select printer</string>
+    <string name="viewer_settings_select_profile">Select a printing profile</string>
     <string name="viewer_settings_quality">Quality</string>
     <string name="viewer_settings_infill">Infill</string>
     <string name="viewer_settings_support">Support</string>
@@ -243,6 +244,9 @@
     <string name="viewer_button_ry">Rotation Y</string>
     <string name="viewer_mode_tag">Mode selected</string>
     <string name="viewer_file_size">The model you are trying to load is too big</string>
+    <string name="viewer_progress_time">Estimated time: </string>
+    <string name="viewer_progress_task_slicing">Slicing (%1$s)</string>
+    <string name="viewer_axis_info" translatable="false">X=%1$dmm / Y=%2$dmm/ Z=%3$dmm</string>
 
 
 </resources>

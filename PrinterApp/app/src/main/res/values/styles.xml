@@ -21,14 +21,29 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <!-- Separation line -->
+    <style name="Separator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/separation_line_horizontal</item>
+    </style>
+
     <!-- Seek bar -->
     <style name="TallerSeekBar" parent="@android:style/Widget.SeekBar">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/green_seekbar_height_background</item>
         <item name="android:indeterminateDrawable">@drawable/green_seekbar_height_track</item>
         <item name="android:thumb">@drawable/green_seekbar_thumb</item>
-        <item name="android:minHeight">8dip</item>
-        <item name="android:maxHeight">10dip</item>
+        <item name="android:minHeight">2dip</item>
+        <item name="android:maxHeight">4dip</item>
+    </style>
+
+    <!-- Edit text -->
+    <style name="AdvancedSettingsEditText">
+        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:layout_width">120dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">5dp</item>
     </style>
 
     <!-- Material design buttons -->
@@ -92,6 +107,14 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <!-- Action button -->
+    <style name="ActionButton">
+        <item name="android:background">@drawable/action_button_selector_dark</item>
+        <item name="android:padding">@dimen/content_padding_small</item>
+        <item name="android:layout_marginBottom">@dimen/content_margin_small</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
 
     <!-- Body content -->
     <style name="TextHeader">
@@ -121,6 +144,27 @@
 
     <style name="TextBodyLight" parent="TextBodyDark">
         <item name="android:textColor">@color/body_text_3</item>
+    </style>
+
+    <style name="TextInfo">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/body_text_2</item>
+        <item name="android:textIsSelectable">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_margin">5dip</item>gt
+    </style>
+
+    <!-- Animations -->
+
+    <style name="SlideLeftAnimation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_right</item>
+    </style>
+
+    <style name="SlideRightAnimation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
 
 </resources>

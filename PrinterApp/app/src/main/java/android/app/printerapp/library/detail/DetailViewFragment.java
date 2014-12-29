@@ -6,6 +6,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelFile;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +45,7 @@ public class DetailViewFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             //Inflate the fragment
             rootView = inflater.inflate(R.layout.detailview_layout,

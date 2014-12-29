@@ -16,32 +16,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
-    <LinearLayout
-        android:id="@+id/layout_progress_slice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tabhost_views"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="30dp">
-
-        <TextView
-            android:id="@+id/text_progress_slice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/white"/>
-
-        <ProgressBar
-            android:id="@+id/progress_slice"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-
     <Button
         android:id="@+id/down"
         android:layout_width="wrap_content"
@@ -104,47 +78,32 @@
         android:layout_below="@+id/tabhost_views"
         android:background="@color/almost_white"
         android:orientation="horizontal"
-        android:padding="@dimen/content_padding_small"
-        android:weightSum="4">
+        android:padding="@dimen/content_padding_small">
 
-        <!-- Left panel. Contains options to apply on the model in the right panel -->
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|right"
-            android:layout_marginRight="@dimen/content_margin_small"
-            android:layout_weight="2"
-            android:gravity="right"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
             android:weightSum="4">
 
-            <!-- Printer select-->
-            <include
-                android:id="@+id/include1"
-                layout="@layout/print_panel_printer_select_card_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/content_margin_small" />
-
-            <!-- Simple options -->
-            <include
-                android:id="@+id/include2"
-                layout="@layout/print_panel_simple_settings_card_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/content_margin_small"
-                android:layout_below="@+id/include1"/>
-
-            <!-- Advanced options -->
-
-            <!-- Auxiliar linear layout to restrict the expansion of the advanced settings panel -->
+            <!-- Left panel. Contains options to apply on the model in the right panel -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/print_model_button"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/include2">
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal|right"
+                android:layout_marginRight="@dimen/content_margin_small"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:orientation="vertical">
 
+                <!-- Simple options -->
+                <include
+                    android:id="@+id/include2"
+                    layout="@layout/print_panel_simple_settings_card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <!-- Advanced options -->
                 <include
                     android:id="@+id/advanced_options_expandable_panel"
                     layout="@layout/print_panel_advanced_settings_card_view"
@@ -152,201 +111,188 @@
                     android:layout_height="match_parent" />
             </LinearLayout>
 
-            <!-- Print button -->
-            <com.material.widget.PaperButton
-                android:id="@+id/print_model_button"
-                style="@style/MaterialDesignButton.Raised.Default"
-                android:layout_width="150dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="right"
-                widget:paper_text="@string/viewer_button_print" />
-        </RelativeLayout>
-
-        <!-- Right panel. Contains the 3D model -->
-        <FrameLayout
-            android:id="@+id/viewer_container_framelayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2">
-
-            <!-- Button bar to undo/redo the modifications on the model -->
-            <LinearLayout
-                android:id="@+id/model_button_undo_bar_linearlayout"
-                style="@style/ButtonBar"
-                android:layout_gravity="bottom"
-                android:background="#66ffffff">
-
-                <Button
-                    android:id="@+id/undo_button"
-                    style="@style/ButtonBar.NoDefaultButton"
-                    android:drawableLeft="@drawable/ic_arrow_back"
-                    android:text="@string/viewer_button_undo" />
-
-                <Button
-                    android:id="@+id/redo_button"
-                    style="@style/ButtonBar.NoDefaultButton"
-                    android:drawableRight="@drawable/ic_arrow_forward"
-                    android:text="@string/viewer_button_redo" />
-            </LinearLayout>
-
-            <!-- Button bar to rotate the model -->
-            <LinearLayout
-                android:id="@+id/model_button_rotate_bar_linearlayout"
+            <!-- Right panel. Contains the 3D model -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center"
-                android:padding="@dimen/content_padding_small"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_weight="2">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/text_axis"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/text_rotation"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"/>
-
-                <LinearLayout
+                <FrameLayout
+                    android:id="@+id/viewer_container_framelayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#66ffffff"
-                    android:gravity="center"
-                    android:orientation="horizontal"
+                    android:layout_above="@+id/bottom_bar"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true">
 
-                    android:weightSum="5">
 
-                        <ImageButton
-                            android:id="@+id/cancel_rotate_button"
+                    <!-- Button bar to undo/redo the modifications on the model -->
+                    <LinearLayout
+                        android:id="@+id/model_button_undo_bar_linearlayout"
+                        style="@style/ButtonBar"
+                        android:layout_gravity="bottom"
+                        android:background="#66ffffff"
+                        android:visibility="invisible">
+
+                        <Button
+                            android:id="@+id/undo_button"
+                            style="@style/ButtonBar.NoDefaultButton"
+                            android:drawableLeft="@drawable/ic_arrow_back"
+                            android:text="@string/viewer_button_undo" />
+
+                        <Button
+                            android:id="@+id/redo_button"
+                            style="@style/ButtonBar.NoDefaultButton"
+                            android:drawableRight="@drawable/ic_arrow_forward"
+                            android:text="@string/viewer_button_redo" />
+                    </LinearLayout>
+
+                    <!-- Seek bar to show/hide layers of the model -->
+                    <android.app.printerapp.util.ui.VerticalSeekBar
+                        android:id="@+id/barLayer"
+                        style="@style/TallerSeekBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="350dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_margin="@dimen/content_margin_small"
+                        android:maxHeight="6dp" />
+
+                </FrameLayout>
+
+                <!-- Visibility button-->
+                <ImageButton
+                    android:id="@+id/visibility_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="@dimen/content_margin_small"
+                    android:background="@drawable/action_button_selector_dark"
+                    android:padding="@dimen/content_padding_small"
+                    android:src="@drawable/ic_viewer_visibility" />
+
+                <FrameLayout
+                    android:id="@id/bottom_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/print_button_container"
+                    android:layout_alignEnd="@+id/print_button_container"
+                    android:layout_alignRight="@+id/print_button_container"
+                    android:background="@android:color/darker_gray">
+
+                    <!-- Bottom bar with the progress and axis info -->
+                    <LinearLayout
+                        android:id="@+id/model_status_bottom_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical">
+
+                        <ProgressBar
+                            android:id="@+id/progress_slice"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:id="@+id/axis_info_textview"
+                            style="@style/TextInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/selectable_oval_background_green"
-                            android:src="@drawable/ic_cancel_circle" />
-
-                        <SeekBar
-                            style="@style/TallerSeekBar"
-                            android:id="@+id/rotation_seek_bar"
-                            android:layout_width="400dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:layout_marginLeft="@dimen/content_margin_small"
-                            android:layout_marginRight="@dimen/content_margin_small"/>
-
-                        <ImageButton
-                            android:id="@+id/ok_rotate_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/selectable_oval_background_green"
-                            android:src="@drawable/ic_done_circle" />
+                            android:text="@string/viewer_axis_info"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/text_size_medium" />
 
                     </LinearLayout>
 
+                    <!-- Bottom bar to rotate the model -->
+                    <LinearLayout
+                        android:id="@+id/model_button_rotate_bar_linearlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
-            </LinearLayout>
+                        <TextView
+                            android:id="@+id/text_axis"
+                            android:layout_width="60dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="left"
+                            style="@style/TextInfo"
+                            android:textColor="@android:color/white"/>
+
+                        <TextView
+                            android:id="@+id/text_rotation"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            style="@style/TextInfo"
+                            android:textColor="@android:color/white"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <SeekBar
+                                android:id="@+id/rotation_seek_bar"
+                                style="@style/TallerSeekBar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/content_margin_small"
+                                android:layout_marginRight="@dimen/content_margin_small"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </FrameLayout>
 
 
-
-            <RelativeLayout
-                android:id="@+id/angle_axis"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/x_axis"
+                <!-- Print button -->
+                <LinearLayout
+                    android:id="@+id/print_button_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/viewer_text_rx"
-                    android:textSize="30sp" />
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="end"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/y_axis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/x_axis"
-                    android:text="@string/viewer_text_ry"
-                    android:textSize="30sp" />
+                    <TextView
+                        android:id="@+id/viewer_estimated_time_textview"
+                        style="@style/TextInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/viewer_progress_time"
+                        android:textAllCaps="true" />
 
-                <TextView
-                    android:id="@+id/z_axis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/y_axis"
-                    android:text="@string/viewer_text_rz"
-                    android:textSize="30sp" />
+                    <TextView
+                        android:id="@+id/viewer_text_progress_slice"
+                        style="@style/TextInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/viewer_progress_task_slicing"
+                        android:textStyle="italic" />
 
-                <Button
-                    android:id="@+id/positive_angle_x"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/x_axis"
-                    android:text="@string/viewer_button_rotate_positive_angle" />
-
-                <Button
-                    android:id="@+id/negative_angle_x"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/positive_angle_x"
-                    android:text="@string/viewer_button_rotate_negative_angle" />
-
-                <Button
-                    android:id="@+id/positive_angle_y"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/positive_angle_x"
-                    android:layout_toRightOf="@+id/y_axis"
-                    android:text="@string/viewer_button_rotate_positive_angle" />
-
-                <Button
-                    android:id="@+id/negative_angle_y"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/negative_angle_x"
-                    android:layout_toRightOf="@+id/positive_angle_y"
-                    android:text="@string/viewer_button_rotate_negative_angle" />
-
-                <Button
-                    android:id="@+id/positive_angle_z"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/positive_angle_y"
-                    android:layout_toRightOf="@+id/z_axis"
-                    android:text="@string/viewer_button_rotate_positive_angle" />
-
-                <Button
-                    android:id="@+id/negative_angle_z"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/negative_angle_y"
-                    android:layout_toRightOf="@+id/positive_angle_z"
-                    android:text="@string/viewer_button_rotate_negative_angle" />
+                    <com.material.widget.PaperButton
+                        android:id="@+id/print_model_button"
+                        style="@style/MaterialDesignButton.Raised.Default"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/viewer_button_print" />
+                </LinearLayout>
             </RelativeLayout>
 
-            <!-- Seek bar to show/hide layers of the model -->
-            <android.app.printerapp.util.ui.VerticalSeekBar
-                style="@style/TallerSeekBar"
-                android:id="@+id/barLayer"
-                android:layout_width="wrap_content"
-                android:layout_height="350dp"
-                android:layout_gravity="right|center_vertical"
-                android:maxHeight="6dp"
-                android:layout_margin="@dimen/content_margin_small" />
 
-
-        </FrameLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

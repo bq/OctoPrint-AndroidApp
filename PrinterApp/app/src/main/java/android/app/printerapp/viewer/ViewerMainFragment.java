@@ -1,5 +1,6 @@
 package android.app.printerapp.viewer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
@@ -8,14 +9,15 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.util.ui.CustomPopupWindow;
+import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
 import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,21 +25,24 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -48,12 +53,15 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devsmart.android.ui.HorizontalListView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class ViewerMainFragment extends Fragment {
     //Tabs
@@ -62,6 +70,8 @@ public class ViewerMainFragment extends Fragment {
     private static final int TRANSPARENT = 2;
     private static final int XRAY = 3;
     private static final int LAYER = 4;
+
+    private int mCurrentViewMode = 0;
 
     //Constants
     public static final int DO_SNAPSHOT = 0;
@@ -85,6 +95,7 @@ public class ViewerMainFragment extends Fragment {
     //Buttons
     private RadioGroup mGroupMovement;
 
+    private ImageButton mVisibilityModeButton;
     private Button mBackWitboxFaces;
     private Button mRightWitboxFaces;
     private Button mLeftWitboxFaces;
@@ -102,6 +113,7 @@ public class ViewerMainFragment extends Fragment {
     private static Context mContext;
     private static View mRootView;
 
+    private static LinearLayout mStatusBottomBar;
     private static LinearLayout mRotationLayout;
     private static SeekBar mRotationSeekbar;
 
@@ -159,14 +171,12 @@ public class ViewerMainFragment extends Fragment {
 
             //Init slicing elements
             mSlicingHandler = new SlicingHandler(getActivity());
-            mSidePanelHandler = new SidePanelHandler(mSlicingHandler,getActivity(),mRootView);
+            mSidePanelHandler = new SidePanelHandler(mSlicingHandler, getActivity(), mRootView);
             mCurrentType = WitboxFaces.TYPE_WITBOX;
-            mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG,WitboxFaces.WITBOX_WITDH,WitboxFaces.WITBOX_HEIGHT  };
+            mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT, mSlicingHandler);
             draw();
-
-
 
 
         }
@@ -179,11 +189,11 @@ public class ViewerMainFragment extends Fragment {
 
 
         //Crashes on printview
-        try{
+        try {
             mDataList.remove(mDataList.size() - 1);
             mSurface.requestRender();
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 
@@ -220,7 +230,7 @@ public class ViewerMainFragment extends Fragment {
 
         //Set elements to handle the model
         mSeekBar = (SeekBar) mRootView.findViewById(R.id.barLayer);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
             mSeekBar.getThumb().mutate().setAlpha(0);
         mSeekBar.setVisibility(View.INVISIBLE);
 
@@ -228,6 +238,14 @@ public class ViewerMainFragment extends Fragment {
         mUndoButtonBar = (LinearLayout) mRootView.findViewById(R.id.model_button_undo_bar_linearlayout);
 
         mLayout = (FrameLayout) mRootView.findViewById(R.id.viewer_container_framelayout);
+
+        mVisibilityModeButton = (ImageButton) mRootView.findViewById(R.id.visibility_button);
+        mVisibilityModeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showVisibilityPopUpMenu();
+            }
+        });
 
         mGroupMovement = (RadioGroup) mRootView.findViewById(R.id.radioGroupMovement);
         mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -320,21 +338,28 @@ public class ViewerMainFragment extends Fragment {
                 float newAngle = (i - 12) * POSITIVE_ANGLE;
 
 
-                if (!lock){
+                if (!lock) {
 
-                    switch (mCurrentAxis){
+                    switch (mCurrentAxis) {
 
-                        case 0: mSurface.rotateAngleAxisX(newAngle); break;
-                        case 1: mSurface.rotateAngleAxisY(newAngle); break;
-                        case 2: mSurface.rotateAngleAxisZ(newAngle); break;
-                        default: return;
+                        case 0:
+                            mSurface.rotateAngleAxisX(newAngle);
+                            break;
+                        case 1:
+                            mSurface.rotateAngleAxisY(newAngle);
+                            break;
+                        case 2:
+                            mSurface.rotateAngleAxisZ(newAngle);
+                            break;
+                        default:
+                            return;
 
                     }
 
                 }
 
 
-                mRotationText.setText((int)newAngle + "º");
+                mRotationText.setText((int) newAngle + "º");
 
                 mSurface.requestRender();
 
@@ -344,7 +369,6 @@ public class ViewerMainFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) {
 
                 lock = false;
-
 
 
             }
@@ -359,7 +383,9 @@ public class ViewerMainFragment extends Fragment {
         });
 
         mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
+        mStatusBottomBar = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
         mRotationLayout.setVisibility(View.INVISIBLE);
+        mStatusBottomBar.setVisibility(View.VISIBLE);
 
         mCurrentAxis = -1;
 
@@ -367,17 +393,16 @@ public class ViewerMainFragment extends Fragment {
 
     /**
      * Change the current rotation axis and update the text accordingly
-     *
+     * <p/>
      * Alberto
      */
-    public static void changeCurrentAxis(){
+    public static void changeCurrentAxis(int currentAxis) {
 
-        mCurrentAxis++;
-        if (mCurrentAxis>2) mCurrentAxis = 0;
+        mCurrentAxis = currentAxis;
 
         float currentAngle = 12;
 
-        switch(mCurrentAxis){
+        switch (mCurrentAxis) {
 
             case 0:
                 mAxisText.setText("Eje X");
@@ -392,19 +417,24 @@ public class ViewerMainFragment extends Fragment {
                 mAxisText.setText("Eje Z");
 
                 break;
-            default: mAxisText.setText(""); break;
+            default:
+                mAxisText.setText("Eje X");
+
+                break;
 
         }
 
         mSurface.setRendererAxis(mCurrentAxis);
 
-        mRotationSeekbar.setProgress((int)currentAngle);
+        mRotationSeekbar.setProgress((int) currentAngle);
         mRotationText.setText("");
 
     }
 
 
-    /*****************************************************************************/
+    /**
+     * *************************************************************************
+     */
 
     public static void initSeekBar(int max) {
         mSeekBar.setMax(max);
@@ -518,39 +548,12 @@ public class ViewerMainFragment extends Fragment {
                     case TRANSPARENT:
                         changeStlViews(ViewerSurfaceView.TRANSPARENT);
                         break;
-
                     case XRAY:
                         changeStlViews(ViewerSurfaceView.XRAY);
                         break;
                     case LAYER:
-
-                        File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-                        if (tempFile.exists()) {
-
-                            //It's the last file
-                            if (DatabaseController.getPreference("Slicing","Last")==null){
-
-                                //Open desired file
-                                openFile(tempFile.getAbsolutePath());
-
-                            } else {
-                                Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-                            }
-
-                        } else {
-
-                            /*if (mFile != null) {
-                                showGcodeFiles();
-                            } else
-                                Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();*/
-
-                            Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-
-                            //TODO hardcoded
-                            tabs.setCurrentTab(0);
-                        }
+                        changeStlViews(LAYER);
                         break;
-
                     default:
                         break;
                 }
@@ -567,10 +570,10 @@ public class ViewerMainFragment extends Fragment {
     /**
      * Restore the original view and discard the modifications by clearing the data list
      */
-    public void optionRestoreView(){
+    public void optionRestoreView() {
 
 
-        if (mDataList.size()>0){
+        if (mDataList.size() > 0) {
             String pathStl = mDataList.get(0).getPathFile();
             mDataList.clear();
 
@@ -583,7 +586,7 @@ public class ViewerMainFragment extends Fragment {
     /**
      * Clean the print panel and delete all references
      */
-    public static void optionClean(){
+    public static void optionClean() {
 
         //Delete slicing reference
         //DatabaseController.handlePreference("Slicing", "Last", null, false);
@@ -622,21 +625,47 @@ public class ViewerMainFragment extends Fragment {
             mDataList.add(data);
 
             //Adding original project //TODO elsewhere?
-            if (mSlicingHandler!=null)
-                if (mSlicingHandler.getOriginalProject() == null)
-                    mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
+        if (mSlicingHandler != null)
+            if (mSlicingHandler.getOriginalProject() == null)
+                mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
         }
 
 
     }
 
     private void changeStlViews(int state) {
-        if (mFile != null) {
-            if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL"))
-                openStlFile();
-            else mSurface.configViewMode(state);
-        } else
-            Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+
+        mCurrentViewMode = state;
+
+        //Handle the special mode: LAYER
+        if (state == LAYER) {
+            File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+            if (tempFile.exists()) {
+
+                //It's the last file
+                if (DatabaseController.getPreference("Slicing", "Last") == null) {
+
+                    //Open desired file
+                    openFile(tempFile.getAbsolutePath());
+
+                } else {
+                    Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+            }
+        }
+        //Handle TRANSPARENT, NORMAL and OVERHANG modes
+        else {
+            if (mFile != null) {
+                if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL"))
+                    openStlFile();
+                else mSurface.configViewMode(state);
+            } else {
+                Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void openStlFile() {
@@ -754,7 +783,8 @@ public class ViewerMainFragment extends Fragment {
         mLayout.addView(mSurface, 0);
         mLayout.addView(mSeekBar, 1);
 //        mLayout.addView(mUndoButtonBar, 3);
-        mLayout.addView(mRotationLayout, 2);
+//        mLayout.addView(mRotationLayout, 2);
+//        mLayout.addView(mStatusBottomBar, 3);
     }
 
     /**
@@ -883,17 +913,17 @@ public class ViewerMainFragment extends Fragment {
                         }
                     }
 
-                /**
-                 * Use an intent because it's an asynchronous static method without any reference (yet)
-                 */
-                Intent intent = new Intent("notify");
-                intent.putExtra("message", "Files");
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                    /**
+                     * Use an intent because it's an asynchronous static method without any reference (yet)
+                     */
+                    Intent intent = new Intent("notify");
+                    intent.putExtra("message", "Files");
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
-            }
-        });
+                }
+            });
 
-        adb.show();
+            adb.show();
 
         } else {
             Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
@@ -919,91 +949,238 @@ public class ViewerMainFragment extends Fragment {
         }
     }
 
-    private static ActionMode mActionMode;
+    private static PopupWindow mActionModePopupWindow;
+    private static PopupWindow mCurrentActionPopupWindow;
 
     /**
      * ********************** ACTION MODE *******************************
      */
-    public static void showActionModeBar() {
-        if (mActionMode == null) mActionMode = mRootView.startActionMode(mActionModeCallBack);
+
+    /**
+     * Show a pop up window with the available actions of the item
+     */
+    public static void showActionModePopUpWindow() {
+
+        hideCurrentActionPopUpWindow();
+
+        if (mActionModePopupWindow == null) {
+
+            //Get the content view of the pop up window
+            final LinearLayout popupLayout = (LinearLayout) ((Activity) mContext).getLayoutInflater()
+                    .inflate(R.layout.item_edit_popup_menu, null);
+            popupLayout.measure(0, 0);
+
+            //Set the behavior of the action buttons
+            int imageButtonHeight = 0;
+            for (int i = 0; i < popupLayout.getChildCount(); i++) {
+                View v = popupLayout.getChildAt(i);
+                if (v instanceof ImageButton) {
+                    ImageButton ib = (ImageButton) v;
+                    imageButtonHeight = ib.getMeasuredHeight();
+                    ib.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onActionItemSelected((ImageButton) view);
+                        }
+                    });
+                }
+            }
+
+            //Show the pop up window in the correct position
+            int[] viewerContainerCoordinates = new int[2];
+            mLayout.getLocationOnScreen(viewerContainerCoordinates);
+            int popupLayoutPadding = (int) mContext.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
+            int popupLayoutWidth = popupLayout.getMeasuredWidth();
+            int popupLayoutHeight = popupLayout.getMeasuredHeight();
+            final int popupLayoutX = viewerContainerCoordinates[0] + mLayout.getWidth() - popupLayoutWidth;
+            final int popupLayoutY = viewerContainerCoordinates[1] + imageButtonHeight + popupLayoutPadding;
+
+            mActionModePopupWindow = (new CustomPopupWindow(popupLayout, popupLayoutWidth,
+                    popupLayoutHeight, R.style.SlideRightAnimation).getPopupWindow());
+
+            mActionModePopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY,
+                    popupLayoutX, popupLayoutY);
+        }
     }
 
-    public static void hideActionModeBar() {
-        if (mActionMode != null) mActionMode.finish();
-    }
-
-    private static ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            //Inflate a menu resource providing context menu items
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.print_panel_edition_menu, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false; //do nothing
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
+    /**
+     * Hide the action mode pop up window
+     */
+    public static void hideActionModePopUpWindow() {
+        if (mActionModePopupWindow != null) {
+            mActionModePopupWindow.dismiss();
+            hideCurrentActionPopUpWindow();
+            mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.INVISIBLE);
+            mStatusBottomBar.setVisibility(View.VISIBLE);
+            mActionModePopupWindow = null;
             mSurface.setRendererAxis(-1);
+        }
+    }
 
-            Toast.makeText(mContext,mContext.getString(R.string.viewer_mode_tag) + ": " + item.getTitle(), Toast.LENGTH_SHORT).show();
+    /**
+     * Hide the current action pop up window if it is showing
+     */
+    public static void hideCurrentActionPopUpWindow() {
+        if (mCurrentActionPopupWindow != null) {
+            mCurrentActionPopupWindow.dismiss();
+            mCurrentActionPopupWindow = null;
+        }
+    }
 
-            switch (item.getItemId()) {
-                case R.id.move:
-                    mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
-                    return true;
-                case R.id.rotate:
-                    changeCurrentAxis();
-                    mRotationLayout.setVisibility(View.VISIBLE);
-                    mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
-                    return true;
-                case R.id.scale:
-                    mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
-                    return true;
+    /**
+     * Perform the required action depending on the pressed button
+     *
+     * @param item Action button that has been pressed
+     */
+    public static void onActionItemSelected(final ImageButton item) {
+
+        mRotationLayout.setVisibility(View.INVISIBLE);
+        mStatusBottomBar.setVisibility(View.VISIBLE);
+        mSurface.setRendererAxis(-1);
+
+        selectActionButton(item.getId());
+
+        switch (item.getId()) {
+            case R.id.move_item_button:
+                hideCurrentActionPopUpWindow();
+                mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
+                break;
+            case R.id.rotate_item_button:
+                if (mCurrentActionPopupWindow == null) {
+                    final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.rotate_model_values);
+                    final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.rotate_model_icons);
+                    showHorizontalMenuPopUpWindow(item, actionButtonsValues, actionButtonsIcons,
+                            null, new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
+                            mRotationLayout.setVisibility(View.VISIBLE);
+                            mStatusBottomBar.setVisibility(View.INVISIBLE);
+                            mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
+                            hideCurrentActionPopUpWindow();
+                            item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
+                        }
+                    });
+                } else {
+                    hideCurrentActionPopUpWindow();
+                }
+                break;
+            case R.id.scale_item_button:
+                hideCurrentActionPopUpWindow();
+                mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
+                break;
                 /*case R.id.mirror:
                     mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
                     mSurface.doMirror();
 
                     slicingCallback();
-
-                    return true;*/
-                case R.id.multiply:
-                    shoMultiplyDialog();
-                    return true;
-                case R.id.delete:
-                    mSurface.deleteObject();
-                    mode.finish(); // Action picked, so close the CAB
-                    return true;
-                default:
-                    return false;
-            }
+                    break;*/
+            case R.id.multiply_item_button:
+                hideCurrentActionPopUpWindow();
+                shoMultiplyDialog();
+                break;
+            case R.id.delete_item_button:
+                hideCurrentActionPopUpWindow();
+                mSurface.deleteObject();
+                hideActionModePopUpWindow();
+                break;
         }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-
-            mSurface.exitEditionMode();
-            mRotationLayout.setVisibility(View.INVISIBLE);
-            mActionMode = null;
-
-            mSurface.setRendererAxis(-1);
-
-        }
-    };
-
-    //Exit edition mode
-    public static void finishEdition(){
-
-        hideActionModeBar();
 
     }
 
+
+    /**
+     * Set the state of the selected action button
+     *
+     * @param selectedId Id of the action button that has been pressed
+     */
+    public static void selectActionButton(int selectedId) {
+
+        if (mActionModePopupWindow != null) {
+            //Get the content view of the pop up window
+            final LinearLayout popupLayout = (LinearLayout) mActionModePopupWindow.getContentView();
+
+            //Set the behavior of the action buttons
+            for (int i = 0; i < popupLayout.getChildCount(); i++) {
+                View v = popupLayout.getChildAt(i);
+                if (v instanceof ImageButton) {
+                    ImageButton ib = (ImageButton) v;
+                    if (ib.getId() == selectedId)
+                        ib.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.oval_background_green));
+                    else
+                        ib.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.action_button_selector_dark));
+                }
+            }
+        }
+    }
+
+    /**
+     * Show a pop up window with the visibility options: Normal, overhang, transparent and layers.
+     */
+    public void showVisibilityPopUpMenu() {
+
+        //Hide action mode pop up window to show the new menu
+        hideActionModePopUpWindow();
+
+        //Show a menu with the visibility options
+        if (mCurrentActionPopupWindow == null) {
+            final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.models_visibility_values);
+            final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.models_visibility_icons);
+            showHorizontalMenuPopUpWindow(mVisibilityModeButton, actionButtonsValues, actionButtonsIcons,
+                    Integer.toString(mCurrentViewMode), new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    //Change the view mode of the model
+                    changeStlViews(Integer.parseInt(actionButtonsValues[position]));
+                    hideCurrentActionPopUpWindow();
+                }
+            });
+        } else {
+            hideCurrentActionPopUpWindow();
+        }
+
+    }
+
+    /**
+     * Show a pop up window with a horizontal list view as a content view
+     */
+    public static void showHorizontalMenuPopUpWindow(View currentView, String[] actionButtonsValues,
+                                                     TypedArray actionButtonsIcons,
+                                                     String selectedOption,
+                                                     AdapterView.OnItemClickListener onItemClickListener) {
+
+        HorizontalListView landscapeList = new HorizontalListView(mContext, null);
+        ListIconPopupWindowAdapter listAdapter = new ListIconPopupWindowAdapter(mContext, actionButtonsValues, actionButtonsIcons, selectedOption);
+        landscapeList.setOnItemClickListener(onItemClickListener);
+        landscapeList.setAdapter(listAdapter);
+
+        landscapeList.measure(0, 0);
+
+        int popupLayoutHeight = 0;
+        int popupLayoutWidth = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View mView = listAdapter.getView(i, null, landscapeList);
+            mView.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            popupLayoutHeight = mView.getMeasuredHeight();
+            popupLayoutWidth += mView.getMeasuredWidth();
+        }
+
+        //Show the pop up window in the correct position
+        int[] actionButtonCoordinates = new int[2];
+        currentView.getLocationOnScreen(actionButtonCoordinates);
+        int popupLayoutPadding = (int) mContext.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
+        final int popupLayoutX = actionButtonCoordinates[0] - popupLayoutWidth - popupLayoutPadding / 2;
+        final int popupLayoutY = actionButtonCoordinates[1];
+
+        mCurrentActionPopupWindow = (new CustomPopupWindow(landscapeList, popupLayoutWidth,
+                popupLayoutHeight + popupLayoutPadding, R.style.SlideRightAnimation).getPopupWindow());
+
+        mCurrentActionPopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY, popupLayoutX, popupLayoutY);
+    }
 
     /**
      * ********************** MULTIPLY ELEMENTS *******************************
@@ -1044,45 +1221,49 @@ public class ViewerMainFragment extends Fragment {
             /**
              * Check if the piece is out of the plate and stop multiplying
              */
-            if (!Geometry.relocateIfOverlaps(mDataList)){
+            if (!Geometry.relocateIfOverlaps(mDataList)) {
 
-                Toast.makeText(mContext,R.string.viewer_multiply_error,Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.viewer_multiply_error, Toast.LENGTH_LONG).show();
                 mDataList.remove(newData);
                 break;
 
-            };
+            }
+            ;
             num++;
         }
 
         draw();
     }
 
-    /**
-     * **************************** PROGRESS BAR FOR SLICING ******************************************
-     */
+/**
+ * **************************** PROGRESS BAR FOR SLICING ******************************************
+ */
 
     /**
      * Static method to show the progress bar by sending an integer when receiving data from the socket
+     *
      * @param i either -1 to hide the progress bar, 0 to show an indefinite bar, or a normal integer
      */
     public static void showProgressBar(int status, int i) {
 
 
-        if (mRootView!=null){
+        if (mRootView != null) {
 
-            LinearLayout ll = (LinearLayout) mRootView.findViewById(R.id.layout_progress_slice);
+            LinearLayout ll = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
 
             ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
-            TextView tv = (TextView) mRootView.findViewById(R.id.text_progress_slice);
+            TextView tv = (TextView) mRootView.findViewById(R.id.viewer_text_progress_slice);
 
             ll.bringToFront();
             ll.setVisibility(View.VISIBLE);
+            pb.setVisibility(View.VISIBLE);
 
-            switch (status){
+            switch (status) {
 
                 case StateUtils.SLICER_HIDE:
 
-                    ll.setVisibility(View.GONE);
+                    tv.setText("Downloaded");
+                    pb.setVisibility(View.INVISIBLE);
 
                     break;
 
@@ -1091,22 +1272,20 @@ public class ViewerMainFragment extends Fragment {
                     tv.setText("Uploading...");
                     pb.setIndeterminate(true);
 
-
                     break;
 
                 case StateUtils.SLICER_SLICE:
 
                     tv.setText("Slicing...");
 
-                    if (i==0) {
+                    if (i == 0) {
                         pb.setIndeterminate(true);
 
-                    } else if (i==100) {
+                    } else if (i == 100) {
 
-                        pb.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
                         pb.setIndeterminate(false);
 
-                    }else {
+                    } else {
 
                         pb.setProgress(i);
                         pb.setIndeterminate(false);
@@ -1145,17 +1324,17 @@ public class ViewerMainFragment extends Fragment {
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
-           if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null)
-           if ((DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")).equals("temp.gco")){
+            if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null)
+                if ((DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")).equals("temp.gco")) {
 
-               Log.i("Slicer","Removing PREFERENCE [Last]");
-               DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", null, false);
+                    Log.i("Slicer", "Removing PREFERENCE [Last]");
+                    DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", null, false);
 
-               showProgressBar(StateUtils.SLICER_HIDE,0);
-           } else {
+                    showProgressBar(StateUtils.SLICER_HIDE, 0);
+                } else {
 
-               Log.i("Slicer", "That ain't my file");
-           }
+                    Log.i("Slicer", "That ain't my file");
+                }
 
 
         }
@@ -1164,12 +1343,13 @@ public class ViewerMainFragment extends Fragment {
     /**
      * Notify the side panel adapters, check for null if they're not available yet (rare case)
      */
-    public void notifyAdapter(){
+    public void notifyAdapter() {
 
         try {
             if (mSidePanelHandler.profileAdapter!=null)mSidePanelHandler.profileAdapter.notifyDataSetChanged();
-            if (mSidePanelHandler.printerAdapter!=null)mSidePanelHandler.printerAdapter.notifyDataSetChanged();
-        } catch (NullPointerException e ){
+            if (mSidePanelHandler.printerAdapter != null)
+                mSidePanelHandler.printerAdapter.notifyDataSetChanged();
+        } catch (NullPointerException e) {
 
             e.printStackTrace();
         }
@@ -1179,75 +1359,83 @@ public class ViewerMainFragment extends Fragment {
 
 
     //TODO callback for a slicing request
-    public static void slicingCallback(){
+    public static void slicingCallback() {
 
-        Log.i("Slicer","Starting thread");
+        Log.i("Slicer", "Starting thread");
 
         SliceTask task = new SliceTask();
         task.execute();
 
 
-        Log.i("Slicer","Ending thread");
+        Log.i("Slicer", "Ending thread");
     }
 
-   static class SliceTask extends AsyncTask{
+    static class SliceTask extends AsyncTask {
 
 
-       @Override
-       protected Object doInBackground(Object[] objects) {
+        @Override
+        protected Object doInBackground(Object[] objects) {
 
-           final List<DataStorage> newList = new ArrayList<DataStorage>(mDataList);
+            final List<DataStorage> newList = new ArrayList<DataStorage>(mDataList);
 
-           //Code to update the UI
-           //Check if the file is not yet loaded
-           for (int i=0; i<newList.size(); i++){
+            //Code to update the UI
+            //Check if the file is not yet loaded
+            for (int i = 0; i < newList.size(); i++) {
 
-               if (newList.get(i).getVertexArray()==null) {
+                if (newList.get(i).getVertexArray() == null) {
 
-                   Log.i("OUT","HAHA!");
-                   return null;
-               }
+                    Log.i("OUT", "HAHA!");
+                    return null;
+                }
 
-           }
+            }
 
-           Log.i("Slicer", "Sending callback");
+            Log.i("Slicer", "Sending callback");
 
-           if ((mSlicingHandler!=null)&&(mFile!=null)) {
+            if ((mSlicingHandler != null) && (mFile != null)) {
 
-               if (LibraryController.hasExtension(0,mFile.getName())){
-                   StlFile.saveModel(newList, null, mSlicingHandler);
-               } else Log.i("Slicer","I dont even " + mFile.getName());
+                if (LibraryController.hasExtension(0, mFile.getName())) {
+                    StlFile.saveModel(newList, null, mSlicingHandler);
+                }
 
-           } else Log.i("Slicer","SOMETHING AWS NULL");
+            }
 
-           return null;
-       }
-   }
+            return null;
+        }
+
+    }
 
 
+    /**
+     * *********************************  SIDE PANEL *******************************************************
+     */
 
-    /************************************  SIDE PANEL ********************************************************/
+    public static File getFile() {
+        return mFile;
+    }
 
-    public static File getFile(){ return mFile; }
-    public static int[] getCurrentPlate(){
+    public static int[] getCurrentPlate() {
 
         return mCurrentPlate;
     }
 
-    public static int getCurrentType(){return mCurrentType;}
-    public static void changePlate(int type){
+    public static int getCurrentType() {
+        return mCurrentType;
+    }
 
-        switch(type){
+    public static void changePlate(int type) {
+
+        switch (type) {
 
             case WitboxFaces.TYPE_WITBOX:
 
-                mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG,WitboxFaces.WITBOX_WITDH,WitboxFaces.WITBOX_HEIGHT  };
+                mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
 
                 break;
 
             case WitboxFaces.TYPE_HEPHESTOS:
 
-                mCurrentPlate = new int[]{WitboxFaces.HEPHESTOS_LONG,WitboxFaces.HEPHESTOS_WITDH,WitboxFaces.HEPHESTOS_HEIGHT  };
+                mCurrentPlate = new int[]{WitboxFaces.HEPHESTOS_LONG, WitboxFaces.HEPHESTOS_WITDH, WitboxFaces.HEPHESTOS_HEIGHT};
 
                 break;
 
@@ -1258,14 +1446,14 @@ public class ViewerMainFragment extends Fragment {
         mSurface.requestRender();
     }
 
-    public static void setSlicingPosition(float x, float y){
+    public static void setSlicingPosition(float x, float y) {
 
         Log.i("Slicer","MOG, new positiong to pr0nt " + x + ":" + y);
 
         JSONObject position = new JSONObject();
         try {
-            position.put("x",(int)x + mCurrentPlate[0]);
-            position.put("y",(int)y + mCurrentPlate[1]);
+            position.put("x", (int) x + mCurrentPlate[0]);
+            position.put("y", (int) y + mCurrentPlate[1]);
 
             mSlicingHandler.setExtras("position", position);
         } catch (JSONException e) {

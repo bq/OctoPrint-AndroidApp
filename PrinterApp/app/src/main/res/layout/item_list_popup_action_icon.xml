@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_list_popup"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:paddingLeft="@dimen/content_padding_small">
+
+    <ImageButton
+        android:id="@+id/item_list_button"
+        android:clickable="false"
+        android:focusable="false"
+        style="@style/ActionButton"
+        android:layout_marginBottom="0dp"/>
+
+</LinearLayout>

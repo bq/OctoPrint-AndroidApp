@@ -9,7 +9,7 @@
     <color name="almost_transparent">#22000000</color>
 
     <!-- THEME COLORS -->
-    <color name="theme_primary">#cd7edc38</color>
+    <color name="theme_primary">#5BB433</color>
     <color name="theme_primary_dark">#169300</color>
     <color name="theme_primary_light">#557bdd3b</color>
     <color name="shadow">#77000000</color>
@@ -33,6 +33,7 @@
     <color name="green_background">#ffd6fbad</color>
     <color name="gray_background">#e5e5e5</color>
     <color name="dark_divider">#32000000</color>
+    <color name="separator_background">#11000000</color>
 
     <color name="navdrawer_background">#ffffffff</color>
     <color name="navdrawer_background_selected">@color/green_background</color>

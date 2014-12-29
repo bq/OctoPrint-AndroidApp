@@ -357,10 +357,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					if (objPressed!=-1 && isStl()) {
 						mEdition = true;
 						mObjectPressed=objPressed;
-						ViewerMainFragment.showActionModeBar();
-					}  else {
-
-                       ViewerMainFragment.finishEdition();
+						ViewerMainFragment.showActionModePopUpWindow();
+					}
+                    else {
+                        ViewerMainFragment.hideActionModePopUpWindow();
 
                     }
 					touchMode = TOUCH_DRAG;

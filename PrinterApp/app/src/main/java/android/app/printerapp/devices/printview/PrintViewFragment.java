@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -123,7 +124,7 @@ public class PrintViewFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             //Inflate the fragment
             mRootView = inflater.inflate(R.layout.printview_layout,

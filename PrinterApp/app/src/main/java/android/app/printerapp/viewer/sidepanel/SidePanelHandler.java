@@ -45,11 +45,11 @@ import java.util.ArrayList;
 public class SidePanelHandler {
 
     //static parameters
-    private static final String[] INFILL_OPTIONS = {"Low","Medium","High","Full", "None"}; //quality options
+    private static final String[] INFILL_OPTIONS = {"Low", "Medium", "High", "Full", "None"}; //quality options
     private static final String[] PROFILE_OPTIONS = {ModelProfile.HIGH_PROFILE, ModelProfile.MEDIUM_PROFILE, ModelProfile.LOW_PROFILE}; //support options
-    private static final String[] SUPPORT_OPTIONS = {"none", "buildplate", "everywhere"}; //support options
-    private static final String[] ADHESION_OPTIONS = {"none", "brim", "raft"}; //adhesion options
-    private static final String[] PRINTER_TYPE = {"Witbox","Hephestos"};
+    private static final String[] SUPPORT_OPTIONS = {"None", "Buildplate", "Everywhere"}; //support options
+    private static final String[] ADHESION_OPTIONS = {"None", "Brim", "Raft"}; //adhesion options
+    private static final String[] PRINTER_TYPE = {"Witbox", "Hephestos"};
     private static final String[] PREDEFINED_PROFILES = {"bq"}; //filter for profile deletion
 
     private static final int DEFAULT_INFILL = 20;
@@ -102,7 +102,7 @@ public class SidePanelHandler {
     private ArrayList<ModelPrinter> mTemporaryPrinterList;
 
     //Constructor
-    public SidePanelHandler(SlicingHandler handler, Activity activity, View v){
+    public SidePanelHandler(SlicingHandler handler, Activity activity, View v) {
 
         mActivity = activity;
         mSlicingHandler = handler;
@@ -115,10 +115,10 @@ public class SidePanelHandler {
     }
 
     //Initialize UI references
-    public void initUiElements(){
+    public void initUiElements() {
 
         s_type = (Spinner) mRootView.findViewById(R.id.type_spinner);
-        s_profile = (Spinner)  mRootView.findViewById(R.id.quality_spinner);
+        s_profile = (Spinner) mRootView.findViewById(R.id.profile_spinner);
         s_adhesion = (Spinner) mRootView.findViewById(R.id.adhesion_spinner);
         s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
 
@@ -130,23 +130,23 @@ public class SidePanelHandler {
         restoreButton = (PaperButton) mRootView.findViewById(R.id.restore_settings_button);
         deleteButton = (PaperButton) mRootView.findViewById(R.id.delete_settings_button);
 
-        layerHeight = (EditText)mRootView.findViewById(R.id.layer_height_edittext);
-        shellThickness = (EditText)mRootView.findViewById(R.id.shell_thickness_edittext);
-        enableRetraction = (com.material.widget.CheckBox)mRootView.findViewById(R.id.enable_retraction_checkbox);
-        bottomTopThickness = (EditText)mRootView.findViewById(R.id.bottom_top_thickness_edittext);
-        printSpeed = (EditText)mRootView.findViewById(R.id.print_speed_edittext);
-        printTemperature = (EditText)mRootView.findViewById(R.id.print_temperature_edittext);
-        filamentDiamenter = (EditText)mRootView.findViewById(R.id.diameter_edittext);
-        filamentFlow = (EditText)mRootView.findViewById(R.id.flow_title_edittext);
+        layerHeight = (EditText) mRootView.findViewById(R.id.layer_height_edittext);
+        shellThickness = (EditText) mRootView.findViewById(R.id.shell_thickness_edittext);
+        enableRetraction = (com.material.widget.CheckBox) mRootView.findViewById(R.id.enable_retraction_checkbox);
+        bottomTopThickness = (EditText) mRootView.findViewById(R.id.bottom_top_thickness_edittext);
+        printSpeed = (EditText) mRootView.findViewById(R.id.print_speed_edittext);
+        printTemperature = (EditText) mRootView.findViewById(R.id.print_temperature_edittext);
+        filamentDiamenter = (EditText) mRootView.findViewById(R.id.diameter_edittext);
+        filamentFlow = (EditText) mRootView.findViewById(R.id.flow_title_edittext);
 
-        travelSpeed = (EditText)mRootView.findViewById(R.id.travel_speed_edittext);
-        bottomLayerSpeed = (EditText)mRootView.findViewById(R.id.bottom_layer_speed_edittext);
-        infillSpeed = (EditText)mRootView.findViewById(R.id.infill_speed_edittext);
-        outerShellSpeed = (EditText)mRootView.findViewById(R.id.outher_shell_speed_edittext);
-        innerShellSpeed = (EditText)mRootView.findViewById(R.id.inner_shell_speed_edittext);
+        travelSpeed = (EditText) mRootView.findViewById(R.id.travel_speed_edittext);
+        bottomLayerSpeed = (EditText) mRootView.findViewById(R.id.bottom_layer_speed_edittext);
+        infillSpeed = (EditText) mRootView.findViewById(R.id.infill_speed_edittext);
+        outerShellSpeed = (EditText) mRootView.findViewById(R.id.outher_shell_speed_edittext);
+        innerShellSpeed = (EditText) mRootView.findViewById(R.id.inner_shell_speed_edittext);
 
-        minimalLayerTime = (EditText)mRootView.findViewById(R.id.minimal_layer_time_edittext);
-        enableCoolingFan = (com.material.widget.CheckBox)mRootView.findViewById(R.id.enable_cooling_fan_checkbox);
+        minimalLayerTime = (EditText) mRootView.findViewById(R.id.minimal_layer_time_edittext);
+        enableCoolingFan = (com.material.widget.CheckBox) mRootView.findViewById(R.id.enable_cooling_fan_checkbox);
 
 
         //profileText = (EditText) mRootView.findViewById(R.id.profile_edittext);
@@ -181,7 +181,7 @@ public class SidePanelHandler {
     }
 
     //Initializes the side panel with the printer data
-    public void initSidePanel(){
+    public void initSidePanel() {
 
         Handler handler = new Handler();
 
@@ -194,7 +194,6 @@ public class SidePanelHandler {
                 try {
 
                     //Initialize item listeners
-
 
                     /************************* INITIALIZE TYPE SPINNER ******************************/
 
@@ -216,15 +215,13 @@ public class SidePanelHandler {
                         public void onNothingSelected(AdapterView<?> adapterView) {
 
 
-
                         }
                     });
 
-                   ArrayAdapter<String> type_adapter = new ArrayAdapter<String>(mActivity,
+                    ArrayAdapter<String> type_adapter = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, PRINTER_TYPE);
-
+                    type_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
                     s_type.setAdapter(type_adapter);
-
 
 
                     /******************** INITIALIZE SECONDARY PANEL ************************************/
@@ -254,14 +251,13 @@ public class SidePanelHandler {
                     s_profile.setAdapter(profile_adapter);
 
 
-
                     //Adhesion type
                     s_adhesion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-                            mSlicingHandler.setExtras("profile.platform_adhesion",s_adhesion.getItemAtPosition(i).toString());
+                            mSlicingHandler.setExtras("profile.platform_adhesion", s_adhesion.getItemAtPosition(i).toString());
 
                         }
 
@@ -276,25 +272,28 @@ public class SidePanelHandler {
                     s_support.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile.support",s_support.getItemAtPosition(i).toString());
+                            mSlicingHandler.setExtras("profile.support", s_support.getItemAtPosition(i).toString());
 
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
-                            mSlicingHandler.setExtras("profile.support",null);
+                            mSlicingHandler.setExtras("profile.support", null);
                         }
                     });
 
 
                     ArrayAdapter<String> adapter_profile = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, PROFILE_OPTIONS);
+                    adapter_profile.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
                     ArrayAdapter<String> adapter_adhesion = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, ADHESION_OPTIONS);
+                    adapter_adhesion.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
                     ArrayAdapter<String> adapter_support = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, SUPPORT_OPTIONS);
+                    adapter_support.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
 
-                   // s_profile.setAdapter(adapter_profile);
+                    // s_profile.setAdapter(adapter_profile);
                     s_adhesion.setAdapter(adapter_adhesion);
                     s_support.setAdapter(adapter_support);
 
@@ -302,7 +301,7 @@ public class SidePanelHandler {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                            infillText.setText(i+"%");
+                            infillText.setText(i + "%");
 
                         }
 
@@ -314,13 +313,13 @@ public class SidePanelHandler {
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
 
-                            mSlicingHandler.setExtras("profile.fill_density",seek_infill.getProgress());
+                            mSlicingHandler.setExtras("profile.fill_density", seek_infill.getProgress());
 
                         }
                     });
 
                     seek_infill.setProgress(DEFAULT_INFILL);
-                    infillText.setText(DEFAULT_INFILL+"%");
+                    infillText.setText(DEFAULT_INFILL + "%");
 
                     /**************************************************************************/
 
@@ -335,7 +334,6 @@ public class SidePanelHandler {
                             sendToPrint();
                         }
                     });
-
 
 
                     saveButton.setOnClickListener(new View.OnClickListener() {
@@ -361,12 +359,10 @@ public class SidePanelHandler {
                     });
 
 
-
-
                     /**************************************************************************/
 
 
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -390,17 +386,17 @@ public class SidePanelHandler {
     /**
      * Send a gcode file to the selected printer
      */
-    private void sendToPrint(){
+    private void sendToPrint() {
 
-        if (mPrinter!=null){
+        if (mPrinter != null) {
 
             //If printer is available
-            if (mPrinter.getStatus() == StateUtils.STATE_OPERATIONAL){
+            if (mPrinter.getStatus() == StateUtils.STATE_OPERATIONAL) {
 
                 //Retrieve the current file
                 File mFile = ViewerMainFragment.getFile();
 
-                if (mFile!=null) {
+                if (mFile != null) {
 
 
                     Log.i("Slicer", "Current file: " + mFile.getAbsolutePath());
@@ -413,10 +409,10 @@ public class SidePanelHandler {
                     Log.i("Slicer", "Current project: " + mSlicingHandler.getOriginalProject());
 
                     if (actualFile!=null)
-                    if (LibraryController.isProject(actualFile)){
+                    if (LibraryController.isProject(actualFile)) {
 
                         //It's the last file
-                        if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null){
+                        if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null) {
 
                             /*mSlicingHandler.setExtras("print",true);
                             mPrinter.setJobPath(mSlicingHandler.getLastReference());
@@ -467,7 +463,7 @@ public class SidePanelHandler {
 
                                 } else {
 
-                                    Log.i("Slicer","Mada mada");
+                                    Log.i("Slicer", "Mada mada");
 
                                 }
 
@@ -487,10 +483,10 @@ public class SidePanelHandler {
                         if (tempFile.exists()) {
 
                             Log.i("Slicer", "Final file is: Random STL or Random Sliced STL");
-                            finalFile =  tempFile;
+                            finalFile = tempFile;
 
 
-                         //It's a random gcode
+                            //It's a random gcode
                         } else {
 
                             Log.i("Slicer", "Final file is: Random GCODE");
@@ -501,31 +497,34 @@ public class SidePanelHandler {
                     }
 
 
-                    if (finalFile!=null)
-                    //either case if the file exists, we send it to the printer
-                    if (finalFile.exists()) {
+                    if (finalFile != null)
+                        //either case if the file exists, we send it to the printer
+                        if (finalFile.exists()) {
 
                         /*OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
-                        ItemListFragment.performClick(0);
+                            ItemListFragment.performClick(0);
                         ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
 
                         DevicesListController.selectPrinter(mActivity, finalFile, null);
 
-                    } else {
+                        } else {
 
-                        Toast.makeText(mActivity, R.string.viewer_slice_error, Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity, R.string.viewer_slice_error, Toast.LENGTH_LONG).show();
 
-                    }
+                        }
 
 
+                } else {
+                    Toast.makeText(mActivity, R.string.devices_toast_no_gcode, Toast.LENGTH_LONG).show();
                 }
-                else {Toast.makeText(mActivity,R.string.devices_toast_no_gcode,Toast.LENGTH_LONG).show();};
+                ;
 
-            } else Toast.makeText(mActivity, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(mActivity, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
 
 
-
-        } else Toast.makeText(mActivity,R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(mActivity, R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
 
 
         /**
@@ -541,11 +540,12 @@ public class SidePanelHandler {
 
     /**
      * Parses a JSON profile to the side panel
+     *
      * @i printer index in the list
      */
     public void parseJson/*(int i)*/(JSONObject profile){
 
-         //Parse the JSON element
+        //Parse the JSON element
         try {
 
 
@@ -567,23 +567,22 @@ public class SidePanelHandler {
             minimalLayerTime.setText(data.getString("cool_min_layer_time"));
 
             if (data.has("retraction_enable"))
-            if (data.getString("retraction_enable").equals("true")){
-                enableRetraction.setChecked(true);
-                Log.i("OUT", "Checked true");
-            }else {
-                enableRetraction.setChecked(false);
-                Log.i("OUT","Checked false" );
-            }
+                if (data.getString("retraction_enable").equals("true")) {
+                    enableRetraction.setChecked(true);
+                    Log.i("OUT", "Checked true");
+                } else {
+                    enableRetraction.setChecked(false);
+                    Log.i("OUT", "Checked false");
+                }
 
 
             //TODO Not checked by default
-            if (data.getBoolean("fan_enabled")){
+            if (data.getBoolean("fan_enabled")) {
                 enableCoolingFan.setChecked(true);
                 Log.i("OUT", "Checked true");
-            }
-            else {
+            } else {
                 enableCoolingFan.setChecked(false);
-                Log.i("OUT","Checked false" );
+                Log.i("OUT", "Checked false");
             }
 
         } catch (JSONException e) {
@@ -594,21 +593,21 @@ public class SidePanelHandler {
 
     /**
      * Parse float to a variable to avoid accuracy error
+     *
      * @param s
      * @return
      */
-    public Float getFloatValue(String s) throws NumberFormatException{
+    public Float getFloatValue(String s) throws NumberFormatException {
 
         Float f = Float.parseFloat(s);
-       
+
         return f;
     }
 
     /**
      * Save a slicing profile by adding every individual element to a JSON
      */
-    public void saveProfile(){
-
+    public void saveProfile() {
 
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
@@ -633,7 +632,6 @@ public class SidePanelHandler {
                 JSONObject profile = null;
 
 
-
                 //Parse the JSON element
                 try {
 
@@ -642,7 +640,7 @@ public class SidePanelHandler {
 
                     profile.put("displayName", et.getText().toString());
                     profile.put("description", "Test profile created from App"); //TODO
-                    profile.put("key", et.getText().toString().replace(" ","_").toLowerCase());
+                    profile.put("key", et.getText().toString().replace(" ", "_").toLowerCase());
 
                     //Data info
                     JSONObject data = new JSONObject();
@@ -663,10 +661,10 @@ public class SidePanelHandler {
                     data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
                     data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
 
-                    data.put("cool_min_layer_time",getFloatValue( minimalLayerTime.getText().toString()));
+                    data.put("cool_min_layer_time", getFloatValue(minimalLayerTime.getText().toString()));
                     data.put("fan_enabled", enableCoolingFan.isChecked());
 
-                    profile.put("data",data);
+                    profile.put("data", data);
 
 
                     Log.i("OUT", profile.toString());
@@ -675,19 +673,19 @@ public class SidePanelHandler {
                 } catch (JSONException e) {
                     e.printStackTrace();
 
-                } catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
 
                     //Check if there was an invalid numner
                     e.printStackTrace();
-                    Toast.makeText(mActivity,e.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_LONG).show();
                     profile = null;
 
                 }
 
-                if (profile!=null){
+                if (profile != null) {
 
                     //check if name already exists to avoid overwriting
-                    for(JSONObject o : mPrinter.getProfiles()){
+                    for (JSONObject o : mPrinter.getProfiles()) {
 
                         try {
                             if (profile.get("displayName").equals(o.get("displayName"))) {
@@ -705,7 +703,6 @@ public class SidePanelHandler {
                         }
 
                     }
-
 
 
                 }
@@ -729,7 +726,7 @@ public class SidePanelHandler {
     }
 
     //Delete a profile that it's not restricted by a constant
-    public void deleteProfile(){
+    public void deleteProfile() {
 
         try {
             final String profile = mPrinter.getProfiles().get(s_profile.getSelectedItemPosition()).getString("key");
@@ -738,28 +735,28 @@ public class SidePanelHandler {
             AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
             adb.setTitle(R.string.viewer_profile_delete);
             adb.setMessage(mPrinter.getProfiles().get(s_profile.getSelectedItemPosition()).getString("displayName"));
-            adb.setPositiveButton(R.string.delete,new DialogInterface.OnClickListener() {
+            adb.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-                //Check if the profile is part of the predefined constants
-                for (String s : PREDEFINED_PROFILES){
+                    //Check if the profile is part of the predefined constants
+                    for (String s : PREDEFINED_PROFILES) {
 
-                    if (profile.contains(s)) {
+                        if (profile.contains(s)) {
 
-                        Toast.makeText(mActivity,R.string.viewer_profile_delete_error,Toast.LENGTH_SHORT).show();
-                        return;
+                            Toast.makeText(mActivity, R.string.viewer_profile_delete_error, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     }
+
+                    OctoprintSlicing.deleteProfile(mActivity, mPrinter, profile);
+
                 }
+            });
 
-                OctoprintSlicing.deleteProfile(mActivity,mPrinter,profile);
-
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-        adb.show();
+            adb.setNegativeButton(R.string.cancel, null);
+            adb.show();
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -61,4 +61,44 @@
         <attr name="circular_progress_max" format="integer"/>
         <attr name="circular_progress_duration" format="integer"/>
     </declare-styleable>
+
+    <!-- LinearProgress Attribute -->
+    <declare-styleable name="LinearProgress">
+        <attr name="linear_progress_color" format="color"/>
+        <attr name="linear_progress_line_width" format="dimension"/>
+        <attr name="linear_progress_max" format="integer"/>
+        <attr name="linear_progress_duration" format="integer"/>
+    </declare-styleable>
+
+    <!-- FloatingEditText Attribute -->
+    <declare-styleable name="FloatingEditText">
+        <attr name="floating_edit_text_hint_scale" format="float"/>
+        <attr name="floating_edit_text_color" format="color"/>
+        <attr name="floating_edit_text_highlighted_color" format="color"/>
+        <attr name="floating_edit_text_error_color" format="color"/>
+        <attr name="floating_edit_text_underline_height" format="dimension"/>
+        <attr name="floating_edit_text_underline_highlighted_height" format="dimension"/>
+    </declare-styleable>
+
+    <!-- Slider Attribute -->
+    <declare-styleable name="Slider">
+        <attr name="slider_color" format="color"/>
+        <attr name="slider_tint_color" format="color"/>
+        <attr name="slider_ripple_color" format="color"/>
+        <attr name="slider_thumb_radius" format="dimension"/>
+        <attr name="slider_ripple_radius" format="dimension"/>
+        <attr name="slider_bar_height" format="dimension"/>
+        <attr name="slider_max" format="integer"/>
+        <attr name="slider_progress" format="integer"/>
+    </declare-styleable>
+
+    <!-- TrackSlider Attribute -->
+    <declare-styleable name="TrackSlider">
+        <attr name="track_slider_color" format="color"/>
+        <attr name="track_slider_tint_color" format="color"/>
+        <attr name="track_slider_thumb_radius" format="dimension"/>
+        <attr name="track_slider_ripple_radius" format="dimension"/>
+        <attr name="track_slider_bar_height" format="dimension"/>
+        <attr name="slider_thumb_border_width" format="dimension"/>
+    </declare-styleable>
 </resources>

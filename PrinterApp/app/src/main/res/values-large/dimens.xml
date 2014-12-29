@@ -3,6 +3,7 @@
     <dimen name="activity_horizontal_margin">24dp</dimen>
     <dimen name="activity_vertical_margin">24dp</dimen>
     <dimen name="element_spacing_normal">12dp</dimen>
+    <dimen name="content_padding_xsmall">6dp</dimen>
     <dimen name="content_padding_small">12dp</dimen>
     <dimen name="content_padding_normal">24dp</dimen>
     <dimen name="content_padding_big">48dp</dimen>

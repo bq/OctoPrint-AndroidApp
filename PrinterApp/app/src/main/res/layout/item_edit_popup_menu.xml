@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_edit_popup_menu_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/content_padding_small">
+
+    <!-- Menu with the options to be applied to an item -->
+
+    <!-- Move action button-->
+    <ImageButton
+        android:id="@+id/move_item_button"
+        style="@style/ActionButton"
+        android:src="@drawable/ic_viewer_move" />
+
+    <!-- Rotate action button -->
+    <ImageButton
+        android:id="@+id/rotate_item_button"
+        style="@style/ActionButton"
+        android:src="@drawable/ic_viewer_rotation" />
+
+    <!-- Scale action button -->
+    <ImageButton
+        android:id="@+id/scale_item_button"
+        style="@style/ActionButton"
+        android:src="@drawable/ic_viewer_scale" />
+
+    <!-- Multiply action button -->
+    <ImageButton
+        android:id="@+id/multiply_item_button"
+        style="@style/ActionButton"
+        android:src="@drawable/ic_viewer_multiply" />
+
+    <!-- Delete action button -->
+    <ImageButton
+        android:id="@+id/delete_item_button"
+        style="@style/ActionButton"
+        android:src="@drawable/ic_action_delete" />
+
+</LinearLayout>
