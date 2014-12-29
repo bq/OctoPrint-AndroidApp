@@ -60,4 +60,6 @@
 
     <color name="drag_and_drop_hover_background">@color/theme_primary_light</color>
 
+    <color name="printer_view_bottom_bar">#7e7e7e</color>
+
 </resources>

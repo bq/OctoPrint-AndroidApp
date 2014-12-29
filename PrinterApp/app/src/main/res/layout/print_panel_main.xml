@@ -180,7 +180,7 @@
                     android:layout_above="@+id/print_button_container"
                     android:layout_alignEnd="@+id/print_button_container"
                     android:layout_alignRight="@+id/print_button_container"
-                    android:background="@android:color/darker_gray">
+                    android:background="@color/printer_view_bottom_bar">
 
                     <!-- Bottom bar with the progress and axis info -->
                     <LinearLayout

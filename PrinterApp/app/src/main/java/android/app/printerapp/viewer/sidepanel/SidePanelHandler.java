@@ -10,12 +10,14 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +25,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -34,6 +41,7 @@ import com.material.widget.PaperButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,8 +81,9 @@ public class SidePanelHandler {
     private Spinner s_adhesion;
     private Spinner s_support;
 
+    private RelativeLayout s_infill;
+    private PopupWindow mInfillOptionsPopupWindow;
     private TextView infillText;
-    private SeekBar seek_infill;
 
     public SidePanelPrinterAdapter printerAdapter;
     public SidePanelProfileAdapter profileAdapter;
@@ -122,7 +131,7 @@ public class SidePanelHandler {
         s_adhesion = (Spinner) mRootView.findViewById(R.id.adhesion_spinner);
         s_support = (Spinner) mRootView.findViewById(R.id.support_spinner);
 
-        seek_infill = (SeekBar) mRootView.findViewById(R.id.seekBar_infill);
+        s_infill = (RelativeLayout) mRootView.findViewById(R.id.infill_spinner);
         infillText = (TextView) mRootView.findViewById(R.id.infill_number_view);
 
         printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
@@ -171,12 +180,12 @@ public class SidePanelHandler {
     }
 
     //Enable/disable profile options depending on the model type
-    public void enableProfileSelection(boolean enable){
+    public void enableProfileSelection(boolean enable) {
 
         s_profile.setEnabled(enable);
         s_support.setEnabled(enable);
         s_adhesion.setEnabled(enable);
-        seek_infill.setEnabled(enable);
+        s_infill.setEnabled(enable);
 
     }
 
@@ -234,7 +243,7 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                            parseJson(ModelProfile.retrieveProfile(mActivity,s_profile.getSelectedItem().toString()));
+                            parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString()));
                             mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
 
                         }
@@ -247,7 +256,7 @@ public class SidePanelHandler {
 
                     ArrayAdapter<String> profile_adapter = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, PROFILE_OPTIONS);
-
+                    profile_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
                     s_profile.setAdapter(profile_adapter);
 
 
@@ -297,29 +306,13 @@ public class SidePanelHandler {
                     s_adhesion.setAdapter(adapter_adhesion);
                     s_support.setAdapter(adapter_support);
 
-                    seek_infill.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    infillText.setText(DEFAULT_INFILL + "%");
+                    s_infill.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-                            infillText.setText(i + "%");
-
-                        }
-
-                        @Override
-                        public void onStartTrackingTouch(SeekBar seekBar) {
-
-                        }
-
-                        @Override
-                        public void onStopTrackingTouch(SeekBar seekBar) {
-
-                            mSlicingHandler.setExtras("profile.fill_density", seek_infill.getProgress());
-
+                        public void onClick(View v) {
+                            openInfillPopupWindow();
                         }
                     });
-
-                    seek_infill.setProgress(DEFAULT_INFILL);
-                    infillText.setText(DEFAULT_INFILL + "%");
 
                     /**************************************************************************/
 
@@ -347,7 +340,7 @@ public class SidePanelHandler {
                         @Override
                         public void onClick(View view) {
                             //parseJson(s_profile.getSelectedItemPosition());
-                            parseJson(ModelProfile.retrieveProfile(mActivity,s_profile.getSelectedItem().toString()));
+                            parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString()));
                         }
                     });
 
@@ -370,11 +363,11 @@ public class SidePanelHandler {
                 /**
                  * Set preferred settings
                  */
-                String prefType = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"type");
-                String prefQuality = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"quality");
+                String prefType = DatabaseController.getPreference(DatabaseController.TAG_PROFILE, "type");
+                String prefQuality = DatabaseController.getPreference(DatabaseController.TAG_PROFILE, "quality");
                 //String prefPrinter = DatabaseController.getPreference(DatabaseController.TAG_PROFILE,"type");
-                if (prefType!=null) s_type.setSelection(Integer.parseInt(prefType));
-                if (prefQuality!=null) s_profile.setSelection(Integer.parseInt(prefQuality));
+                if (prefType != null) s_type.setSelection(Integer.parseInt(prefType));
+                if (prefQuality != null) s_profile.setSelection(Integer.parseInt(prefQuality));
                 //if (prefPrinter!=null) s_printer.setSelection(Integer.parseInt(prefPrinter));
 
             }
@@ -402,17 +395,18 @@ public class SidePanelHandler {
                     Log.i("Slicer", "Current file: " + mFile.getAbsolutePath());
 
                     File actualFile = null;
-                    if (mSlicingHandler.getOriginalProject()!=null) actualFile = new File(mSlicingHandler.getOriginalProject());
+                    if (mSlicingHandler.getOriginalProject() != null)
+                        actualFile = new File(mSlicingHandler.getOriginalProject());
 
                     File finalFile = null;
 
                     Log.i("Slicer", "Current project: " + mSlicingHandler.getOriginalProject());
 
-                    if (actualFile!=null)
-                    if (LibraryController.isProject(actualFile)) {
+                    if (actualFile != null)
+                        if (LibraryController.isProject(actualFile)) {
 
-                        //It's the last file
-                        if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null) {
+                            //It's the last file
+                            if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null) {
 
                             /*mSlicingHandler.setExtras("print",true);
                             mPrinter.setJobPath(mSlicingHandler.getLastReference());
@@ -420,81 +414,80 @@ public class SidePanelHandler {
                             ItemListFragment.performClick(0);
                             ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
 
-                            //Add it to the reference list
-                            DatabaseController.handlePreference("References", mPrinter.getName(),
-                                    LibraryController.getParentFolder() + "/temp/temp.gco", true);
+                                //Add it to the reference list
+                                DatabaseController.handlePreference("References", mPrinter.getName(),
+                                        LibraryController.getParentFolder() + "/temp/temp.gco", true);
 
-                            mPrinter.setJobPath(null);
+                                mPrinter.setJobPath(null);
 
-                            DevicesListController.selectPrinter(mActivity,null,mSlicingHandler);
+                                DevicesListController.selectPrinter(mActivity, null, mSlicingHandler);
 
 
+                            } else {
 
+                                //Check for temporary gcode
+                                File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+
+
+                                //If we have a gcode which is temporary it's either a stl or sliced gcode
+                                if (tempFile.exists()) {
+
+                                    //Get original project
+                                    //final File actualFile = new File(mSlicingHandler.getOriginalProject());
+
+                                    //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
+                                    finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
+
+                                    Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
+
+                                    Log.i("Slicer", "Final file is: STL or Sliced STL");
+
+
+                                    tempFile.renameTo(finalFile);
+
+                                    //if we don't have a temporary gcode, means we are currently watching an original gcode from a project
+                                } else {
+
+                                    if (LibraryController.hasExtension(1, mFile.getName())) {
+
+
+                                        Log.i("Slicer", "Final file is: Project GCODE");
+                                        finalFile = mFile;
+
+                                    } else {
+
+                                        Log.i("Slicer", "Mada mada");
+
+                                    }
+
+                                }
+
+                            }
+
+
+                            //Not a project
                         } else {
 
                             //Check for temporary gcode
                             File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
 
 
-                            //If we have a gcode which is temporary it's either a stl or sliced gcode
+                            //If we have a gcode which is temporary it's a sliced gcode
                             if (tempFile.exists()) {
 
-                                //Get original project
-                                //final File actualFile = new File(mSlicingHandler.getOriginalProject());
-
-                                //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                                finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName().replace(" ","_") + "_tmp.gcode");
-
-                                Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
-
-                                Log.i("Slicer", "Final file is: STL or Sliced STL");
+                                Log.i("Slicer", "Final file is: Random STL or Random Sliced STL");
+                                finalFile = tempFile;
 
 
-                                tempFile.renameTo(finalFile);
-
-                                //if we don't have a temporary gcode, means we are currently watching an original gcode from a project
+                                //It's a random gcode
                             } else {
 
-                                if (LibraryController.hasExtension(1, mFile.getName())) {
-
-
-                                    Log.i("Slicer", "Final file is: Project GCODE");
-                                    finalFile = mFile;
-
-                                } else {
-
-                                    Log.i("Slicer", "Mada mada");
-
-                                }
-
+                                Log.i("Slicer", "Final file is: Random GCODE");
+                                finalFile = mFile;
                             }
 
+
                         }
-
-
-                        //Not a project
-                    } else {
-
-                        //Check for temporary gcode
-                        File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-
-
-                        //If we have a gcode which is temporary it's a sliced gcode
-                        if (tempFile.exists()) {
-
-                            Log.i("Slicer", "Final file is: Random STL or Random Sliced STL");
-                            finalFile = tempFile;
-
-
-                            //It's a random gcode
-                        } else {
-
-                            Log.i("Slicer", "Final file is: Random GCODE");
-                            finalFile = mFile;
-                        }
-
-
-                    }
 
 
                     if (finalFile != null)
@@ -505,7 +498,7 @@ public class SidePanelHandler {
                             ItemListFragment.performClick(0);
                         ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
 
-                        DevicesListController.selectPrinter(mActivity, finalFile, null);
+                            DevicesListController.selectPrinter(mActivity, finalFile, null);
 
                         } else {
 
@@ -530,9 +523,8 @@ public class SidePanelHandler {
         /**
          * Save the printer profile settings
          */
-        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "type",String.valueOf(s_type.getSelectedItemPosition()), true);
-        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "quality",String.valueOf(s_profile.getSelectedItemPosition()), true);
-
+        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "type", String.valueOf(s_type.getSelectedItemPosition()), true);
+        DatabaseController.handlePreference(DatabaseController.TAG_PROFILE, "quality", String.valueOf(s_profile.getSelectedItemPosition()), true);
 
 
     }
@@ -543,7 +535,7 @@ public class SidePanelHandler {
      *
      * @i printer index in the list
      */
-    public void parseJson/*(int i)*/(JSONObject profile){
+    public void parseJson/*(int i)*/(JSONObject profile) {
 
         //Parse the JSON element
         try {
@@ -602,6 +594,60 @@ public class SidePanelHandler {
         Float f = Float.parseFloat(s);
 
         return f;
+    }
+
+    /**
+     * Open a pop up window with the infill options
+     */
+    public void openInfillPopupWindow() {
+
+//        if (mInfillOptionsPopupWindow == null) {
+            //Get the content view of the pop up window
+            final LinearLayout popupLayout = (LinearLayout) mActivity.getLayoutInflater()
+                    .inflate(R.layout.print_panel_infill_dropdown_menu, null);
+            popupLayout.measure(0, 0);
+
+            //Set the behavior of the infill seek bar
+            final SeekBar infillSeekBar = (SeekBar) popupLayout.findViewById(R.id.seekBar_infill);
+            final TextView infillPercent = (TextView) popupLayout.findViewById(R.id.infill_number_view);
+            final ImageView infillGrid = (ImageView) popupLayout.findViewById(R.id.infill_grid_view);
+            infillSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    infillPercent.setText(i + "%");
+                    infillText.setText(i + "%");
+                    //TODO Acercas o alejar el grid de relleno en función del valor de la seekbar
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    mSlicingHandler.setExtras("profile.fill_density", infillSeekBar.getProgress());
+                }
+            });
+
+            infillSeekBar.setProgress(DEFAULT_INFILL);
+            infillPercent.setText(DEFAULT_INFILL + " %");
+
+            //Show the pop up window in the correct position
+            int[] infillSpinnerCoordinates = new int[2];
+            s_infill.getLocationOnScreen(infillSpinnerCoordinates);
+            int popupLayoutPadding = (int) mActivity.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
+            int popupLayoutWidth = 180; //FIXED WIDTH
+            int popupLayoutHeight = popupLayout.getMeasuredHeight();
+            final int popupLayoutX = infillSpinnerCoordinates[0] - 2; //Remove the background padding
+            final int popupLayoutY = infillSpinnerCoordinates[1];
+
+            mInfillOptionsPopupWindow = (new CustomPopupWindow(popupLayout, popupLayoutWidth,
+                    popupLayoutHeight, R.style.PopupMenuAnimation, true).getPopupWindow());
+
+            mInfillOptionsPopupWindow.showAtLocation(s_infill, Gravity.NO_GRAVITY,
+                    popupLayoutX, popupLayoutY);
+//        }
     }
 
     /**
