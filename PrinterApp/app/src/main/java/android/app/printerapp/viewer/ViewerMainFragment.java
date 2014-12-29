@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1009,13 +1011,13 @@ public class ViewerMainFragment extends Fragment {
     public static void hideActionModePopUpWindow() {
         if (mActionModePopupWindow != null) {
             mActionModePopupWindow.dismiss();
-            hideCurrentActionPopUpWindow();
             mSurface.exitEditionMode();
             mRotationLayout.setVisibility(View.INVISIBLE);
             mStatusBottomBar.setVisibility(View.VISIBLE);
             mActionModePopupWindow = null;
             mSurface.setRendererAxis(-1);
         }
+        hideCurrentActionPopUpWindow();
     }
 
     /**
@@ -1191,6 +1193,32 @@ public class ViewerMainFragment extends Fragment {
         final NumberPicker numPicker = (NumberPicker) dialogText.findViewById(R.id.number_copies);
         numPicker.setMaxValue(10);
         numPicker.setMinValue(0);
+
+        final int count = numPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numPicker.getChildAt(i);
+            if(child instanceof EditText){
+                try{
+                    Field selectorWheelPaintField = numPicker.getClass()
+                            .getDeclaredField("mSelectorWheelPaint");
+                    selectorWheelPaintField.setAccessible(true);
+                    ((Paint)selectorWheelPaintField.get(numPicker)).setColor(mContext.getResources().getColor(R.color.body_text_1));
+                    ((EditText)child).setTextColor(mContext.getResources().getColor(R.color.body_text_1));
+                    Field selectorDivider = numPicker.getClass().getDeclaredField("mSelectionDivider");
+
+                    numPicker.invalidate();
+                }
+                catch(NoSuchFieldException e){
+                    Log.w("setNumberPickerTextColor", e);
+                }
+                catch(IllegalAccessException e){
+                    Log.w("setNumberPickerTextColor", e);
+                }
+                catch(IllegalArgumentException e){
+                    Log.w("setNumberPickerTextColor", e);
+                }
+            }
+        }
 
         //Remove soft-input from number picker
         numPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);

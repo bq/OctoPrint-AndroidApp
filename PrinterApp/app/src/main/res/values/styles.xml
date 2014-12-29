@@ -157,6 +157,11 @@
 
     <!-- Animations -->
 
+    <style name="PopupMenuAnimation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_popupmenu</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_popupmenu</item>
+    </style>
+
     <style name="SlideLeftAnimation" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/slide_out_right</item>
