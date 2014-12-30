@@ -64,10 +64,17 @@
     <string name="devices_discovery_toast_success">Printer configured successfully! </string>
 
     <string name="printview_video_text">Video</string>
-    <string name="printview_3d_text">3D</string>
+    <string name="printview_3d_text">3D Render</string>
     <string name="printview_profile_tag">Profile - </string>
-    <string name="printview_start_button">START / PAUSE</string>
+    <string name="printview_extruder_tag">Extruder</string>
+    <string name="printview_bed_tag">Bed</string>
+    <string name="printview_change_temp_button">Change</string>
+    <string name="printview_start_button">PAUSE</string>
     <string name="printview_stop_button">STOP PRINTING</string>
+    <string name="printview_retract_button">Retract</string>
+    <string name="printview_etrude_button">Etrude</string>
+    <string name="printview_fans_on_button" translatable="false">Fans ON</string>
+    <string name="printview_motors_off_button" translatable="false">Motors OFF</string>
     <string name="printview_download_dialog">File not available, downloading</string>
     <string name="printview_download_toast_error">Error while downloading the file</string>
 

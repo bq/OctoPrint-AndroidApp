@@ -39,8 +39,6 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-
-
                     <GridView
                         android:id="@+id/devices_grid"
                         android:layout_width="match_parent"

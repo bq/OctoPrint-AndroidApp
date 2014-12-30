@@ -45,7 +45,7 @@
 
             <!-- Separation line -->
             <View
-                style="@style/Separator" />
+                style="@style/HorizontalSeparator" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -387,7 +387,7 @@
                 </ScrollView>
 
                 <View
-                    style="@style/Separator"
+                    style="@style/HorizontalSeparator"
                     android:layout_below="@+id/advanced_options_scroll_view"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
