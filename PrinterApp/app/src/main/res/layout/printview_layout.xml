@@ -6,7 +6,6 @@
     android:background="@color/white"
     android:gravity="bottom">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,6 +13,7 @@
         android:padding="@dimen/content_padding_small"
         android:weightSum="2">
 
+        <!-- Left panel. Include the progress info and extruder options -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -25,11 +25,11 @@
                 android:id="@+id/include"
                 layout="@layout/printview_options_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/content_margin_small" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
+        <!-- Right panel. Include a tab host with two views: video and render 3D -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -71,31 +71,18 @@
                             android:layout_alignParentRight="true"
                             android:layout_below="@android:id/tabs">
 
-                            <RelativeLayout
-                                android:id="@+id/rl1"
+                            <!-- VIDEO VIEW -->
+                            <FrameLayout
+                                android:id="@+id/printview_video"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:background="@color/black"></FrameLayout>
 
-                                <FrameLayout
-                                    android:id="@+id/printview_video"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/black"></FrameLayout>
-
-                            </RelativeLayout>
-
-                            <RelativeLayout
-                                android:id="@+id/rl2"
+                            <!-- 3D RENDER VIEW -->
+                            <FrameLayout
+                                android:id="@+id/view_gcode"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:padding="@dimen/content_padding_small">
-
-                                <FrameLayout
-                                    android:id="@+id/view_gcode"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"></FrameLayout>
-
-                            </RelativeLayout>
+                                android:layout_height="match_parent"></FrameLayout>
 
                         </FrameLayout>
 

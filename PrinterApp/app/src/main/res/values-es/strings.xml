@@ -244,5 +244,10 @@
     <string name="viewer_progress_time">Tiempo estimado: </string>
     <string name="viewer_progress_task_slicing">Generando laminado (%1$s)</string>
     <string name="viewer_settings_select_profile">Selecciona un perfil de impresión</string>
+    <string name="printview_retract_button">Extraer</string>
+    <string name="printview_etrude_button">Insertar</string>
+    <string name="printview_extruder_tag">Extrusor</string>
+    <string name="printview_bed_tag">Cama</string>
+    <string name="printview_change_temp_button">Cambiar</string>
 
 </resources>

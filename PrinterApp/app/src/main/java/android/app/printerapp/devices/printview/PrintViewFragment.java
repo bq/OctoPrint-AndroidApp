@@ -96,8 +96,6 @@ public class PrintViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
         //Reference to View
         mRootView = null;
 
@@ -125,7 +123,7 @@ public class PrintViewFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             //Inflate the fragment
             mRootView = inflater.inflate(R.layout.printview_layout,
@@ -156,13 +154,13 @@ public class PrintViewFragment extends Fragment {
             //Create VIDEO tab
             TabHost.TabSpec settingsTab = tabHost.newTabSpec("Video");
             settingsTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_video_text), R.drawable.ic_videocam));
-            settingsTab.setContent(R.id.rl1);
+            settingsTab.setContent(R.id.printview_video);
             tabHost.addTab(settingsTab);
 
             //Create 3D RENDER tab
             TabHost.TabSpec featuresTab = tabHost.newTabSpec("3D Render");
             featuresTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_3d_text), R.drawable.visual_normal_24dp));
-            featuresTab.setContent(R.id.rl2);
+            featuresTab.setContent(R.id.view_gcode);
             tabHost.addTab(featuresTab);
 
             /***************************************************************************/
@@ -170,14 +168,14 @@ public class PrintViewFragment extends Fragment {
             //UI references
             tv_printer = (TextView) mRootView.findViewById(R.id.printview_printer_tag);
             tv_file = (TextView) mRootView.findViewById(R.id.printview_printer_file);
-            tv_temp = (TextView) mRootView.findViewById(R.id.printview_temp);
+            tv_temp = (TextView) mRootView.findViewById(R.id.printview_extruder_temp);
             tv_prog = (TextView) mRootView.findViewById(R.id.printview_printer_progress);
             pb_prog = (ProgressBar) mRootView.findViewById(R.id.printview_progress_bar);
 
             button_pause = (PaperButton) mRootView.findViewById(R.id.printview_pause_button);
             button_stop = (PaperButton) mRootView.findViewById(R.id.printview_stop_button);
 
-            ((ImageView)mRootView.findViewById(R.id.printview_pause_image)).
+            ((ImageView) mRootView.findViewById(R.id.printview_pause_image)).
                     setColorFilter(mContext.getResources().getColor(R.color.body_text_2),
                             PorterDuff.Mode.MULTIPLY);
             button_pause.setOnClickListener(new OnClickListener() {
@@ -191,7 +189,7 @@ public class PrintViewFragment extends Fragment {
                 }
             });
 
-            ((ImageView)mRootView.findViewById(R.id.printview_stop_image)).
+            ((ImageView) mRootView.findViewById(R.id.printview_stop_image)).
                     setColorFilter(mContext.getResources().getColor(android.R.color.holo_red_dark),
                             PorterDuff.Mode.MULTIPLY);
             button_stop.setOnClickListener(new OnClickListener() {
@@ -287,8 +285,9 @@ public class PrintViewFragment extends Fragment {
 
     /**
      * Return the custom view of the print view tab
+     *
      * @param title Title of the tab
-     * @param icon Icon of the tab
+     * @param icon  Icon of the tab
      * @return Custom view of a tab layout
      */
     private View getTabIndicator(String title, int icon) {
@@ -344,7 +343,7 @@ public class PrintViewFragment extends Fragment {
 
             }
 
-            if (mDataGcode!=null)
+            if (mDataGcode != null)
                 changeProgress(Double.valueOf(mPrinter.getJob().getProgress()));
 
         } else {
@@ -403,53 +402,54 @@ public class PrintViewFragment extends Fragment {
     /**
      * Method to check if we own the gcode loaded in the printer to display it or we have to download it.
      */
-    public void retrieveGcode(){
+    public void retrieveGcode() {
 
 
         //If we have a jobpath, we've uploaded the file ourselves
-        if (mPrinter.getJobPath()!=null) {
+        if (mPrinter.getJobPath() != null) {
 
             //Get filename
             File currentFile = new File(mPrinter.getJobPath());
 
             if (currentFile.exists())
-            //if it's the same as the server or it's in process of being uploaded
-            if ((mPrinter.getJob().getFilename().equals(currentFile.getName()))
-                    ||(!mPrinter.getLoaded())) {
+                //if it's the same as the server or it's in process of being uploaded
+                if ((mPrinter.getJob().getFilename().equals(currentFile.getName()))
+                        || (!mPrinter.getLoaded())) {
 
-                Log.i(TAG, "Sigh, loading " + mPrinter.getJobPath());
+                    Log.i(TAG, "Sigh, loading " + mPrinter.getJobPath());
 
-                if (LibraryController.hasExtension(1, currentFile.getName())) openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
-                else Log.i(TAG,"Das not gcode");
-                //end process
-                return;
+                    if (LibraryController.hasExtension(1, currentFile.getName()))
+                        openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
+                    else Log.i(TAG, "Das not gcode");
+                    //end process
+                    return;
 
-                //Not the same file
-            } else  Log.i(TAG, "FAIL ;D " + mPrinter.getJobPath());
+                    //Not the same file
+                } else Log.i(TAG, "FAIL ;D " + mPrinter.getJobPath());
 
         }
 
         if (mPrinter.getLoaded())
-         //The server actually has a job
-        if (!mPrinter.getJob().getFilename().equals("null"))
-            {
+            //The server actually has a job
+            if (!mPrinter.getJob().getFilename().equals("null")) {
 
-                Log.i(TAG,"Either it's not the same or I don't have it, download: " + mPrinter.getJob().getFilename());
+                Log.i(TAG, "Either it's not the same or I don't have it, download: " + mPrinter.getJob().getFilename());
 
 
                 //Check if we've downloaded the same file before
                 File downloadPath = new File(LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
 
-                if (downloadPath.exists()){
+                if (downloadPath.exists()) {
 
-                    Log.i(TAG,"Wait, I downloaded it once!");
+                    Log.i(TAG, "Wait, I downloaded it once!");
                     openGcodePrintView(getActivity(), downloadPath.getAbsolutePath(), mRootView, R.id.view_gcode);
 
-                //We have to download it again
+                    //We have to download it again
                 } else {
 
                     //Remake temp folder if it's not available
-                    if (!downloadPath.getParentFile().exists()) downloadPath.getParentFile().mkdirs();
+                    if (!downloadPath.getParentFile().exists())
+                        downloadPath.getParentFile().mkdirs();
 
                     //Download file
                     OctoprintFiles.downloadFile(mContext, mPrinter.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
@@ -465,21 +465,11 @@ public class PrintViewFragment extends Fragment {
                     mDownloadDialog = new ProgressDialog(getActivity());
                     mDownloadDialog.setMessage(getActivity().getString(R.string.printview_download_dialog) + "...");
                     mDownloadDialog.show();
-
-
-
-
                 }
 
                 //File changed, remove jobpath
                 mPrinter.setJobPath(null);
-
-        }
-
-
-
-
-
+            }
     }
 
 
@@ -490,7 +480,7 @@ public class PrintViewFragment extends Fragment {
 
         DataStorage tempData = GcodeCache.retrieveGcodeFromCache(file.getAbsolutePath());
 
-        if (tempData != null){
+        if (tempData != null) {
 
             mDataGcode = tempData;
             drawPrintView();
@@ -504,7 +494,7 @@ public class PrintViewFragment extends Fragment {
                     memoryInfo.getTotalPrivateDirty() / 1024.0,
                     memoryInfo.getTotalSharedDirty() / 1024.0);
 
-            Log.i(TAG,memMessage);
+            Log.i(TAG, memMessage);
 
         } else {
 
@@ -544,7 +534,11 @@ public class PrintViewFragment extends Fragment {
     @Override
     public void onDestroyView() {
 
-        mContext.unregisterReceiver(onComplete);
+        try {
+            mContext.unregisterReceiver(onComplete);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, e.getMessage());
+        }
 
         super.onDestroyView();
     }
@@ -584,22 +578,19 @@ public class PrintViewFragment extends Fragment {
 
                 } else {
 
-                    Log.i(TAG,"But file didn't download ok");
+                    Log.i(TAG, "But file didn't download ok");
 
-                    Toast.makeText(getActivity(),R.string.printview_download_toast_error,Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.printview_download_toast_error, Toast.LENGTH_LONG).show();
 
                     //Register receiver
                     mContext.unregisterReceiver(onComplete);
                 }
 
 
-
-
             }
 
 
-
-            if (mDownloadDialog!=null)mDownloadDialog.dismiss();
+            if (mDownloadDialog != null) mDownloadDialog.dismiss();
         }
     };
 }

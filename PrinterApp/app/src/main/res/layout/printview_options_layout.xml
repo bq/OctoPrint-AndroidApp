@@ -188,59 +188,74 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/lltext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_margin="@dimen/content_margin_small"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TextInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/printview_extruder_tag" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingLeft="30dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/printview_printer"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/printview_extruder_temp"
+                                android:layout_width="120dp"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="10dp"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/content_margin_xsmall"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/printview_file"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="10dp"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                            <com.material.widget.PaperButton
+                                android:id="@+id/printview_extruder_temp_button"
+                                style="@style/MaterialDesignButton.Flat.Default"
+                                android:layout_width="120dp"
+                                widget:paper_text="@string/printview_change_temp_button" />
                         </LinearLayout>
+
+                        <!-- Separation line -->
+                        <View
+                            style="@style/HorizontalSeparator"
+                            android:layout_marginBottom="@dimen/content_margin_small"
+                            android:layout_marginTop="@dimen/content_margin_small" />
+
+                        <TextView
+                            style="@style/TextInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/printview_bed_tag" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingRight="30dp">
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/printview_temp"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/printview_bed_temp"
+                                android:layout_width="120dp"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="end"
-                                android:layout_margin="10dp"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/content_margin_xsmall"
+                                android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/printview_time"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end"
-                                android:layout_margin="10dp"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
-
+                            <com.material.widget.PaperButton
+                                android:id="@+id/printview_bed_temp_button"
+                                style="@style/MaterialDesignButton.Flat.Default"
+                                android:layout_width="120dp"
+                                widget:paper_text="@string/printview_change_temp_button" />
                         </LinearLayout>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -363,47 +378,6 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/textView2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="E"
-                                android:textColor="@color/white" />
-
-                            <LinearLayout
-                                android:id="@+id/llh_ex"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <EditText
-                                    android:id="@+id/et_amount"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:imeOptions="actionDone"
-                                    android:inputType="number"
-                                    android:text="10">
-
-                                    <requestFocus />
-                                </EditText>
-
-                                <TextView
-                                    android:id="@+id/textView1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="MM"
-                                    android:textColor="@color/white" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
                     </LinearLayout>
 
                 </LinearLayout>
@@ -414,7 +388,111 @@
             <View
                 style="@style/HorizontalSeparator"
                 android:layout_marginBottom="@dimen/content_margin_small"
-                android:layout_marginTop="@dimen/content_margin_small" />
+                android:layout_marginTop="@dimen/content_margin_xsmall" />
+
+            <!-- Bottom options: retract a etrude the extruder, fans ON and Motors OFF -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/content_margin_small"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        style="@style/TextInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" E" />
+
+                    <LinearLayout
+                        android:id="@+id/llh_ex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/content_margin_small"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/et_amount"
+                            style="@style/TextInfo"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:hint="10"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:text="10"></EditText>
+
+                        <TextView
+                            android:id="@+id/textView1"
+                            style="@style/TextInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MM" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Retract and etrude buttons -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/content_margin_small"
+                    android:orientation="vertical">
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/printview_retract_button"
+                        style="@style/MaterialDesignButton.Raised"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/printview_retract_button"
+                        widget:paper_text_color="@color/body_text_2" />
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/printview_etrude_button"
+                        style="@style/MaterialDesignButton.Raised"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/printview_etrude_button"
+                        widget:paper_text_color="@color/body_text_2" />
+
+                </LinearLayout>
+
+                <!-- Separation line -->
+
+
+                <View
+                    style="@style/VerticalSeparator"
+                    android:layout_margin="@dimen/content_margin_small" />
+
+
+                <!-- Fans on and Motors off buttons -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/content_margin_small"
+                    android:orientation="vertical">
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/printview_fans_on_button"
+                        style="@style/MaterialDesignButton.Raised"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/printview_fans_on_button"
+                        widget:paper_text_color="@color/body_text_2" />
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/printview_motors_off_button"
+                        style="@style/MaterialDesignButton.Raised"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/printview_motors_off_button"
+                        widget:paper_text_color="@color/body_text_2" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
