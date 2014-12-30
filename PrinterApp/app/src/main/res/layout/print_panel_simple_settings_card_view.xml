@@ -79,7 +79,7 @@
 
             <!-- Separation line -->
             <View
-                style="@style/Separator"
+                style="@style/HorizontalSeparator"
                 android:layout_marginBottom="@dimen/content_margin_small"
                 android:layout_marginTop="@dimen/content_margin_small"/>
 

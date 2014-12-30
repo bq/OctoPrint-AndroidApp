@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.SlidingUpPanelLayout;
 import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
@@ -23,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
@@ -33,10 +33,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -148,9 +149,23 @@ public class PrintViewFragment extends Fragment {
 
             mCamera.startVideo();
 
+            //Get tabHost from the xml
+            TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
+            tabHost.setup();
+
+            //Create VIDEO tab
+            TabHost.TabSpec settingsTab = tabHost.newTabSpec("Video");
+            settingsTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_video_text), R.drawable.ic_videocam));
+            settingsTab.setContent(R.id.rl1);
+            tabHost.addTab(settingsTab);
+
+            //Create 3D RENDER tab
+            TabHost.TabSpec featuresTab = tabHost.newTabSpec("3D Render");
+            featuresTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_3d_text), R.drawable.visual_normal_24dp));
+            featuresTab.setContent(R.id.rl2);
+            tabHost.addTab(featuresTab);
 
             /***************************************************************************/
-
 
             //UI references
             tv_printer = (TextView) mRootView.findViewById(R.id.printview_printer_tag);
@@ -162,6 +177,9 @@ public class PrintViewFragment extends Fragment {
             button_pause = (PaperButton) mRootView.findViewById(R.id.printview_pause_button);
             button_stop = (PaperButton) mRootView.findViewById(R.id.printview_stop_button);
 
+            ((ImageView)mRootView.findViewById(R.id.printview_pause_image)).
+                    setColorFilter(mContext.getResources().getColor(R.color.body_text_2),
+                            PorterDuff.Mode.MULTIPLY);
             button_pause.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -173,6 +191,9 @@ public class PrintViewFragment extends Fragment {
                 }
             });
 
+            ((ImageView)mRootView.findViewById(R.id.printview_stop_image)).
+                    setColorFilter(mContext.getResources().getColor(android.R.color.holo_red_dark),
+                            PorterDuff.Mode.MULTIPLY);
             button_stop.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -231,15 +252,6 @@ public class PrintViewFragment extends Fragment {
                 }
             });
 
-
-            /***************** SLIDE PANEL ************************************/
-
-            //Slide panel setup
-
-            SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) mRootView.findViewById(R.id.sliding_panel);
-            CheckBox imageButton = (CheckBox) mRootView.findViewById(R.id.expand_button_checkbox);
-            slidePanel.setDragView(imageButton);
-
             refreshData();
 
             //Register receiver
@@ -274,6 +286,23 @@ public class PrintViewFragment extends Fragment {
     }
 
     /**
+     * Return the custom view of the print view tab
+     * @param title Title of the tab
+     * @param icon Icon of the tab
+     * @return Custom view of a tab layout
+     */
+    private View getTabIndicator(String title, int icon) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.printview_tab_layout, null);
+        ImageView iv = (ImageView) view.findViewById(R.id.tab_icon_imageview);
+        iv.setImageResource(icon);
+        iv.setColorFilter(mContext.getResources().getColor(R.color.body_text_1),
+                PorterDuff.Mode.MULTIPLY);
+        TextView tv = (TextView) view.findViewById(R.id.tab_title_textview);
+        tv.setText(title);
+        return view;
+    }
+
+    /**
      * Convert progress string to percentage
      *
      * @param p progress string
@@ -298,7 +327,7 @@ public class PrintViewFragment extends Fragment {
     public void refreshData() {
 
         //Check around here if files were changed
-        tv_printer.setText(mPrinter.getDisplayName() + " : " + mPrinter.getMessage() + " [" + mPrinter.getPort() + "]");
+        tv_printer.setText(mPrinter.getDisplayName() + ": " + mPrinter.getMessage() + " [" + mPrinter.getPort() + "]");
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
 

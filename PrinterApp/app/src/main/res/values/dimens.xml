@@ -7,6 +7,7 @@
     <dimen name="content_padding_small">8dp</dimen>
     <dimen name="content_padding_normal">16dp</dimen>
     <dimen name="content_padding_big">32dp</dimen>
+    <dimen name="content_margin_xsmall">4dp</dimen>
     <dimen name="content_margin_small">8dp</dimen>
     <dimen name="content_margin_normal">16dp</dimen>
     <dimen name="content_margin_big">32dp</dimen>
@@ -44,4 +45,7 @@
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_large">16sp</dimen>
     <dimen name="text_size_xlarge">18sp</dimen>
+
+    <!-- Print view action buttons -->
+    <dimen name="printview_action_button_padding">2dp</dimen>
 </resources>

@@ -7,6 +7,7 @@
     <dimen name="content_padding_small">12dp</dimen>
     <dimen name="content_padding_normal">24dp</dimen>
     <dimen name="content_padding_big">48dp</dimen>
+    <dimen name="content_margin_xsmall">6dp</dimen>
     <dimen name="content_margin_small">12dp</dimen>
     <dimen name="content_margin_normal">24dp</dimen>
     <dimen name="content_margin_big">48dp</dimen>
@@ -32,9 +33,12 @@
     <dimen name="slide_panel_shadow_height">10dp</dimen>
     <dimen name="slide_panel_error_height">75dp</dimen>
 
-    <!--Action Bar Height-->
+    <!-- Action Bar Height -->
     <dimen name="action_bar_height">64dp</dimen>
 
     <dimen name="dropdown_list_divider_height">8dp</dimen>
     <dimen name="card_radius">3dp</dimen>
+
+    <!-- Print view action buttons -->
+    <dimen name="printview_action_button_padding">3dp</dimen>
 </resources>

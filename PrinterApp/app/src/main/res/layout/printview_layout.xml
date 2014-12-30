@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.app.printerapp.devices.SlidingUpPanelLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="bottom"
-    app:anchorPoint="1"
-    app:fadeColor="@android:color/transparent"
-    app:collapsedPanelHeight="@dimen/slide_panel_collapsed_height"
-    app:expandedPanelHeight="@dimen/slide_panel_expanded_height"
-    app:shadowHeight="4dp" >
+    android:gravity="bottom">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,149 +17,96 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="@dimen/content_padding_small"
-            android:layout_weight="1">
+            android:padding="@dimen/content_padding_small">
 
-            <!-- Progress -->
             <include
                 android:id="@+id/include"
-                layout="@layout/printview_progress_layout"
+                layout="@layout/printview_options_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/content_margin_small"/>
+                android:layout_marginBottom="@dimen/content_margin_small" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/content_padding_small">
 
             <android.support.v7.widget.CardView
-                android:id="@+id/video_feed_card_view"
+                android:id="@+id/progress_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white">
 
-                <LinearLayout
-                    android:id="@+id/printview_camera"
+                <TabHost
+                    android:id="@+id/printviews_tabhost"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/content_padding_small">
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
-                        android:id="@+id/rl1"
+                        android:id="@+id/printview_camera"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1" >
+                        android:layout_height="wrap_content">
 
-                            <FrameLayout
-                                android:id="@+id/printview_video"
+                        <TabWidget
+                            android:id="@android:id/tabs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="@dimen/content_margin_xsmall"
+                            android:layout_marginRight="0dip"
+                            android:paddingLeft="0dip" />
+
+                        <FrameLayout
+                            android:id="@android:id/tabcontent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@android:id/tabs">
+
+                            <RelativeLayout
+                                android:id="@+id/rl1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/black" >
-                            </FrameLayout>
+                                android:layout_height="wrap_content">
 
-                               <TextView
-                                android:id="@+id/textView1"
-                                android:padding="10dp"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="@string/printview_video_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white" />
+                                <FrameLayout
+                                    android:id="@+id/printview_video"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/black"></FrameLayout>
 
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/rl2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="@dimen/content_padding_small">
+
+                                <FrameLayout
+                                    android:id="@+id/view_gcode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"></FrameLayout>
+
+                            </RelativeLayout>
+
+                        </FrameLayout>
 
                     </RelativeLayout>
 
-                </LinearLayout>
+                </TabHost>
+
             </android.support.v7.widget.CardView>
         </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/content_padding_small"
-                android:layout_weight="1">
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/progress_card_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <RelativeLayout
-                        android:id="@+id/rl2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:padding="@dimen/content_padding_small">
-
-                        <FrameLayout
-                            android:id="@+id/view_gcode"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-                        </FrameLayout>
-
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:padding="10dp"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/printview_3d_text"
-                            android:textColor="@color/white" />
-                    </RelativeLayout>
-
-                </android.support.v7.widget.CardView>
-            </LinearLayout>
-
-
-
     </LinearLayout>
 
-    <FrameLayout
-        android:clickable="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent">
-
-        <FrameLayout
-            android:id="@+id/storage_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:layout_marginTop="@dimen/fab_radious_big"
-            android:background="@color/gray_background"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:orientation="vertical">
-
-            <include layout="@layout/printview_slider_layout" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/expand_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:foregroundGravity="center">
-
-            <ImageView
-                android:id="@+id/expand_button_imageview"
-                android:layout_width="@dimen/fab_diameter_big"
-                android:layout_height="@dimen/fab_diameter_big"
-                android:layout_gravity="center"
-                android:background="@drawable/floating_action_button" />
-
-            <CheckBox
-                android:id="@+id/expand_button_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:button="@drawable/floating_checkbox_selector" />
-
-        </FrameLayout>
-    </FrameLayout>
-
-</android.app.printerapp.devices.SlidingUpPanelLayout>
+</LinearLayout>

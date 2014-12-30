@@ -60,11 +60,11 @@
     <string name="devices_discovery_toast_error">Ha habido un error al configurar la impresora, vuelve a intentarlo</string>
     <string name="devices_discovery_toast_success">¡Impresora configurada correctamente! </string>
 
-    <string name="printview_video_text">Video</string>
-    <string name="printview_3d_text">3D</string>
+    <string name="printview_video_text">Vídeo</string>
+    <string name="printview_3d_text">Render 3D</string>
     <string name="printview_profile_tag">Perfil - </string>
-    <string name="printview_start_button">COMENZAR / PAUSAR</string>
-    <string name="printview_stop_button">DETENER</string>
+    <string name="printview_start_button">PAUSAR</string>
+    <string name="printview_stop_button">DETENER IMPRESIÓN</string>
     <string name="printview_download_dialog">Archivo no disponible, descargando</string>
     <string name="printview_download_toast_error">Error al descargar el archivo</string>
 
