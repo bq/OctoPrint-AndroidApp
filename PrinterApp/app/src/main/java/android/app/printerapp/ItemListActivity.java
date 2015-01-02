@@ -436,9 +436,6 @@ public class ItemListActivity extends ActionBarActivity implements
                 //Set printer separately to avoid bad coding
                 //ViewerMainFragment.setPrinter(p);
                 ViewerMainFragment.openFile(path);
-
-
-
             }
         });
 

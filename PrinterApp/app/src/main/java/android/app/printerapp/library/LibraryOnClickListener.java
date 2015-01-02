@@ -1,23 +1,35 @@
 package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.ListContent;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
+import android.app.printerapp.util.ui.AnimationHelper;
+import android.app.printerapp.util.ui.ExpandCollapseAnimation;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import java.io.File;
 
@@ -59,6 +71,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
+        //Avoid to click in the header
+        arg2--;
 
         Log.d("LibraryOnClickListener", "onItemClick");
 
@@ -71,8 +85,9 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
             //If it's project folder, send stl
             if (LibraryController.isProject(f)) {
-                //Show detail view regardless
-                ItemListActivity.showExtraFragment(0, (long)arg2);
+                //Show detail view as a fragment
+                showRightPanel(arg2);
+
             } else {
                 //Not a project, open folder
                 LibraryController.reloadFiles(f.getAbsolutePath());
@@ -89,7 +104,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
             } else {
 
-                try{
+                try {
 
                     ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
 
@@ -114,13 +129,27 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                             Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
                         }
                     }
-                } catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
 
                     e.printStackTrace();
 
                 }
             }
         }
+    }
+
+    private void showRightPanel(final int index){
+
+        FragmentTransaction fragmentTransaction =  mContext.getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+
+        //New DetailView with the file as an index
+        DetailViewFragment detail = new DetailViewFragment();
+        Bundle args = new Bundle();
+        args.putInt("index", index);
+        detail.setArguments(args);
+
+        fragmentTransaction.replace(R.id.right_panel_container, detail).commit();
     }
 
     //Show dialog for handling files
@@ -156,7 +185,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                             case 0: //Print / Multiprint
                                 if (f.isDirectory()) {
                                     if (LibraryController.isProject(f)) {
-                                        ItemListActivity.showExtraFragment(0, (long)index);
+                                        ItemListActivity.showExtraFragment(0, (long) index);
                                         //ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
                                     }
                                 } else {
@@ -168,15 +197,14 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                 //TODO Doesn't work when empty gcodes comeon
                                 ad.dismiss();
                                 if (f.isDirectory()) {
-                                    if (LibraryController.isProject(f)){
+                                    if (LibraryController.isProject(f)) {
 
-                                        if (((ModelFile)f).getStl()==null) {
-                                            ItemListActivity.requestOpenFile(((ModelFile)f).getGcodeList());
+                                        if (((ModelFile) f).getStl() == null) {
+                                            ItemListActivity.requestOpenFile(((ModelFile) f).getGcodeList());
                                             //DevicesListController.selectPrinter(mContext.getActivity(), new File (((ModelFile)f).getGcodeList()) , 0);
 
-                                        }
-                                        else {
-                                            ItemListActivity.requestOpenFile(((ModelFile)f).getStl());
+                                        } else {
+                                            ItemListActivity.requestOpenFile(((ModelFile) f).getStl());
 
                                         }
                                     }

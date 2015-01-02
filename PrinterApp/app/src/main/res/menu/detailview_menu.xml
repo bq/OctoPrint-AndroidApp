@@ -5,7 +5,7 @@
         android:id="@+id/menu_favorite"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_star_outline"
-        android:title="@string/library_tabhost_tab_favorites"/>
+        android:title="@string/library_models_favorites"/>
     
 
 </menu>

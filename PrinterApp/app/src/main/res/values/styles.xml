@@ -161,6 +161,48 @@
         <item name="android:layout_margin">5dip</item>gt
     </style>
 
+    <style name="NavigationMenuItem" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:background">@drawable/selectable_rect_background_gray</item>
+        <item name="android:textColor">@color/navmenu_text_color</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/content_padding_small</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="SelectedNavigationMenuItem" parent="NavigationMenuItem">
+        <item name="android:textColor">@color/navmenu_text_color_selected</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Library styles -->
+    <style name="ModelName" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:padding">@dimen/content_padding_xsmall</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/body_text_2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="ModelDate" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>"
+        <item name="android:padding">@dimen/content_padding_xsmall</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/body_text_3</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
     <!-- Print view action button -->
     <style name="PrintViewActionButton">
         <item name="android:layout_height">wrap_content</item>

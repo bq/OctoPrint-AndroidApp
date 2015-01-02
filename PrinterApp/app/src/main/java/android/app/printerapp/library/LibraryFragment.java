@@ -7,8 +7,8 @@ import android.app.printerapp.R;
 import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -20,9 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -46,6 +46,18 @@ public class LibraryFragment extends Fragment {
 
     private File mMoveFile = null;
 
+    private View.OnClickListener mOnNavTextViewClick;
+
+    private View mRootView;
+
+    public View getmRootView() {
+        return mRootView;
+    }
+
+    public void setmRootView(View mRootView) {
+        this.mRootView = mRootView;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +69,7 @@ public class LibraryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Reference to View
-        View rootView = null;
+        mRootView = null;
 
         //If is not new
         if (savedInstanceState == null) {
@@ -66,11 +78,11 @@ public class LibraryFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Inflate the fragment
-            rootView = inflater.inflate(R.layout.library_layout,
+            mRootView = inflater.inflate(R.layout.library_layout,
                     container, false);
 
-            rootView.setFocusableInTouchMode(true);
-            /*rootView.setOnKeyListener(new OnKeyListener() {
+            mRootView.setFocusableInTouchMode(true);
+            /*mRootView.setOnKeyListener(new OnKeyListener() {
 
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -90,7 +102,7 @@ public class LibraryFragment extends Fragment {
             //References to adapters
             //TODO maybe share a gridview
 
-            mSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher_library);
+            mSwitcher = (ViewSwitcher) mRootView.findViewById(R.id.view_switcher_library);
 
             //Initial file list
             LibraryController.reloadFiles("all");
@@ -100,25 +112,35 @@ public class LibraryFragment extends Fragment {
 
             LibraryOnClickListener clickListener = new LibraryOnClickListener(this);
 
-            GridView g = (GridView) rootView.findViewById(R.id.grid_storage);
+            GridView g = (GridView) mRootView.findViewById(R.id.grid_storage);
             g.setSelector(getResources().getDrawable(R.drawable.list_selector));
             g.setOnItemClickListener(clickListener);
             g.setOnItemLongClickListener(clickListener);
             g.setAdapter(mGridAdapter);
 
-            ListView l = (ListView) rootView.findViewById(R.id.list_storage);
+            ListView l = (ListView) mRootView.findViewById(R.id.list_storage);
+            View lheader = View.inflate(getActivity(), R.layout.list_header_library, null);
+            l.addHeaderView(lheader);
+            ImageButton overflowButton = (ImageButton) lheader.findViewById(R.id.go_back_icon);
+            if (overflowButton != null)
+                overflowButton.setColorFilter(getActivity().getResources().getColor(R.color.body_text_2),
+                        PorterDuff.Mode.MULTIPLY);
             l.setSelector(getResources().getDrawable(R.drawable.list_selector));
             l.setOnItemClickListener(clickListener);
             l.setOnItemLongClickListener(clickListener);
+            l.setDivider(null);
             l.setAdapter(mListAdapter);
 
-            //Set tab host for the view
-            setTabHost(rootView);
+            //Set left navigation menu behavior
+            ((TextView) mRootView.findViewById(R.id.library_nav_all_models)).setOnClickListener(getOnNavTextViewClickListener());
+            ((TextView) mRootView.findViewById(R.id.library_nav_local_models)).setOnClickListener(getOnNavTextViewClickListener());
+            ((TextView) mRootView.findViewById(R.id.library_nav_printer_models)).setOnClickListener(getOnNavTextViewClickListener());
+            ((TextView) mRootView.findViewById(R.id.library_nav_fav_models)).setOnClickListener(getOnNavTextViewClickListener());
 
             sortAdapter();
 
         }
-        return rootView;
+        return mRootView;
     }
 
     @Override
@@ -169,74 +191,67 @@ public class LibraryFragment extends Fragment {
         }
     }
 
-
     /**
-     * Constructor for the tab host
-     * TODO: Should be moved to a View class since it only handles ui.
+     * Listener for the navigation text views
+     *
+     * @return
      */
-    public void setTabHost(View v) {
+    private View.OnClickListener getOnNavTextViewClickListener() {
+        if (mOnNavTextViewClick != null) return mOnNavTextViewClick;
 
-        final TabHost tabs = (TabHost) v.findViewById(android.R.id.tabhost);
-        tabs.setup();
-
-        TabHost.TabSpec spec = tabs.newTabSpec("Models");
-        spec.setIndicator(getString(R.string.library_tabhost_tab_all));
-        spec.setContent(R.id.tab1);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Local");
-        spec.setIndicator(getString(R.string.library_tabhost_tab_local));
-        spec.setContent(R.id.tab2);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Printer");
-        spec.setIndicator(getString(R.string.library_tabhost_tab_printer));
-        spec.setContent(R.id.tab3);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Favorites");
-        spec.setIndicator(getString(R.string.library_tabhost_tab_favorites));
-        spec.setContent(R.id.tab4);
-        tabs.addTab(spec);
-
-        tabs.setCurrentTab(0);
-        mCurrentTab = "all";
-
-        //Set style for the tab widget
-        for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
-            final View tab = tabs.getTabWidget().getChildTabViewAt(i);
-            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
-            TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(getResources().getColor(R.color.body_text_2));
-        }
-
-        tabs.setOnTabChangedListener(new OnTabChangeListener() {
+        mOnNavTextViewClick = new View.OnClickListener() {
             @Override
-            public void onTabChanged(String tabId) {
+            public void onClick(View v) {
 
-                switch (tabs.getCurrentTab()) {
-                    case 0:
+                selectNavItem(v.getId());
+
+                switch (v.getId()) {
+                    case R.id.library_nav_all_models:
                         mCurrentTab = "all";
                         break;
-                    case 1:
+                    case R.id.library_nav_local_models:
                         mCurrentTab = "current";
                         break;
-                    case 2:
+                    case R.id.library_nav_printer_models:
                         mCurrentTab = "printer";
                         break;
-                    case 3:
+                    case R.id.library_nav_fav_models:
                         mCurrentTab = "favorites";
                         break;
                     default:
                         break;
                 }
-
                 refreshFiles();
-
-
             }
-        });
+        };
 
+        return mOnNavTextViewClick;
+    }
+
+    /**
+     * Set the state of the selected nav item
+     *
+     * @param selectedId Id of the nav item that has been pressed
+     */
+    public void selectNavItem(int selectedId) {
+
+        if (mRootView != null) {
+            //Get the left nav menu
+            final LinearLayout navMenu = (LinearLayout) mRootView.findViewById(R.id.library_nav_menu);
+
+            //Set the behavior of the nav items
+            for (int i = 0; i < navMenu.getChildCount(); i++) {
+                View v = navMenu.getChildAt(i);
+                if (v instanceof TextView) {
+                    TextView tv = (TextView) v;
+                    if (tv.getId() == selectedId)
+                        tv.setTextAppearance(getActivity(), R.style.SelectedNavigationMenuItem);
+                    else
+                        tv.setTextAppearance(getActivity(), R.style.NavigationMenuItem);
+                }
+            }
+
+        }
     }
 
     //Reload file list with the currently selected tab
@@ -307,7 +322,7 @@ public class LibraryFragment extends Fragment {
         final EditText et = new EditText(getActivity());
         adb.setView(et);
 
-        adb.setPositiveButton(R.string.search, new OnClickListener() {
+        adb.setPositiveButton(R.string.search, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -339,7 +354,7 @@ public class LibraryFragment extends Fragment {
         et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         et.setSelectAllOnFocus(true);
 
-        adb.setPositiveButton(R.string.create, new OnClickListener() {
+        adb.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -378,7 +393,7 @@ public class LibraryFragment extends Fragment {
     /**
      * Open Thingiverse in the browser
      */
-    public void optionThingiverse(){
+    public void optionThingiverse() {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_THINGIVERSE));
         startActivity(browserIntent);
