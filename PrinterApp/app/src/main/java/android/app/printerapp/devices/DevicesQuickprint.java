@@ -106,10 +106,10 @@ public class DevicesQuickprint {
                             modelImage = m.getSnapshot();
 
                             if (modelImage == null)
-                                modelImage = mContext.getResources().getDrawable(R.drawable.file_icon);
+                                modelImage = mContext.getResources().getDrawable(R.drawable.ic_file_gray);
 
                         } else {
-                            modelImage = mContext.getResources().getDrawable(R.drawable.file_icon);
+                            modelImage = mContext.getResources().getDrawable(R.drawable.ic_file_gray);
                         }
 
                         modelAbsolutePath = files[current].getAbsolutePath();

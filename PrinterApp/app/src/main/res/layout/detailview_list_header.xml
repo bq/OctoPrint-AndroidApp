@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/detail_iv_preview"
+        android:layout_width="350dp"
+        android:layout_height="270dp"
+        android:padding="@dimen/content_padding_small"
+        android:scaleType="centerCrop" />
+
+</LinearLayout>

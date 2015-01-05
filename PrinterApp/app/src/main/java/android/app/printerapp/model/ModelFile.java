@@ -94,7 +94,7 @@ public class ModelFile extends File {
             mSnapshot = new BitmapDrawable(Resources.getSystem(),ThumbImage);
             //mSnapshot = Drawable.createFromPath(path);
         } catch (Exception e) {
-            mSnapshot = Resources.getSystem().getDrawable(R.drawable.file_icon);
+            mSnapshot = Resources.getSystem().getDrawable(R.drawable.ic_file_gray);
         }
 
     }

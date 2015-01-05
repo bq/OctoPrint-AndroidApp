@@ -8,7 +8,6 @@ import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,7 +103,7 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                 nameTextView.setText(p.getDisplayName());
 
             } else {
-                iv.setImageResource(R.drawable.file_icon);
+                iv.setImageResource(R.drawable.ic_file_gray);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
         }

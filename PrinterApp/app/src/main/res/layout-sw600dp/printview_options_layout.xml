@@ -17,217 +17,70 @@
             android:layout_height="wrap_content"
             android:fadeScrollbars="false">
 
-        <!-- Option of the left side in the print view -->
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/content_padding_small">
-
-            <!-- Progress info -->
-            <LinearLayout
+            <!-- Option of the left side in the print view -->
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/content_padding_small">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:padding="@dimen/content_padding_xsmall"
-                    android:src="@drawable/icon_selectedprinter" />
-
+                <!-- Progress info -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:paddingLeft="@dimen/content_padding_normal"
-                    android:paddingTop="@dimen/content_padding_xsmall">
-
-                    <TextView
-                        android:id="@+id/printview_printer_tag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="@dimen/content_margin_xsmall"
-                        android:textAllCaps="true"
-                        android:textSize="@dimen/text_size_medium"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/printview_printer_progress"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical" />
-
-                        <TextView
-                            android:id="@+id/printview_printer_file"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="@android:color/darker_gray"
-                            android:textStyle="italic" />
-                    </LinearLayout>
-
-                    <ProgressBar
-                        android:id="@+id/printview_progress_bar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="200dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/content_margin_xsmall" />
-
-                    <!-- Separation line -->
-                    <View
-                        style="@style/HorizontalSeparator"
-                        android:layout_marginBottom="@dimen/content_margin_small"
-                        android:layout_marginTop="@dimen/content_margin_small" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/content_margin_small"
-                            android:orientation="horizontal">
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toLeftOf="@+id/stop_button_container"
-                            android:layout_toStartOf="@+id/stop_button_container"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/printview_pause_image"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_pause" />
-
-                            <com.material.widget.PaperButton
-                                android:id="@+id/printview_pause_button"
-                                style="@style/MaterialDesignButton.Flat"
-                                android:layout_width="90dp"
-                                widget:paper_text="@string/printview_start_button"
-                                widget:paper_text_color="@color/body_text_2" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/stop_button_container"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/printview_stop_image"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_stop" />
-
-                            <com.material.widget.PaperButton
-                                android:id="@+id/printview_stop_button"
-                                style="@style/MaterialDesignButton.Flat"
-                                android:layout_width="90dp"
-                                widget:paper_text="@string/printview_stop_button"
-                                widget:paper_text_color="@android:color/holo_red_dark" />
-
-                        </LinearLayout>
-
-
-                        <TextView
-                            android:id="@+id/printview_text_profile_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/printview_profile_tag"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/printview_text_profile_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_toEndOf="@+id/printview_text_profile_tag"
-                            android:layout_toRightOf="@+id/printview_text_profile_tag"
-                            android:text=" N/A" />
-
-                    </RelativeLayout>
-
-                    <!-- Separation line -->
-                    <View
-                        style="@style/HorizontalSeparator"
-                        android:layout_marginTop="@dimen/content_margin_small" />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!-- Extruder options -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:orientation="horizontal">
 
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:padding="@dimen/content_padding_xsmall"
+                        android:src="@drawable/icon_selectedprinter" />
+
                     <LinearLayout
-                        android:id="@+id/lltext"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/content_margin_small"
-                        android:orientation="vertical">
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/content_padding_normal"
+                        android:paddingTop="@dimen/content_padding_xsmall">
 
                         <TextView
-                            style="@style/TextInfo"
+                            android:id="@+id/printview_printer_tag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/printview_extruder_tag" />
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="@dimen/content_margin_xsmall"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold" />
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/printview_extruder_temp"
-                                android:layout_width="120dp"
+                                android:id="@+id/printview_printer_progress"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/content_margin_xsmall"
-                                android:textStyle="bold" />
+                                android:layout_gravity="center_vertical" />
 
-                            <com.material.widget.PaperButton
-                                android:id="@+id/printview_extruder_temp_button"
-                                style="@style/MaterialDesignButton.Flat.Default"
-                                android:layout_width="120dp"
-                                widget:paper_text="@string/printview_change_temp_button" />
+                            <TextView
+                                android:id="@+id/printview_printer_file"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@android:color/darker_gray"
+                                android:textStyle="italic" />
                         </LinearLayout>
+
+                        <ProgressBar
+                            android:id="@+id/printview_progress_bar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/content_margin_xsmall" />
 
                         <!-- Separation line -->
                         <View
@@ -235,34 +88,381 @@
                             android:layout_marginBottom="@dimen/content_margin_small"
                             android:layout_marginTop="@dimen/content_margin_small" />
 
-                        <TextView
-                            style="@style/TextInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/printview_bed_tag" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/printview_bed_temp"
-                                android:layout_width="120dp"
+                            <LinearLayout
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/content_margin_xsmall"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginRight="@dimen/content_margin_small"
+                                android:orientation="horizontal">
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_toLeftOf="@+id/stop_button_container"
+                                android:layout_toStartOf="@+id/stop_button_container"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/printview_pause_image"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_pause" />
+
+                                <com.material.widget.PaperButton
+                                    android:id="@+id/printview_pause_button"
+                                    style="@style/MaterialDesignButton.Flat"
+                                    android:layout_width="90dp"
+                                    widget:paper_text="@string/printview_start_button"
+                                    widget:paper_text_color="@color/body_text_2" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/stop_button_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentTop="true"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/printview_stop_image"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_stop" />
+
+                                <com.material.widget.PaperButton
+                                    android:id="@+id/printview_stop_button"
+                                    style="@style/MaterialDesignButton.Flat"
+                                    android:layout_width="90dp"
+                                    widget:paper_text="@string/printview_stop_button"
+                                    widget:paper_text_color="@android:color/holo_red_dark" />
+
+                            </LinearLayout>
+
+
+                            <TextView
+                                android:id="@+id/printview_text_profile_tag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/printview_profile_tag"
                                 android:textStyle="bold" />
 
-                            <com.material.widget.PaperButton
-                                android:id="@+id/printview_bed_temp_button"
-                                style="@style/MaterialDesignButton.Flat.Default"
-                                android:layout_width="120dp"
-                                widget:paper_text="@string/printview_change_temp_button" />
+                            <TextView
+                                android:id="@+id/printview_text_profile_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/printview_text_profile_tag"
+                                android:layout_toRightOf="@+id/printview_text_profile_tag"
+                                android:text=" N/A" />
+
+                        </RelativeLayout>
+
+                        <!-- Separation line -->
+                        <View
+                            style="@style/HorizontalSeparator"
+                            android:layout_marginTop="@dimen/content_margin_small" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <!-- Extruder options -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                                                                android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/lltext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/content_margin_small"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/printview_extruder_tag" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/printview_extruder_temp"
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/content_margin_xsmall"
+                                    android:textStyle="bold" />
+
+                                <com.material.widget.PaperButton
+                                    android:id="@+id/printview_extruder_temp_button"
+                                    style="@style/MaterialDesignButton.Flat.Default"
+                                    android:layout_width="120dp"
+                                    widget:paper_text="@string/printview_change_temp_button" />
+                            </LinearLayout>
+
+                            <!-- Separation line -->
+                            <View
+                                style="@style/HorizontalSeparator"
+                                android:layout_marginBottom="@dimen/content_margin_small"
+                                android:layout_marginTop="@dimen/content_margin_small" />
+
+                            <TextView
+                                style="@style/TextInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/printview_bed_tag" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/printview_bed_temp"
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/content_margin_xsmall"
+                                    android:textStyle="bold" />
+
+                                <com.material.widget.PaperButton
+                                    android:id="@+id/printview_bed_temp_button"
+                                    style="@style/MaterialDesignButton.Flat.Default"
+                                    android:layout_width="120dp"
+                                    widget:paper_text="@string/printview_change_temp_button" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <!-- Separation line -->
+                    <View
+                        style="@style/HorizontalSeparator"
+                        android:layout_marginTop="@dimen/content_margin_small" />
+
+                    <LinearLayout
+                        android:id="@+id/llcont"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <!-- X/Y CONTROLS -->
+                        <LinearLayout
+                            android:id="@+id/rlXY"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/content_margin_small"
+                            android:gravity="center_horizontal">
+
+                            <TextView
+                                android:id="@+id/text_xy"
+                                style="@style/TextInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:text="X/Y" />
+
+                            <ImageButton
+                                android:id="@+id/button_xy_left"
+                                style="@style/PrintViewActionButton"
+                                android:src="@drawable/ic_arrow_left" />
+
+                            <LinearLayout
+                                android:id="@+id/llv_xy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <ImageButton
+                                    android:id="@+id/button_xy_up"
+                                    style="@style/PrintViewActionButton"
+                                    android:src="@drawable/ic_arrow_up" />
+
+                                <ImageButton
+                                    android:id="@+id/button_xy_home"
+                                    style="@style/PrintViewActionButton"
+                                    android:layout_margin="@dimen/content_margin_xsmall"
+                                    android:padding="@dimen/content_padding_small"
+                                    android:src="@drawable/ic_home_white_24dp" />
+
+                                <ImageButton
+                                    android:id="@+id/button_xy_down"
+                                    style="@style/PrintViewActionButton"
+                                    android:src="@drawable/ic_arrow_down" />
+
+                            </LinearLayout>
+
+                            <ImageButton
+                                android:id="@+id/button_xy_right"
+                                style="@style/PrintViewActionButton"
+                                android:src="@drawable/ic_arrow_right" />
+                        </LinearLayout>
+
+                        <!-- Separation line -->
+                        <View
+                            style="@style/VerticalSeparator"
+                            android:layout_marginBottom="@dimen/content_margin_small"
+                            android:layout_marginTop="@dimen/content_margin_small" />
+
+                        <!-- Z CONTROLS -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/content_margin_small"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/text_z"
+                                style="@style/TextInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:text="Z" />
+
+                            <!--<ImageButton-->
+                            <!--android:id="@+id/button_z_home"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_gravity="center_vertical"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/oval_background_gray"-->
+                            <!--android:src="@drawable/ic_home_white_24dp" />-->
+
+                            <LinearLayout
+                                android:id="@+id/llv_z"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <ImageButton
+                                    android:id="@+id/button_z_up"
+                                    style="@style/PrintViewActionButton"
+                                    android:src="@drawable/ic_arrow_up" />
+
+                                <ImageButton
+                                    android:id="@+id/button_z_home"
+                                    style="@style/PrintViewActionButton"
+                                    android:layout_margin="@dimen/content_margin_xsmall"
+                                    android:padding="@dimen/content_padding_small"
+                                    android:src="@drawable/ic_home_white_24dp" />
+
+                                <ImageButton
+                                    android:id="@+id/button_z_down"
+                                    style="@style/PrintViewActionButton"
+                                    android:src="@drawable/ic_arrow_down" />
+                            </LinearLayout>
                         </LinearLayout>
 
                     </LinearLayout>
 
+                </LinearLayout>
+
+                <!-- Separation line -->
+                <View
+                    style="@style/HorizontalSeparator"
+                    android:layout_marginBottom="@dimen/content_margin_small"
+                    android:layout_marginTop="@dimen/content_margin_xsmall" />
+
+                <!-- Bottom options: retract a etrude the extruder, fans ON and Motors OFF -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/content_margin_small"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            style="@style/TextInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" E" />
+
+                        <LinearLayout
+                            android:id="@+id/llh_ex"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/content_margin_small"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/et_amount"
+                                style="@style/TextInfo"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:hint="10"
+                                android:imeOptions="actionDone"
+                                android:inputType="number"
+                                android:text="10"></EditText>
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                style="@style/TextInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="MM" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Retract and etrude buttons -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/content_margin_small"
+                        android:orientation="vertical">
+
+                        <com.material.widget.PaperButton
+                            android:id="@+id/printview_retract_button"
+                            style="@style/MaterialDesignButton.Raised"
+                            android:layout_width="150dp"
+                            widget:paper_text="@string/printview_retract_button"
+                            widget:paper_text_color="@color/body_text_2" />
+
+                        <com.material.widget.PaperButton
+                            android:id="@+id/printview_etrude_button"
+                            style="@style/MaterialDesignButton.Raised"
+                            android:layout_width="150dp"
+                            widget:paper_text="@string/printview_etrude_button"
+                            widget:paper_text_color="@color/body_text_2" />
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -270,264 +470,59 @@
                 <!-- Separation line -->
                 <View
                     style="@style/HorizontalSeparator"
-                    android:layout_marginTop="@dimen/content_margin_small" />
+                    android:layout_marginBottom="@dimen/content_margin_small"
+                    android:layout_marginTop="@dimen/content_margin_xsmall" />
 
+                <!-- Fans on and Motors off buttons -->
                 <LinearLayout
-                    android:id="@+id/llcont"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <!-- X/Y CONTROLS -->
-                    <LinearLayout
-                        android:id="@+id/rlXY"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/content_margin_small"
-                        android:gravity="center_horizontal">
-
-                        <TextView
-                            android:id="@+id/text_xy"
-                            style="@style/TextInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:text="X/Y" />
-
-                        <ImageButton
-                            android:id="@+id/button_xy_left"
-                            style="@style/PrintViewActionButton"
-                            android:src="@drawable/ic_arrow_left" />
-
-                        <LinearLayout
-                            android:id="@+id/llv_xy"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:orientation="vertical">
-
-                            <ImageButton
-                                android:id="@+id/button_xy_up"
-                                style="@style/PrintViewActionButton"
-                                android:src="@drawable/ic_arrow_up" />
-
-                            <ImageButton
-                                android:id="@+id/button_xy_home"
-                                style="@style/PrintViewActionButton"
-                                android:layout_margin="@dimen/content_margin_xsmall"
-                                android:padding="@dimen/content_padding_small"
-                                android:src="@drawable/ic_home_white_24dp" />
-
-                            <ImageButton
-                                android:id="@+id/button_xy_down"
-                                style="@style/PrintViewActionButton"
-                                android:src="@drawable/ic_arrow_down" />
-
-                        </LinearLayout>
-
-                        <ImageButton
-                            android:id="@+id/button_xy_right"
-                            style="@style/PrintViewActionButton"
-                            android:src="@drawable/ic_arrow_right" />
-                    </LinearLayout>
-
-                    <!-- Separation line -->
-                    <View
-                        style="@style/VerticalSeparator"
-                        android:layout_marginBottom="@dimen/content_margin_small"
-                        android:layout_marginTop="@dimen/content_margin_small" />
-
-                    <!-- Z CONTROLS -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/content_margin_small"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/text_z"
-                            style="@style/TextInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:text="Z" />
-
-                        <!--<ImageButton-->
-                        <!--android:id="@+id/button_z_home"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="center_vertical"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/oval_background_gray"-->
-                        <!--android:src="@drawable/ic_home_white_24dp" />-->
-
-                        <LinearLayout
-                            android:id="@+id/llv_z"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:orientation="vertical">
-
-                            <ImageButton
-                                android:id="@+id/button_z_up"
-                                style="@style/PrintViewActionButton"
-                                android:src="@drawable/ic_arrow_up" />
-
-                            <ImageButton
-                                android:id="@+id/button_z_home"
-                                style="@style/PrintViewActionButton"
-                                android:layout_margin="@dimen/content_margin_xsmall"
-                                android:padding="@dimen/content_padding_small"
-                                android:src="@drawable/ic_home_white_24dp" />
-
-                            <ImageButton
-                                android:id="@+id/button_z_down"
-                                style="@style/PrintViewActionButton"
-                                android:src="@drawable/ic_arrow_down" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Separation line -->
-            <View
-                style="@style/HorizontalSeparator"
-                android:layout_marginBottom="@dimen/content_margin_small"
-                android:layout_marginTop="@dimen/content_margin_xsmall" />
-
-            <!-- Bottom options: retract a etrude the extruder, fans ON and Motors OFF -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/content_margin_small"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        style="@style/TextInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" E" />
-
                     <LinearLayout
-                        android:id="@+id/llh_ex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/content_margin_small"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="@dimen/content_padding_xsmall">
 
-                        <EditText
-                            android:id="@+id/et_amount"
+                        <TextView
                             style="@style/TextInfo"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:hint="10"
-                            android:imeOptions="actionDone"
-                            android:inputType="number"
-                            android:text="10"></EditText>
+                            android:text="@string/printview_fans_switch" />
 
-                        <TextView
-                            android:id="@+id/textView1"
-                            style="@style/TextInfo"
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/printview_fans_switch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="MM" />
+                            android:padding="@dimen/content_padding_xsmall" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/content_padding_xsmall">
+
+                        <TextView
+                            style="@style/TextInfo"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/printview_motors_switch" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/printview_motors_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/content_padding_xsmall" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <!-- Retract and etrude buttons -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/content_margin_small"
-                    android:orientation="vertical">
-
-                    <com.material.widget.PaperButton
-                        android:id="@+id/printview_retract_button"
-                        style="@style/MaterialDesignButton.Raised"
-                        android:layout_width="150dp"
-                        widget:paper_text="@string/printview_retract_button"
-                        widget:paper_text_color="@color/body_text_2" />
-
-                    <com.material.widget.PaperButton
-                        android:id="@+id/printview_etrude_button"
-                        style="@style/MaterialDesignButton.Raised"
-                        android:layout_width="150dp"
-                        widget:paper_text="@string/printview_etrude_button"
-                        widget:paper_text_color="@color/body_text_2" />
-
-                </LinearLayout>
-
-
             </LinearLayout>
-
-            <!-- Separation line -->
-            <View
-                style="@style/HorizontalSeparator"
-                android:layout_marginBottom="@dimen/content_margin_small"
-                android:layout_marginTop="@dimen/content_margin_xsmall" />
-
-            <!-- Fans on and Motors off buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/content_margin_small"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/content_padding_xsmall">
-
-                    <TextView
-                        style="@style/TextInfo"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/printview_fans_switch" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:padding="@dimen/content_padding_xsmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/printview_fans_switch"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/content_padding_xsmall">
-
-                    <TextView
-                        style="@style/TextInfo"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/printview_motors_switch" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:padding="@dimen/content_padding_xsmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/printview_motors_switch"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
 
         </ScrollView>
 
