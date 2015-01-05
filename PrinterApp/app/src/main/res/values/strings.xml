@@ -75,11 +75,11 @@
     <string name="printview_bed_tag">Bed</string>
     <string name="printview_change_temp_button">Change</string>
     <string name="printview_start_button">PAUSE</string>
-    <string name="printview_stop_button">STOP PRINTING</string>
+    <string name="printview_stop_button">STOP</string>
     <string name="printview_retract_button">Retract</string>
     <string name="printview_etrude_button">Etrude</string>
-    <string name="printview_fans_on_button" translatable="false">Fans ON</string>
-    <string name="printview_motors_off_button" translatable="false">Motors OFF</string>
+    <string name="printview_fans_switch">Fans</string>
+    <string name="printview_motors_switch">Motors</string>
     <string name="printview_download_dialog">File not available, downloading</string>
     <string name="printview_download_toast_error">Error while downloading the file</string>
 

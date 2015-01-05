@@ -140,7 +140,7 @@
                             <com.material.widget.PaperButton
                                 android:id="@+id/printview_stop_button"
                                 style="@style/MaterialDesignButton.Flat"
-                                android:layout_width="170dp"
+                                android:layout_width="90dp"
                                 widget:paper_text="@string/printview_stop_button"
                                 widget:paper_text_color="@android:color/holo_red_dark" />
 
@@ -462,8 +462,6 @@
                 </LinearLayout>
 
                 <!-- Separation line -->
-
-
                 <View
                     style="@style/VerticalSeparator"
                     android:layout_margin="@dimen/content_margin_small" />
@@ -476,19 +474,45 @@
                     android:layout_margin="@dimen/content_margin_small"
                     android:orientation="vertical">
 
-                    <com.material.widget.PaperButton
-                        android:id="@+id/printview_fans_on_button"
-                        style="@style/MaterialDesignButton.Raised"
-                        android:layout_width="150dp"
-                        widget:paper_text="@string/printview_fans_on_button"
-                        widget:paper_text_color="@color/body_text_2" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/content_padding_xsmall">
 
-                    <com.material.widget.PaperButton
-                        android:id="@+id/printview_motors_off_button"
-                        style="@style/MaterialDesignButton.Raised"
-                        android:layout_width="150dp"
-                        widget:paper_text="@string/printview_motors_off_button"
-                        widget:paper_text_color="@color/body_text_2" />
+                        <TextView
+                            style="@style/TextInfo"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/printview_fans_switch" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:padding="@dimen/content_padding_xsmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/printview_fans_switch"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/content_padding_xsmall">
+
+                        <TextView
+                            style="@style/TextInfo"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/printview_motors_switch" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:padding="@dimen/content_padding_xsmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/printview_motors_switch"/>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
