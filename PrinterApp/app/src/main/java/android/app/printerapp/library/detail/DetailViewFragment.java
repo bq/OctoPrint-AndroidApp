@@ -10,8 +10,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -53,11 +51,7 @@ public class DetailViewFragment extends Fragment {
             rootView = inflater.inflate(R.layout.library_model_detail_right_panel,
                     container, false);
 
-
             mFile = (ModelFile) LibraryController.getFileList().get(args.getInt("index"));
-
-            ImageView iv = (ImageView) rootView.findViewById(R.id.detail_iv_preview);
-            iv.setImageDrawable(mFile.getSnapshot());
 
             final ImageButton favButton = (ImageButton) rootView.findViewById(R.id.detail_fav_button);
             if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName()))
@@ -106,6 +100,18 @@ public class DetailViewFragment extends Fragment {
 
             DetailViewAdapter adapter = new DetailViewAdapter(getActivity(), R.layout.detailview_list_element, arrayFiles, mFile.getSnapshot());
             ListView lv = (ListView) rootView.findViewById(R.id.detail_lv);
+
+            //Set header and footer of the listview to allow all the view to scrolling
+            View lheader = View.inflate(getActivity(), R.layout.detailview_list_header, null);
+            ImageView iv = (ImageView) lheader.findViewById(R.id.detail_iv_preview);
+            iv.setImageDrawable(mFile.getSnapshot());
+            lv.addHeaderView(lheader);
+
+            View lfooter = View.inflate(getActivity(), R.layout.detailview_list_footer, null);
+            TextView footertv = (TextView) lfooter.findViewById(R.id.detail_tv_description);
+            footertv.setText(getResources().getString(R.string.lorem_ipsum)); //TODO Set the correct text
+            lv.addFooterView(lfooter);
+
             lv.setAdapter(adapter);
         }
 

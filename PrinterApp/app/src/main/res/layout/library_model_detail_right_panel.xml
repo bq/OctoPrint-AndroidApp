@@ -54,37 +54,13 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/detail_iv_preview"
-        android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:padding="@dimen/content_padding_xsmall"
-        android:scaleType="centerCrop" />
-
-    <!-- Separation line -->
-    <View
-        style="@style/HorizontalSeparator"
-        android:layout_marginBottom="@dimen/content_margin_small"
-        android:layout_marginTop="@dimen/content_margin_small" />
-
+    <!--Image and text of the model are added programatically as a header and a footer to allow
+    the user to do scroll in all the view-->
     <ListView
         android:id="@+id/detail_lv"
         android:layout_width="wrap_content"
+        android:headerDividersEnabled="false"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-    <!-- Separation line -->
-    <View
-        style="@style/HorizontalSeparator"
-        android:layout_marginTop="@dimen/content_margin_xsmall"
-        android:layout_weight="0" />
-
-    <TextView
-        android:id="@+id/detail_tv_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:padding="@dimen/content_padding_small"
-        android:text="@string/lorem_ipsum" />
 
 </LinearLayout>
