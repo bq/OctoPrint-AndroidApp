@@ -107,27 +107,25 @@ public class LibraryFragment extends Fragment {
             //Initial file list
             LibraryController.reloadFiles("all");
 
-            mGridAdapter = new LibraryAdapter(getActivity(), R.layout.grid_item_library, LibraryController.getFileList());
-            mListAdapter = new LibraryAdapter(getActivity(), R.layout.list_item_library, LibraryController.getFileList());
+            mGridAdapter = new LibraryAdapter(getActivity(), this, R.layout.grid_item_library, LibraryController.getFileList());
+            mListAdapter = new LibraryAdapter(getActivity(), this, R.layout.list_item_library, LibraryController.getFileList());
 
             LibraryOnClickListener clickListener = new LibraryOnClickListener(this);
 
             GridView g = (GridView) mRootView.findViewById(R.id.grid_storage);
             g.setSelector(getResources().getDrawable(R.drawable.list_selector));
             g.setOnItemClickListener(clickListener);
-            g.setOnItemLongClickListener(clickListener);
             g.setAdapter(mGridAdapter);
 
             ListView l = (ListView) mRootView.findViewById(R.id.list_storage);
             View lheader = View.inflate(getActivity(), R.layout.list_header_library, null);
             l.addHeaderView(lheader);
-            ImageButton overflowButton = (ImageButton) lheader.findViewById(R.id.go_back_icon);
-            if (overflowButton != null)
-                overflowButton.setColorFilter(getActivity().getResources().getColor(R.color.body_text_2),
+            ImageButton backButton = (ImageButton) lheader.findViewById(R.id.go_back_icon);
+            if (backButton != null)
+                backButton.setColorFilter(getActivity().getResources().getColor(R.color.body_text_2),
                         PorterDuff.Mode.MULTIPLY);
             l.setSelector(getResources().getDrawable(R.drawable.list_selector));
             l.setOnItemClickListener(clickListener);
-            l.setOnItemLongClickListener(clickListener);
             l.setDivider(null);
             l.setAdapter(mListAdapter);
 
@@ -167,13 +165,13 @@ public class LibraryFragment extends Fragment {
             case R.id.library_add:
                 optionAddLibrary();
                 return true;
-            case R.id.library_list:
-                if (mSwitcher.getCurrentView().getId() == (R.id.list_storage)) {
-                    item.setTitle(R.string.library_menu_list);
-                    item.setIcon(android.R.drawable.list_selector_background);
-                } else item.setTitle(R.string.library_menu_grid);
-                optionSwitchList();
-                return true;
+//            case R.id.library_list:
+//                if (mSwitcher.getCurrentView().getId() == (R.id.list_storage)) {
+//                    item.setTitle(R.string.library_menu_list);
+//                    item.setIcon(android.R.drawable.list_selector_background);
+//                } else item.setTitle(R.string.library_menu_grid);
+//                optionSwitchList();
+//                return true;
             case R.id.library_create:
                 optionCreateLibrary();
                 return true;

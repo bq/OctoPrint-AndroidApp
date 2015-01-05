@@ -16,7 +16,9 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="Nombre.stl"
-            android:textSize="@dimen/text_size_medium" />
+            android:textSize="@dimen/text_size_medium"
+            android:layout_toLeftOf="@+id/buttons_container"
+            android:layout_toStartOf="@+id/buttons_container" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,7 +27,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:padding="@dimen/content_padding_xsmall">
+        android:padding="@dimen/content_padding_xsmall"
+        android:id="@+id/buttons_container">
 
         <com.material.widget.PaperButton
             android:id="@+id/detailview_list_iv1"

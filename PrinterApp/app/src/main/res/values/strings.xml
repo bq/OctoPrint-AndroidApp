@@ -63,6 +63,11 @@
     <string name="devices_discovery_toast_error">There was an error configuring the printer, try again</string>
     <string name="devices_discovery_toast_success">Printer configured successfully! </string>
 
+    <string name="printview_menu_add">Add model</string>
+    <string name="printview_menu_refresh">Refresh</string>
+    <string name="printview_menu_auto_adjust">Auto adjust</string>
+    <string name="printview_menu_clean">Clean panel</string>
+
     <string name="printview_video_text">Video</string>
     <string name="printview_3d_text">3D Render</string>
     <string name="printview_profile_tag">Profile - </string>
@@ -115,11 +120,12 @@
 
     <string name="library_menu_refresh">Refresh models</string>
     <string name="library_menu_search">Search model</string>
+    <string name="library_menu_sort">Sort models</string>
     <string name="library_menu_filter">Filter models</string>
     <string name="library_menu_list">View as list</string>
     <string name="library_menu_grid">View as grid</string>
     <string name="library_menu_add">Add model</string>
-    <string name="library_menu_folder">Create new folder</string>
+    <string name="library_menu_folder">New folder</string>
     <string name="library_menu_paste">Paste</string>
     <string name="library_menu_models">Get models</string>
     

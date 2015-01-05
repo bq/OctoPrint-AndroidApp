@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    
-        <item
-        android:id="@+id/printview_pause"
-        android:showAsAction="ifRoom"
-        android:icon="@android:drawable/ic_media_pause" />
-                
-        <item
-        android:id="@+id/printview_stop"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_media_stop" />
-                
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/printview_add"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="ifRoom"
+        android:title="@string/printview_menu_add"/>
+
+    <item
+        android:id="@+id/printview_refresh"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="ifRoom"
+        android:title="@string/printview_menu_refresh"/>
+
+    <item
+        android:id="@+id/printview_auto_adjust"
+        app:showAsAction="never"
+        android:title="@string/printview_menu_auto_adjust"/>
+
+    <item
+        android:id="@+id/printview_clean_panel"
+        app:showAsAction="never"
+        android:title="@string/printview_menu_clean"/>
+
+    <item
+        android:id="@+id/printview_settings"
+        app:showAsAction="never"
+        android:title="@string/fragment_settings"/>
+
+    <item
+        android:id="@+id/printview_help"
+        app:showAsAction="never"
+        android:title="@string/help"/>
 
 </menu>

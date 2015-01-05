@@ -1,14 +1,15 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
         
     <item
         android:id="@+id/devices_menu_reload"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:icon="@android:drawable/stat_notify_sync"
         android:title="@string/devices_menu_filter"/>
 
     <item
         android:id="@+id/devices_menu_help"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@android:drawable/stat_notify_sync"
         android:title="@string/help"/>
  

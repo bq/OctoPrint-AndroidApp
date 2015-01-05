@@ -39,19 +39,21 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
     //Filter
     private ListFilter mFilter;
 
+    LibraryFragment mContext;
+
     private int mResource;
 
-    public LibraryAdapter(Context context, int resource, List<File> objects) {
+    public LibraryAdapter(Context context, LibraryFragment fragmentContext, int resource, List<File> objects) {
         super(context, resource, objects);
         mOriginal = (ArrayList<File>) objects;
         mCurrent = (ArrayList<File>) objects;
         mFilter = new ListFilter();
-
+        mContext = fragmentContext;
         mResource = resource;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
         File m = getItem(position);
@@ -108,9 +110,17 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         }
 
         ImageButton overflowButton = (ImageButton) v.findViewById(R.id.model_settings_imagebutton);
-        if (overflowButton != null)
+        if (overflowButton != null) {
             overflowButton.setColorFilter(getContext().getResources().getColor(R.color.body_text_3),
                     PorterDuff.Mode.MULTIPLY);
+            overflowButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LibraryOnClickListener onClickListener = new LibraryOnClickListener(mContext);
+                    onClickListener.onOverflowButtonClick(v, position);
+                }
+            });
+        }
         return v;
     }
 

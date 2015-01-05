@@ -106,7 +106,7 @@
     <string name="library_menu_list">Vista de lista</string>
     <string name="library_menu_grid">Vista de cuadrícula</string>
     <string name="library_menu_add">Añadir modelo</string>
-    <string name="library_menu_folder">Crear nueva carpeta</string>
+    <string name="library_menu_folder">Nueva carpeta</string>
     <string name="library_menu_paste">Pegar</string>
     <string name="library_menu_models">Obtener modelos</string>
     
@@ -251,5 +251,10 @@
     <string name="library_list_date_tag">Última modificación</string>
     <string name="library_list_go_back_tag">Ir atrás</string>
     <string name="library_print_model">Imprimir</string>
+    <string name="library_menu_sort">Ordenar modelos</string>
+    <string name="printview_menu_add">Añadir modelo</string>
+    <string name="printview_menu_auto_adjust">Auto ajustar</string>
+    <string name="printview_menu_clean">Limpiar panel</string>
+    <string name="printview_menu_refresh">Refrescar</string>
 
 </resources>

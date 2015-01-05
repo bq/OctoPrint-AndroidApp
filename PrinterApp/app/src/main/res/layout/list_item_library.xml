@@ -47,7 +47,7 @@
 
         <ImageButton
             android:id="@+id/model_settings_imagebutton"
-            android:padding="@dimen/content_margin_xsmall"
+            android:padding="@dimen/content_padding_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selectable_rect_background_gray"
