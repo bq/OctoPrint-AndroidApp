@@ -12,6 +12,7 @@
         <!-- Action bar -->
         <item name="colorPrimary">@color/theme_primary</item>
         <item name="colorPrimaryDark">@color/theme_primary_dark</item>
+        <item name="colorAccent">@color/theme_accent_1</item>
         <!--<item name="actionModeCloseDrawable">@drawable/ic_action_done</item>-->
         <!--<item name="actionModeStyle">@style/AppBaseTheme.Green.ActionMode</item>-->
         <item name="android:textColorPrimary">@color/white</item>

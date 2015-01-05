@@ -64,7 +64,7 @@
     <string name="printview_3d_text">Render 3D</string>
     <string name="printview_profile_tag">Perfil - </string>
     <string name="printview_start_button">PAUSAR</string>
-    <string name="printview_stop_button">DETENER IMPRESIÓN</string>
+    <string name="printview_stop_button">DETENER</string>
     <string name="printview_download_dialog">Archivo no disponible, descargando</string>
     <string name="printview_download_toast_error">Error al descargar el archivo</string>
 
@@ -256,5 +256,7 @@
     <string name="printview_menu_auto_adjust">Auto ajustar</string>
     <string name="printview_menu_clean">Limpiar panel</string>
     <string name="printview_menu_refresh">Refrescar</string>
+    <string name="printview_fans_switch">Ventiladores</string>
+    <string name="printview_motors_switch">Motores</string>
 
 </resources>
