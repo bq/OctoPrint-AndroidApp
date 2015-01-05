@@ -17,11 +17,14 @@
         <item name="android:textColorPrimary">@color/white</item>
         <!--<item name="actionBarItemBackground">@drawable/drawer_item_selector</item>-->
         <!-- Menu -->
-        <item name="popupMenuStyle">@style/PopupMenu.Green</item>
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu.Green</item>-->
         <item name="textAppearanceLargePopupMenu">@style/PopupMenu.TextAppearanceLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/PopupMenu.TextAppearanceSmall</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Green</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Green</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/PopupMenu.TextAppearanceLarge</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/PopupMenu.TextAppearanceSmall</item>
+        <item name="android:listPreferredItemHeightSmall">@dimen/popup_menu_item_height</item>
+        <!--<item name="actionDropDownStyle">@style/DropDownNav.Green</item>-->
+        <!--<item name="dropDownListViewStyle">@style/DropDownListView.Green</item>-->
 
         <!-- Spinner -->
         <item name="android:dropDownSpinnerStyle">@style/Spinner.Green</item>
@@ -50,14 +53,15 @@
     <!-- Styles for the pup up menu -->
     <style name="PopupMenu.Green" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_green</item>
+
     </style>
 
     <style name="PopupMenu.TextAppearanceSmall" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/body_text_1</item>
     </style>
 
     <style name="PopupMenu.TextAppearanceLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/body_text_1</item>
     </style>
 
     <style name="DropDownListView.Green" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
@@ -74,7 +78,7 @@
     <!--Dropdown listView style-->
     <style name="AppBaseTheme.Green.DropDownListViewStyle" parent="android:Widget.ListView.DropDown">
         <item name="android:divider">@android:color/transparent</item>
-        <item name="android:dividerHeight">@dimen/dropdown_list_divider_height</item>
+        <item name="android:dividerHeight">0dp</item>
     </style>
 
     <!-- Buttons style -->

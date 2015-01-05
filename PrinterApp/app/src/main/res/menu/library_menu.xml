@@ -1,47 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/library_search"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/icon_buscar"
-        android:title="@string/library_menu_search"/>
-    <item
-        android:id="@+id/library_reload"
-        android:showAsAction="ifRoom"
-        android:icon="@android:drawable/stat_notify_sync"
-        android:title="@string/devices_menu_filter"/>
+        android:icon="@drawable/ic_search"
+        android:title="@string/library_menu_search"
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/library_list"
-        android:showAsAction="never"
-        android:title="@string/library_menu_list"/>
-    
-    <item
         android:id="@+id/library_add"
-        android:showAsAction="never"
-        android:title="@string/library_menu_add"/>
-    
-        <item
+        android:icon="@drawable/ic_add"
+        android:title="@string/library_menu_add"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/library_filter_list"
+        android:icon="@drawable/ic_filter_list"
+        android:title="@string/library_menu_filter"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/library_reload"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/library_menu_refresh"
+        app:showAsAction="ifRoom" />
+
+    <!--    <item
+            android:id="@+id/library_list"
+            android:showAsAction="never"
+            android:title="@string/library_menu_grid" />-->
+
+
+    <item
         android:id="@+id/library_create"
-        android:showAsAction="never"
-        android:title="@string/library_menu_folder"/>
+        android:title="@string/library_menu_folder"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/library_models"
-        android:showAsAction="never"
-        android:title="@string/library_menu_models"/>
+        android:title="@string/library_menu_models"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/library_paste"
+        android:title="@string/library_menu_paste"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/library_settings"
+        android:title="@string/fragment_settings"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/library_help"
-        android:showAsAction="never"
-        android:title="@string/help"/>
-        
-    <item
-        android:id="@+id/library_paste"
-        android:showAsAction="never"
-        android:title="@string/library_menu_paste"/>
-    
+        android:title="@string/help"
+        app:showAsAction="never" />
 
 </menu>

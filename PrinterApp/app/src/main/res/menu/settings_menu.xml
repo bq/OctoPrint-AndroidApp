@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
      <item
         android:id="@+id/settings_menu_add"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="true"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/devices_menu_add"/>
 
     <item
         android:id="@+id/settings_menu_help"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:visible="true"
         android:title="@string/help"/>
     

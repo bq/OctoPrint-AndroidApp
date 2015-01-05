@@ -6,7 +6,9 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,19 +39,21 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
     //Filter
     private ListFilter mFilter;
 
+    LibraryFragment mContext;
+
     private int mResource;
 
-    public LibraryAdapter(Context context, int resource, List<File> objects) {
+    public LibraryAdapter(Context context, LibraryFragment fragmentContext, int resource, List<File> objects) {
         super(context, resource, objects);
         mOriginal = (ArrayList<File>) objects;
         mCurrent = (ArrayList<File>) objects;
         mFilter = new ListFilter();
-
+        mContext = fragmentContext;
         mResource = resource;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
         File m = getItem(position);
@@ -64,17 +69,10 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
             //v = convertView;
         }
 
-        TextView nameTextView = (TextView) v.findViewById(R.id.storage_name_textview);
+        TextView nameTextView = (TextView) v.findViewById(R.id.model_name_textview);
         nameTextView.setText(m.getName());
 
-        TextView pathTextView = (TextView) v.findViewById(R.id.storage_path_textview);
-        pathTextView.setText(m.getAbsolutePath());
-
-        ImageView iv = (ImageView) v.findViewById(R.id.storage_icon);
-
-        TextView gcodeTag = (TextView) v.findViewById(R.id.storage_gcode_tag);
-        gcodeTag.setText("gcode");
-        gcodeTag.setVisibility(View.GONE);
+        ImageView iv = (ImageView) v.findViewById(R.id.model_icon);
 
         if (m.isDirectory()) {
 
@@ -86,14 +84,12 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                     iv.setImageDrawable(d);
                     iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
-                    iv.setImageResource(R.drawable.folder_normal_icon);
+                    iv.setImageResource(R.drawable.ic_folder_grey600_36dp);
                     iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
 
-                if (((ModelFile) m).getStl() == null)
-                    v.findViewById(R.id.storage_gcode_tag).setVisibility(View.VISIBLE);
             } else {
-                iv.setImageResource(R.drawable.folder_normal_icon);
+                iv.setImageResource(R.drawable.ic_folder_grey600_36dp);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
 
@@ -101,25 +97,29 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
 
             //TODO Handle printer internal files
             if (m.getParent().equals("printer")) {
-                iv.setImageResource(R.drawable.folder_internal_icon);
+                iv.setImageResource(R.drawable.ic_folder_grey600_36dp);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
                 ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(m.getName()));
                 nameTextView.setText(p.getDisplayName());
-                pathTextView.setText(m.getAbsolutePath());
 
             } else {
                 iv.setImageResource(R.drawable.file_icon);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
-                if (m.getParent().equals("sd")) {
-                    gcodeTag.setText("sd");
-                    gcodeTag.setVisibility(View.VISIBLE);
-                } else if (m.getParent().equals("local")) {
-                    gcodeTag.setText("internal");
-                    gcodeTag.setVisibility(View.VISIBLE);
-                }
             }
+        }
+
+        ImageButton overflowButton = (ImageButton) v.findViewById(R.id.model_settings_imagebutton);
+        if (overflowButton != null) {
+            overflowButton.setColorFilter(getContext().getResources().getColor(R.color.body_text_3),
+                    PorterDuff.Mode.MULTIPLY);
+            overflowButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LibraryOnClickListener onClickListener = new LibraryOnClickListener(mContext);
+                    onClickListener.onOverflowButtonClick(v, position);
+                }
+            });
         }
         return v;
     }

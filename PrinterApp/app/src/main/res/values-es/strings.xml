@@ -106,16 +106,16 @@
     <string name="library_menu_list">Vista de lista</string>
     <string name="library_menu_grid">Vista de cuadrícula</string>
     <string name="library_menu_add">Añadir modelo</string>
-    <string name="library_menu_folder">Crear nueva carpeta</string>
+    <string name="library_menu_folder">Nueva carpeta</string>
     <string name="library_menu_paste">Pegar</string>
     <string name="library_menu_models">Obtener modelos</string>
     
-    <string name="library_tabhost_tab_all">Todos los modelos</string>
-    <string name="library_tabhost_tab_local">Local</string>
-    <string name="library_tabhost_tab_printer">Impresora</string>
-    <string name="library_tabhost_tab_memory">Memoria Witbox</string>
-    <string name="library_tabhost_tab_usb">USB</string>
-    <string name="library_tabhost_tab_favorites">Favoritos</string>
+    <string name="library_models_all">Todos</string>
+    <string name="library_models_local">Local</string>
+    <string name="library_models_printers">Impresoras</string>
+    <string name="library_models_memory">Memoria Witbox</string>
+    <string name="library_models_usb">USB</string>
+    <string name="library_models_favorites">Favoritos</string>
     
     <string name="detailview_description">Descripción</string>
     <string name="detailview_notes">Comentarios</string>
@@ -229,7 +229,6 @@
     <string name="font_fontFamily_medium">sans-serif</string>
     <string name="fragment_detail_printer"></string>
     <string name="gcode_viewer">Archivos Gcode</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="new_project">Nuevo proyecto</string>
     <string name="ok">OK</string>
     <string name="project_name">Introduzca un nuevo nombre por favor</string>
@@ -249,5 +248,13 @@
     <string name="printview_extruder_tag">Extrusor</string>
     <string name="printview_bed_tag">Cama</string>
     <string name="printview_change_temp_button">Cambiar</string>
+    <string name="library_list_date_tag">Última modificación</string>
+    <string name="library_list_go_back_tag">Ir atrás</string>
+    <string name="library_print_model">Imprimir</string>
+    <string name="library_menu_sort">Ordenar modelos</string>
+    <string name="printview_menu_add">Añadir modelo</string>
+    <string name="printview_menu_auto_adjust">Auto ajustar</string>
+    <string name="printview_menu_clean">Limpiar panel</string>
+    <string name="printview_menu_refresh">Refrescar</string>
 
 </resources>

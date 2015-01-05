@@ -22,7 +22,7 @@
             android:layout_marginBottom="5dp">
 
             <ImageView
-                android:id="@+id/storage_icon"
+                android:id="@+id/model_icon"
                 android:layout_width="220dp"
                 android:layout_height="165dp"
                 android:scaleType="centerCrop"
@@ -43,7 +43,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/storage_name_textview"
+            android:id="@+id/model_name_textview"
             style="@style/TextHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

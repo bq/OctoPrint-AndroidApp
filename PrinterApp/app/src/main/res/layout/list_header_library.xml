@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/content_padding_xsmall"
-    android:descendantFocusability="blocksDescendants">
+    android:padding="@dimen/content_padding_xsmall">
 
     <!-- Model icon -->
     <LinearLayout
@@ -14,40 +13,43 @@
         android:layout_weight=".3"
         android:gravity="center">
 
-        <ImageView
-            android:id="@+id/model_icon"
+        <ImageButton
+            android:id="@+id/go_back_icon"
             android:layout_width="80dp"
-            android:layout_height="60dp"/>
+            android:layout_height="60dp"
+            android:src="@drawable/ic_action_arrow_back"
+            android:background="@drawable/selectable_rect_background_gray"/>
     </LinearLayout>
 
     <!-- Model name -->
     <TextView
-        android:id="@+id/model_name_textview"
+        android:id="@+id/model_name_column_textview"
         style="@style/ModelName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:text="Elemento" />
+        android:text="@string/library_list_go_back_tag" />
 
     <!-- Last modification date -->
     <TextView
-        android:id="@+id/model_mod_date_textview"
+        android:id="@+id/model_mod_date_column_textview"
         style="@style/ModelDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
-        android:text="30/12/2014" />
+        android:text="@string/library_list_date_tag" />
 
-    <!-- Overflow settings button -->
+    <!-- Dummie column -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight=".3"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="invisible">
 
         <ImageButton
             android:id="@+id/model_settings_imagebutton"
-            android:padding="@dimen/content_padding_small"
+            android:padding="@dimen/content_margin_xsmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selectable_rect_background_gray"

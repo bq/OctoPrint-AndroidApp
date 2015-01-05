@@ -1,10 +1,12 @@
 package android.app.printerapp.library.detail;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelFile;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +35,6 @@ public class DetailViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         //Reference to View
         View rootView = null;
 
@@ -45,10 +47,10 @@ public class DetailViewFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             //Inflate the fragment
-            rootView = inflater.inflate(R.layout.detailview_layout,
+            rootView = inflater.inflate(R.layout.library_model_detail_right_panel,
                     container, false);
 
 
@@ -56,6 +58,27 @@ public class DetailViewFragment extends Fragment {
 
             ImageView iv = (ImageView) rootView.findViewById(R.id.detail_iv_preview);
             iv.setImageDrawable(mFile.getSnapshot());
+
+            final ImageButton favButton = (ImageButton) rootView.findViewById(R.id.detail_fav_button);
+            if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName()))
+                favButton.setImageResource(R.drawable.ic_action_star);
+            else favButton.setImageResource(R.drawable.ic_action_star_outline);
+            favButton.setColorFilter(getResources().getColor(R.color.body_text_2), PorterDuff.Mode.MULTIPLY);
+            favButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addToFavorite(favButton);
+                }
+            });
+
+            ImageButton closeButton = (ImageButton) rootView.findViewById(R.id.detail_close_button);
+            closeButton.setColorFilter(getResources().getColor(R.color.body_text_2), PorterDuff.Mode.MULTIPLY);
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeFragment();
+                }
+            });
 
             TextView tv = (TextView) rootView.findViewById(R.id.detail_tv_name);
             tv.setText(mFile.getName());
@@ -67,22 +90,16 @@ public class DetailViewFragment extends Fragment {
 
                 File[] listFiles = new File(mFile.getGcodeList()).getParentFile().listFiles();
 
-
                 for (int i = 0; i < listFiles.length; i++) {
-
                     arrayFiles.add(listFiles[i]);
-
                 }
             }
 
-
             try {
-
                 //add also de the stl
                 arrayFiles.add(new File(mFile.getStl()));
 
             } catch (Exception e) {
-
                 e.printStackTrace();
             }
 
@@ -90,63 +107,37 @@ public class DetailViewFragment extends Fragment {
             DetailViewAdapter adapter = new DetailViewAdapter(getActivity(), R.layout.detailview_list_element, arrayFiles, mFile.getSnapshot());
             ListView lv = (ListView) rootView.findViewById(R.id.detail_lv);
             lv.setAdapter(adapter);
-
-
-            /***********************************************************************************/
-
-            //TODO: COMMENTS ARE DISABLED FOR NOW
-
-				/*	
-				TextView tvd = (TextView) rootView.findViewById(R.id.detail_tv_description);
-				ArrayList<ModelComment> commentArray = new ArrayList<ModelComment>();
-				
-				try {
-
-					BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(mFile.getInfo())));
-					
-					tvd.setText(bufferedReader.readLine());
-					
-					String line;
-					
-					while ((line = bufferedReader.readLine()) != null){
-						
-						String[] comment = line.split(";");				
-						commentArray.add(new ModelComment(comment[0], comment[1], comment[2]));
-					}
-					
-					bufferedReader.close();
-					
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				DetailViewCommAdapter commadapter = new DetailViewCommAdapter(getActivity(), R.layout.detailview_list_comment, commentArray);
-				ListView lvc = (ListView) rootView.findViewById(R.id.detail_lv_comments);
-				
-				lvc.setAdapter(commadapter);
-				
-				TextView tvc = (TextView) rootView.findViewById(R.id.detailview_tv_num);
-				tvc.setText(String.valueOf(commentArray.size()));
-					*/
-
-
         }
 
         return rootView;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//
+//        inflater.inflate(R.menu.detailview_menu, menu);
+//
+//        if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName())) {
+//            menu.findItem(R.id.menu_favorite).setIcon(R.drawable.ic_action_star);
+//        } else menu.findItem(R.id.menu_favorite).setIcon(R.drawable.ic_action_star_outline);
+//
+//    }
 
-        inflater.inflate(R.menu.detailview_menu, menu);
-
+    private void addToFavorite(final ImageButton button) {
         if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName())) {
-            menu.findItem(R.id.menu_favorite).setIcon(R.drawable.ic_action_star);
-        } else menu.findItem(R.id.menu_favorite).setIcon(R.drawable.ic_action_star_outline);
+            DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, mFile.getName(), null, false);
+            button.setImageResource(R.drawable.ic_action_star_outline);
+        } else {
+            DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, mFile.getName(), mFile.getAbsolutePath(), true);
+            button.setImageResource(R.drawable.ic_action_star);
+        }
+    }
 
+    private void removeFragment() {
+        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+        fragmentTransaction.remove(this).commit();
     }
 
     //Option menu

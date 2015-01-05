@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
      <item
         android:id="@+id/viewer_open"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_open"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_folder_open"
         android:title="@string/viewer_menu_open"/>
       
     <item
         android:id="@+id/viewer_save"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_save"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save"
         android:title="@string/viewer_menu_save"/>
 
     <item
         android:id="@+id/viewer_save_gcode"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_action_save"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_save"
         android:title="@string/viewer_menu_save_gcode"/>
 
     <item
-        android:id="@+id/viewer_clean"
-        android:showAsAction="never"
-        android:title="@string/viewer_menu_clean"/>
-
-    <item
         android:id="@+id/viewer_restore"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/viewer_menu_restore"/>
 
     <item
+        android:id="@+id/viewer_clean"
+        app:showAsAction="never"
+        android:title="@string/viewer_menu_clean"/>
+
+
+    <item
+        android:id="@+id/library_settings"
+        android:title="@string/fragment_settings"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/viewer_help"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/help"/>
 
 </menu>

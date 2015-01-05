@@ -15,100 +15,83 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.material.widget.PaperButton;
+
 import java.io.File;
 import java.util.List;
 
 
 /**
  * This is the adapter for the detail view
- * @author alberto-baeza
  *
+ * @author alberto-baeza
  */
 public class DetailViewAdapter extends ArrayAdapter<File> {
-	
-	private Drawable mDrawable;
 
-	public DetailViewAdapter(Context context, int resource, List<File> objects, Drawable d) {
-		super(context, resource, objects);
-		
-		mDrawable = d;
-		
-	}
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		
+    private Drawable mDrawable;
 
-		View v = convertView;	
-		
-		final File f = getItem(position);
-		
-		//View not yet created
-		if (v==null){
-			
-			
-			//Inflate the view
-			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.detailview_list_element, null, false);
-			
-			
-		} else {
-			//v = convertView;
-		}
-		
-		//UI references
-		TextView tv1 = (TextView) v.findViewById(R.id.detailview_list_tv1);
-		tv1.setText(f.getName());
-		
-		ImageView iv = (ImageView) v.findViewById(R.id.detailview_list_iv);
-		iv.setImageDrawable(mDrawable);
-						
-		ImageButton ib = (ImageButton) v.findViewById(R.id.detailview_list_iv1);
-		ImageButton ibe = (ImageButton) v.findViewById(R.id.detailview_list_iv2);
+    public DetailViewAdapter(Context context, int resource, List<File> objects, Drawable d) {
+        super(context, resource, objects);
+        mDrawable = d;
+    }
 
-        TextView ig = (TextView) v.findViewById(R.id.detailview_gcode);
-		
-		if ((LibraryController.hasExtension(1, f.getName()))){
-			
-			ig.setVisibility(View.VISIBLE);
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View v = convertView;
+
+        final File f = getItem(position);
+
+        //View not yet created
+        if (v == null) {
+
+            //Inflate the view
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.detailview_list_element, null, false);
+
+        } else {
+            //v = convertView;
+        }
+
+        //UI references
+        TextView tv1 = (TextView) v.findViewById(R.id.detailview_list_tv1);
+        tv1.setText(f.getName());
+
+        PaperButton ib = (PaperButton) v.findViewById(R.id.detailview_list_iv1);
+        PaperButton ibe = (PaperButton) v.findViewById(R.id.detailview_list_iv2);
+
+        if ((LibraryController.hasExtension(1, f.getName()))){
+            ibe.setVisibility(View.GONE);
             ib.setVisibility(View.VISIBLE);
+            //it's an stl
+        }else {
+            ibe.setVisibility(View.VISIBLE);
+            ib.setVisibility(View.GONE);
+        }
 
-			//it's an stl
-		}else {
-            ig.setVisibility(View.GONE);
-			ib.setVisibility(View.GONE);
-		}
-		
-		
-		//Print button
-		ib.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
+        //Print button
+        ib.setOnClickListener(new OnClickListener() {
 
-                if ((LibraryController.hasExtension(0, f.getName()))) ItemListActivity.requestOpenFile(f.getAbsolutePath());
-                else DevicesListController.selectPrinter(v.getContext(), f, null);
-
-				//OctoprintFiles.downloadFile(v.getContext(), "", f.getParentFile().getParentFile().getName(), "shit.gco");
-				
-			}
-		});
-		
-		//Edit button
-		ibe.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-
+            @Override
+            public void onClick(View v) {
+            if ((LibraryController.hasExtension(0, f.getName())))
                 ItemListActivity.requestOpenFile(f.getAbsolutePath());
+            else DevicesListController.selectPrinter(v.getContext(), f, null);
 
-				
-			}
-		});
-	
+            }
+        });
 
-		return v;
-	}
-	
+        //Edit button
+        ibe.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+            ItemListActivity.requestOpenFile(f.getAbsolutePath());
+            }
+        });
+
+        return v;
+    }
+
 
 }

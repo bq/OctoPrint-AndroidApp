@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ModelDate" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>"
+        <item name="android:padding">@dimen/content_padding_xsmall</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/body_text_3</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+</resources>

@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <item
         android:id="@+id/move"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_move"
         android:title="@string/edition_menu_move"/>
       
     <item
         android:id="@+id/rotate"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_rotate"
         android:title="@string/edition_menu_rotate"/>
 
  	<item
         android:id="@+id/scale"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_scale"
         android:title="@string/edition_menu_resize"/>
     
     <item
         android:id="@+id/multiply"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_action_multiply_objects"
         android:title="@string/edition_menu_multiply"/>
         
     <item
         android:id="@+id/delete"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:icon="@drawable/ic_action_delete"
         android:title="@string/edition_menu_delete"/>
 

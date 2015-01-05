@@ -262,6 +262,7 @@ public class PrintViewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.printview_menu, menu);
     }
 
     //Switch menu options if it's printing/paused
@@ -274,6 +275,7 @@ public class PrintViewFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
+        //TODO Añadir las opciones del menú
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();

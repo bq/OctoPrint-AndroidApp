@@ -4,7 +4,7 @@
     <string name="app_name">PrinterApp</string>
     <string name="title_item_detail">Item Detail</string>
     
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</string>
     
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
@@ -63,6 +63,11 @@
     <string name="devices_discovery_toast_error">There was an error configuring the printer, try again</string>
     <string name="devices_discovery_toast_success">Printer configured successfully! </string>
 
+    <string name="printview_menu_add">Add model</string>
+    <string name="printview_menu_refresh">Refresh</string>
+    <string name="printview_menu_auto_adjust">Auto adjust</string>
+    <string name="printview_menu_clean">Clean panel</string>
+
     <string name="printview_video_text">Video</string>
     <string name="printview_3d_text">3D Render</string>
     <string name="printview_profile_tag">Profile - </string>
@@ -110,23 +115,29 @@
     <string name="library_paste_toast">Select "Paste" in the menu</string>
     <string name="library_parent_folder">[Previous folder]</string>
     <string name="library_delete_dialog_original">Do you want to delete the original file?</string>
+    <string name="library_print_model">Print</string>
+    <string name="library_quick_print_model" translatable="false">Quick print</string>
 
     <string name="library_menu_refresh">Refresh models</string>
     <string name="library_menu_search">Search model</string>
+    <string name="library_menu_sort">Sort models</string>
     <string name="library_menu_filter">Filter models</string>
     <string name="library_menu_list">View as list</string>
     <string name="library_menu_grid">View as grid</string>
     <string name="library_menu_add">Add model</string>
-    <string name="library_menu_folder">Create new folder</string>
+    <string name="library_menu_folder">New folder</string>
     <string name="library_menu_paste">Paste</string>
     <string name="library_menu_models">Get models</string>
     
-    <string name="library_tabhost_tab_all">All the models</string>
-    <string name="library_tabhost_tab_local">Local</string>
-    <string name="library_tabhost_tab_printer">Printer</string>
-    <string name="library_tabhost_tab_memory">Witbox memory</string>
-    <string name="library_tabhost_tab_usb">USB</string>
-    <string name="library_tabhost_tab_favorites">Favorites</string>
+    <string name="library_models_all">All the models</string>
+    <string name="library_models_local">Local</string>
+    <string name="library_models_printers">Printer</string>
+    <string name="library_models_memory">Witbox memory</string>
+    <string name="library_models_usb">USB</string>
+    <string name="library_models_favorites">Favorites</string>
+
+    <string name="library_list_go_back_tag">Go back</string>
+    <string name="library_list_date_tag">Last modification</string>
     
     <string name="detailview_description">Description</string>
     <string name="detailview_notes">Comments</string>
