@@ -41,7 +41,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -61,8 +60,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ViewerMainFragment extends Fragment {
@@ -130,6 +132,7 @@ public class ViewerMainFragment extends Fragment {
 
     private static TextView mRotationText;
     private static TextView mAxisText;
+    private static TextView mSizeText;
     private static int mCurrentAxis;
 
     //Empty constructor
@@ -325,6 +328,7 @@ public class ViewerMainFragment extends Fragment {
         mProgress.setVisibility(View.GONE);
         mRotationText = (TextView) mRootView.findViewById(R.id.text_rotation);
         mAxisText = (TextView) mRootView.findViewById(R.id.text_axis);
+        mSizeText = (TextView) mRootView.findViewById(R.id.axis_info_textview);
         mRotationSeekbar = (SeekBar) mRootView.findViewById(R.id.rotation_seek_bar);
         mRotationSeekbar.setProgress(12);
         mRotationText.setText("");
@@ -965,6 +969,8 @@ public class ViewerMainFragment extends Fragment {
 
         hideCurrentActionPopUpWindow();
 
+        mSizeText.setVisibility(View.VISIBLE);
+
         if (mActionModePopupWindow == null) {
 
             //Get the content view of the pop up window
@@ -1002,6 +1008,7 @@ public class ViewerMainFragment extends Fragment {
 
             mActionModePopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY,
                     popupLayoutX, popupLayoutY);
+
         }
     }
 
@@ -1017,6 +1024,11 @@ public class ViewerMainFragment extends Fragment {
             mActionModePopupWindow = null;
             mSurface.setRendererAxis(-1);
         }
+
+        //Hide size text
+        if (mSizeText!=null)
+            if (mSizeText.getVisibility() == View.VISIBLE) mSizeText.setVisibility(View.INVISIBLE);
+
         hideCurrentActionPopUpWindow();
     }
 
@@ -1041,6 +1053,8 @@ public class ViewerMainFragment extends Fragment {
         mStatusBottomBar.setVisibility(View.VISIBLE);
         mSurface.setRendererAxis(-1);
 
+        mSizeText.setVisibility(View.VISIBLE);
+
         selectActionButton(item.getId());
 
         switch (item.getId()) {
@@ -1049,6 +1063,9 @@ public class ViewerMainFragment extends Fragment {
                 mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
                 break;
             case R.id.rotate_item_button:
+
+                mSizeText.setVisibility(View.INVISIBLE);
+
                 if (mCurrentActionPopupWindow == null) {
                     final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.rotate_model_values);
                     final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.rotate_model_icons);
@@ -1290,21 +1307,22 @@ public class ViewerMainFragment extends Fragment {
 
                 case StateUtils.SLICER_HIDE:
 
-                    tv.setText("Downloaded");
+                    tv.setText(R.string.viewer_text_downloaded);
                     pb.setVisibility(View.INVISIBLE);
 
                     break;
 
                 case StateUtils.SLICER_UPLOAD:
 
-                    tv.setText("Uploading...");
+                    tv.setText(R.string.viewer_text_uploading);
                     pb.setIndeterminate(true);
 
                     break;
 
                 case StateUtils.SLICER_SLICE:
 
-                    tv.setText("Slicing...");
+                    String slicingText = mContext.getString(R.string.viewer_text_slicing);
+
 
                     if (i == 0) {
                         pb.setIndeterminate(true);
@@ -1313,12 +1331,18 @@ public class ViewerMainFragment extends Fragment {
 
                         pb.setIndeterminate(false);
 
+                        slicingText += " " + mContext.getString(R.string.viewer_text_done);
+
                     } else {
 
                         pb.setProgress(i);
                         pb.setIndeterminate(false);
 
+                        slicingText += " (" + i + "%)";
+
                     }
+
+                    tv.setText(slicingText);
 
                     mRootView.invalidate();
 
@@ -1326,7 +1350,7 @@ public class ViewerMainFragment extends Fragment {
 
                 case StateUtils.SLICER_DOWNLOAD:
 
-                    tv.setText("Downloading...");
+                    tv.setText(R.string.viewer_text_downloading);
                     pb.setIndeterminate(true);
 
                     break;
@@ -1341,9 +1365,31 @@ public class ViewerMainFragment extends Fragment {
         }
 
 
-        Log.i("OUT", "Progress @" + i);
+
+    }
+
+    /**
+     * Display model width, depth and height when touched
+     */
+    public static void displayModelSize(int position){
 
 
+        DataStorage data = mDataList.get(position);
+
+        //Set point instead of comma
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+        otherSymbols.setDecimalSeparator('.');
+        otherSymbols.setGroupingSeparator(',');
+
+        //Define new decimal format to display only 2 decimals
+        DecimalFormat df = new DecimalFormat("##.##", otherSymbols);
+
+        String width = df.format((data.getMaxX() - data.getMinX()));
+        String depth = df.format((data.getMaxY() - data.getMinY()));
+        String height = df.format((data.getMaxZ() - data.getMinZ()));
+
+        //Display size of the model
+        mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
     }
 
     /**

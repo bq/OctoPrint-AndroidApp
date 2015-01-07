@@ -260,8 +260,11 @@ public class StlFile {
 			}
 
             Log.i(TAG,"STL [Text] Processed in: " + (SystemClock.currentThreadTimeMillis() - milis2));
-			
-		} catch (Exception e) {
+
+
+
+
+        } catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -362,6 +365,11 @@ public class StlFile {
                     if (mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.setProgress(i);
                 }
             } Log.i(TAG,"STL [BINARY] Read & Processed in: " + (SystemClock.currentThreadTimeMillis() - milis));
+
+        Log.i("Slicer","Sizes: \n" +
+                "Width" + (mData.getMaxX() - mData.getMinX()) + "\n" +
+                "Depth" + (mData.getMaxY() - mData.getMinY()) + "\n" +
+                "Height" + (mData.getMaxZ() - mData.getMinZ()));
 
 
 				
