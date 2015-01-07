@@ -205,6 +205,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/viewer_axis_info"
                             android:textColor="@android:color/white"
+                            android:visibility="invisible"
                             android:textSize="@dimen/text_size_medium" />
 
                     </LinearLayout>
@@ -280,7 +281,6 @@
                         style="@style/TextInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/viewer_progress_task_slicing"
                         android:textStyle="italic" />
 
                     <com.material.widget.PaperButton

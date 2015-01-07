@@ -422,6 +422,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                     float maxZ = data.getMaxZ();
                     float minZ = data.getMinZ();
 
+
+
                     Point lastCenter = data.getLastCenter();
                     //We have to introduce the rest of transformations.
                     maxX = maxX*Math.abs(mScaleFactorX)+lastCenter.x;
@@ -439,11 +441,11 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                     data.setMinY(minY);
 
                     float adjustZ = 0;
-                    if (minZ!=0) adjustZ= - data.getMinZ() + (float)DataStorage.MIN_Z; //TODO CHECK
+                    if (minZ!=0) adjustZ = - data.getMinZ() + (float)DataStorage.MIN_Z; //TODO CHECK
 
                     data.setAdjustZ(adjustZ);
-                    data.setMinZ(data.getMinZ()+adjustZ);
-                    data.setMaxZ(data.getMaxZ()+adjustZ);
+                    data.setMinZ(minZ+adjustZ); //Readjust min and max
+                    data.setMaxZ(maxZ+adjustZ);
 
                 } catch (ArrayIndexOutOfBoundsException e ){
 
@@ -457,6 +459,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 			protected void onPostExecute(final Void unused) {
 				ViewerMainFragment.configureProgressState(View.GONE);
+                ViewerMainFragment.displayModelSize(mObjectPressed);
 
 			}		
 		};

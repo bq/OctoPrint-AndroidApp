@@ -258,5 +258,10 @@
     <string name="printview_menu_refresh">Refrescar</string>
     <string name="printview_fans_switch">Ventiladores</string>
     <string name="printview_motors_switch">Motores</string>
+    <string name="viewer_text_slicing">Laminando...</string>
+    <string name="viewer_text_uploading">Subiendo...</string>
+    <string name="viewer_text_downloading">Descargando...</string>
+    <string name="viewer_text_downloaded">Descargado</string>
+    <string name="viewer_text_done">hecho</string>
 
 </resources>

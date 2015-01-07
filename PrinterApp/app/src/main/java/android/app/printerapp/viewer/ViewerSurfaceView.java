@@ -358,6 +358,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 						mEdition = true;
 						mObjectPressed=objPressed;
 						ViewerMainFragment.showActionModePopUpWindow();
+                        ViewerMainFragment.displayModelSize(mObjectPressed);
+
 					}
                     else {
                         ViewerMainFragment.hideActionModePopUpWindow();
@@ -389,6 +391,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 							float fz = pinchStartFactorZ*pinchScale;
 
 							mRenderer.scaleObject(fx,fy,fz);
+                            ViewerMainFragment.displayModelSize(mObjectPressed);
+
 						} else {
 
                             /**
