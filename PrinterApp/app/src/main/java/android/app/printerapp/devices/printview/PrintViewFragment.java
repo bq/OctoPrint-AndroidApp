@@ -170,14 +170,16 @@ public class PrintViewFragment extends Fragment {
                 @Override
                 public void onTabChanged(String s) {
 
+                    if (mSurface!=null)
                     if (s.equals("Video")){
 
                         mLayout.removeAllViews();
 
                     } else {    //Redraw the gcode
 
-                       drawPrintView();
-                       mSurface.setZOrderOnTop(true);
+                            drawPrintView();
+                            mSurface.setZOrderOnTop(true);
+
                     }
 
                     mLayoutVideo.invalidate();

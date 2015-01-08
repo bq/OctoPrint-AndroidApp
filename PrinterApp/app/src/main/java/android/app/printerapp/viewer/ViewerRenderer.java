@@ -45,6 +45,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	public static float mSceneAngleX = 0f;
 	public static float mSceneAngleY = 0f;
+    public static float mCurrentSceneAngleX = 0f;
+    public static float mCurrentSceneAngleY = 0f;
 	
 	public static float RED = 0.80f;
 	public static float GREEN = 0.1f;
@@ -548,6 +550,69 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 
     }
+
+    /**
+     * Static values for camera auto movement and rotation
+     */
+    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.01;
+    private static final int CAMERA_MAX_ROTATION_DISTANCE = 15;
+    private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
+
+    /**
+     * Animation to restore initial position
+     * @return
+     */
+    public boolean restoreInitialCameraPosition(){
+
+
+        //Move X axis
+        if (mCameraX < 0) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if (mCameraX > 0) mCameraX-= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        //Move Y axis
+        if (mCameraY < -300) mCameraY+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if (mCameraY > -300) mCameraY-= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        //Move Z axis
+        if (mCameraZ < 300) mCameraZ+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if (mCameraZ>300) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        //Rotate X axis
+        if ((int)mCurrentSceneAngleX < -40f) {
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleX > -70f) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
+        }
+        else if ((int)mCurrentSceneAngleX >-40f){
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleX < -10f) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
+        }
+
+        //Rotate Y axis
+        if ((int)mCurrentSceneAngleY < 0) {
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleY > -30f) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleY = CAMERA_MAX_ROTATION_DISTANCE;
+        }
+        else if ((int)mCurrentSceneAngleY > 0) {
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleY < 30f) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleY = -CAMERA_MAX_ROTATION_DISTANCE;
+        }
+
+
+        //Return true when we get the final values
+        if (((int)mCameraZ == 300) && ((int)mCameraY == -300) && ((int)mCameraX == 0)
+                && ((int) mCurrentSceneAngleX ==-40) && ((int) mCurrentSceneAngleY == 0)) return true;
+        else return false;
+
+    }
+
 	  	  
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -558,6 +623,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		
 		Matrix.setIdentityM(mModelMatrix, 0);
+        mCurrentSceneAngleX = 0f;
+        mCurrentSceneAngleY = 0f;
 			
         mSceneAngleX = -40f;
         
@@ -678,6 +745,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         //Rotation x
         Matrix.rotateM(mRotationMatrix, 0, mSceneAngleX, 0.0f, 0.0f, 1.0f);
 
+        mCurrentSceneAngleX +=mSceneAngleX;
+
 
         //Reset angle, we store the rotation in the matrix
         mSceneAngleX=0;
@@ -699,6 +768,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         //RotationY
         Matrix.rotateM(mRotationMatrix, 0, mSceneAngleY, 1.0f, 0.0f, 0.0f);
+
+        mCurrentSceneAngleY +=mSceneAngleY;
 
         mSceneAngleY=0;
 
