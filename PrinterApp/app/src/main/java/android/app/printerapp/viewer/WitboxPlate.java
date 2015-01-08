@@ -157,7 +157,7 @@ public class WitboxPlate {
     	
     	generatePlaneCoords(type,infinite);
 
-        mTextureDataHandle = loadTexture (mContext, R.drawable.texture_blue);
+        mTextureDataHandle = loadTexture (mContext, R.drawable.witbox_plate);
 
         // prepare shaders and OpenGL program
         int vertexShader = ViewerRenderer.loadShader(

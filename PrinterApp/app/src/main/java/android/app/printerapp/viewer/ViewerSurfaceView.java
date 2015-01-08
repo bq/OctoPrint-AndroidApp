@@ -14,10 +14,10 @@ import java.util.List;
 public class ViewerSurfaceView extends GLSurfaceView{
 	//View Modes
 	public static final int NORMAL = 0;
-	public static final int XRAY = 1;
+	public static final int XRAY = 4;
 	public static final int TRANSPARENT = 2;
 	public static final int LAYERS = 3;
-	public static final int OVERHANG = 4;
+	public static final int OVERHANG = 1;
 
     //Zoom limits
     public static final int MIN_ZOOM = -500;
