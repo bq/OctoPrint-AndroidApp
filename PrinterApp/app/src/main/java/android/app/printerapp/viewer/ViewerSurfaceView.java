@@ -82,6 +82,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public ViewerSurfaceView(Context context, AttributeSet attrs) {
 	    super(context, attrs);
 	}
+
+    //Double tap logic
+    boolean mDoubleTapFirstTouch = false;
+    long mDoubleTapCurrentTime = 0;
+
+    public static final int DOUBLE_TAP_MAX_TIME = 300;
 		
 	/**
 	 * 
@@ -315,7 +321,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mRenderer.generatePlate(type);
 
     }
-	
+
 	/**
 	 * On touch events
 	 */
@@ -368,7 +374,27 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					touchMode = TOUCH_DRAG;
 					mPreviousX = event.getX();
 					mPreviousY = event.getY();
-				}												
+				}
+
+                /*
+                Detect double-tapping to restore the panel
+                 */
+
+                if(mDoubleTapFirstTouch && (System.currentTimeMillis() - mDoubleTapCurrentTime) <= DOUBLE_TAP_MAX_TIME) { //Second touch
+                    //do stuff here for double tap
+                    Log.i("Slicer","Second tap");
+                    mDoubleTapFirstTouch = false;
+
+                    //Move the camera to the initial values once per frame
+                    while (!mRenderer.restoreInitialCameraPosition()){
+                        requestRender();
+                    };
+
+                } else { //First touch
+
+                    mDoubleTapFirstTouch = true;
+                    mDoubleTapCurrentTime = System.currentTimeMillis();
+                }
 				break;
 			case MotionEvent.ACTION_MOVE:	
 					float dx = x - mPreviousX;
@@ -448,7 +474,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 				touchMode = TOUCH_NONE;
 				requestRender();			
-				break;				
+				break;
 		}
 		return true;
 	}
