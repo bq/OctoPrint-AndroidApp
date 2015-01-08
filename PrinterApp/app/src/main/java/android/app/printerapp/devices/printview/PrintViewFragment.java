@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -80,6 +81,7 @@ public class PrintViewFragment extends Fragment {
     //File references
     private static DataStorage mDataGcode;
     private static ViewerSurfaceView mSurface;
+    private SurfaceView mVideoSurface;
     private static FrameLayout mLayout;
     private static FrameLayout mLayoutVideo;
 
@@ -143,7 +145,8 @@ public class PrintViewFragment extends Fragment {
                 mPrinter.getVideo().stopPlayback();
                 ((ViewGroup) mPrinter.getVideo().getParent()).removeAllViews();
             }*/
-            mLayoutVideo.addView(mCamera.getView());
+            mVideoSurface = mCamera.getView();
+            mLayoutVideo.addView(mVideoSurface);
 
             mCamera.startVideo();
 
@@ -162,6 +165,26 @@ public class PrintViewFragment extends Fragment {
             featuresTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_3d_text), R.drawable.visual_normal_24dp));
             featuresTab.setContent(R.id.view_gcode);
             tabHost.addTab(featuresTab);
+
+            tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+                @Override
+                public void onTabChanged(String s) {
+
+                    if (s.equals("Video")){
+
+                        mLayout.removeAllViews();
+
+                    } else {    //Redraw the gcode
+
+                       drawPrintView();
+                       mSurface.setZOrderOnTop(true);
+                    }
+
+                    mLayoutVideo.invalidate();
+
+                    Log.i(TAG,"Now showing: " + s);
+                }
+            });
 
             /***************************************************************************/
 
@@ -490,13 +513,6 @@ public class PrintViewFragment extends Fragment {
             Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
             Debug.getMemoryInfo(memoryInfo);
 
-            String memMessage = String.format(
-                    "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
-                    memoryInfo.getTotalPss() / 1024.0,
-                    memoryInfo.getTotalPrivateDirty() / 1024.0,
-                    memoryInfo.getTotalSharedDirty() / 1024.0);
-
-            Log.i(TAG, memMessage);
 
         } else {
 
