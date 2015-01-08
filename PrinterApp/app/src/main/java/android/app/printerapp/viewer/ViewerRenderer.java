@@ -57,6 +57,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public static final int RIGHT=1;
 	public static final int BACK=2;
 	public static final int LEFT=3;
+    public static final int FRONT=4;
+    public static final int TOP=5;
 	
 	public static final float LIGHT_X=0;
 	public static final float LIGHT_Y=0;
@@ -75,6 +77,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private WitboxFaces mWitboxFaceRight;
 	private WitboxFaces mWitboxFaceBack;
 	private WitboxFaces mWitboxFaceLeft;
+    private WitboxFaces mWitboxFaceFront;
+    private WitboxFaces mWitboxFaceTop;
 	private WitboxPlate mInfinitePlane;
 	private List<DataStorage> mDataList;
 
@@ -83,6 +87,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private boolean mShowRightWitboxFace = true;
 	private boolean mShowBackWitboxFace= true;
 	private boolean mShowDownWitboxFace = true;
+    private boolean mShowFrontWitboxFace = true;
+    private boolean mShowTopWitboxFace = true;
 	
 	public float[] final_matrix_R_Render = new float[16];
 	public float[] final_matrix_S_Render = new float[16];
@@ -541,6 +547,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
             mWitboxFaceBack.generatePlaneCoords(BACK, type);
             mWitboxFaceRight.generatePlaneCoords(RIGHT, type);
             mWitboxFaceLeft.generatePlaneCoords(LEFT, type);
+            mWitboxFaceFront.generatePlaneCoords(FRONT, type);
+            mWitboxFaceTop.generatePlaneCoords(TOP, type);
             mWitboxFaceDown.generatePlaneCoords(type, false);
 
         } catch (NullPointerException e){
@@ -621,7 +629,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-		
+
 		Matrix.setIdentityM(mModelMatrix, 0);
         mCurrentSceneAngleX = 0f;
         mCurrentSceneAngleY = 0f;
@@ -662,6 +670,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         mWitboxFaceBack = new WitboxFaces (BACK, ViewerMainFragment.getCurrentType());
         mWitboxFaceRight = new WitboxFaces (RIGHT, ViewerMainFragment.getCurrentType());
         mWitboxFaceLeft = new WitboxFaces (LEFT, ViewerMainFragment.getCurrentType());
+        mWitboxFaceFront = new WitboxFaces (FRONT, ViewerMainFragment.getCurrentType());
+        mWitboxFaceTop = new WitboxFaces (TOP, ViewerMainFragment.getCurrentType());
         mWitboxFaceDown = new WitboxPlate (mContext, false, ViewerMainFragment.getCurrentType());
 
         mLine = new Lines();
@@ -724,21 +734,30 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         else if (mCurrentSceneAngleY < -180) mCurrentSceneAngleY+=360;
 
         //Right wall
-        if ((mCurrentSceneAngleX<-20) && (mCurrentSceneAngleX>-180))mShowRightWitboxFace = false;
+        if ((mCurrentSceneAngleX<-10) && (mCurrentSceneAngleX>-180))mShowRightWitboxFace = false;
         else mShowRightWitboxFace = true;
 
         //Left wall
-        if ((mCurrentSceneAngleX>20) && (mCurrentSceneAngleX<180))mShowLeftWitboxFace = false;
+        if ((mCurrentSceneAngleX>10) && (mCurrentSceneAngleX<180))mShowLeftWitboxFace = false;
         else mShowLeftWitboxFace = true;
 
         //Back wall
-        if (((mCurrentSceneAngleX>110) && (mCurrentSceneAngleX<180))
-            ||((mCurrentSceneAngleX<-110) && (mCurrentSceneAngleX>-180))) mShowBackWitboxFace = false;
+        if (((mCurrentSceneAngleX>100) && (mCurrentSceneAngleX<180))
+            ||((mCurrentSceneAngleX<-100) && (mCurrentSceneAngleX>-180))) mShowBackWitboxFace = false;
         else mShowBackWitboxFace = true;
+
+        //Front wall
+        if (((mCurrentSceneAngleX<80) && (mCurrentSceneAngleX>0))
+                ||((mCurrentSceneAngleX<0) && (mCurrentSceneAngleX>-80))) mShowFrontWitboxFace = false;
+        else mShowFrontWitboxFace = true;
 
         //Plate --> Don't hide
         /*if ((mCurrentSceneAngleY<-40) && (mCurrentSceneAngleY>-180)) mShowDownWitboxFace = false;
         else mShowDownWitboxFace = true;*/
+
+        //Top wall
+        if ((mCurrentSceneAngleY<-30) && (mCurrentSceneAngleY>-180)) mShowTopWitboxFace = true;
+        else mShowTopWitboxFace = false;
 
     }
 
@@ -896,6 +915,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mMVPMatrix);
         	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mMVPMatrix);
         	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mMVPMatrix);
+            if (mShowFrontWitboxFace) mWitboxFaceFront.draw(mMVPMatrix);
+            if (mShowTopWitboxFace) mWitboxFaceTop.draw(mMVPMatrix);
 
         } 
 	}

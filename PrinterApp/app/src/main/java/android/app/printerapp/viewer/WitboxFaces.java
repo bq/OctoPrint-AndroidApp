@@ -173,7 +173,7 @@ public class WitboxFaces {
                         -mSizeArray[0],  mSizeArray[1], 0,   // bottom left
                         mSizeArray[0],  mSizeArray[1], 0,   // bottom right
                         mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
-                color[3] = 0.6f;
+                color[3] = 0.55f;
                 break;
             case ViewerRenderer.RIGHT:
                 mCoordsArray  = new float[]{
@@ -191,6 +191,25 @@ public class WitboxFaces {
                         -mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
 
                 color[3] = 0.5f;
+                break;
+            case ViewerRenderer.FRONT:
+                mCoordsArray = new float[]{
+                        -mSizeArray[0],  -mSizeArray[1], mSizeArray[2],   // top left
+                        -mSizeArray[0],  -mSizeArray[1], 0,   // bottom left
+                         mSizeArray[0],  -mSizeArray[1], 0,   // bottom right
+                         mSizeArray[0],  -mSizeArray[1], mSizeArray[2] }; // top right
+
+                color[3] = 0.55f;
+                break;
+
+            case ViewerRenderer.TOP:
+                mCoordsArray = new float[]{
+                        -mSizeArray[0],  mSizeArray[1], mSizeArray[2],   // top left
+                        -mSizeArray[0],  -mSizeArray[1], mSizeArray[2],   // bottom left
+                        mSizeArray[0],  -mSizeArray[1], mSizeArray[2],   // bottom right
+                        mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
+
+                color[3] = 0.6f;
                 break;
         }
 
