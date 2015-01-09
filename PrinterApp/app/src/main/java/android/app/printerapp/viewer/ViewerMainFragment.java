@@ -606,6 +606,40 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
+    /**
+     * Open a dialog if it's a GCODE to warn the user about unsaved data loss
+     * @param filePath
+     */
+    public static void openFileDialog(final String filePath){
+
+        if (LibraryController.hasExtension(0, filePath)){
+
+            openFile(filePath);
+
+        } else if (LibraryController.hasExtension(1, filePath)){
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+            adb.setTitle(R.string.warning);
+            adb.setMessage(R.string.viewer_open_gcode_dialog);
+            adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    openFile(filePath);
+
+                }
+            });
+
+            adb.setNegativeButton(R.string.cancel, null);
+
+            adb.show();
+        }
+
+
+
+    }
+
+
     public static void openFile(String filePath) {
         DataStorage data = null;
 

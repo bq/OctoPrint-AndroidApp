@@ -270,6 +270,7 @@
     <string name="viewer_text_slicing">Slicing...</string>
     <string name="viewer_text_uploading">Uploading...</string>
     <string name="viewer_text_done">done</string>
+    <string name="viewer_open_gcode_dialog">You will lose any unsaved data. Continue?</string>
 
 
 </resources>

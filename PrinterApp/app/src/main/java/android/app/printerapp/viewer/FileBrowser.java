@@ -1,22 +1,22 @@
 package android.app.printerapp.viewer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.view.KeyEvent;
-import android.app.printerapp.R;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * 
@@ -210,7 +210,7 @@ public class FileBrowser extends Activity  {
 		mFileListListener = new OnFileListDialogListener() {			
 			@Override
 			public void onClickFileList(File file) {
-				if (file!= null) ViewerMainFragment.openFile(file.getPath());
+				if (file!= null) ViewerMainFragment.openFileDialog(file.getPath());
 			}
 		};
 	}

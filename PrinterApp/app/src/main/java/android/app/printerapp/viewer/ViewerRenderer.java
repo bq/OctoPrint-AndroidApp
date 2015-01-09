@@ -559,73 +559,13 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
     }
 
-    /**
-     * Static values for camera auto movement and rotation
-     */
-    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.001;
-    private static final int CAMERA_MAX_ROTATION_DISTANCE = 5;
-    private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
-
-    /**
-     * Animation to restore initial position
-     * @return
-     */
-    public boolean restoreInitialCameraPosition(){
-
-
-        //Move X axis
-        if (mCameraX < 0) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if (mCameraX > 0) mCameraX-= CAMERA_MIN_TRANSLATION_DISTANCE;
-
-        //Move Y axis
-        if (mCameraY < -300) mCameraY+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if (mCameraY > -300) mCameraY-= CAMERA_MIN_TRANSLATION_DISTANCE;
-
-        //Move Z axis
-        if (mCameraZ < 300) mCameraZ+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if (mCameraZ>300) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
-
-        //Rotate X axis
-        if ((int)mCurrentSceneAngleX < -40f) {
-
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX > -50f) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
-        }
-        else if ((int)mCurrentSceneAngleX >-40f){
-
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX < -30f) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
-        }
-
-        //Rotate Y axis
-        if ((int)mCurrentSceneAngleY < 0) {
-
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleY > -10f) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleY = CAMERA_MAX_ROTATION_DISTANCE;
-        }
-        else if ((int)mCurrentSceneAngleY > 0) {
-
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleY < 10f) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleY = -CAMERA_MAX_ROTATION_DISTANCE;
-        }
-
-
-        //Return true when we get the final values
-        if (((int)mCameraZ == 300) && ((int)mCameraY == -300) && ((int)mCameraX == 0)
-                && ((int) mCurrentSceneAngleX ==-40) && ((int) mCurrentSceneAngleY == 0)) return true;
-        else return false;
-
-    }
-
-	  	  
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+
 		// Set the background frame color
 		GLES20.glClearColor( 0.9f, 0.9f, 0.9f, 1.0f);
+        //GLES20.glClearColor( 0.8f, 0.8f, 0.8f, 1.0f);
+
 
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -722,44 +662,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         }
 	}
 
-    //Hide walls according to a predetermined angle
-    private void hidePanelFaces(){
 
-        //Transport to degrees
-        if (mCurrentSceneAngleX > 180) mCurrentSceneAngleX-=360;
-        else if (mCurrentSceneAngleX < -180) mCurrentSceneAngleX+=360;
-
-        //Transport to degrees
-        if (mCurrentSceneAngleY > 180) mCurrentSceneAngleY-=360;
-        else if (mCurrentSceneAngleY < -180) mCurrentSceneAngleY+=360;
-
-        //Right wall
-        if ((mCurrentSceneAngleX<-10) && (mCurrentSceneAngleX>-180))mShowRightWitboxFace = false;
-        else mShowRightWitboxFace = true;
-
-        //Left wall
-        if ((mCurrentSceneAngleX>10) && (mCurrentSceneAngleX<180))mShowLeftWitboxFace = false;
-        else mShowLeftWitboxFace = true;
-
-        //Back wall
-        if (((mCurrentSceneAngleX>100) && (mCurrentSceneAngleX<180))
-            ||((mCurrentSceneAngleX<-100) && (mCurrentSceneAngleX>-180))) mShowBackWitboxFace = false;
-        else mShowBackWitboxFace = true;
-
-        //Front wall
-        if (((mCurrentSceneAngleX<80) && (mCurrentSceneAngleX>0))
-                ||((mCurrentSceneAngleX<0) && (mCurrentSceneAngleX>-80))) mShowFrontWitboxFace = false;
-        else mShowFrontWitboxFace = true;
-
-        //Plate --> Don't hide
-        /*if ((mCurrentSceneAngleY<-40) && (mCurrentSceneAngleY>-180)) mShowDownWitboxFace = false;
-        else mShowDownWitboxFace = true;*/
-
-        //Top wall
-        if ((mCurrentSceneAngleY<-30) && (mCurrentSceneAngleY>-180)) mShowTopWitboxFace = true;
-        else mShowTopWitboxFace = false;
-
-    }
 
 	@Override
 	public void onDrawFrame(GL10 unused) {
@@ -821,7 +724,13 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         mSceneAngleY=0;
 
-        hidePanelFaces();
+        //Transport to degrees
+        if (mCurrentSceneAngleX > 180) mCurrentSceneAngleX-=360;
+        else if (mCurrentSceneAngleX < -180) mCurrentSceneAngleX+=360;
+
+        //Transport to degrees
+        if (mCurrentSceneAngleY > 180) mCurrentSceneAngleY-=360;
+        else if (mCurrentSceneAngleY < -180) mCurrentSceneAngleY+=360;
 
         //Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
         Matrix.multiplyMM(mTemporaryMatrix, 0, mRotationMatrix, 0, mModelMatrix, 0);
@@ -1030,4 +939,76 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
              throw new RuntimeException(glOperation + ": glError " + error);
          }
      }
+
+
+    /***********************************************************************************
+     *
+     * Methods that use camera angles and position
+     *
+     ***********************************************************************************/
+
+    /**
+     * Static values for camera auto movement and rotation
+     */
+    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.001;
+    private static final int CAMERA_MAX_ROTATION_DISTANCE = 5;
+    private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
+
+
+    /**
+     * Animation to restore initial position
+     * @return
+     */
+    public boolean restoreInitialCameraPosition(){
+
+
+        //Move X axis
+        if (mCameraX < 0) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if (mCameraX > 0) mCameraX-= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        //Move Y axis
+        if (mCameraY < -300) mCameraY+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if (mCameraY > -300) mCameraY-= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        //Move Z axis
+        if (mCameraZ < 300) mCameraZ+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if (mCameraZ>300) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        //Rotate X axis
+        if ((int)mCurrentSceneAngleX < -40f) {
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleX > -50f) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
+        }
+        else if ((int)mCurrentSceneAngleX >-40f){
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleX < -30f) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
+        }
+
+        //Rotate Y axis
+        if ((int)mCurrentSceneAngleY < 0) {
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleY > -10f) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleY = CAMERA_MAX_ROTATION_DISTANCE;
+        }
+        else if ((int)mCurrentSceneAngleY > 0) {
+
+            //Slow rotation when approaching the final value
+            if ((int)mCurrentSceneAngleY < 10f) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
+            else mSceneAngleY = -CAMERA_MAX_ROTATION_DISTANCE;
+        }
+
+
+        //Return true when we get the final values
+        if (((int)mCameraZ == 300) && ((int)mCameraY == -300) && ((int)mCameraX == 0)
+                && ((int) mCurrentSceneAngleX ==-40) && ((int) mCurrentSceneAngleY == 0)) return true;
+        else return false;
+
+    }
+
+
 }

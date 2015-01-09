@@ -433,9 +433,8 @@ public class ItemListActivity extends ActionBarActivity implements
 
             @Override
             public void run() {
-                //Set printer separately to avoid bad coding
-                //ViewerMainFragment.setPrinter(p);
-                ViewerMainFragment.openFile(path);
+
+                ViewerMainFragment.openFileDialog(path);
             }
         });
 
