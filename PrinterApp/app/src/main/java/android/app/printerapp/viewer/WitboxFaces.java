@@ -48,6 +48,7 @@ public class WitboxFaces {
     public static int HEPHESTOS_LONG = 108;
 
     public int [] mSizeArray;
+    public int mType;
 	
     private FloatBuffer mVertexBuffer;
     private ShortBuffer mDrawListBuffer;
@@ -66,6 +67,9 @@ public class WitboxFaces {
     final int vertexStride = COORDS_PER_VERTEX * 4; // bytes per vertex
 
     float color[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
+    //float color[] = {    0.176f, 0.694f, 0.949f, 0.6f };
+
+
     
     private final short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
@@ -125,6 +129,8 @@ public class WitboxFaces {
             color[3] = 0.5f;
     		break;
     	}*/
+
+        mType = face;
 
         generatePlaneCoords(face,type);
 
@@ -268,8 +274,31 @@ public class WitboxFaces {
     public void draw(float[] mvpMatrix) {
 	    // Add program to OpenGL environment
 	    GLES20.glUseProgram(mProgram);
-	   
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        //enable cull face to hide sides if they overlap with each other
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+
+        //Since every wall is facing the same side, we need to treat them differently
+        switch(mType){
+
+            case ViewerRenderer.RIGHT:
+            case ViewerRenderer.FRONT:
+            case ViewerRenderer.TOP:
+
+                GLES20.glCullFace(GLES20.GL_FRONT);
+
+                break;
+
+            case ViewerRenderer.BACK:
+            case ViewerRenderer.LEFT:
+
+
+                GLES20.glCullFace(GLES20.GL_BACK);
+
+                break;
+        }
 
 	    // get handle to vertex shader's vPosition member
 	    mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
@@ -286,7 +315,7 @@ public class WitboxFaces {
 
 	    // Set color for drawing the triangle
 	    GLES20.glUniform4fv(mColorHandle, 1, color, 0);
-	    
+
 	    // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
         ViewerRenderer.checkGlError("glGetUniformLocation");
@@ -302,6 +331,8 @@ public class WitboxFaces {
 
 	    // Disable vertex array
 	    GLES20.glDisableVertexAttribArray(mPositionHandle);
+
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
     }
 }
 
