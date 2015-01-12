@@ -171,15 +171,15 @@ public class Lines {
         switch (currentAxis){
 
             case X_AXIS:
-                mCoordsArray = drawXAxis(data.getLastCenter(), data.getAdjustZ());
+                mCoordsArray = drawXAxis(data.getLastCenter(), data.getTrueCenter().z);
                 mCurrentColor = X_COLOR;
                 break;
             case Y_AXIS:
-                mCoordsArray = drawYAxis(data.getLastCenter(), data.getAdjustZ());
+                mCoordsArray = drawYAxis(data.getLastCenter(), data.getTrueCenter().z);
                 mCurrentColor = Y_COLOR;
                 break;
             case Z_AXIS:
-                mCoordsArray = drawZAxis(data.getLastCenter(), data.getAdjustZ());
+                mCoordsArray = drawZAxis(data.getLastCenter(), data.getTrueCenter().z);
                 mCurrentColor = Z_COLOR;
                 break;
             default:
@@ -214,9 +214,26 @@ public class Lines {
 
             GLES20.glDrawArrays(GLES20.GL_LINES, 0, vertexCount);
 
+            float points [] = new float[20];
+
+            int i = 0;
+            float radius = (float)0.75;
+
+            for (float angle = 0; angle < 2*Math.PI; angle += 0.630) {
+                points[i] = radius * (float)Math.cos(angle);
+                points[i] = radius * (float)Math.sin(angle);
+
+                i++;
+            }
+
+            GLES20.glDrawArrays(GLES20.GL_POINTS, 0, vertexCount);
+
+
             // Disable vertex array
             GLES20.glDisableVertexAttribArray(mPositionHandle);
         }
+
+
     }
 
     }

@@ -385,12 +385,22 @@ public class DataStorage {
 	
 	/************************* EDITION INFORMATION ********************************/
 	public void setLastCenter (Point p) {
-		mLastCenter = p;
+        mLastCenter = p;
 	}
+
+    public Point getTrueCenter() {
+
+        float x = (mMaxX + mMinX) / 2;
+        float y = (mMaxY + mMinY) / 2;
+        float z = (mMaxZ + mMinZ) / 2;
+
+        return new Point(x,y,z);
+
+    }
 
 	public Point getLastCenter () {
 		return mLastCenter;
-	}		
+	}
 	
 	public void setRotationMatrix (float [] m) {
 		for (int i=0;i<mRotationMatrix.length; i++) {

@@ -137,7 +137,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public final static int INSIDE_TOUCHED = 2;
 	public final static int OUT_TOUCHED = 3;
 
-    private Lines mLine;
+    private Circles mCircle;
+
     private int mAxis = -1;
 			
 	public ViewerRenderer (List<DataStorage> dataList, Context context, int state, int mode) {	
@@ -564,7 +565,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 		// Set the background frame color
 		GLES20.glClearColor( 0.9f, 0.9f, 0.9f, 1.0f);
-        //GLES20.glClearColor( 0.8f, 0.8f, 0.8f, 1.0f);
 
 
 		// Draw background color
@@ -614,7 +614,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         mWitboxFaceTop = new WitboxFaces (TOP, ViewerMainFragment.getCurrentType());
         mWitboxFaceDown = new WitboxPlate (mContext, false, ViewerMainFragment.getCurrentType());
 
-        mLine = new Lines();
+        mCircle = new Circles();
 	}
 
 	@Override
@@ -753,7 +753,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         	if (mObjectPressed!=-1) {
 		        DataStorage data = mDataList.get(mObjectPressed);
 		        Point center = data.getLastCenter();
-		
+
+                Log.i("CENTER","Settings center @" + center.x + ";" + center.y + ";" + center.z);
+
 		        Matrix.setIdentityM(mTemporaryModel, 0);
 		        Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);
 		        Matrix.scaleM(mTemporaryModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
@@ -782,7 +784,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
 
-                        mLine.draw(mDataList.get(i), mMVPMatrix, mAxis);
+                        mCircle.draw(mDataList.get(i), mMVPMatrix, mAxis);
 
                     } else  {
 	    				float [] modelMatrix = mDataList.get(i).getModelMatrix();
