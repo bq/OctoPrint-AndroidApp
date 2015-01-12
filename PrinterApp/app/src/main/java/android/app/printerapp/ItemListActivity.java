@@ -377,18 +377,6 @@ public class ItemListActivity extends ActionBarActivity implements
 
             Log.i("FRAGMENT","Current not null");
 
-            if (mCurrent == mLibraryFragment) {
-
-                Log.i("FRAGMENT","Curent is libray");
-
-                if (!mLibraryFragment.goBack()) {
-
-                    if (mManager.popBackStackImmediate());
-                    else super.onBackPressed();
-                }
-                else return;
-            } else {
-                Log.i("FRAGMENT","Current is not libray");
 
                 //Refresh printview fragment if exists
                 Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
@@ -396,7 +384,7 @@ public class ItemListActivity extends ActionBarActivity implements
 
                 if (mManager.popBackStackImmediate());
                 else super.onBackPressed();
-            }
+
         } else {
 
             Log.i("FRAGMENT","Current is null");

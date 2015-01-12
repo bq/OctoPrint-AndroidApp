@@ -124,6 +124,18 @@ public class LibraryFragment extends Fragment {
             if (backButton != null)
                 backButton.setColorFilter(getActivity().getResources().getColor(R.color.body_text_2),
                         PorterDuff.Mode.MULTIPLY);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //Logic to go back on the library navigation
+                    if (!LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
+                        Log.i("OUT", "This is " + LibraryController.getCurrentPath());
+                        LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
+                        sortAdapter();
+                    }
+                }
+            });
             l.setSelector(getResources().getDrawable(R.drawable.list_selector));
             l.setOnItemClickListener(clickListener);
             l.setDivider(null);
@@ -455,14 +467,4 @@ public class LibraryFragment extends Fragment {
         getActivity().invalidateOptionsMenu();
     }
 
-    //onBackPressed handler to the file browser
-    public boolean goBack() {
-        if (!LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
-            Log.i("OUT", "This is " + LibraryController.getCurrentPath());
-            LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
-            sortAdapter();
-            return true;
-        }
-        return false;
-    }
 }
