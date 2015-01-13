@@ -31,6 +31,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	private static float OFFSET_HEIGHT = 2f;
 	private static float OFFSET_BIG_HEIGHT = 5f;
+
+    private static final float INITIAL_ANGLE = 0f;
 	
 	private static int mWidth;
 	private static int mHeight;
@@ -122,8 +124,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private int mObjectPressed=-1;
 	
 	//Variables for object edition
-	float mDx;
-	float mDy;
+	float mDx = 0;
+	float mDy = 0;
 	float mDz;
 
 	private float mScaleFactorX=1.0f;
@@ -564,8 +566,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 
 		// Set the background frame color
-		GLES20.glClearColor( 0.9f, 0.9f, 0.9f, 1.0f);
-
+		//GLES20.glClearColor( 0.9f, 0.9f, 0.9f, 1.0f);
+        GLES20.glClearColor( 0.149f, 0.196f, 0.22f, 1.0f);
 
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -574,7 +576,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         mCurrentSceneAngleX = 0f;
         mCurrentSceneAngleY = 0f;
 			
-        mSceneAngleX = -40f;
+        mSceneAngleX = INITIAL_ANGLE;
         
         if (mDataList.size()>0)
 			if (isStl()) {
@@ -615,6 +617,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         mWitboxFaceDown = new WitboxPlate (mContext, false, ViewerMainFragment.getCurrentType());
 
         mCircle = new Circles();
+
 	}
 
 	@Override
@@ -660,7 +663,17 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         	mCameraY = -300f;
         	mCameraZ = 300f;
         }
+
 	}
+
+    void matrixTranslate(float x, float y, float z)
+    {
+
+        // Translate slots.
+        mDx += x;
+        mDy += y;
+        mViewMatrix[14] += z;
+    }
 
 
 
@@ -680,6 +693,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ, mCenterX, mCenterY, mCenterZ, 0f, 0.0f, 1.0f);
+
+        //Apply translation
+        mViewMatrix[12] += mDx;
+        mViewMatrix[13] += mDy;
         
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
@@ -748,7 +765,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
       	               
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
-      
+
         if (mDataList.size()>0) {
         	if (mObjectPressed!=-1) {
 		        DataStorage data = mDataList.get(mObjectPressed);
@@ -866,7 +883,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	public void setCameraPosZ (float z) {
 		mCameraZ = z;
 	}
-	
+
 	public float getCameraPosX () {
 		return mCameraX;
 	}
@@ -952,9 +969,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
     /**
      * Static values for camera auto movement and rotation
      */
-    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.001;
+    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.01;
     private static final int CAMERA_MAX_ROTATION_DISTANCE = 5;
     private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
+    private static final double POSITION_MIN_TRANSLATION_DISTANCE = 0.02;
 
 
     /**
@@ -963,6 +981,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
      */
     public boolean restoreInitialCameraPosition(){
 
+        //Plate translation
+        if (mDx<0) mDx+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if (mDx>0) mDx-=POSITION_MIN_TRANSLATION_DISTANCE;
+
+        if (mDy<0) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if (mDy>0) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
 
         //Move X axis
         if (mCameraX < 0) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
@@ -977,16 +1001,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         else if (mCameraZ>300) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
 
         //Rotate X axis
-        if ((int)mCurrentSceneAngleX < -40f) {
+        if ((int)mCurrentSceneAngleX < INITIAL_ANGLE) {
 
             //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX > -50f) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
+            if ((int)mCurrentSceneAngleX > -10f) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
             else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
         }
-        else if ((int)mCurrentSceneAngleX >-40f){
+        else if ((int)mCurrentSceneAngleX >INITIAL_ANGLE){
 
             //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX < -30f) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
+            if ((int)mCurrentSceneAngleX < -10f) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
             else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
         }
 
@@ -1007,7 +1031,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         //Return true when we get the final values
         if (((int)mCameraZ == 300) && ((int)mCameraY == -300) && ((int)mCameraX == 0)
-                && ((int) mCurrentSceneAngleX ==-40) && ((int) mCurrentSceneAngleY == 0)) return true;
+                && ((int) mCurrentSceneAngleX ==INITIAL_ANGLE) && ((int) mCurrentSceneAngleY == 0)
+                && ((int) mDx==0) && ((int) mDy == 0)) return true;
         else return false;
 
     }

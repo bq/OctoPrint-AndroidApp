@@ -1407,7 +1407,7 @@ public class ViewerMainFragment extends Fragment {
      */
     public static void displayModelSize(int position){
 
-
+    //TODO RANDOM CRASH ArrayIndexOutOfBoundsException
         DataStorage data = mDataList.get(position);
 
         //Set point instead of comma

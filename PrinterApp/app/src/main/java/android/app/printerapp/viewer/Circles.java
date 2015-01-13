@@ -187,7 +187,7 @@ public class Circles {
 
         }
 
-        return value;
+        return (value / 2) + 20f;
     }
 
     //Draw the circle
@@ -252,7 +252,7 @@ public class Circles {
             ViewerRenderer.checkGlError("glUniformMatrix4fv");
 
             GLES20.glLineWidth(LINE_WIDTH);
-            GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, vertexCount);
+            GLES20.glDrawArrays(GLES20.GL_LINE_STRIP, 0, vertexCount);
 
 
             // Disable vertex array
