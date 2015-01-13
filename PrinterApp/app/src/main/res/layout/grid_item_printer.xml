@@ -66,6 +66,7 @@
         android:layout_height="7dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
+        android:layout_margin="3dp"
         android:visibility="visible"
         android:progressDrawable="@drawable/progressbar_style"/>
 

@@ -22,7 +22,7 @@ public class SplashScreenActivity extends Activity {
     private static final String TAG = "SplashScreenActivity";
 
     //Set the duration of the splash screen
-    private static final long SPLASH_SCREEN_DELAY = 3000;
+    private static final long SPLASH_SCREEN_DELAY = 1000;
 
     Context mContext;
 

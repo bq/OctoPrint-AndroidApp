@@ -32,7 +32,13 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private static float OFFSET_HEIGHT = 2f;
 	private static float OFFSET_BIG_HEIGHT = 5f;
 
-    private static final float INITIAL_ANGLE = 0f;
+    private static final float ANGLE_X = 0f;
+    private static final float ANGLE_Y = -5f;
+    private static final float CAMERA_DEFAULT_X = 0f;
+    private static final float CAMERA_DEFAULT_Y = -300f;
+    private static final float CAMERA_DEFAULT_Z = 350f;
+    private static final float POSITION_DEFAULT_X = 0f;
+    private static final float POSITION_DEFAULT_Y = -50f;
 	
 	private static int mWidth;
 	private static int mHeight;
@@ -124,8 +130,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	private int mObjectPressed=-1;
 	
 	//Variables for object edition
-	float mDx = 0;
-	float mDy = 0;
+	float mDx = POSITION_DEFAULT_X;
+	float mDy = POSITION_DEFAULT_Y;
 	float mDz;
 
 	private float mScaleFactorX=1.0f;
@@ -576,7 +582,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         mCurrentSceneAngleX = 0f;
         mCurrentSceneAngleY = 0f;
 			
-        mSceneAngleX = INITIAL_ANGLE;
+        mSceneAngleX = ANGLE_X;
+        mSceneAngleY = ANGLE_Y;
         
         if (mDataList.size()>0)
 			if (isStl()) {
@@ -658,20 +665,34 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        
 	        if (dw>dh && dw>dl) mCameraY = - dw;
 	        else if (dh>dl) mCameraY = -dh;
-	        else mCameraY = - dl;        
+	        else mCameraY = - dl;
+
+            mCameraY = CAMERA_DEFAULT_Y;
+            mCameraZ = CAMERA_DEFAULT_Z;
         } else {
-        	mCameraY = -300f;
-        	mCameraZ = 300f;
+
+        	mCameraY = CAMERA_DEFAULT_Y;
+        	mCameraZ = CAMERA_DEFAULT_Z;
         }
 
 	}
 
+    /**
+     * Translate the matrix x;y pixels
+     * Check for screen limits
+     * @param x
+     * @param y
+     * @param z
+     */
     void matrixTranslate(float x, float y, float z)
     {
 
         // Translate slots.
-        mDx += x;
-        mDy += y;
+        mDx+=x;
+        mDy+=y;
+
+        if ((mDx < -300) || (mDx > 300)) mDx-=x ;
+        if ((mDy < -250) || (mDy > 250)) mDy-=y ;
         mViewMatrix[14] += z;
     }
 
@@ -969,10 +990,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
     /**
      * Static values for camera auto movement and rotation
      */
-    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.01;
+    private static final double CAMERA_MIN_TRANSLATION_DISTANCE = 0.1;
     private static final int CAMERA_MAX_ROTATION_DISTANCE = 5;
     private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
-    private static final double POSITION_MIN_TRANSLATION_DISTANCE = 0.02;
+    private static final double POSITION_MIN_TRANSLATION_DISTANCE = 0.05;
 
 
     /**
@@ -982,58 +1003,62 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
     public boolean restoreInitialCameraPosition(){
 
         //Plate translation
-        if (mDx<0) mDx+= POSITION_MIN_TRANSLATION_DISTANCE;
-        else if (mDx>0) mDx-=POSITION_MIN_TRANSLATION_DISTANCE;
+        if ((int)mDx<POSITION_DEFAULT_X) mDx+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mDx>POSITION_DEFAULT_X) mDx-=POSITION_MIN_TRANSLATION_DISTANCE;
 
-        if (mDy<0) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
-        else if (mDy>0) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
+        if ((int)mDy<POSITION_DEFAULT_Y) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mDy>POSITION_DEFAULT_Y) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
 
         //Move X axis
-        if (mCameraX < 0) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if (mCameraX > 0) mCameraX-= CAMERA_MIN_TRANSLATION_DISTANCE;
+        if ((int)mCameraX < CAMERA_DEFAULT_X) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mCameraX > CAMERA_DEFAULT_X) mCameraX-= CAMERA_MIN_TRANSLATION_DISTANCE;
 
         //Move Y axis
-        if (mCameraY < -300) mCameraY+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if (mCameraY > -300) mCameraY-= CAMERA_MIN_TRANSLATION_DISTANCE;
+        if ((int)mCameraY < CAMERA_DEFAULT_Y) mCameraY+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mCameraY > CAMERA_DEFAULT_Y) mCameraY-= CAMERA_MIN_TRANSLATION_DISTANCE;
 
         //Move Z axis
-        if (mCameraZ < 300) mCameraZ+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if (mCameraZ>300) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
+        if ((int)mCameraZ < CAMERA_DEFAULT_Z) mCameraZ+= CAMERA_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mCameraZ > CAMERA_DEFAULT_Z) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
 
         //Rotate X axis
-        if ((int)mCurrentSceneAngleX < INITIAL_ANGLE) {
+        if ((int)mCurrentSceneAngleX < ANGLE_X) {
 
             //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX > -10f) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
+            if ((int)mCurrentSceneAngleX > (ANGLE_X -10f)) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
             else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
         }
-        else if ((int)mCurrentSceneAngleX >INITIAL_ANGLE){
+        else if ((int)mCurrentSceneAngleX > ANGLE_X){
 
             //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX < -10f) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
+            if ((int)mCurrentSceneAngleX < (ANGLE_X + 10f)) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
             else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
         }
 
         //Rotate Y axis
-        if ((int)mCurrentSceneAngleY < 0) {
+        if ((int)mCurrentSceneAngleY < ANGLE_Y) {
 
             //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleY > -10f) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
+            if ((int)mCurrentSceneAngleY > (ANGLE_Y -10f)) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
             else mSceneAngleY = CAMERA_MAX_ROTATION_DISTANCE;
         }
-        else if ((int)mCurrentSceneAngleY > 0) {
+        else if ((int)mCurrentSceneAngleY > ANGLE_Y) {
 
             //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleY < 10f) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
+            if ((int)mCurrentSceneAngleY < (ANGLE_Y + 10f)) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
             else mSceneAngleY = -CAMERA_MAX_ROTATION_DISTANCE;
         }
 
 
         //Return true when we get the final values
-        if (((int)mCameraZ == 300) && ((int)mCameraY == -300) && ((int)mCameraX == 0)
-                && ((int) mCurrentSceneAngleX ==INITIAL_ANGLE) && ((int) mCurrentSceneAngleY == 0)
-                && ((int) mDx==0) && ((int) mDy == 0)) return true;
-        else return false;
+        if (((int)mCameraZ == CAMERA_DEFAULT_Z) && ((int)mCameraY == CAMERA_DEFAULT_Y) && ((int)mCameraX == CAMERA_DEFAULT_X)
+                && ((int) mCurrentSceneAngleX == ANGLE_X) && ((int) mCurrentSceneAngleY == ANGLE_Y)
+                && ((int) mDx==POSITION_DEFAULT_X) && ((int) mDy == POSITION_DEFAULT_Y)) return true;
+        else {
+
+            Log.i("CAMERA","FAIL: " + mCameraX +";" + mCameraY + ";" + mCameraZ);
+            return false;
+        }
 
     }
 

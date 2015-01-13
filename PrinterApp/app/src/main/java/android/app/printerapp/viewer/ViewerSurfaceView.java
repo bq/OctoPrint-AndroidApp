@@ -330,7 +330,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mMode == ViewerMainFragment.PRINT_PREVIEW) return false;
+		//if (mMode == ViewerMainFragment.PRINT_PREVIEW) return false;
 
 		float x = event.getX();
         float y = event.getY();
@@ -369,45 +369,56 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				break;
 			case MotionEvent.ACTION_DOWN:
 
-				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
-					int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
-					if (objPressed!=-1 && isStl()) {
-						mEdition = true;
-						mObjectPressed=objPressed;
-						ViewerMainFragment.showActionModePopUpWindow();
-                        ViewerMainFragment.displayModelSize(mObjectPressed);
 
-					}
-                    else {
-                        ViewerMainFragment.hideActionModePopUpWindow();
+                mPreviousX = event.getX();
+                mPreviousY = event.getY();
+                mPreviousDragX = mPreviousX;
+                mPreviousDragY = mPreviousY;
+
+                if (mMode!= ViewerMainFragment.PRINT_PREVIEW){
+
+                    if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
+                        int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
+                        if (objPressed!=-1 && isStl()) {
+                            mEdition = true;
+                            mObjectPressed=objPressed;
+                            ViewerMainFragment.showActionModePopUpWindow();
+                            ViewerMainFragment.displayModelSize(mObjectPressed);
+
+                        }
+                        else {
+                            ViewerMainFragment.hideActionModePopUpWindow();
+
+                        }
 
                     }
-					touchMode = TOUCH_DRAG;
-					mPreviousX = event.getX();
-					mPreviousY = event.getY();
-                    mPreviousDragX = mPreviousX;
-                    mPreviousDragY = mPreviousY;
-				}
 
                 /*
                 Detect double-tapping to restore the panel
                  */
 
-                if(mDoubleTapFirstTouch && (System.currentTimeMillis() - mDoubleTapCurrentTime) <= DOUBLE_TAP_MAX_TIME) { //Second touch
 
-                    //do stuff here for double tap
-                    mDoubleTapFirstTouch = false;
+                    if(mDoubleTapFirstTouch && (System.currentTimeMillis() - mDoubleTapCurrentTime) <= DOUBLE_TAP_MAX_TIME) { //Second touch
 
-                    //Move the camera to the initial values once per frame
-                    while (!mRenderer.restoreInitialCameraPosition()){
-                        requestRender();
-                    };
+                        //do stuff here for double tap
+                        mDoubleTapFirstTouch = false;
 
-                } else { //First touch
+                        //Move the camera to the initial values once per frame
+                        while (!mRenderer.restoreInitialCameraPosition()){
+                            requestRender();
+                        };
 
-                    mDoubleTapFirstTouch = true;
-                    mDoubleTapCurrentTime = System.currentTimeMillis();
+                    } else { //First touch
+
+                        mDoubleTapFirstTouch = true;
+                        mDoubleTapCurrentTime = System.currentTimeMillis();
+                    }
+
                 }
+
+                touchMode = TOUCH_DRAG;
+
+
 				break;
 			case MotionEvent.ACTION_MOVE:
 
