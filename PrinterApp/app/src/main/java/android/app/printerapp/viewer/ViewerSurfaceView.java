@@ -22,6 +22,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
     //Zoom limits
     public static final int MIN_ZOOM = -500;
     public static final int MAX_ZOOM = -30;
+    public static final float SCALE_FACTOR = 400f;
 		
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
@@ -30,6 +31,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private final float TOUCH_SCALE_FACTOR_ROTATION = 90.0f / 320;  //180.0f / 320;
 	private float mPreviousX;
 	private float mPreviousY;
+    private float mPreviousDragX;
+    private float mPreviousDragY;
 	
    // zoom rate (larger > 1.0f > smaller)
 	private float pinchScale = 1.0f;
@@ -327,7 +330,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mMode == ViewerMainFragment.PRINT_PREVIEW) return false;
+		//if (mMode == ViewerMainFragment.PRINT_PREVIEW) return false;
 
 		float x = event.getX();
         float y = event.getY();
@@ -338,88 +341,107 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
 			case MotionEvent.ACTION_POINTER_DOWN:
+
+                if (mMovementMode!=TRANSLATION_MODE)
 				if (event.getPointerCount() >= 2) {
+
+                    mMovementMode = TRANSLATION_MODE;
+
 					pinchStartDistance = getPinchDistance(event);
 					pinchStartY = mRenderer.getCameraPosY();
 					pinchStartZ = mRenderer.getCameraPosZ();
-					
+
 					if (mObjectPressed!=-1) {
 						pinchStartFactorX = mDataList.get(mObjectPressed).getLastScaleFactorX();
 						pinchStartFactorY = mDataList.get(mObjectPressed).getLastScaleFactorY();
 						pinchStartFactorZ = mDataList.get(mObjectPressed).getLastScaleFactorZ();
 					}
 
-					if (pinchStartDistance > 50f) {
+					if (pinchStartDistance > 0f) {
 						getPinchCenterPoint(event, pinchStartPoint);
 						mPreviousX = pinchStartPoint.x;
 						mPreviousY = pinchStartPoint.y;
 						touchMode = TOUCH_ZOOM;
+
 					}
+
 				}
 				break;
 			case MotionEvent.ACTION_DOWN:
-				if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
-					int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
-					if (objPressed!=-1 && isStl()) {
-						mEdition = true;
-						mObjectPressed=objPressed;
-						ViewerMainFragment.showActionModePopUpWindow();
-                        ViewerMainFragment.displayModelSize(mObjectPressed);
 
-					}
-                    else {
-                        ViewerMainFragment.hideActionModePopUpWindow();
+
+                mPreviousX = event.getX();
+                mPreviousY = event.getY();
+                mPreviousDragX = mPreviousX;
+                mPreviousDragY = mPreviousY;
+
+                if (mMode!= ViewerMainFragment.PRINT_PREVIEW){
+
+                    if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
+                        int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
+                        if (objPressed!=-1 && isStl()) {
+                            mEdition = true;
+                            mObjectPressed=objPressed;
+                            ViewerMainFragment.showActionModePopUpWindow();
+                            ViewerMainFragment.displayModelSize(mObjectPressed);
+
+                        }
+                        else {
+                            ViewerMainFragment.hideActionModePopUpWindow();
+
+                        }
 
                     }
-					touchMode = TOUCH_DRAG;
-					mPreviousX = event.getX();
-					mPreviousY = event.getY();
-				}
 
                 /*
                 Detect double-tapping to restore the panel
                  */
 
-                if(mDoubleTapFirstTouch && (System.currentTimeMillis() - mDoubleTapCurrentTime) <= DOUBLE_TAP_MAX_TIME) { //Second touch
-                    //do stuff here for double tap
-                    Log.i("Slicer","Second tap");
-                    mDoubleTapFirstTouch = false;
 
-                    //Move the camera to the initial values once per frame
-                    while (!mRenderer.restoreInitialCameraPosition()){
-                        requestRender();
-                    };
+                    if(mDoubleTapFirstTouch && (System.currentTimeMillis() - mDoubleTapCurrentTime) <= DOUBLE_TAP_MAX_TIME) { //Second touch
 
-                } else { //First touch
+                        //do stuff here for double tap
+                        mDoubleTapFirstTouch = false;
 
-                    mDoubleTapFirstTouch = true;
-                    mDoubleTapCurrentTime = System.currentTimeMillis();
+                        //Move the camera to the initial values once per frame
+                        while (!mRenderer.restoreInitialCameraPosition()){
+                            requestRender();
+                        };
+
+                    } else { //First touch
+
+                        mDoubleTapFirstTouch = true;
+                        mDoubleTapCurrentTime = System.currentTimeMillis();
+                    }
+
                 }
-				break;
-			case MotionEvent.ACTION_MOVE:	
-					float dx = x - mPreviousX;
-					float dy = y - mPreviousY;
-										
-					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0) {
-						// on pinch
-						PointF pt = new PointF();
-						getPinchCenterPoint(event, pt);
-						
-						mPreviousX = pt.x;
-						mPreviousY = pt.y;
-										
-						pinchScale = getPinchDistance(event) / pinchStartDistance;
-						
-														
-						if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
-							float fx = pinchStartFactorX*pinchScale;
-							float fy = pinchStartFactorY*pinchScale;
-							float fz = pinchStartFactorZ*pinchScale;
 
-							mRenderer.scaleObject(fx,fy,fz);
+                touchMode = TOUCH_DRAG;
+
+
+				break;
+			case MotionEvent.ACTION_MOVE:
+
+					if (touchMode == TOUCH_ZOOM && pinchStartDistance > 0f) {
+
+                        pinchScale = getPinchDistance(event) / pinchStartDistance;
+
+                        // on pinch
+                        PointF pt = new PointF();
+                        getPinchCenterPoint(event, pt);
+
+                        mPreviousX = pt.x;
+                        mPreviousY = pt.y;
+
+                        if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
+                            float fx = pinchStartFactorX*pinchScale;
+                            float fy = pinchStartFactorY*pinchScale;
+                            float fz = pinchStartFactorZ*pinchScale;
+
+                            mRenderer.scaleObject(fx,fy,fz);
                             ViewerMainFragment.displayModelSize(mObjectPressed);
 
-						} else {
+                        } else {
 
                             /**
                              * Zoom controls will be limited to MIN and MAX
@@ -438,27 +460,41 @@ public class ViewerSurfaceView extends GLSurfaceView{
                                 mRenderer.setCameraPosZ(pinchStartZ / pinchScale);
                             }
 
-						}
+                            requestRender();
 
-						requestRender();
+                        }
 
-						
-					}else if (touchMode == TOUCH_DRAG) {
-						mPreviousX = x;
-					    mPreviousY = y;
-					    
-					    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
-					    	mRenderer.dragObject(normalizedX, normalizedY);
-					    } else 	dragAccordingToMode (dx,dy);
-					    				    
+
 					}
+
+                //Drag plate
+                if (touchMode != TOUCH_NONE)
+                if (pinchScale<1.5f) { //Min value to end dragging
+
+                    //Hold its own previous drag
+                    float dx = x - mPreviousDragX;
+                    float dy = y - mPreviousDragY;
+
+                    mPreviousDragX = x;
+                    mPreviousDragY = y;
+
+
+                    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
+                        mRenderer.dragObject(normalizedX, normalizedY);
+                    } else 	if (!mEdition) dragAccordingToMode (dx,dy); //drag if there is no model
+                }
+
 
 					requestRender();
 	                break;
 			
 			// end pinch
 			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_POINTER_UP:		
+
+                mMovementMode = ROTATION_MODE;
+
+			case MotionEvent.ACTION_POINTER_UP:
+
 				if (touchMode == TOUCH_ZOOM) {
 					pinchScale = 1.0f;
 					pinchStartPoint.x = 0.0f;
@@ -473,6 +509,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                 }
 
 				touchMode = TOUCH_NONE;
+
 				requestRender();			
 				break;
 		}
@@ -506,9 +543,13 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		switch (mMovementMode) {
 		case ROTATION_MODE:
 			doRotation (dx,dy);
+            //doTranslation (dx,dy);
 			break;
 		case TRANSLATION_MODE:
-			doTranslation (dx,dy);
+            Log.i("PINCH","Moviendo:" + mRenderer.getCameraPosY());
+
+            float scale = -mRenderer.getCameraPosY() / 500f;
+			doTranslation ((dx * scale) , (dy * scale));
 			break;
 		}
 	}
@@ -541,8 +582,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 * @param dy movement on y axis
 	 */
 	private void doTranslation(float dx, float dy) {
-		mRenderer.setCenterX(-dx);
-		mRenderer.setCenterZ(dy); //
+
+        //mRenderer.setCenterX(-1);
+		//mRenderer.setCenterY(-1);
+        mRenderer.matrixTranslate(dx,-dy,0);
 	}
 	
 	/**

@@ -35,9 +35,11 @@ public class Lines {
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
 
-    private static final float[] X_COLOR = { 0.0f, 0.9f, 0.0f, 1.0f };
-    private static final float[] Y_COLOR = { 1.0f, 0.0f, 0.0f, 1.0f };
-    private static final float[] Z_COLOR = { 0.0f, 0.0f, 1.0f, 1.0f };
+    private static final float TRANSPARENCY = 0.5f;
+
+    private static final float[] X_COLOR = { 0.0f, 0.9f, 0.0f, TRANSPARENCY };
+    private static final float[] Y_COLOR = { 1.0f, 0.0f, 0.0f, TRANSPARENCY };
+    private static final float[] Z_COLOR = { 0.0f, 0.0f, 1.0f, TRANSPARENCY };
 
 
 

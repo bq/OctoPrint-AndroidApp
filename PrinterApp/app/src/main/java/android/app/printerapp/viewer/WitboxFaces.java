@@ -66,8 +66,8 @@ public class WitboxFaces {
     int vertexCount;
     final int vertexStride = COORDS_PER_VERTEX * 4; // bytes per vertex
 
-    float color[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
-    //float color[] = {    0.176f, 0.694f, 0.949f, 0.6f };
+    //float color[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
+    float color[] = {1.0f, 1.0f, 1.0f, 0.6f };
 
 
     
@@ -179,7 +179,7 @@ public class WitboxFaces {
                         -mSizeArray[0],  mSizeArray[1], 0,   // bottom left
                         mSizeArray[0],  mSizeArray[1], 0,   // bottom right
                         mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
-                color[3] = 0.55f;
+                color[3] = 0.3f;
                 break;
             case ViewerRenderer.RIGHT:
                 mCoordsArray  = new float[]{
@@ -187,7 +187,7 @@ public class WitboxFaces {
                         mSizeArray[0], -mSizeArray[1], 0,   // bottom left
                         mSizeArray[0],  mSizeArray[1], 0,   // bottom right
                         mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
-                color[3] = 0.5f;
+                color[3] = 0.35f;
                 break;
             case ViewerRenderer.LEFT:
                 mCoordsArray = new float[]{
@@ -196,7 +196,7 @@ public class WitboxFaces {
                         -mSizeArray[0],  mSizeArray[1], 0,   // bottom right
                         -mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
 
-                color[3] = 0.5f;
+                color[3] = 0.35f;
                 break;
             case ViewerRenderer.FRONT:
                 mCoordsArray = new float[]{
@@ -205,7 +205,7 @@ public class WitboxFaces {
                          mSizeArray[0],  -mSizeArray[1], 0,   // bottom right
                          mSizeArray[0],  -mSizeArray[1], mSizeArray[2] }; // top right
 
-                color[3] = 0.55f;
+                color[3] = 0.3f;
                 break;
 
             case ViewerRenderer.TOP:
@@ -215,7 +215,7 @@ public class WitboxFaces {
                         mSizeArray[0],  -mSizeArray[1], mSizeArray[2],   // bottom right
                         mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
 
-                color[3] = 0.6f;
+                color[3] = 0.4f;
                 break;
         }
 
@@ -275,7 +275,7 @@ public class WitboxFaces {
 	    // Add program to OpenGL environment
 	    GLES20.glUseProgram(mProgram);
 
-        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         //enable cull face to hide sides if they overlap with each other
         GLES20.glEnable(GLES20.GL_CULL_FACE);
@@ -329,10 +329,29 @@ public class WitboxFaces {
                 GLES20.GL_TRIANGLES, drawOrder.length,
                 GLES20.GL_UNSIGNED_SHORT, mDrawListBuffer);
 
+
+        /*******
+         * Draw the boders of the plate
+         *******/
+
+        //Disable depth test to draw lines always in the front
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+
+        //new color
+        float color2[] = {1.0f, 1.0f, 1.0f, 0.01f };
+        GLES20.glUniform4fv(mColorHandle, 1, color2, 0);
+
+        //Draw as a line loop
+        GLES20.glLineWidth(3f);
+        GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, vertexCount);
+
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+
 	    // Disable vertex array
 	    GLES20.glDisableVertexAttribArray(mPositionHandle);
 
-        GLES20.glDisable(GLES20.GL_CULL_FACE);
+
     }
 }
 

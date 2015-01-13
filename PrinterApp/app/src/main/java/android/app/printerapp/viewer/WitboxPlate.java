@@ -103,7 +103,8 @@ public class WitboxPlate {
 
     List<Float> lineCoordsList = new ArrayList<Float>();
 
-    float mColor[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
+    //float mColor[] = {0.260784f, 0.460784f, 0.737255f, 0.6f };
+    float mColor[] = {1.0f, 1.0f, 1.0f, 0.5f };
     
     private final short mDrawOrder[] = {0, 1, 3, 1, 2, 3}; // order to draw vertices
     
@@ -302,7 +303,7 @@ public class WitboxPlate {
 	    // Add program to OpenGL environment
 	    GLES20.glUseProgram(mProgram);
 
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 
 	    mTextureCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_TexCoordinate");

@@ -39,12 +39,14 @@ public class Circles {
     public static final int Z_AXIS = 2;
 
     //Default line width
-    public static final float LINE_WIDTH = 3f;
+    public static final float LINE_WIDTH = 2f;
+
+    private static final float TRANSPARENCY = 0.5f;
 
     //Axis color
-    private static final float[] X_COLOR = { 0.0f, 0.9f, 0.0f, 1.0f };
-    private static final float[] Y_COLOR = { 1.0f, 0.0f, 0.0f, 1.0f };
-    private static final float[] Z_COLOR = { 0.0f, 0.0f, 1.0f, 1.0f };
+    private static final float[] X_COLOR = { 0.0f, 0.9f, 0.0f, TRANSPARENCY };
+    private static final float[] Y_COLOR = { 1.0f, 0.0f, 0.0f, TRANSPARENCY };
+    private static final float[] Z_COLOR = { 0.0f, 0.0f, 1.0f, TRANSPARENCY };
 
     //Circle vertices
     private float vertices[] = new float[364 * 3];
@@ -187,7 +189,7 @@ public class Circles {
 
         }
 
-        return value;
+        return (value / 2) + 20f;
     }
 
     //Draw the circle
@@ -196,7 +198,8 @@ public class Circles {
         // Add program to OpenGL environment
         GLES20.glUseProgram(mProgram);
 
-        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable (GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
@@ -252,7 +255,7 @@ public class Circles {
             ViewerRenderer.checkGlError("glUniformMatrix4fv");
 
             GLES20.glLineWidth(LINE_WIDTH);
-            GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, vertexCount);
+            GLES20.glDrawArrays(GLES20.GL_LINE_STRIP, 0, vertexCount);
 
 
             // Disable vertex array

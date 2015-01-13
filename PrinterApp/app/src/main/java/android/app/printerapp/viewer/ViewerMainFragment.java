@@ -344,30 +344,39 @@ public class ViewerMainFragment extends Fragment {
                 float newAngle = (i - 12) * POSITIVE_ANGLE;
 
 
-                if (!lock) {
+                //TODO FINGER CRASH
+                try {
 
-                    switch (mCurrentAxis) {
 
-                        case 0:
-                            mSurface.rotateAngleAxisX(newAngle);
-                            break;
-                        case 1:
-                            mSurface.rotateAngleAxisY(newAngle);
-                            break;
-                        case 2:
-                            mSurface.rotateAngleAxisZ(newAngle);
-                            break;
-                        default:
-                            return;
+                    if (!lock) {
+
+                        switch (mCurrentAxis) {
+
+                            case 0:
+                                mSurface.rotateAngleAxisX(newAngle);
+                                break;
+                            case 1:
+                                mSurface.rotateAngleAxisY(newAngle);
+                                break;
+                            case 2:
+                                mSurface.rotateAngleAxisZ(newAngle);
+                                break;
+                            default:
+                                return;
+
+                        }
 
                     }
 
+
+                    mRotationText.setText((int) newAngle + "º");
+
+                    mSurface.requestRender();
+
+                } catch (ArrayIndexOutOfBoundsException e){
+
+                    e.printStackTrace();
                 }
-
-
-                mRotationText.setText((int) newAngle + "º");
-
-                mSurface.requestRender();
 
             }
 
@@ -1406,24 +1415,30 @@ public class ViewerMainFragment extends Fragment {
      * Display model width, depth and height when touched
      */
     public static void displayModelSize(int position){
+        try {
+            //TODO RANDOM CRASH ArrayIndexOutOfBoundsException
+            DataStorage data = mDataList.get(position);
+
+            //Set point instead of comma
+            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+            otherSymbols.setDecimalSeparator('.');
+            otherSymbols.setGroupingSeparator(',');
+
+            //Define new decimal format to display only 2 decimals
+            DecimalFormat df = new DecimalFormat("##.##", otherSymbols);
+
+            String width = df.format((data.getMaxX() - data.getMinX()));
+            String depth = df.format((data.getMaxY() - data.getMinY()));
+            String height = df.format((data.getMaxZ() - data.getMinZ()));
+
+            //Display size of the model
+            mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
+        } catch (ArrayIndexOutOfBoundsException e){
+
+            e.printStackTrace();
+        }
 
 
-        DataStorage data = mDataList.get(position);
-
-        //Set point instead of comma
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-        otherSymbols.setDecimalSeparator('.');
-        otherSymbols.setGroupingSeparator(',');
-
-        //Define new decimal format to display only 2 decimals
-        DecimalFormat df = new DecimalFormat("##.##", otherSymbols);
-
-        String width = df.format((data.getMaxX() - data.getMinX()));
-        String depth = df.format((data.getMaxY() - data.getMinY()));
-        String height = df.format((data.getMaxZ() - data.getMinZ()));
-
-        //Display size of the model
-        mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
     }
 
     /**
