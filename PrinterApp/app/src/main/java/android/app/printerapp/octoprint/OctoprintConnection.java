@@ -132,7 +132,8 @@ public class OctoprintConnection {
                     convertType(p, current.getString("printerProfile"));
 
                     //retrieve settings
-                    getUpdatedSettings(p,current.getString("printerProfile"));
+                    //getUpdatedSettings(p,current.getString("printerProfile"));
+                    getSettings(p);
 
                     Intent intent = new Intent("notify");
                     intent.putExtra("message", "Devices");
@@ -226,7 +227,8 @@ public class OctoprintConnection {
                                 //load information
                                 p.setPort(current.getString("port"));
                                 convertType(p, current.getString("printerProfile"));
-                                getUpdatedSettings(p,current.getString("printerProfile"));
+                                //getUpdatedSettings(p,current.getString("printerProfile"));
+                                getSettings(p);
                                 Log.i("Connection","Printer already connected to " + p.getPort());
 
                                 p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType())));
