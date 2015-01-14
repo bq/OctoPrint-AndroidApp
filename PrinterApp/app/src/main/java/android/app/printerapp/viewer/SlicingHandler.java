@@ -54,7 +54,9 @@ public class SlicingHandler {
 
         mActivity = activity;
         isRunning = false;
-        cleanTempFolder();
+
+       //TODO Clear temp folder?
+       // cleanTempFolder();
     }
 
 
@@ -94,6 +96,8 @@ public class SlicingHandler {
 
     }
 
+
+
     //Creates a temporary file and save it into the parent folder
     //TODO create temp folder
     public File createTempFile(){
@@ -101,20 +105,24 @@ public class SlicingHandler {
         File tempFile = null;
 
 
+        //Create temporary folder
+        File tempPath =  new File(LibraryController.getParentFolder().getAbsolutePath() + "/temp");
 
-        try {
-
-            File tempPath =  new File(LibraryController.getParentFolder().getAbsolutePath() + "/temp");
+        if (tempPath.mkdir()){
 
             Log.i("Slicer","Creating temporary file " + tempPath);
 
-            tempPath.mkdir();
+        } else Log.i("Slicer","Directory exists " + tempPath);;
+
+        try {
+
+
 
             //add an extra random id
             int randomInt = new Random().nextInt(100000);
 
             tempFile = File.createTempFile("tmp",randomInt+".stl", tempPath);
-            tempFile.deleteOnExit();
+            //tempFile.deleteOnExit();
 
             //delete previous file
             try{

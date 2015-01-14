@@ -1015,26 +1015,36 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
      * Animation to restore initial position
      * @return
      */
-    public boolean restoreInitialCameraPosition(float dx, float dy){
+    public boolean restoreInitialCameraPosition(float dx, float dy, boolean zoom){
+
+        float dyx = 0;
+
+        if (!zoom) dyx+= POSITION_DEFAULT_Y;
 
         //Plate translation
         if ((int)mDx < (int)(POSITION_DEFAULT_X - dx)) mDx+= POSITION_MIN_TRANSLATION_DISTANCE;
         else if ((int)mDx> (int)(POSITION_DEFAULT_X - dx)) mDx-=POSITION_MIN_TRANSLATION_DISTANCE;
 
-        if ((int)mDy < (int)(POSITION_DEFAULT_Y - dy)) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
-        else if ((int)mDy > (int)(POSITION_DEFAULT_Y - dy)) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
+        if ((int)mDy < (int)(dyx - dy)) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mDy > (int)(dyx - dy)) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
 
-        //Move X axis
-        if ((int)mCameraX < CAMERA_DEFAULT_X) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if ((int)mCameraX > CAMERA_DEFAULT_X) mCameraX-= CAMERA_MIN_TRANSLATION_DISTANCE;
 
-        //Move Y axis
-        if ((int)mCameraY < CAMERA_DEFAULT_Y) mCameraY+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if ((int)mCameraY > CAMERA_DEFAULT_Y) mCameraY-= CAMERA_MIN_TRANSLATION_DISTANCE;
+        if (!zoom) {
 
-        //Move Z axis
-        if ((int)mCameraZ < CAMERA_DEFAULT_Z) mCameraZ+= CAMERA_MIN_TRANSLATION_DISTANCE;
-        else if ((int)mCameraZ > CAMERA_DEFAULT_Z) mCameraZ-= CAMERA_MIN_TRANSLATION_DISTANCE;
+            //Move X axis
+            if ((int) mCameraX < CAMERA_DEFAULT_X) mCameraX += CAMERA_MIN_TRANSLATION_DISTANCE;
+            else if ((int) mCameraX > CAMERA_DEFAULT_X) mCameraX -= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+            //Move Y axis
+            if ((int) mCameraY < CAMERA_DEFAULT_Y) mCameraY += CAMERA_MIN_TRANSLATION_DISTANCE;
+            else if ((int) mCameraY > CAMERA_DEFAULT_Y) mCameraY -= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+
+            //Move Z axis
+            if ((int) mCameraZ < CAMERA_DEFAULT_Z) mCameraZ += CAMERA_MIN_TRANSLATION_DISTANCE;
+            else if ((int) mCameraZ > CAMERA_DEFAULT_Z) mCameraZ -= CAMERA_MIN_TRANSLATION_DISTANCE;
+
+        }
 
         //Rotate X axis
         if ((int)mCurrentSceneAngleX < ANGLE_X) {
@@ -1066,12 +1076,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 
         //Return true when we get the final values
-        if (((int)mCameraZ == CAMERA_DEFAULT_Z) && ((int)mCameraY == CAMERA_DEFAULT_Y) && ((int)mCameraX == CAMERA_DEFAULT_X)
+        if (((((int)mCameraZ == CAMERA_DEFAULT_Z) && ((int)mCameraY == CAMERA_DEFAULT_Y) && ((int)mCameraX == CAMERA_DEFAULT_X)) || (zoom))
                 && ((int) mCurrentSceneAngleX == ANGLE_X) && ((int) mCurrentSceneAngleY == ANGLE_Y)
-                && ((int) mDx== (int)(POSITION_DEFAULT_X - dx)) && ((int) mDy == (int)(POSITION_DEFAULT_Y - dy))) return true;
+                && ((int) mDx== (int)(POSITION_DEFAULT_X - dx)) && ((int) mDy == (int)(dyx - dy))) return true;
         else {
 
-            Log.i("CAMERA","FAIL: " + (int)mDx +";" + (int)mDy + ";;;; Should be @" + (int)(POSITION_DEFAULT_X - dx) + ";" + (int)(POSITION_DEFAULT_Y - dy));
+            Log.i("CAMERA","FAIL: " + (int)mDx +";" + (int)mDy + ";;;; Should be @" + (int)(POSITION_DEFAULT_X - dx) + ";" + (int)(dyx - dy));
             return false;
         }
 

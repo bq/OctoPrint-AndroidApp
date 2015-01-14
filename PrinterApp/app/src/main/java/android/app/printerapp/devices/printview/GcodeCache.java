@@ -51,7 +51,7 @@ public class GcodeCache {
 
             if (mGcodeCacheList.get(i).getPathFile().equals(path)) {
 
-                Log.i("PrintView", mGcodeCacheList.size() + " Removed " + path);
+                Log.i("PrintView", mGcodeCacheList.size() + " Removed " + path + " from cache");
                 index = i;
 
             }

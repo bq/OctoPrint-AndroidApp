@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Debug;
@@ -113,7 +114,8 @@ public class PrintViewFragment extends Fragment {
             //getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
 
             //Check printing status
-            if (mPrinter.getStatus() == StateUtils.STATE_PRINTING) isPrinting = true;
+            if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING)||
+            (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) isPrinting = true;
             else {
 
                 //TODO Set print status as 100% if it's not printing
@@ -435,6 +437,8 @@ public class PrintViewFragment extends Fragment {
         //If we have a jobpath, we've uploaded the file ourselves
         if (mPrinter.getJobPath() != null) {
 
+            Log.i(TAG,"PATH IS " + mPrinter.getJobPath());
+
             //Get filename
             File currentFile = new File(mPrinter.getJobPath());
 
@@ -483,7 +487,7 @@ public class PrintViewFragment extends Fragment {
                             LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
 
                     //Add it to the reference list
-                    DatabaseController.handlePreference("References", mPrinter.getName(),
+                    DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(),
                             LibraryController.getParentFolder() + "/temp/" + mPrinter.getJob().getFilename(), true);
 
                     Log.i(TAG, "Downloading and adding to preferences");
@@ -569,7 +573,24 @@ public class PrintViewFragment extends Fragment {
     public BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
-            Log.i(TAG, "Received download completed");
+            DownloadManager manager = (DownloadManager) ctxt.getSystemService(Context.DOWNLOAD_SERVICE);
+
+            String filename = null;
+
+            //Get the downloaded file name
+            Bundle extras = intent.getExtras();
+            DownloadManager.Query q = new DownloadManager.Query();
+            q.setFilterById(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
+            Cursor c = manager.query(q);
+
+            if (c.moveToFirst()) {
+                int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                    filename = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                }
+            }
+
+            Log.i(TAG, "Received download completed for " + filename);
 
 
             //If we have a stored path
@@ -577,34 +598,46 @@ public class PrintViewFragment extends Fragment {
 
                 String path = DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, mPrinter.getName());
 
-                Log.i(TAG, "Hey we had a reference for " + path);
-
-                //In case there was a previous cached file with the same path
-                GcodeCache.removeGcodeFromCache(path);
-
                 File file = new File(path);
 
-                if (file.exists()) {
 
-                    Log.i(TAG, "Cool, let's show it");
+                if ((file.getName().equals(filename))){
 
-                    openGcodePrintView(mRootView.getContext(), path, mRootView, R.id.view_gcode);
-                    mPrinter.setJobPath(path);
+                    Log.i(TAG, "Hey we had a reference for " + path);
 
-                    //Register receiver
-                    mContext.unregisterReceiver(onComplete);
+                    //In case there was a previous cached file with the same path
+                    GcodeCache.removeGcodeFromCache(path);
 
-                    //DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(), null, false);
 
+
+                    if (file.exists()) {
+
+                        Log.i(TAG, "Cool, let's show it");
+
+                        openGcodePrintView(mRootView.getContext(), path, mRootView, R.id.view_gcode);
+                        mPrinter.setJobPath(path);
+
+                        //Register receiver
+                        mContext.unregisterReceiver(onComplete);
+
+                        //DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(), null, false);
+
+                    } else {
+
+                        Log.i(TAG, "But file didn't download ok");
+
+                        Toast.makeText(getActivity(), R.string.printview_download_toast_error, Toast.LENGTH_LONG).show();
+
+                        //Register receiver
+                        mContext.unregisterReceiver(onComplete);
+                    }
                 } else {
 
-                    Log.i(TAG, "But file didn't download ok");
+                    Log.i(TAG, filename + " is NOT my file!");
 
-                    Toast.makeText(getActivity(), R.string.printview_download_toast_error, Toast.LENGTH_LONG).show();
-
-                    //Register receiver
-                    mContext.unregisterReceiver(onComplete);
                 }
+
+
 
 
             }

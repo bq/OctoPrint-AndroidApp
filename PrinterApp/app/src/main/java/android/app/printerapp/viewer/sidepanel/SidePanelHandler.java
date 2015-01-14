@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -41,7 +40,6 @@ import com.material.widget.PaperButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -415,7 +413,7 @@ public class SidePanelHandler {
                             ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
 
                                 //Add it to the reference list
-                                DatabaseController.handlePreference("References", mPrinter.getName(),
+                                DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(),
                                         LibraryController.getParentFolder() + "/temp/temp.gco", true);
 
                                 mPrinter.setJobPath(null);
