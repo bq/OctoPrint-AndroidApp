@@ -239,7 +239,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			 	 
 			for (int i=0; i<mDataList.size(); i++) {
 		        Box objectBox = new Box (mDataList.get(i).getMinX(), mDataList.get(i).getMaxX(), mDataList.get(i).getMinY(), mDataList.get(i).getMaxY(), mDataList.get(i).getMinZ(), mDataList.get(i).getMaxZ());
-		
+
 		        // If the ray intersects (if the user touched a part of the screen that
 		        // intersects the stl object's bounding box), then set objectPressed 	        
 		        if (Geometry.intersects(objectBox, ray)) {
@@ -253,7 +253,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		changeTouchedState();
 		return object;
 	}
-	
+
 	public void changeTouchedState () {
 		for (int i=0; i<mDataList.size();i++) {
 			DataStorage d = mDataList.get(i);	
@@ -995,19 +995,34 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
     private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
     private static final double POSITION_MIN_TRANSLATION_DISTANCE = 0.05;
 
+    public void focusObject(){
+
+        Point p = mDataList.get(mObjectPressed).getLastCenter();
+
+        mCameraZ = CAMERA_DEFAULT_Z;
+        mCameraY = CAMERA_DEFAULT_Y;
+        mCameraX = CAMERA_DEFAULT_X;
+        mCurrentSceneAngleX = ANGLE_X;
+        mCurrentSceneAngleY = ANGLE_Y;
+
+        mDx = p.x + POSITION_DEFAULT_X;
+        mDy = p.y+ POSITION_DEFAULT_Y;
+
+    }
+
 
     /**
      * Animation to restore initial position
      * @return
      */
-    public boolean restoreInitialCameraPosition(){
+    public boolean restoreInitialCameraPosition(float dx, float dy){
 
         //Plate translation
-        if ((int)mDx<POSITION_DEFAULT_X) mDx+= POSITION_MIN_TRANSLATION_DISTANCE;
-        else if ((int)mDx>POSITION_DEFAULT_X) mDx-=POSITION_MIN_TRANSLATION_DISTANCE;
+        if ((int)mDx < (int)(POSITION_DEFAULT_X - dx)) mDx+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mDx> (int)(POSITION_DEFAULT_X - dx)) mDx-=POSITION_MIN_TRANSLATION_DISTANCE;
 
-        if ((int)mDy<POSITION_DEFAULT_Y) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
-        else if ((int)mDy>POSITION_DEFAULT_Y) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
+        if ((int)mDy < (int)(POSITION_DEFAULT_Y - dy)) mDy+= POSITION_MIN_TRANSLATION_DISTANCE;
+        else if ((int)mDy > (int)(POSITION_DEFAULT_Y - dy)) mDy-=POSITION_MIN_TRANSLATION_DISTANCE;
 
         //Move X axis
         if ((int)mCameraX < CAMERA_DEFAULT_X) mCameraX+= CAMERA_MIN_TRANSLATION_DISTANCE;
@@ -1053,10 +1068,10 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         //Return true when we get the final values
         if (((int)mCameraZ == CAMERA_DEFAULT_Z) && ((int)mCameraY == CAMERA_DEFAULT_Y) && ((int)mCameraX == CAMERA_DEFAULT_X)
                 && ((int) mCurrentSceneAngleX == ANGLE_X) && ((int) mCurrentSceneAngleY == ANGLE_Y)
-                && ((int) mDx==POSITION_DEFAULT_X) && ((int) mDy == POSITION_DEFAULT_Y)) return true;
+                && ((int) mDx== (int)(POSITION_DEFAULT_X - dx)) && ((int) mDy == (int)(POSITION_DEFAULT_Y - dy))) return true;
         else {
 
-            Log.i("CAMERA","FAIL: " + mCameraX +";" + mCameraY + ";" + mCameraZ);
+            Log.i("CAMERA","FAIL: " + (int)mDx +";" + (int)mDy + ";;;; Should be @" + (int)(POSITION_DEFAULT_X - dx) + ";" + (int)(POSITION_DEFAULT_Y - dy));
             return false;
         }
 
