@@ -359,7 +359,7 @@ public class EditPrinterDialog {
                 //if (!editText_name.isEnabled()) newName = null;
 
                 //Set the new name on the server
-                //OctoprintConnection.setSettings(mPrinter, newName, newColor, mContext);
+                OctoprintConnection.setSettings(mPrinter, newName, newColor, mContext);
 
                 String auxType = null;
 
@@ -587,6 +587,7 @@ public class EditPrinterDialog {
         adb.show();
 
     }
+
 
     //TODO intent to notify adapters asynchronously
     public void notifyAdapters(){
