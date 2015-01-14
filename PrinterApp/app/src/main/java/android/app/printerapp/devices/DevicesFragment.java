@@ -710,6 +710,9 @@ import it.sephiroth.android.library.widget.HListView;
 
                     //Remove file from server
                     OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
+
+                    GcodeCache.removeGcodeFromCache(m.getJobPath());
+                    m.setJobPath(null);
                 }
 
                 if (cb_local.isChecked()){
@@ -738,8 +741,7 @@ import it.sephiroth.android.library.widget.HListView;
                 }
 
 
-                GcodeCache.removeGcodeFromCache(m.getJobPath());
-                m.setJobPath(null);
+
 
 
             }
