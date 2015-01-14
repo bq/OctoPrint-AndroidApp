@@ -57,9 +57,11 @@ public class LibraryModelCreation {
             mContext = context;
             mFile = source;
 			
-			File root = new File(LibraryController.getParentFolder().getAbsolutePath() +
-					"/Files/" + mName);
-			
+			/*File root = new File(LibraryController.getParentFolder().getAbsolutePath() +
+					"/Files/" + mName);*/
+
+            File root = new File(LibraryController.getCurrentPath() + "/" + mName);
+
 			File mainFolder;
 			File secondaryFolder;
 			
@@ -197,7 +199,7 @@ public class LibraryModelCreation {
         bitmap.copyPixelsFromBuffer(sb);
         
         try {
-            FileOutputStream fos = new FileOutputStream(LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + mName + "/" + mName + ".thumb");
+            FileOutputStream fos = new FileOutputStream(LibraryController.getCurrentPath() +"/" + mName + "/" + mName + ".thumb");
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
