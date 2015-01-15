@@ -645,18 +645,21 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
         if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) {
         	DataStorage data = mDataList.get(0);
+
 	        float h = data.getHeight();
 	        float l = data.getLong();
 	        float w = data.getWidth();
+
+            Log.i("CAMERA","SIZES: " + w + ";" + l + ";" + h);
 	        
-	        l = l/ratio; //We calculate the height related to the square in the frustum with this width 
+	        l = l/ratio; //We calculate the height related to the square in the frustum with this width
 	        w = w/ratio;
 	        
 	        float dh = (float) (h / (Math.tan(Math.toRadians(45/2))));
-	        float dl = (float) (l/ (2*Math.tan(Math.toRadians(45/2))));
-	        float dw = (float) (w/ (2*Math.tan(Math.toRadians(45/2))));
-	        
-	        if (dw>dh && dw>dl) mCameraZ = OFFSET_BIG_HEIGHT*h;
+            float dl = (float) (l/ (2*Math.tan(Math.toRadians(45/2))));
+            float dw = (float) (w/ (2*Math.tan(Math.toRadians(45/2))));
+
+            if (dw>dh && dw>dl) mCameraZ = OFFSET_BIG_HEIGHT*h;
 	        else if (dh>dl) mCameraZ = OFFSET_HEIGHT*h;
 	        else mCameraZ = OFFSET_BIG_HEIGHT*h;
 	        
@@ -667,8 +670,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        else if (dh>dl) mCameraY = -dh;
 	        else mCameraY = - dl;
 
-            mCameraY = CAMERA_DEFAULT_Y;
-            mCameraZ = CAMERA_DEFAULT_Z;
+            mDx = - data.getTrueCenter().x;
+            mDy = - data.getTrueCenter().y;
+
+            mSceneAngleX = -40f;
+            mSceneAngleY = 0f;
+
         } else {
 
         	mCameraY = CAMERA_DEFAULT_Y;
@@ -854,10 +861,12 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
             }
         }
 
-
         if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
         	takeSnapshot(unused);
+
+
+
         } else {
 
         	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mMVPMatrix, mMVMatrix);      
@@ -994,21 +1003,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
     private static final int CAMERA_MAX_ROTATION_DISTANCE = 5;
     private static final int CAMERA_MIN_ROTATION_DISTANCE = 1;
     private static final double POSITION_MIN_TRANSLATION_DISTANCE = 0.05;
-
-    public void focusObject(){
-
-        Point p = mDataList.get(mObjectPressed).getLastCenter();
-
-        mCameraZ = CAMERA_DEFAULT_Z;
-        mCameraY = CAMERA_DEFAULT_Y;
-        mCameraX = CAMERA_DEFAULT_X;
-        mCurrentSceneAngleX = ANGLE_X;
-        mCurrentSceneAngleY = ANGLE_Y;
-
-        mDx = p.x + POSITION_DEFAULT_X;
-        mDy = p.y+ POSITION_DEFAULT_Y;
-
-    }
 
 
     /**

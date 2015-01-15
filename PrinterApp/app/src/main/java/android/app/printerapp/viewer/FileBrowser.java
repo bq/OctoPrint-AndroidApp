@@ -50,15 +50,6 @@ public class FileBrowser extends Activity  {
 		return ret;
 	}
 
-	/**
-	 * Constructor
-	 * 
-	 * @param mContext
-	 * @param mIsDirectorySelect
-	 * @param mTitle
-	 * @param extFilter
-	 * @return 
-	 */
 	public static void openFileBrowser(final Context context, int mode, String title, String extStl, String extGcode) {
 		mTitle = title;
 		mExtStl = extStl;
@@ -116,11 +107,11 @@ public class FileBrowser extends Activity  {
 							name = file.getName() + File.separator;
 						}
 					} else {
-						if (file.getName().toLowerCase(Locale.US).endsWith(mExtStl.toLowerCase(Locale.US))) {
+						if (LibraryController.hasExtension(0,file.getName())) {
 							name = file.getName();
 						}
 						
-						if (file.getName().toLowerCase(Locale.US).endsWith(mExtGcode.toLowerCase(Locale.US))) {
+						if (LibraryController.hasExtension(1,file.getName())) {
 							name = file.getName();
 						}
 					}
