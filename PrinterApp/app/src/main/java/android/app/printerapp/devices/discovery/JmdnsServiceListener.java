@@ -121,7 +121,7 @@ public class JmdnsServiceListener implements ServiceListener{
             Log.i("OUT","Network ID: " + PrintNetworkManager.getNetworkId(service.getName()));
 
             mContext.addElement(new ModelPrinter(service.getName(),
-                    service.getInetAddresses()[0].toString(), StateUtils.STATE_NEW));
+                    service.getInetAddresses()[0].toString() + ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));
 
             PrintNetworkManager.checkNetworkId(service.getName(),true);
 
