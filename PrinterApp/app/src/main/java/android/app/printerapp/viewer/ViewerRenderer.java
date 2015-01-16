@@ -890,6 +890,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         
 
         GLES20.glReadPixels(minX, minY, mWidth, mHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
+
+
+
         LibraryModelCreation.saveSnapshot(mWidth, mHeight, bb);
 	}
 	

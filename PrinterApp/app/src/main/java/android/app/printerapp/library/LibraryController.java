@@ -299,4 +299,21 @@ public class LibraryController {
         file.delete();
 
     }
+
+    //Check if a file already exists in the current folder
+    public static boolean fileExists(String name){
+
+        for (File file : mFileList){
+
+            String nameFinal = name.substring(0,name.lastIndexOf('.'));
+
+            if (nameFinal.equals(file.getName())) {
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
 }

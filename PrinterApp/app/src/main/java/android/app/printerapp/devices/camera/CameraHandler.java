@@ -66,7 +66,7 @@ public class CameraHandler {
 		});
         
         //Create URL
-        URL = "http:/" + address + STREAM_PORT;
+        URL = "http:/" + address.substring(0,address.lastIndexOf(':')) + STREAM_PORT; //TODO CHEK CRASH
 
        //Read stream
         Log.i("CAMERA","Executing " + URL);
