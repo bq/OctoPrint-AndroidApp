@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -171,7 +172,8 @@ public class LibraryFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.library_search:
-                optionSearchLibrary();
+                //optionSearchLibrary();
+                new FileScanner(Environment.getExternalStorageDirectory().getAbsolutePath(), getActivity());
                 return true;
 
             case R.id.library_add:

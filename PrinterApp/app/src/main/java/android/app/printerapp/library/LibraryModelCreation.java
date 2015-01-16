@@ -48,6 +48,7 @@ public class LibraryModelCreation {
 
     private static Context mContext;
     private static File mFile;
+    private static ArrayList<File> mFileQueue = null;
 	
 	//Static method to create a folder structure
 	public static void createFolderStructure(Context context, File source){
@@ -56,7 +57,7 @@ public class LibraryModelCreation {
 			mName = source.getName().substring(0, source.getName().lastIndexOf('.'));
             mContext = context;
             mFile = source;
-			
+
 			/*File root = new File(LibraryController.getParentFolder().getAbsolutePath() +
 					"/Files/" + mName);*/
 
@@ -136,6 +137,8 @@ public class LibraryModelCreation {
 		View dialogText = LayoutInflater.from(context).inflate(R.layout.loading_project, null);
 		mSnapshotLayout = (FrameLayout) dialogText.findViewById (R.id.framesnapshot);
 
+        Log.i("OUT","Opening to snap " + path);
+
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
    		adb.setView(dialogText)
 			.setTitle(context.getString(R.string.new_project))
@@ -169,7 +172,7 @@ public class LibraryModelCreation {
 	/**
 	 * This method is called from STlFile or GcodeFile when data is ready to render. Add the view to the layout.
 	 */
-	public static void takeSnapshot () {		
+	public static void takeSnapshot () {
 		mSnapshotSurface.setZOrderOnTop(true);
 		mSnapshotLayout.addView(mSnapshotSurface);	
 	}
@@ -218,7 +221,10 @@ public class LibraryModelCreation {
 		mHandler.postDelayed(new Runnable() {
             public void run() {
                 mAlert.dismiss();
-                deleteFileDialog();
+
+                //Only show delete dialog if there is no queue //TODO
+                if (mFileQueue==null) deleteFileDialog();
+                else checkQueue();
             }
         }, WAIT_TIME);
 
@@ -228,12 +234,11 @@ public class LibraryModelCreation {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
         adb.setTitle(R.string.library_delete_dialog_original);
-        adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
+        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 LibraryController.deleteFiles(mFile);
-
 
             }
         });
@@ -248,6 +253,37 @@ public class LibraryModelCreation {
         intent.putExtra("message", "Files");
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
+    }
+
+    /************************************************************
+     *
+     * JOB QUEUE
+     *
+     ***********************************************************/
+
+    //Send a file list to enqueue jobs
+    public static void enqueueJobs(Context context, ArrayList<File> q){
+
+        mFileQueue = q;
+        createFolderStructure(context, mFileQueue.get(0));
+
+    }
+
+    //Check if there are more files in the queue
+    public static void checkQueue(){
+
+        if (mFileQueue != null) {
+
+            mFileQueue.remove(0); //Remove last file
+
+            if (mFileQueue.size() > 0) { //If there are more
+
+                createFolderStructure(mContext, mFileQueue.get(0)); //Create folder again
+
+            } else mFileQueue = null; //Remove queue
+
+
+        }
     }
 
 }
