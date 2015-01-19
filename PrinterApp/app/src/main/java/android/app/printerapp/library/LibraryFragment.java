@@ -20,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,6 +38,8 @@ public class LibraryFragment extends Fragment {
 
     private LibraryAdapter mGridAdapter;
     private LibraryAdapter mListAdapter;
+
+    private ListView mListView;
 
     private ViewSwitcher mSwitcher;
 
@@ -111,16 +112,11 @@ public class LibraryFragment extends Fragment {
             mGridAdapter = new LibraryAdapter(getActivity(), this, R.layout.grid_item_library, LibraryController.getFileList());
             mListAdapter = new LibraryAdapter(getActivity(), this, R.layout.list_item_library, LibraryController.getFileList());
 
-            LibraryOnClickListener clickListener = new LibraryOnClickListener(this);
 
-            GridView g = (GridView) mRootView.findViewById(R.id.grid_storage);
-            g.setSelector(getResources().getDrawable(R.drawable.list_selector));
-            g.setOnItemClickListener(clickListener);
-            g.setAdapter(mGridAdapter);
 
-            ListView l = (ListView) mRootView.findViewById(R.id.list_storage);
+            mListView = (ListView) mRootView.findViewById(R.id.list_storage);
             View lheader = View.inflate(getActivity(), R.layout.list_header_library, null);
-            l.addHeaderView(lheader);
+            mListView.addHeaderView(lheader);
             ImageButton backButton = (ImageButton) lheader.findViewById(R.id.go_back_icon);
             if (backButton != null)
                 backButton.setColorFilter(getActivity().getResources().getColor(R.color.body_text_2),
@@ -137,10 +133,13 @@ public class LibraryFragment extends Fragment {
                     }
                 }
             });
-            l.setSelector(getResources().getDrawable(R.drawable.list_selector));
-            l.setOnItemClickListener(clickListener);
-            l.setDivider(null);
-            l.setAdapter(mListAdapter);
+            LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
+            mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
+            mListView.setOnItemClickListener(clickListener);
+            mListView.setOnItemLongClickListener(clickListener);
+            mListView.setDivider(null);
+            mListView.setAdapter(mListAdapter);
+
 
             //Set left navigation menu behavior
             ((TextView) mRootView.findViewById(R.id.library_nav_all_models)).setOnClickListener(getOnNavTextViewClickListener());
@@ -172,20 +171,14 @@ public class LibraryFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.library_search:
-                //optionSearchLibrary();
-                new FileScanner(Environment.getExternalStorageDirectory().getAbsolutePath(), getActivity());
+                optionSearchLibrary();
                 return true;
-
             case R.id.library_add:
                 optionAddLibrary();
                 return true;
-//            case R.id.library_list:
-//                if (mSwitcher.getCurrentView().getId() == (R.id.list_storage)) {
-//                    item.setTitle(R.string.library_menu_list);
-//                    item.setIcon(android.R.drawable.list_selector_background);
-//                } else item.setTitle(R.string.library_menu_grid);
-//                optionSwitchList();
-//                return true;
+            case R.id.library_search_system:
+                optionSearchSystem();
+                return true;
             case R.id.library_create:
                 optionCreateLibrary();
                 return true;
@@ -345,6 +338,13 @@ public class LibraryFragment extends Fragment {
 
         adb.setNegativeButton(R.string.cancel, null);
         adb.show();
+
+    }
+
+    //Search for models in filesystem
+    public void optionSearchSystem(){
+
+        new FileScanner(Environment.getExternalStorageDirectory().getAbsolutePath(), getActivity());
 
     }
 
