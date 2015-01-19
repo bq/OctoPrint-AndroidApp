@@ -115,7 +115,7 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
             overflowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LibraryOnClickListener onClickListener = new LibraryOnClickListener(mContext);
+                    LibraryOnClickListener onClickListener = new LibraryOnClickListener(mContext, null);
                     onClickListener.onOverflowButtonClick(v, position);
                 }
             });

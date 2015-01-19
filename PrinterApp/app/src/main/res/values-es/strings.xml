@@ -264,5 +264,7 @@
     <string name="viewer_text_downloaded">Descargado</string>
     <string name="viewer_text_done">hecho</string>
     <string name="viewer_open_gcode_dialog">Perderás todos los datos no guardados. ¿Continuar?</string>
+    <string name="library_menu_search_global">Buscar modelos</string>
+    <string name="library_scan_dialog_title">Añadir modelos a tu librería</string>
 
 </resources>

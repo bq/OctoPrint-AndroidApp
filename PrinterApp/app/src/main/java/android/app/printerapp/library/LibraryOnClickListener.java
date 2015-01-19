@@ -12,15 +12,20 @@ import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.DialogInterface;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -31,13 +36,15 @@ import java.io.File;
  *
  * @author alberto-baeza
  */
-public class LibraryOnClickListener implements OnItemClickListener {
+public class LibraryOnClickListener implements OnItemClickListener, OnItemLongClickListener {
 
-    LibraryFragment mContext;
+    private LibraryFragment mContext;
+    private ListView mListView;
+    private ActionMode mActionMode;
 
-
-    public LibraryOnClickListener(LibraryFragment context) {
+    public LibraryOnClickListener(LibraryFragment context, ListView list) {
         this.mContext = context;
+        this.mListView = list;
     }
 
     //On long click we'll display the gcodes
@@ -66,68 +73,81 @@ public class LibraryOnClickListener implements OnItemClickListener {
         //Avoid to click in the header
         arg2--;
 
-        Log.d("LibraryOnClickListener", "onItemClick");
+        if (mListView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){
 
-        //Logic for getting file type
-        File f = LibraryController.getFileList().get(arg2);
+            mListView.setItemChecked(arg2, true);
 
-        //If it's folder open it
-        if (f.isDirectory()) {
+            Log.i("OUT","OUTA " + mListView.getCheckedItemCount()); //TODO Finish
+            mContext.notifyAdapter();
 
 
-            //If it's project folder, send stl
-            if (LibraryController.isProject(f)) {
-                //Show detail view as a fragment
-                showRightPanel(arg2);
+        }else {
 
+            Log.d("LibraryOnClickListener", "onItemClick");
+
+            //Logic for getting file type
+            File f = LibraryController.getFileList().get(arg2);
+
+            //If it's folder open it
+            if (f.isDirectory()) {
+
+
+                //If it's project folder, send stl
+                if (LibraryController.isProject(f)) {
+                    //Show detail view as a fragment
+                    showRightPanel(arg2);
+
+                } else {
+                    //Not a project, open folder
+                    LibraryController.reloadFiles(f.getAbsolutePath());
+                    mContext.sortAdapter();
+                }
+
+                //If it's not a folder, just send the file
             } else {
-                //Not a project, open folder
-                LibraryController.reloadFiles(f.getAbsolutePath());
-                mContext.sortAdapter();
-            }
 
-            //If it's not a folder, just send the file
-        } else {
+                //it's a printer file
+                if (f.getParent().contains("printer")) {
+                    LibraryController.retrievePrinterFiles(Long.parseLong(f.getName()));
+                    mContext.notifyAdapter();
 
-            //it's a printer file
-            if (f.getParent().contains("printer")) {
-                LibraryController.retrievePrinterFiles(Long.parseLong(f.getName()));
-                mContext.notifyAdapter();
+                } else {
 
-            } else {
+                    try {
 
-                try {
+                        ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
 
-                    ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
-
-                    //it's a printer folder because there's a printer with the same name
-                    if (p != null) {
-                        //either sd or internal
-                        if (f.getParent().equals("sd")) {
-                            OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/", false, true);
-                            //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
-                        } else
-                            OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false, true);
-                        Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
-                    } else {
-
-                        //it's a raw file
-                        if (f.getAbsoluteFile().length() > 0) {
-                            //TODO select printer for raw files?
-                            //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
-                            ItemListActivity.requestOpenFile(f.getAbsolutePath());
-
+                        //it's a printer folder because there's a printer with the same name
+                        if (p != null) {
+                            //either sd or internal
+                            if (f.getParent().equals("sd")) {
+                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/", false, true);
+                                //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
+                            } else
+                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false, true);
+                            Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+
+                            //it's a raw file
+                            if (f.getAbsoluteFile().length() > 0) {
+                                //TODO select printer for raw files?
+                                //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+                                ItemListActivity.requestOpenFile(f.getAbsolutePath());
+
+                            } else {
+                                Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+                            }
                         }
+                    } catch (NumberFormatException e) {
+
+                        e.printStackTrace();
+
                     }
-                } catch (NumberFormatException e) {
-
-                    e.printStackTrace();
-
                 }
             }
         }
+
+
     }
 
     private void showRightPanel(final int index) {
@@ -238,4 +258,96 @@ public class LibraryOnClickListener implements OnItemClickListener {
     }
 
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        mListView.setSelector(mContext.getResources().getDrawable(android.R.drawable.list_selector_background)); //TODO
+
+        if (mActionMode != null) {
+            return false;
+        }
+
+        // Start the CAB using the ActionMode.Callback defined above
+        mActionMode = ((ActionBarActivity)mContext.getActivity()).startSupportActionMode(mActionModeCallback);
+        view.setSelected(true);
+
+        Log.i("OUT","LongCLICK");
+        return false;
+    }
+
+    private void selectItemToDelete(int i){
+
+
+
+    }
+
+
+
+
+    /**
+     * Action mode
+     */
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.delete_menu, menu);
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+
+                case R.id.library_menu_delete:
+
+                    Log.i("OUT","COÑOA " + mListView.getCheckedItemCount());
+
+                    SparseBooleanArray ids = mListView.getCheckedItemPositions();
+                    for (int i = 0; i < ids.size() ; i++){
+
+                        if (ids.valueAt(i)) {
+
+                            File file = LibraryController.getFileList().get(ids.keyAt(i) - 1);
+
+                            Log.i("OUT","DELETE " + file.getName());
+
+                            LibraryController.deleteFiles(file);
+
+                        }
+
+                    }
+
+                    mActionMode.finish();
+
+
+                    break;
+
+            }
+
+            return false;
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+            mListView.setSelector(R.drawable.list_selector);
+            mListView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+            mContext.notifyAdapter();
+        }
+    };
 }
