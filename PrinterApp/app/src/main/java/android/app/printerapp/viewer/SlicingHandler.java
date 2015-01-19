@@ -149,6 +149,10 @@ public class SlicingHandler {
 
                 Log.i("Slicer","Setting new PREFERENCE [Last]: " + tempFile.getName());
 
+                Log.i("Slicer","Setting new Restore [Last]: " + mLastReference);
+
+                DatabaseController.handlePreference(DatabaseController.TAG_RESTORE,"Last",mLastReference, true);
+
                 DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", tempFile.getName(), true);
 
                 Log.i("Slicer","New reference is " + mLastReference);

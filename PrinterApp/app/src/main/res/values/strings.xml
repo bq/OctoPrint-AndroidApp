@@ -273,6 +273,7 @@
     <string name="viewer_open_gcode_dialog">You will lose any unsaved data. Continue?</string>
     <string name="library_menu_search_global">Search for models</string>
     <string name="library_scan_dialog_title">Add models to your library</string>
+    <string name="viewer_restore_session">Restore last session?</string>
 
 
 </resources>
