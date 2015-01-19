@@ -399,6 +399,7 @@ public class ViewerMainFragment extends Fragment {
 
                 lock = true;
                 mSurface.refreshRotatedObject();
+                slicingCallback();
 
             }
         });

@@ -304,7 +304,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
     Refresh only when the user stops tracking the angle
      */
     public void refreshRotatedObject(){
+
         mRenderer.refreshRotatedObjectCoordinates();
+
     }
 
     /*

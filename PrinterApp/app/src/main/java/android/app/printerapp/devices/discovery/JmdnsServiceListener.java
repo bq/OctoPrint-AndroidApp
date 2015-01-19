@@ -3,6 +3,7 @@ package android.app.printerapp.devices.discovery;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
@@ -121,7 +122,7 @@ public class JmdnsServiceListener implements ServiceListener{
             Log.i("OUT","Network ID: " + PrintNetworkManager.getNetworkId(service.getName()));
 
             mContext.addElement(new ModelPrinter(service.getName(),
-                    service.getInetAddresses()[0].toString() + ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));
+                    service.getInetAddresses()[0].toString() + HttpUtils.CUSTOM_PORT/*+ ":" + event.getInfo().getPort()*/, StateUtils.STATE_NEW));
 
             PrintNetworkManager.checkNetworkId(service.getName(),true);
 

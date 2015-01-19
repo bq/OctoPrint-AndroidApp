@@ -316,7 +316,7 @@ public class OctoprintSlicing {
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         super.onFailure(statusCode, headers, responseString, throwable);
 
-                        Log.i("OUT","FAILURESLICING");
+                        Log.i("Slicer","FAILURESLICING");
                         ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
                     }
                 });
