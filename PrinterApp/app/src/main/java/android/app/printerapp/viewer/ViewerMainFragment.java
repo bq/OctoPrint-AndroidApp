@@ -145,6 +145,8 @@ public class ViewerMainFragment extends Fragment {
 
         //Retain instance to keep the Fragment from destroying itself
         setRetainInstance(true);
+
+        mSlicingHandler = new SlicingHandler(getActivity());
     }
 
     @Override
@@ -155,6 +157,8 @@ public class ViewerMainFragment extends Fragment {
 
         //If is not new
         if (savedInstanceState == null) {
+
+            Log.i("Restore","Creating new Fragmento");
 
             //Show custom option menu
             setHasOptionsMenu(true);
@@ -175,13 +179,15 @@ public class ViewerMainFragment extends Fragment {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
             //Init slicing elements
-            mSlicingHandler = new SlicingHandler(getActivity());
             mSidePanelHandler = new SidePanelHandler(mSlicingHandler, getActivity(), mRootView);
             mCurrentType = WitboxFaces.TYPE_WITBOX;
             mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT, mSlicingHandler);
             draw();
+
+
+            restoreLastPanel();
 
 
         }
@@ -553,7 +559,7 @@ public class ViewerMainFragment extends Fragment {
             @Override
             public void onTabChanged(String tabId) {
 
-                switch (tabs.getCurrentTab()) {
+                /*switch (tabs.getCurrentTab()) {
                     case NORMAL:
                         changeStlViews(ViewerSurfaceView.NORMAL);
                         break;
@@ -571,7 +577,7 @@ public class ViewerMainFragment extends Fragment {
                         break;
                     default:
                         break;
-                }
+                }*/
             }
         });
 
@@ -1586,5 +1592,44 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
+
+
+    /********************************* RESTORE PANEL *************************/
+
+    /**
+     * check if there is a reference to restore the last panel and open it
+     */
+    private void restoreLastPanel(){
+
+       if (mSlicingHandler.getLastReference()==null) //Only if there is no last reference
+       if (DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last")!=null){
+
+            final String file = DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last");
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+            adb.setTitle(R.string.viewer_restore_session);
+
+            adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    openFileDialog(file);
+                    mSlicingHandler.setLastReference(file);
+
+                }
+            });
+
+            adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    DatabaseController.handlePreference(DatabaseController.TAG_RESTORE, "Last", null, false);
+                }
+            });
+
+            adb.show();
+
+        }
+
+    }
 
 }

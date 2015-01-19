@@ -578,7 +578,7 @@ public class OctoprintConnection {
                                   if(!DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(null))
                                   if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals( response.getString("source_path"))){
 
-                                      Log.i("Slicer","Progress received for " + response.getString("source_path"));
+                                      //Log.i("Slicer","Progress received for " + response.getString("source_path"));
 
                                       int progress = response.getInt("progress");
 

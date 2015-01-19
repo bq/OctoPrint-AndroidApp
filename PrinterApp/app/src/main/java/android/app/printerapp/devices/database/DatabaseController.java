@@ -28,6 +28,7 @@ public class DatabaseController {
     public static final String TAG_KEYS = "Keys";
     public static final String TAG_SLICING = "Slicing";
     public static final String TAG_PROFILE = "ProfilePreferences";
+    public static final String TAG_RESTORE = "Restore";
 	
 	static DatabaseHelper mDbHelper;
 	static SQLiteDatabase mDb;
