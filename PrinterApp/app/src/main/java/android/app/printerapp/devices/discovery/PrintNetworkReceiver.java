@@ -100,7 +100,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			Log.i("Network","New printer found! " + s.SSID);
 	        			//unregister();
 	        			
-	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1:5000", StateUtils.STATE_ADHOC);
+	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1", StateUtils.STATE_ADHOC);
 
 
                         mController.checkNetworkId(s.SSID,false);

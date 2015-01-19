@@ -40,6 +40,10 @@ public class OctoprintNetwork {
         {
 
             @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
 

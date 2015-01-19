@@ -15,7 +15,6 @@ import android.util.Log;
 public class HttpUtils {
 	
       public static final String CUSTOM_PORT = ":5000"; //Octoprint server listening port
-      public static final String API_KEY = "5A41D8EC149F406F9F222DCF93304B43FALSA"; //Hardcoded API Key
 
       /** OctoPrint URLs **/
 
