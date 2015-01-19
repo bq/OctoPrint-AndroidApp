@@ -271,6 +271,8 @@
     <string name="viewer_text_uploading">Uploading...</string>
     <string name="viewer_text_done">done</string>
     <string name="viewer_open_gcode_dialog">You will lose any unsaved data. Continue?</string>
+    <string name="library_menu_search_global">Search for models</string>
+    <string name="library_scan_dialog_title">Add models to your library</string>
 
 
 </resources>

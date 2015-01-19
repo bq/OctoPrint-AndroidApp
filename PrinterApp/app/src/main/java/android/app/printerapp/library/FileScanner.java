@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class FileScanner {
 
-    private ArrayList<File> mFileList = new ArrayList<>();
+    private ArrayList<File> mFileList = new ArrayList<File>();
 
     public FileScanner(String path, Context context){
 
@@ -98,7 +98,7 @@ public class FileScanner {
     private void addDialog(final Context context){
 
         AlertDialog.Builder adb = new AlertDialog.Builder(context);
-        adb.setTitle(("Add files to your system"));
+        adb.setTitle(R.string.library_scan_dialog_title);
 
         String[] fileNames = new String[mFileList.size()];
         final boolean[] checkedItems = new boolean[mFileList.size()];
