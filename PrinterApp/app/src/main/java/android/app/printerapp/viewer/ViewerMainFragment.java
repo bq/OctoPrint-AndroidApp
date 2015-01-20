@@ -905,22 +905,24 @@ public class ViewerMainFragment extends Fragment {
              *
              *  Alberto
              */
-
-            if (LibraryController.hasExtension(0, mFile.getName())) {
-                if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
-                    proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
-                else {
-                    if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null))
-                        dialog.dismiss();
+            if (mFile!=null){
+                if (LibraryController.hasExtension(0, mFile.getName())) {
+                    if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
+                        proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
                     else {
-                        Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
+                        if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null))
+                            dialog.dismiss();
+                        else {
+                            Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
                     }
+                } else {
+                    Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
-            } else {
-                Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
+            } else dialog.dismiss();
+
 
         }
     }

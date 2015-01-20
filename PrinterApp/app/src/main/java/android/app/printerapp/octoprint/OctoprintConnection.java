@@ -65,6 +65,8 @@ public class OctoprintConnection {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+
+        Log.i("Profile","Start connection on " + profile);
 		
 		HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION, 
 				entity, "application/json", new JsonHttpResponseHandler(){
