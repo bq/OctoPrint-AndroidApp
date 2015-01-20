@@ -17,6 +17,7 @@ public final class DeviceInfo {
         public static final String DEVICES_DISPLAY = "display";
         public static final String DEVICES_TYPE = "type";
         public static final String DEVICES_PROFILE = "profile";
+        public static final String DEVICES_NETWORK = "network";
     }
 
 }

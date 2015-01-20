@@ -117,7 +117,8 @@ public class DevicesListController {
 			m.setDisplayName(c.getString(4));
 
             m.setPosition(Integer.parseInt(c.getString(3)));
-			
+            m.setNetwork(c.getString(7));
+
 			addToList(m);
 
             if (DatabaseController.isPreference(DatabaseController.TAG_REFERENCES, m.getName())) {

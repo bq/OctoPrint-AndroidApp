@@ -27,13 +27,15 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	//TODO: Hardcoded Network name for testing
 	//Filter to search for when scanning networks
 	private static final String NETWORK_NAME = "OctoPi";
-	
-	private WifiManager mWifiManager;
+
+	private static WifiManager mWifiManager;
 	private PrintNetworkManager mController;
 	private Context mContext;
 	private IntentFilter mFilter;
 	private ConnectivityManager cm;
 	private static  ArrayAdapter<String> mNetworkList;
+
+    private String mCurrentNetwork;
 	
 	
 	//Constructor
@@ -163,5 +165,11 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	public static ArrayAdapter<String> getNetworkList(){
 		return mNetworkList;
 	}
+
+    public static String getCurrentNetwork(){
+
+        return  mWifiManager.getConnectionInfo().getSSID();
+
+    }
 	
 }

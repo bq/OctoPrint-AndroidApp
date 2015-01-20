@@ -30,7 +30,7 @@ public class ModelPrinter {
 	private String mAddress;
 	private int mStatus = StateUtils.STATE_NONE;
     private String mPort;
-    private boolean mHidden = false;
+    private String mNetwork;
 	
 	//TODO hardcoded string
 	private String mMessage = "Offline";
@@ -150,6 +150,7 @@ public class ModelPrinter {
 
     public int getType() { return mPrinterType; }
     public String getProfile() { return mPrinterProfile; }
+    public String getNetwork() { return mNetwork; }
 
 	/**********
 	 *  Sets
@@ -241,6 +242,8 @@ public class ModelPrinter {
     public void setId(long id) { mId = id; }
 
     public void setPort(String port) { mPort = port; }
+
+    public void setNetwork (String network) { mNetwork = network; }
 
     public void setType(int type, String profile) {
         mPrinterType = type;

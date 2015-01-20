@@ -6,6 +6,8 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintConnection;
@@ -388,7 +390,8 @@ public class EditPrinterDialog {
 
                     Log.i("OUT","ADDING NEW PRINTER! " + mPrinter.getDisplayName());
 
-                    mPrinter.setId(DatabaseController.writeDb(mPrinter.getName(), mPrinter.getAddress(), String.valueOf(mPrinter.getPosition()), String.valueOf(mPrinter.getType())));
+                    mPrinter.setId(DatabaseController.writeDb(mPrinter.getName(), mPrinter.getAddress(), String.valueOf(mPrinter.getPosition()), String.valueOf(mPrinter.getType()),
+                            PrintNetworkReceiver.getCurrentNetwork()));
                     mPrinter.startUpdate(mContext);
                 } else {
 

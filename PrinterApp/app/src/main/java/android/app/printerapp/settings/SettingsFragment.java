@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
@@ -284,7 +285,8 @@ public class SettingsFragment extends Fragment {
                 if (!DevicesListController.checkExisting(m)) {
 
                     DevicesListController.addToList(m);
-                    m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(m.getType())));
+                    m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(m.getType()),
+                            PrintNetworkReceiver.getCurrentNetwork()));
                     //m.setLinked(getActivity());
                     notifyAdapter();
 

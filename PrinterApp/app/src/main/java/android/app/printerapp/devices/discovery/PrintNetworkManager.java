@@ -445,4 +445,12 @@ public class PrintNetworkManager {
         }
     }
 
+    public static String getCurrentNetwork(){
+
+        WifiManager manager = (WifiManager)mController.getActivity().getSystemService(Context.WIFI_SERVICE);
+
+        return  manager.getConnectionInfo().getSSID();
+
+    }
+
 }
