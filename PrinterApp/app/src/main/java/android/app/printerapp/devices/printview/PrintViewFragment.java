@@ -73,6 +73,7 @@ public class PrintViewFragment extends Fragment {
     private TextView tv_file;
     private TextView tv_temp;
     private TextView tv_prog;
+    private TextView tv_profile;
 
     private ProgressBar pb_prog;
 
@@ -197,6 +198,7 @@ public class PrintViewFragment extends Fragment {
             tv_file = (TextView) mRootView.findViewById(R.id.printview_printer_file);
             tv_temp = (TextView) mRootView.findViewById(R.id.printview_extruder_temp);
             tv_prog = (TextView) mRootView.findViewById(R.id.printview_printer_progress);
+            tv_profile = (TextView) mRootView.findViewById(R.id.printview_text_profile_text);
             pb_prog = (ProgressBar) mRootView.findViewById(R.id.printview_progress_bar);
 
             button_pause = (PaperButton) mRootView.findViewById(R.id.printview_pause_button);
@@ -358,6 +360,7 @@ public class PrintViewFragment extends Fragment {
         tv_printer.setText(mPrinter.getDisplayName() + ": " + mPrinter.getMessage() + " [" + mPrinter.getPort() + "]");
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
+        tv_profile.setText(mPrinter.getProfile());
 
         if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING) ||
                 (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) {

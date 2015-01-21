@@ -17,15 +17,29 @@ import java.io.UnsupportedEncodingException;
  */
 public class OctoprintProfiles {
 
-    public static void uploadProfile(final Context context, final String url, final JSONObject profile){
+
+    /**
+     * Uploads a profile and then connects to the server with that profile on the specified port
+     * @param context
+     * @param url server address
+     * @param profile printer profile selected
+     * @param port preferred port to connect
+     */
+    public static void uploadProfile(final Context context, final String url, final JSONObject profile, final String port){
 
         StringEntity entity = null;
+        String id = null;
 
         try {
 
-            profile.put("current",true);
-            entity = new StringEntity(profile.toString(), "UTF-8");
-            Log.i("OUT", profile.toString());
+            JSONObject finalProfile = new JSONObject();;
+
+            finalProfile.put("profile",profile);
+
+            entity = new StringEntity(finalProfile.toString(), "UTF-8");
+            Log.i("OUT", "Profile to add:" + finalProfile.toString());
+
+            id = profile.getString("id");
 
         } catch (UnsupportedEncodingException e) {	e.printStackTrace();
         } catch (JSONException e) {
@@ -33,6 +47,7 @@ public class OctoprintProfiles {
         }
 
 
+        final String finalId = id;
         HttpClientHandler.post(context,url + HttpUtils.URL_PROFILES,
                 entity, "application/json", new JsonHttpResponseHandler(){
 
@@ -46,6 +61,10 @@ public class OctoprintProfiles {
                                           Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
                         Log.i("OUT", "Profile Upload successful");
+
+                        OctoprintConnection.startConnection(url, context, port, finalId);
+
+
                     }
 
                     @Override
@@ -59,13 +78,13 @@ public class OctoprintProfiles {
 
     }
 
-    public static void selectProfile(final Context context, final String url, final String profile){
+    /*public static void selectProfile(final Context context, final String url, final String profile){
 
         JSONObject object = new JSONObject();
         StringEntity entity = null;
 
         try {
-            object.put("current", true);
+            object.put("current", "true");
             entity = new StringEntity(object.toString(), "UTF-8");
 
         } catch (JSONException e) {		e.printStackTrace();
@@ -97,6 +116,7 @@ public class OctoprintProfiles {
 
 
     }
+    */
 
 
 }

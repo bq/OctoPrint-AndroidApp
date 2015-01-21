@@ -110,7 +110,7 @@ public class WitboxFaces {
      *
      * Alberto: change alpha according to face
      */
-    public WitboxFaces(int face, int type) {
+    public WitboxFaces(int face, int[] type) {
 
     	/*switch (face) {
     	case ViewerRenderer.DOWN:
@@ -148,22 +148,11 @@ public class WitboxFaces {
         GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
     }
 
-    public void generatePlaneCoords(int face, int type){
+    public void generatePlaneCoords(int face, int[] type){
 
-        switch(type){
 
-            case TYPE_WITBOX:
+        mSizeArray = type;
 
-                mSizeArray = new int[]{WITBOX_LONG, WITBOX_WITDH, WITBOX_HEIGHT};
-
-                break;
-
-            case TYPE_HEPHESTOS:
-
-                mSizeArray = new int[]{HEPHESTOS_LONG, HEPHESTOS_WITDH, HEPHESTOS_HEIGHT};
-
-                break;
-        }
 
         switch (face) {
             case ViewerRenderer.DOWN:

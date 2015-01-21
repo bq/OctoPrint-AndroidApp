@@ -6,7 +6,6 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
-import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
@@ -46,7 +45,7 @@ import java.util.ArrayList;
 public class EditPrinterDialog {
 
     //Default printer types
-    private static final String[] PRINTER_TYPES = {"bq_witbox", "bq_hephestos"}; //TODO Removed custom
+    private static final String[] PRINTER_TYPES = {"bq_witbox", "bq_hephestos", "custom"};
 
     //Context
     private Context mContext;
@@ -379,11 +378,16 @@ public class EditPrinterDialog {
 
                     }
 
+                    //update new profile
+                    OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
+
+
                 } else { //CUSTOM selected
 
                     mPrinter.setType(3, null);
                     //Save new profile
                     saveProfile();
+
                 }
 
                 if (!DatabaseController.checkExisting(mPrinter)){
@@ -398,13 +402,6 @@ public class EditPrinterDialog {
                     DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_TYPE, mPrinter.getId(), String.valueOf(mPrinter.getType()));
 
                 }
-
-                //mPrinter.setType(StateUtils.TYPE_CUSTOM, "defaultprinter");
-
-                //update new profile
-
-                OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
-
 
                 notifyAdapters();
 
@@ -492,21 +489,34 @@ public class EditPrinterDialog {
 
                     JSONObject json = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE);
 
+                    json.put("name", name.getText().toString());
+                    json.put("id", name.getText().toString());
+                    json.put("model", "ModelPrinter");
+
                     JSONObject volume = new JSONObject();
 
                     if (checkBox_circular.isChecked()) volume.put("formFactor","circular");
                     else volume.put("formFactor","rectangular");
 
-                    volume.put("depth",Integer.parseInt(editText_depth.getText().toString()));
-                    volume.put("width",Integer.parseInt(editText_width.getText().toString()));
-                    volume.put("height",Integer.parseInt(editText_height.getText().toString()));
+                    volume.put("depth",Float.parseFloat(editText_depth.getText().toString()));
+                    volume.put("width",Float.parseFloat(editText_width.getText().toString()));
+                    volume.put("height",Float.parseFloat(editText_height.getText().toString()));
 
                     json.put("volume",volume);
 
                     JSONObject extruder = new JSONObject();
 
-                    extruder.put("nozzleDiameter",Double.parseDouble(editText_nozzle.getText().toString()));
+                    extruder.put("nozzleDiameter",Float.parseFloat(editText_nozzle.getText().toString()));
                     extruder.put("count",Integer.parseInt(editText_extruders.getText().toString()));
+
+                    ArrayList<Float> s = new ArrayList<Float>();
+                    s.add(Float.parseFloat("0.0"));
+                    s.add(Float.parseFloat("0.0"));
+
+                    ArrayList<JSONArray> sa = new ArrayList<JSONArray>();
+                    sa.add(new JSONArray(s));
+
+                    extruder.put("offsets", new JSONArray(sa));
 
                     json.put("extruder",extruder);
 
@@ -520,7 +530,8 @@ public class EditPrinterDialog {
                         mPrinter.setType(3, name.getText().toString());
                         DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_PROFILE, mPrinter.getId(), name.getText().toString());
 
-                        OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),json);
+                        //Upload profile, connect if successful
+                        OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),json, spinner_port.getSelectedItem().toString());
                     }
                 } catch (JSONException e){
 

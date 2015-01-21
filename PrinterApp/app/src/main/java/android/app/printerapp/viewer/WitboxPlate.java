@@ -153,7 +153,7 @@ public class WitboxPlate {
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public WitboxPlate(Context context, boolean infinite, int type) {
+    public WitboxPlate(Context context, boolean infinite, int[] type) {
     	this.mContext = context;
     	
     	generatePlaneCoords(type,infinite);
@@ -176,7 +176,7 @@ public class WitboxPlate {
         
     }
 
-    public void generatePlaneCoords(int type, boolean infinite){
+    public void generatePlaneCoords(int[] type, boolean infinite){
 
 
 
@@ -185,43 +185,16 @@ public class WitboxPlate {
         if (infinite ) auxPlane = mCoordsInfiniteArray;
         else {
 
-            switch(type){
-
-                case WitboxFaces.TYPE_WITBOX:
-
                     auxPlane = new float[] {
-                            -WitboxFaces.WITBOX_LONG,  WitboxFaces.WITBOX_WITDH, 0,   // top left
-                            -WitboxFaces.WITBOX_LONG, -WitboxFaces.WITBOX_WITDH, 0,   // bottom left
-                            WitboxFaces.WITBOX_LONG, -WitboxFaces.WITBOX_WITDH, 0,   // bottom right
-                            WitboxFaces.WITBOX_LONG,  WitboxFaces.WITBOX_WITDH, 0    // top right
+                            -type[0],  type[1], 0,   // top left
+                            -type[0], -type[1], 0,   // bottom left
+                            type[0], -type[1], 0,   // bottom right
+                            type[0],  type[1], 0    // top right
                     };
-
-                    break;
-
-                case WitboxFaces.TYPE_HEPHESTOS:
-
-                    auxPlane= new float[] {
-
-                            -WitboxFaces.HEPHESTOS_LONG,  WitboxFaces.HEPHESTOS_WITDH, 0,   // top left
-                            -WitboxFaces.HEPHESTOS_LONG, -WitboxFaces.HEPHESTOS_WITDH, 0,   // bottom left
-                            WitboxFaces.HEPHESTOS_LONG, -WitboxFaces.HEPHESTOS_WITDH, 0,   // bottom right
-                            WitboxFaces.HEPHESTOS_LONG,  WitboxFaces.HEPHESTOS_WITDH, 0    // top right
-
-                    };
-
-                    break;
-
-
-                default:
-
-                    auxPlane = mCoordsNormalArray;
-
-                    break;
-
 
             }
 
-        }
+
 
         this.mCoordsArray = auxPlane;
 

@@ -321,7 +321,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
     /*
     Change plate coords
      */
-    public void changePlate(int type){
+    public void changePlate(int[] type){
 
         mRenderer.generatePlate(type);
 
