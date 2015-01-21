@@ -1,6 +1,6 @@
 package android.app.printerapp.devices;
 
-import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
@@ -80,7 +80,7 @@ public class DevicesDragListener implements OnDragListener {
 		    		
 		    	} else {
 		    		//Error dialog
-		    		ItemListActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + v.getContext().getString(R.string.viewer_printer_unavailable));
+		    		MainActivity.showDialog(v.getContext().getString(R.string.devices_dialog_loading) + "\n" + v.getContext().getString(R.string.viewer_printer_unavailable));
 		    	}
 	    	}
 

@@ -1,141 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.app.printerapp.devices.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliding_panel"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="bottom"
-    app:anchorPoint="1"
-    app:fadeColor="@android:color/transparent"
-    app:collapsedPanelHeight="@dimen/slide_panel_collapsed_height"
-    app:expandedPanelHeight="@dimen/slide_panel_expanded_height"
-    app:shadowHeight="@dimen/slide_panel_shadow_height">
+    android:orientation="vertical">
 
-    <TabHost
-        android:id="@android:id/tabhost"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></TabWidget>
-
-            <FrameLayout
-
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RelativeLayout
-                    android:id="@+id/tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <GridView
-                        android:id="@+id/devices_grid"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:numColumns="5"></GridView>
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/hide_icon"
-                        android:src="@android:drawable/ic_menu_view"
-                        android:layout_margin="30dp"
-                        android:scaleType="centerInside"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <GridView
-                        android:id="@+id/devices_camera"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:numColumns="4"></GridView>
-                </LinearLayout>
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
-
-    <FrameLayout
-        android:clickable="true"
+    <RelativeLayout
+        android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/transparent">
+        android:orientation="horizontal">
 
-        <FrameLayout
-            android:id="@+id/storage_layout"
+        <GridView
+            android:id="@+id/devices_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:layout_marginTop="@dimen/fab_radious_big"
-            android:background="@color/gray_background"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:orientation="vertical">
+            android:layout_marginTop="10dp"
+            android:numColumns="5"></GridView>
 
-            <include
-                android:id="@+id/slide_up_error"
-                layout="@layout/layout_slide_up_error"
-                android:visibility="gone"></include>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/hide_icon"
+            android:src="@android:drawable/ic_menu_view"
+            android:layout_margin="30dp"
+            android:scaleType="centerInside"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
-            <it.sephiroth.android.library.widget.HListView
-                android:id="@+id/quickprint_horizontal_list_view"
-                android:layout_marginTop="@dimen/fab_radious_big"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:choiceMode="singleChoice"/>
 
-        </FrameLayout>
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/expand_button"-->
-            <!--android:layout_width="@dimen/fab_diameter_big"-->
-            <!--android:layout_height="@dimen/fab_diameter_big"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:background="@drawable/floating_action_button"-->
-            <!--android:src="@drawable/ic_expand_more" />-->
 
-        <FrameLayout
-            android:id="@+id/expand_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:foregroundGravity="center">
-
-            <ImageView
-                android:id="@+id/expand_button_imageview"
-                android:layout_width="@dimen/fab_diameter_big"
-                android:layout_height="@dimen/fab_diameter_big"
-                android:layout_gravity="center"
-                android:background="@drawable/floating_action_button" />
-
-            <CheckBox
-                android:id="@+id/expand_button_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:button="@drawable/floating_checkbox_selector" />
-
-        </FrameLayout>
-    </FrameLayout>
-
-</android.app.printerapp.devices.SlidingUpPanelLayout>
+</LinearLayout>

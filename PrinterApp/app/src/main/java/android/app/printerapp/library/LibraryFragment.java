@@ -3,6 +3,7 @@ package android.app.printerapp.library;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
@@ -190,6 +191,9 @@ public class LibraryFragment extends Fragment {
                 return true;
             case R.id.library_models:
                 optionThingiverse();
+                return true;
+            case R.id.library_settings:
+                MainActivity.showExtraFragment(0, 0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

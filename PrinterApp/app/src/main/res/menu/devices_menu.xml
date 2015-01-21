@@ -1,11 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-        
+
+    <item
+        android:id="@+id/devices_add"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="ifRoom"
+        android:title="@string/printview_menu_add"/>
+
     <item
         android:id="@+id/devices_menu_reload"
         app:showAsAction="ifRoom"
         android:icon="@android:drawable/stat_notify_sync"
         android:title="@string/devices_menu_filter"/>
+
+    <item
+        android:id="@+id/settings"
+        app:showAsAction="never"
+        android:title="@string/fragment_settings"/>
 
     <item
         android:id="@+id/devices_menu_help"

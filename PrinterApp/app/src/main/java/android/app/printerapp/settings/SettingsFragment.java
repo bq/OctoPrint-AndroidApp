@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,6 +67,9 @@ public class SettingsFragment extends Fragment {
 			
 			//Show custom option menu
 			setHasOptionsMenu(true);
+
+            //Update the actionbar to show the up carat/affordance
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			
 			//Inflate the fragment
 			rootView = inflater.inflate(R.layout.settings_layout,
@@ -112,6 +116,10 @@ public class SettingsFragment extends Fragment {
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
 	   
 	   switch (item.getItemId()) {
+
+           case android.R.id.home:
+               getActivity().onBackPressed();
+               return true;
 	   
 	   case R.id.settings_menu_add: //Add a new printer
 

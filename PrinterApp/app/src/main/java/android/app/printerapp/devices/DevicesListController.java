@@ -1,8 +1,7 @@
 package android.app.printerapp.devices;
 
 import android.app.AlertDialog;
-import android.app.printerapp.ItemListActivity;
-import android.app.printerapp.ItemListFragment;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
@@ -266,8 +265,8 @@ public class DevicesListController {
                 }else {
                     OctoprintFiles.uploadFile(context, file, m);
                 }
-                ItemListFragment.performClick(0);
-                ItemListActivity.showExtraFragment(1, m.getId());
+                MainActivity.performClick(2);
+                MainActivity.showExtraFragment(1, m.getId());
 
 
                 dialogInterface.dismiss();

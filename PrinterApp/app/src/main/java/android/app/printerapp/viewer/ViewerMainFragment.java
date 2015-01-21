@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
@@ -49,8 +50,6 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -219,8 +218,6 @@ public class ViewerMainFragment extends Fragment {
      */
 
     private void initUIElements() {
-        //Set tabs
-        setTabHost(mRootView);
 
         //Set behavior of the expandable panel
         final FrameLayout expandablePanel = (FrameLayout) mRootView.findViewById(R.id.advanced_options_expandable_panel);
@@ -510,80 +507,16 @@ public class ViewerMainFragment extends Fragment {
 
                 return true;
 
+            case R.id.library_settings:
+                MainActivity.showExtraFragment(0, 0);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    /**
-     * Constructor for the tab host.
-     */
-    public void setTabHost(View v) {
-        final TabHost tabs = (TabHost) v.findViewById(R.id.tabhost_views);
-        tabs.setup();
 
-        TabHost.TabSpec spec = tabs.newTabSpec("Normal");
-        spec.setIndicator(getString(R.string.viewer_button_normal));
-        spec.setContent(R.id.tab_normal);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Overhang");
-        spec.setIndicator(getString(R.string.viewer_button_overhang));
-        spec.setContent(R.id.tab_overhang);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Transparent");
-        spec.setIndicator(getString(R.string.viewer_button_transparent));
-        spec.setContent(R.id.tab_transparent);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Xray");
-        spec.setIndicator(getString(R.string.viewer_button_xray));
-        spec.setContent(R.id.tab_xray);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Gcode");
-        spec.setIndicator(getString(R.string.viewer_button_layers));
-        spec.setContent(R.id.tab_gcodes);
-        tabs.addTab(spec);
-
-        tabs.setCurrentTab(0);
-
-        //Set style for the tab widget
-        for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
-            final View tab = tabs.getTabWidget().getChildTabViewAt(i);
-            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
-            TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(getResources().getColor(R.color.body_text_2));
-        }
-
-        tabs.setOnTabChangedListener(new OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-
-                /*switch (tabs.getCurrentTab()) {
-                    case NORMAL:
-                        changeStlViews(ViewerSurfaceView.NORMAL);
-                        break;
-                    case OVERHANG:
-                        changeStlViews(ViewerSurfaceView.OVERHANG);
-                        break;
-                    case TRANSPARENT:
-                        changeStlViews(ViewerSurfaceView.TRANSPARENT);
-                        break;
-                    case XRAY:
-                        changeStlViews(ViewerSurfaceView.XRAY);
-                        break;
-                    case LAYER:
-                        changeStlViews(LAYER);
-                        break;
-                    default:
-                        break;
-                }*/
-            }
-        });
-
-    }
 
     /**
      * ********************** FILE MANAGEMENT *******************************

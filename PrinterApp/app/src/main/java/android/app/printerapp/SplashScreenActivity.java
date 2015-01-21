@@ -59,7 +59,7 @@ public class SplashScreenActivity extends Activity {
             Log.d(TAG, "[START PRINTERAPP]");
 
             Intent mainIntent = new Intent().setClass(
-                    SplashScreenActivity.this, ItemListActivity.class);
+                    SplashScreenActivity.this, MainActivity.class);
             startActivity(mainIntent);
 
             //Close the activity so the user won't able to go back this

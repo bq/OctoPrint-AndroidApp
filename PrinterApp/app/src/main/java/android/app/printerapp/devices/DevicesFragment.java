@@ -3,7 +3,7 @@ package android.app.printerapp.devices;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
@@ -20,9 +20,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.content.LocalBroadcastManager;
@@ -41,14 +38,10 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-
-import it.sephiroth.android.library.widget.HListView;
 
 /**
  * This is the fragment that will contain the Device Grid and functionality
@@ -60,28 +53,12 @@ import it.sephiroth.android.library.widget.HListView;
 
     //Controllers and adapters
     private DevicesGridAdapter mGridAdapter;
-    private DevicesCameraAdapter mCameraAdapter;
-
-    //MUSIC!!!11!!1
-    private static SoundPool mSoundPool;
-    private static int mSoundMusic;
-    private static boolean mSoundIsLoaded = false;
 
     //Network manager contoller
     private PrintNetworkManager mNetworkManager;
     private JmdnsServiceListener mServiceListener;
 
     private ImageView mHideOption;
-
-    /**
-     * Additional variables
-     */
-
-    //Save current filter
-    private int mFilter;
-
-    private GridView mCameraGrid;
-
 
     //Empty constructor
     public DevicesFragment() {
@@ -125,12 +102,6 @@ import it.sephiroth.android.library.widget.HListView;
             //Inflate the fragment
             rootView = inflater.inflate(R.layout.devices_layout,container, false);
 
-            /**
-             * CUSTOM VIEW METHODS
-             */
-
-            //Set tab host for the view
-            setTabHost(rootView);
 
 
             //------------------------------- View references -----------------//
@@ -146,28 +117,6 @@ import it.sephiroth.android.library.widget.HListView;
 
             gridView.setAdapter(mGridAdapter);
 
-            /*************** VIDEO HANDLER ****************************/
-
-            //mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
-
-            mCameraGrid = (GridView) rootView.findViewById(R.id.devices_camera);
-            //cameraView.setAdapter(mCameraAdapter);
-
-
-            /***************** SLIDE PANEL ************************************/
-
-            //Slide panel setup
-
-            SlidingUpPanelLayout slidePanel = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_panel);
-            slidePanel.setOverlayed(false);
-            CheckBox imageButton = (CheckBox) rootView.findViewById(R.id.expand_button_checkbox);
-            slidePanel.setDragView(imageButton);
-
-            /******************* QUICKPRINT PANEL ************************************/
-
-            HListView quickprintHorizontalListView = (HListView) rootView.findViewById(R.id.quickprint_horizontal_list_view);
-            new DevicesQuickprint(getActivity(), quickprintHorizontalListView);
-
             /***************************************************************/
 
             mHideOption = (ImageView) rootView.findViewById(R.id.hide_icon);
@@ -176,17 +125,6 @@ import it.sephiroth.android.library.widget.HListView;
                     //Custom service listener
             mServiceListener = new JmdnsServiceListener(this);
             mNetworkManager = new PrintNetworkManager(this);
-
-            //Default filter
-            mFilter = R.id.dv_radio0;
-
-
-
-            /**
-             * MUSIC!!!
-             */
-
-            loadMusic();
 
         }
         return rootView;
@@ -203,6 +141,10 @@ import it.sephiroth.android.library.widget.HListView;
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
         switch (item.getItemId()) {
+
+            case R.id.settings:
+                MainActivity.showExtraFragment(0, 0);
+                return true;
 
             case R.id.devices_menu_reload: //Reload service discovery
 
@@ -237,69 +179,7 @@ import it.sephiroth.android.library.widget.HListView;
 
     /****************************************** UI HANDLING *********************************/
 
-    /**
-     * Constructor for the tab host
-     * TODO: Should be moved to a View class since it only handles ui.
-     */
-    public void setTabHost(View v) {
 
-        final TabHost tabs = (TabHost) v.findViewById(android.R.id.tabhost);
-        tabs.setup();
-
-        TabHost.TabSpec spec = tabs.newTabSpec("Map");
-        spec.setIndicator(getString(R.string.devices_tabhost_tab_map));
-        spec.setContent(R.id.tab1);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("Videowall");
-        spec.setIndicator(getString(R.string.devices_tabhost_tab_video));
-        spec.setContent(R.id.tab2);
-        tabs.addTab(spec);
-
-
-        tabs.setCurrentTab(0);
-
-        //Set style for the tab widget
-        for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
-            final View tab = tabs.getTabWidget().getChildTabViewAt(i);
-            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
-            TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(getResources().getColor(R.color.body_text_2));
-        }
-
-        tabs.setOnTabChangedListener(new OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-
-                View currentView = tabs.getCurrentView();
-                AnimationHelper.inFromRightAnimation(currentView);
-
-
-                //TODO Camera shutdown handling
-                if (tabs.getCurrentTab()!=1){
-
-                    if (mCameraAdapter!=null){
-
-                        mCameraAdapter.hideSurfaces();
-                        mCameraAdapter = null;
-                        mCameraGrid.setAdapter(null);
-
-
-                    }
-
-                } else {
-
-                    mCameraAdapter = new DevicesCameraAdapter(getActivity(), R.layout.video_view, DevicesListController.getList());
-                    mCameraGrid.setAdapter(mCameraAdapter);
-
-                }
-
-
-
-            }
-        });
-
-    }
 
     /**
      * Add a new element to the list and notify the adapter
@@ -435,7 +315,7 @@ import it.sephiroth.android.library.widget.HListView;
 
                                 //if not finished, normal behavior
                             } else {
-                                ItemListActivity.showExtraFragment(1, m.getId());
+                                MainActivity.showExtraFragment(1, m.getId());
                             }
                         } else {
 
@@ -503,37 +383,6 @@ import it.sephiroth.android.library.widget.HListView;
      * @param m
      */
     public void codeDialog(final ModelPrinter m) {
-
-        /*AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.devices_setup_title);
-
-        //Inflate the view
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.setup_dialog, null, false);
-
-
-        //On insertion write the printer onto the database and start updating the socket
-        adb.setPositiveButton(R.string.add, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-
-
-
-
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.setView(v);
-
-        adb.show();*/
-
-        //m.startUpdate(getActivity());
-
-        //new EditPrinterDialog(getActivity(),m);
 
         OctoprintConnection.getNewConnection(getActivity(), m);
 
@@ -652,29 +501,6 @@ import it.sephiroth.android.library.widget.HListView;
     }
 
     /**
-     * ***************************************
-     * PLAY MUSIC!
-     * ****************************************
-     */
-
-    public void loadMusic() {
-        mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        mSoundMusic = mSoundPool.load(getActivity(), R.raw.finish, 1);
-        mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                mSoundIsLoaded = true;
-            }
-        });
-    }
-
-    public static void playMusic() {
-        if (mSoundIsLoaded) {
-            Log.i("out", "PLAYING MUSIC");
-            mSoundPool.play(mSoundMusic, 1, 1, 1, 0, 1);
-        }
-    }
-
-    /**
      * *****************************************
      * FINISH DIALOG
      * ******************************************
@@ -753,70 +579,5 @@ import it.sephiroth.android.library.widget.HListView;
     }
 
 
-    /**
-     * Filter options
-     */
 
-    /*public void optionFilter() {
-
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.devices_filter_dialog_title);
-
-
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.menu_filter_dialog, null, false);
-
-        final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_devices);
-
-        rg.check(mFilter);
-
-        adb.setView(v);
-
-        adb.setPositiveButton(R.string.filter, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                switch (rg.getCheckedRadioButtonId()) {
-
-                    case R.id.dv_radio0: {
-                        mGridAdapter.getFilter().filter(null);//Show all devices
-                        mListAdapter.getFilter().filter(null);//Show all devices
-
-                    }
-                    break;
-                    case R.id.dv_radio1: {
-                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
-                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_PRINTING));//Active printers
-
-                    }
-                    break;
-                    case R.id.dv_radio2: {
-                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));    //Inactive printers
-                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_OPERATIONAL));    //Inactive printers
-
-                    }
-                    break;
-                    case R.id.dv_radio3: {
-                        mGridAdapter.getFilter().filter(null);
-                    }
-                    break;
-                    case R.id.dv_radio4: {
-                        mGridAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
-                        mListAdapter.getFilter().filter(String.valueOf(StateUtils.STATE_NEW)); //Linked
-                    }
-                    break;
-
-                }
-
-                mFilter = rg.getCheckedRadioButtonId();
-
-
-            }
-        });
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.show();
-
-    }*/
 }

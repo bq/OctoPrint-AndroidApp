@@ -16,8 +16,8 @@
     <string name="help">Help</string>
     <string name="warning">Warning</string>
     
-    <string name="fragment_devices">Devices</string>
-    <string name="fragment_print">Print panel</string>
+    <string name="fragment_devices">Printer</string>
+    <string name="fragment_print">Panel</string>
     <string name="fragment_models">Models</string>
     <string name="fragment_history">History</string>
     <string name="fragment_settings">Settings</string>
