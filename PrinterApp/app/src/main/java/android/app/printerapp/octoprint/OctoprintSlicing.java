@@ -1,7 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.ProgressDialog;
-import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
@@ -85,7 +85,7 @@ public class OctoprintSlicing {
 				Log.i("OUT",responseString.toString());
 				//Dismiss progress dialog
 				pd.dismiss();
-				ItemListActivity.showDialog(responseString);
+                MainActivity.showDialog(responseString);
 			}
 		});
 		

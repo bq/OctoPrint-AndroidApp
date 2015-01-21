@@ -14,8 +14,8 @@
     <string name="help">Ayuda</string>
     <string name="warning">Aviso</string>
     
-    <string name="fragment_devices">Dispositivos</string>
-    <string name="fragment_print">Panel de impresión</string>
+    <string name="fragment_devices">Impresora</string>
+    <string name="fragment_print">Panel</string>
     <string name="fragment_models">Modelos</string>
     <string name="fragment_history">Historial</string>
     <string name="fragment_settings">Ajustes</string>

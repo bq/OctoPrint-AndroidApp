@@ -1,7 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.ProgressDialog;
-import android.app.printerapp.ItemListActivity;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.content.Context;
 
@@ -74,7 +74,7 @@ public class OctoprintControl {
 
 				//Dismiss progress dialog
 				pd.dismiss();
-				ItemListActivity.showDialog(responseString);
+                MainActivity.showDialog(responseString);
 			}
 		});
 		
@@ -136,7 +136,7 @@ public class OctoprintControl {
 					String responseString, Throwable throwable) {
 
 				super.onFailure(statusCode, headers, responseString, throwable);
-				ItemListActivity.showDialog(responseString);
+                MainActivity.showDialog(responseString);
 			}
 		});
 		
