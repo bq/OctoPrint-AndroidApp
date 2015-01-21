@@ -50,7 +50,7 @@ public class ModelProfile {
         else { //Custom profile
 
             try {
-
+                Log.i("PROFILE","Looking for " + resource);
                 fis = context.openFileInput(resource + ".profile");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -59,30 +59,35 @@ public class ModelProfile {
 
         }
        //fis = context.getResources().openRawResource(id);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-
         JSONObject json = null;
+        if (fis!=null){
 
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+
+
+            try {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                reader.close();
+
+
+                json = new JSONObject(sb.toString());
+
+                Log.i("json", json.toString());
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-            reader.close();
-
-
-            json = new JSONObject(sb.toString());
-
-            Log.i("json", json.toString());
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
 
 
         return json;

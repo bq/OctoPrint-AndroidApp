@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
+import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
@@ -1555,26 +1556,19 @@ public class ViewerMainFragment extends Fragment {
         return mCurrentType;
     }
 
-    public static void changePlate(int type) {
+    public static void changePlate(String resource) throws NullPointerException {
 
-        switch (type) {
+        JSONObject profile = ModelProfile.retrieveProfile(mContext, resource);
 
-            case WitboxFaces.TYPE_WITBOX:
+        try {
+            JSONObject volume = profile.getJSONObject("volume");
+            mCurrentPlate = new int[]{volume.getInt("width") / 2, volume.getInt("depth") / 2,volume.getInt("height")};
 
-                mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
-
-                break;
-
-            case WitboxFaces.TYPE_HEPHESTOS:
-
-                mCurrentPlate = new int[]{WitboxFaces.HEPHESTOS_LONG, WitboxFaces.HEPHESTOS_WITDH, WitboxFaces.HEPHESTOS_HEIGHT};
-
-                break;
-
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        mCurrentType = type;
-        mSurface.changePlate(type);
+        mSurface.changePlate(mCurrentPlate);
         mSurface.requestRender();
     }
 

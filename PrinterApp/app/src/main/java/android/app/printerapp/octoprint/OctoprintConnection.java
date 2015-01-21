@@ -235,6 +235,7 @@ public class OctoprintConnection {
                                 Log.i("Connection","Printer already connected to " + p.getPort());
 
                                 String network = PrintNetworkReceiver.getCurrentNetwork();
+                                p.setNetwork(network);
 
                                 p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType()), network));
 
@@ -481,7 +482,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	    Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	    //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 
@@ -593,7 +594,7 @@ public class OctoprintConnection {
                                   }
                               } catch (NullPointerException e){
 
-                                  e.printStackTrace();
+                                  //e.printStackTrace();
                                   Log.i("OUT","Null slicing");
                               }
 

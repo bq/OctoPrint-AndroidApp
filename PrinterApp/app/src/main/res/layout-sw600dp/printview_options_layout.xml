@@ -168,9 +168,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
+                                android:textColor="@android:color/darker_gray"
+                                android:textStyle="italic"
+                                android:text="N/A"
                                 android:layout_toEndOf="@+id/printview_text_profile_tag"
-                                android:layout_toRightOf="@+id/printview_text_profile_tag"
-                                android:text=" N/A" />
+                                android:layout_toRightOf="@+id/printview_text_profile_tag" />
 
                         </RelativeLayout>
 

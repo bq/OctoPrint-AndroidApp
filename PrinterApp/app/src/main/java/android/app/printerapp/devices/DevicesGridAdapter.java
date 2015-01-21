@@ -154,6 +154,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                         case StateUtils.TYPE_WITBOX:
 
 
+                            if (m.getNetwork()!=null)
                             if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())){
 
                                 if (m.getDisplayColor()!=0){
@@ -169,6 +170,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
                         case StateUtils.TYPE_PRUSA:
 
+                            if (m.getNetwork()!=null)
                             if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())){
                                 if (m.getDisplayColor()!=0) {
 

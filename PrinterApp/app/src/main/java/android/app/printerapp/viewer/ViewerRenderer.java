@@ -549,7 +549,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		  }
 	  }
 
-    public void generatePlate(int type){
+    public void generatePlate(int[] type){
 
         try{
 
@@ -614,14 +614,14 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 
 		
-		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true, 0);
+		if (mMode == ViewerMainFragment.DO_SNAPSHOT || mMode == ViewerMainFragment.PRINT_PREVIEW) mInfinitePlane = new WitboxPlate (mContext, true, ViewerMainFragment.getCurrentPlate());
 
-        mWitboxFaceBack = new WitboxFaces (BACK, ViewerMainFragment.getCurrentType());
-        mWitboxFaceRight = new WitboxFaces (RIGHT, ViewerMainFragment.getCurrentType());
-        mWitboxFaceLeft = new WitboxFaces (LEFT, ViewerMainFragment.getCurrentType());
-        mWitboxFaceFront = new WitboxFaces (FRONT, ViewerMainFragment.getCurrentType());
-        mWitboxFaceTop = new WitboxFaces (TOP, ViewerMainFragment.getCurrentType());
-        mWitboxFaceDown = new WitboxPlate (mContext, false, ViewerMainFragment.getCurrentType());
+        mWitboxFaceBack = new WitboxFaces (BACK, ViewerMainFragment.getCurrentPlate());
+        mWitboxFaceRight = new WitboxFaces (RIGHT, ViewerMainFragment.getCurrentPlate());
+        mWitboxFaceLeft = new WitboxFaces (LEFT, ViewerMainFragment.getCurrentPlate());
+        mWitboxFaceFront = new WitboxFaces (FRONT, ViewerMainFragment.getCurrentPlate());
+        mWitboxFaceTop = new WitboxFaces (TOP, ViewerMainFragment.getCurrentPlate());
+        mWitboxFaceDown = new WitboxPlate (mContext, false, ViewerMainFragment.getCurrentPlate());
 
         mCircle = new Circles();
 

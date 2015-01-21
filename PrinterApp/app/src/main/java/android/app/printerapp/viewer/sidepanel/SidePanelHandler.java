@@ -187,6 +187,8 @@ public class SidePanelHandler {
 
     }
 
+
+
     //Initializes the side panel with the printer data
     public void initSidePanel() {
 
@@ -209,12 +211,35 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                            ViewerMainFragment.changePlate(i);
+                            switch(i){
+
+                                case 0: ViewerMainFragment.changePlate(ModelProfile.WITBOX_PROFILE); break;
+                                case 1: ViewerMainFragment.changePlate(ModelProfile.PRUSA_PROFILE); break;
+                                default:
+
+                                    //TODO
+
+                                    try{
+
+                                        ViewerMainFragment.changePlate(s_type.getSelectedItem().toString());
+
+                                    } catch (NullPointerException e){
+
+                                        Log.i("Profile","Profile dead!");
+
+                                    }
+
+                                break;
+
+                            }
+
 
                             mPrinter = DevicesListController.selectAvailablePrinter(i + 1);
                             mSlicingHandler.setPrinter(mPrinter);
 
                             ViewerMainFragment.slicingCallback();
+
+
 
                         }
 
@@ -225,8 +250,32 @@ public class SidePanelHandler {
                         }
                     });
 
+
+
+                    //Add default types plus custom types from internal storage
+                    ArrayList<String> profileArray = new ArrayList<String>();
+                    for (String s : PRINTER_TYPE){
+
+                        profileArray.add(s);
+                    }
+
+                    //Add internal storage types
+                    for (File file : mActivity.getApplicationContext().getFilesDir().listFiles()){
+
+                        //Only files with the .profile extension
+                        if (file.getAbsolutePath().contains(".profile")) {
+
+                            int pos = file.getName().lastIndexOf(".");
+                            String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
+
+                            //Add only the name
+                            profileArray.add(name);
+                        }
+
+                    }
+
                     ArrayAdapter<String> type_adapter = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, PRINTER_TYPE);
+                            R.layout.print_panel_spinner_item, profileArray);
                     type_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
                     s_type.setAdapter(type_adapter);
 
