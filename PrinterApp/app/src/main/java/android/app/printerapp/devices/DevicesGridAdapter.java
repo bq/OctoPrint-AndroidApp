@@ -116,9 +116,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             //holder.textViewTag.setTextColor(m.getDisplayColor());
             holder.textViewIp.setText(m.getAddress().replace("/", ""));
             holder.imageIcon.setVisibility(View.VISIBLE);
-            holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.SRC_ATOP);
-
-
+            holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.SRC_ATOP);
 
 
             int status = m.getStatus();
@@ -143,53 +141,49 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                 case StateUtils.STATE_ADHOC:
                     holder.imageIcon.setImageResource(R.drawable.octopidev_wifi);
 
-                break;
+                    break;
 
                 default: {
 
 
-
-                    switch(m.getType()){
+                    switch (m.getType()) {
 
                         case StateUtils.TYPE_WITBOX:
 
 
-                            if (m.getNetwork()!=null)
-                            if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())){
+                            if (m.getDisplayColor() != 0) {
 
-                                if (m.getDisplayColor()!=0){
+                                holder.imageIcon.setImageResource(R.drawable.witbox_transparent);
+                                holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.DST_ATOP);
 
-                                    holder.imageIcon.setImageResource(R.drawable.witbox_transparent);
-                                    holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.DST_ATOP);
-
-                                } else holder.imageIcon.setImageResource(R.drawable.icon_witbox);
-                            } else holder.imageIcon.setImageResource(R.drawable.witbox_nowifi);
+                            } else holder.imageIcon.setImageResource(R.drawable.icon_witbox);
 
 
                             break;
 
                         case StateUtils.TYPE_PRUSA:
 
-                            if (m.getNetwork()!=null)
-                            if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())){
-                                if (m.getDisplayColor()!=0) {
+                            if (m.getNetwork() != null)
+                                if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())) {
+                                    if (m.getDisplayColor() != 0) {
 
-                                    holder.imageIcon.setImageResource(R.drawable.prusa_transparent);
-                                    holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.DST_ATOP);
+                                        holder.imageIcon.setImageResource(R.drawable.prusa_transparent);
+                                        holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.DST_ATOP);
 
-                                } else holder.imageIcon.setImageResource(R.drawable.icon_prusa);
-                            } else holder.imageIcon.setImageResource(R.drawable.prusa_nowifi);
+                                    } else holder.imageIcon.setImageResource(R.drawable.icon_prusa);
+                                } else holder.imageIcon.setImageResource(R.drawable.prusa_nowifi);
 
                             break;
 
                         case StateUtils.TYPE_CUSTOM:
 
-                            if (m.getDisplayColor()!=0) {
+                            if (m.getDisplayColor() != 0) {
 
                                 holder.imageIcon.setImageResource(R.drawable.icon_custom_transparent);
-                                holder.imageIcon.setColorFilter(m.getDisplayColor(),Mode.DST_ATOP);
+                                holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.DST_ATOP);
 
-                            } else holder.imageIcon.setImageResource(R.drawable.icon_custom_generic);
+                            } else
+                                holder.imageIcon.setImageResource(R.drawable.icon_custom_generic);
 
                             break;
 
@@ -206,28 +200,26 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
             }
 
-            if (m.getNetwork()!=null)
-            if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())){
-                //Status icon
-                switch (status) {
+            //Status icon
+            switch (status) {
 
-                    case StateUtils.STATE_OPERATIONAL: {
+                case StateUtils.STATE_OPERATIONAL: {
 
 
-                        //Check for printing completion
-                        if (m.getJob() != null) {
+                    //Check for printing completion
+                    if (m.getJob() != null) {
 
-                            //Currently finished means operational + file loaded with 100% progress
-                            if (!m.getJob().getProgress().equals("null")) {
+                        //Currently finished means operational + file loaded with 100% progress
+                        if (!m.getJob().getProgress().equals("null")) {
 
-                                if (m.getJob().getFinished()) {
+                            if (m.getJob().getFinished()) {
 
-                                    holder.progressBarPrinting.setVisibility(View.VISIBLE);
-                                    holder.progressBarPrinting.setProgress(100);
-                                    //holder.progressBarPrinting.getProgressDrawable().setColorFilter(Color.parseColor("#ff009900"), Mode.SRC_IN);
-                                    holder.textViewLoading.setText(R.string.devices_text_completed);
-                                    holder.textViewLoading.setVisibility(View.VISIBLE);
-                                }
+                                holder.progressBarPrinting.setVisibility(View.VISIBLE);
+                                holder.progressBarPrinting.setProgress(100);
+                                //holder.progressBarPrinting.getProgressDrawable().setColorFilter(Color.parseColor("#ff009900"), Mode.SRC_IN);
+                                holder.textViewLoading.setText(R.string.devices_text_completed);
+                                holder.textViewLoading.setVisibility(View.VISIBLE);
+                            }
 
 							/*Double n = Double.parseDouble(m.getJob().getProgress() );
 
@@ -243,84 +235,83 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
 								//DevicesFragment.playMusic();
 							}*/
-                            }
-
-                        }
-
-                        //Must put this second because loading has priority over completion
-                        if (!m.getLoaded()) {
-
-                            //check if a file is loading
-                            holder.progressBarLoading.setVisibility(View.VISIBLE);
-                            holder.textViewLoading.setText(R.string.devices_text_loading);
-                            holder.textViewLoading.setVisibility(View.VISIBLE);
                         }
 
                     }
-                    break;
 
+                    //Must put this second because loading has priority over completion
+                    if (!m.getLoaded()) {
 
-
-                    //When printing, show status bar and update progress
-                    case StateUtils.STATE_PRINTING: {
-
-                        holder.progressBarPrinting.setVisibility(View.VISIBLE);
-                        if (!m.getJob().getProgress().equals("null")) {
-
-                            Double n = Double.valueOf(m.getJob().getProgress());
-
-                            holder.progressBarPrinting.setProgress(n.intValue());
-                        }
-
-                    }
-                    break;
-
-                    case StateUtils.STATE_PAUSED: {
-                        holder.progressBarPrinting.setVisibility(View.VISIBLE);
-                        Double n = Double.valueOf(m.getJob().getProgress());
-                        holder.progressBarPrinting.setProgress(n.intValue());
-                        holder.textViewLoading.setText(R.string.devices_text_paused);
-                        holder.textViewLoading.setVisibility(View.VISIBLE);
-
-                    }
-                    break;
-
-                    //when closed or error, show error icon
-                    case StateUtils.STATE_CLOSED:
-                    case StateUtils.STATE_ERROR: {
-                        holder.imageWarning.setImageResource(R.drawable.icon_error);
-                        holder.imageWarning.setVisibility(View.VISIBLE);
-                    }
-                    break;
-
-                    //When connecting show status bar
-                    case StateUtils.STATE_CONNECTING: {
-                        holder.textViewLoading.setText(R.string.devices_text_connecting);
-                        holder.textViewLoading.setVisibility(View.VISIBLE);
+                        //check if a file is loading
                         holder.progressBarLoading.setVisibility(View.VISIBLE);
-                    }
-                    break;
-
-                    case StateUtils.STATE_NONE:
-                        holder.textViewLoading.setText("Offline");
+                        holder.textViewLoading.setText(R.string.devices_text_loading);
                         holder.textViewLoading.setVisibility(View.VISIBLE);
-                        holder.progressBarLoading.setVisibility(View.VISIBLE);
-                        break;
-
-                    default: {
                     }
 
                 }
-            } else {
+                break;
 
-                Log.i("Network", "NOPE Network");
-                holder.imageIcon.clearColorFilter();
+
+                //When printing, show status bar and update progress
+                case StateUtils.STATE_PRINTING: {
+
+                    holder.progressBarPrinting.setVisibility(View.VISIBLE);
+                    if (!m.getJob().getProgress().equals("null")) {
+
+                        Double n = Double.valueOf(m.getJob().getProgress());
+
+                        holder.progressBarPrinting.setProgress(n.intValue());
+                    }
+
+                }
+                break;
+
+                case StateUtils.STATE_PAUSED: {
+                    holder.progressBarPrinting.setVisibility(View.VISIBLE);
+                    Double n = Double.valueOf(m.getJob().getProgress());
+                    holder.progressBarPrinting.setProgress(n.intValue());
+                    holder.textViewLoading.setText(R.string.devices_text_paused);
+                    holder.textViewLoading.setVisibility(View.VISIBLE);
+
+                }
+                break;
+
+                //when closed or error, show error icon
+                case StateUtils.STATE_CLOSED:
+                case StateUtils.STATE_ERROR: {
+                    holder.imageWarning.setImageResource(R.drawable.icon_error);
+                    holder.imageWarning.setVisibility(View.VISIBLE);
+                }
+                break;
+
+                //When connecting show status bar
+                case StateUtils.STATE_CONNECTING: {
+                    holder.textViewLoading.setText(R.string.devices_text_connecting);
+                    holder.textViewLoading.setVisibility(View.VISIBLE);
+                    holder.progressBarLoading.setVisibility(View.VISIBLE);
+                }
+                break;
+
+                case StateUtils.STATE_NONE:
+                    holder.textViewLoading.setText("Offline");
+                    holder.textViewLoading.setVisibility(View.VISIBLE);
+                    holder.progressBarLoading.setVisibility(View.VISIBLE);
+                    break;
+
+                default: {
+                }
+
             }
 
 
+            if (m.getNetwork() != null)
+                if (!m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())) {
+                    Log.i("Network", "NOPE Network");
+                    holder.imageIcon.clearColorFilter();
+                    holder.imageIcon.setImageResource(R.drawable.witbox_nowifi);
+                }
 
         }
-
 
         return convertView;
     }

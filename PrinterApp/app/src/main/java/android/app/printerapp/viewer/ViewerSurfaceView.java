@@ -515,6 +515,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
                     mRenderer.changeTouchedState();
 
+                    Log.i("Slicer","Callback from surface");
                     ViewerMainFragment.slicingCallback();
                 }
 

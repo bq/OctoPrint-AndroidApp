@@ -267,5 +267,6 @@
     <string name="library_menu_search_global">Buscar modelos</string>
     <string name="library_scan_dialog_title">Añadir modelos a tu librería</string>
     <string name="viewer_restore_session">¿Restaurar la última sesión?</string>
+    <string name="viewer_menu_last_session">Última sesión</string>
 
 </resources>
