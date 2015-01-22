@@ -14,12 +14,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -73,8 +77,6 @@ public class MainActivity extends ActionBarActivity {
 
         this.registerReceiver(mLocaleChange,filter);
 
-
-
         mManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
@@ -98,37 +100,40 @@ public class MainActivity extends ActionBarActivity {
 
     public void setTabHost() {
 
-
-
         mTabHost.setup();
 
+        //Models tab
         TabHost.TabSpec spec = mTabHost.newTabSpec("Library");
-        spec.setIndicator(getString(R.string.fragment_models));
+        spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_models)));
         spec.setContent(R.id.maintab1);
         mTabHost.addTab(spec);
 
+        //Print panel tab
         spec = mTabHost.newTabSpec("Panel");
-        spec.setIndicator(getString(R.string.fragment_print));
+        spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_print)));
         spec.setContent(R.id.maintab2);
         mTabHost.addTab(spec);
 
+        //Print view tab
         spec = mTabHost.newTabSpec("Printer");
-        spec.setIndicator(getString(R.string.fragment_devices));
+        spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_devices)));
         spec.setContent(R.id.maintab3);
         mTabHost.addTab(spec);
 
         mTabHost.setCurrentTab(0);
         onItemSelected(0);
 
+        mTabHost.getTabWidget().setDividerDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
+
         //Set style for the tab widget
-        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
-            final View tab = mTabHost.getTabWidget().getChildTabViewAt(i);
-            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
-            TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(getResources().getColor(R.color.body_text_2));
-            tv.setTextSize(15);
-            tv.setPadding(40,0,40,0);
-        }
+//        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
+//            final View tab = mTabHost.getTabWidget().getChildTabViewAt(i);
+//            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
+//            TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+//            tv.setTextColor(getResources().getColor(R.color.body_text_2));
+//            tv.setTextSize(15);
+//            tv.setPadding(40,0,40,0);
+//        }
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -144,6 +149,19 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+
+    /**
+     * Return the custom view of the tab
+     *
+     * @param title Title of the tab
+     * @return Custom view of a tab layout
+     */
+    private View getTabIndicator(String title) {
+        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.main_activity_tab_layout, null);
+        TextView tv = (TextView) view.findViewById(R.id.tab_title_textview);
+        tv.setText(title);
+        return view;
+    }
 
     public void onItemSelected(int id) {
 

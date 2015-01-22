@@ -4,9 +4,8 @@
     android:id="@+id/main_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/pager_background"
     android:orientation="vertical">
-
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -16,67 +15,10 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
-    <Button
-        android:id="@+id/down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:text="@string/viewer_button_down" />
-
-    <Button
-        android:id="@+id/left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/down"
-        android:text="@string/viewer_button_left" />
-
-    <Button
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/right"
-        android:layout_alignBottom="@+id/right"
-        android:layout_toLeftOf="@+id/right"
-        android:text="@string/viewer_button_back" />
-
-    <Button
-        android:id="@+id/right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/down"
-        android:layout_toRightOf="@+id/down"
-        android:text="@string/viewer_button_right" />
-
-    <RadioGroup
-        android:id="@+id/radioGroupMovement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:visibility="visible">
-
-        <RadioButton
-            android:id="@+id/radioRotation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/viewer_button_rotation" />
-
-        <RadioButton
-            android:id="@+id/radioTranslation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewer_button_translation" />
-    </RadioGroup>
-
     <!-- MAIN CONTAINER -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tabhost_views"
-        android:background="@color/almost_white"
         android:orientation="horizontal"
         android:padding="@dimen/content_padding_small">
 

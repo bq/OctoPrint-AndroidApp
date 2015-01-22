@@ -41,14 +41,11 @@ public class SplashScreenActivity extends Activity {
 
         if (isTaskRoot()){
 
-
             //Simulate a long loading process on application startup
             Timer timer = new Timer();
             timer.schedule(splashDelay, SPLASH_SCREEN_DELAY);
 
-
         }else finish();
-
 
     }
 

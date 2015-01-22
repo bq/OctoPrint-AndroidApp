@@ -72,8 +72,9 @@
     <string name="printview_3d_text">3D Render</string>
     <string name="printview_profile_tag">Profile - </string>
     <string name="printview_extruder_tag">Extruder</string>
+    <string name="printview_extruder_extrude_tag">Extrude/Retract</string>
     <string name="printview_bed_tag">Bed</string>
-    <string name="printview_change_temp_button">Change</string>
+    <string name="printview_change_temp_button">Set to %1$d°C</string>
     <string name="printview_start_button">PAUSE</string>
     <string name="printview_stop_button">STOP</string>
     <string name="printview_retract_button">Retract</string>

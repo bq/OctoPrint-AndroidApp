@@ -97,13 +97,8 @@ public class ViewerMainFragment extends Fragment {
     private int mSettingsPanelMinHeight;
 
     //Buttons
-    private RadioGroup mGroupMovement;
-
     private ImageButton mVisibilityModeButton;
-    private Button mBackWitboxFaces;
-    private Button mRightWitboxFaces;
-    private Button mLeftWitboxFaces;
-    private Button mDownWitboxFaces;
+
     private static SeekBar mSeekBar;
 
     private static List<DataStorage> mDataList = new ArrayList<DataStorage>();
@@ -254,57 +249,6 @@ public class ViewerMainFragment extends Fragment {
             public void onClick(View v) {
                 showVisibilityPopUpMenu();
             }
-        });
-
-        mGroupMovement = (RadioGroup) mRootView.findViewById(R.id.radioGroupMovement);
-        mGroupMovement.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioRotation:
-                        mSurface.setMovementMode(ViewerSurfaceView.ROTATION_MODE);
-                        break;
-                    case R.id.radioTranslation:
-                        mSurface.setMovementMode(ViewerSurfaceView.TRANSLATION_MODE);
-                        break;
-                }
-            }
-        });
-
-        mBackWitboxFaces = (Button) mRootView.findViewById(R.id.back);
-        mBackWitboxFaces.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSurface.showBackWitboxFace();
-            }
-
-        });
-
-        mRightWitboxFaces = (Button) mRootView.findViewById(R.id.right);
-        mRightWitboxFaces.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSurface.showRightWitboxFace();
-            }
-
-        });
-
-        mLeftWitboxFaces = (Button) mRootView.findViewById(R.id.left);
-        mLeftWitboxFaces.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSurface.showLeftWitboxFace();
-            }
-
-        });
-
-        mDownWitboxFaces = (Button) mRootView.findViewById(R.id.down);
-        mDownWitboxFaces.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSurface.showDownWitboxFace();
-            }
-
         });
 
         mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
