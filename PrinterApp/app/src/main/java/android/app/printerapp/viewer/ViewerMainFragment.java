@@ -185,11 +185,6 @@ public class ViewerMainFragment extends Fragment {
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT, mSlicingHandler);
             draw();
-
-
-            restoreLastPanel();
-
-
         }
 
         return mRootView;
@@ -495,6 +490,10 @@ public class ViewerMainFragment extends Fragment {
 
             case R.id.viewer_save_gcode:
                 saveGcodeDialog();
+                return true;
+
+            case R.id.viewer_last_session:
+                restoreLastPanel();
                 return true;
 
             case R.id.viewer_restore:
@@ -1300,8 +1299,20 @@ public class ViewerMainFragment extends Fragment {
 
                 case StateUtils.SLICER_UPLOAD:
 
-                    tv.setText(R.string.viewer_text_uploading);
-                    pb.setIndeterminate(true);
+                    String uploadText = mContext.getString(R.string.viewer_text_uploading);
+
+
+                    if (i == 0) pb.setIndeterminate(true);
+                    else {
+
+                        pb.setProgress(i);
+                        pb.setIndeterminate(false);
+
+                        uploadText += " (" + i + "%)";
+
+                    }
+
+                    tv.setText(uploadText);
 
                     break;
 
@@ -1444,7 +1455,7 @@ public class ViewerMainFragment extends Fragment {
 
             final List<DataStorage> newList = new ArrayList<DataStorage>(mDataList);
 
-            //Code to update the UI
+            //Code to update the UI─aÇ >
             //Check if the file is not yet loaded
             for (int i = 0; i < newList.size(); i++) {
 
@@ -1522,14 +1533,14 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-
-
     /********************************* RESTORE PANEL *************************/
 
     /**
      * check if there is a reference to restore the last panel and open it
      */
     private void restoreLastPanel(){
+
+        Log.i("Restore","Restoirinan");
 
        if (mSlicingHandler.getLastReference()==null) //Only if there is no last reference
        if (DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last")!=null){
@@ -1558,7 +1569,11 @@ public class ViewerMainFragment extends Fragment {
 
             adb.show();
 
-        }
+        } else {
+
+           Toast.makeText(mContext,"No last session",Toast.LENGTH_SHORT).show();
+
+       }
 
     }
 

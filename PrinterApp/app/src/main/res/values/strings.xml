@@ -274,6 +274,7 @@
     <string name="library_menu_search_global">Search for models</string>
     <string name="library_scan_dialog_title">Add models to your library</string>
     <string name="viewer_restore_session">Restore last session?</string>
+    <string name="viewer_menu_last_session">Last session</string>
 
 
 </resources>
