@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:widget="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_container_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -52,13 +52,14 @@
                 android:layout_height="wrap_content">
 
                 <!-- Advanced settings -->
-                <ScrollView
+                <uk.co.androidalliance.edgeeffectoverride.ScrollView
                     android:id="@+id/advanced_options_scroll_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/advanced_settings_buttons_container"
                     android:layout_alignParentTop="true"
-                    android:fadeScrollbars="false">
+                    android:fadeScrollbars="false"
+                    app:edgeeffect_color="@color/theme_accent_1">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -384,7 +385,7 @@
 
                     </LinearLayout>
 
-                </ScrollView>
+                </uk.co.androidalliance.edgeeffectoverride.ScrollView>
 
                 <View
                     style="@style/HorizontalSeparator"
@@ -409,20 +410,20 @@
                         android:id="@+id/restore_settings_button"
                         style="@style/MaterialDesignButton.Flat"
                         android:layout_width="180dp"
-                        widget:paper_text="@string/viewer_button_restore" />
+                        app:paper_text="@string/viewer_button_restore" />
 
                     <com.material.widget.PaperButton
                         android:id="@+id/save_settings_button"
                         style="@style/MaterialDesignButton.Flat.Default"
                         android:layout_width="110dp"
-                        widget:paper_text="@string/viewer_button_save" />
+                        app:paper_text="@string/viewer_button_save" />
                 </LinearLayout>
 
                 <com.material.widget.PaperButton
                     android:id="@+id/delete_settings_button"
                     style="@style/MaterialDesignButton.Flat"
                     android:layout_width="150dp"
-                    widget:paper_text="@string/viewer_button_delete"
+                    app:paper_text="@string/viewer_button_delete"
                     android:layout_alignTop="@id/advanced_settings_buttons_container"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />

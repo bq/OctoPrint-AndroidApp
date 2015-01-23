@@ -2,13 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/pager_background"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/almost_white"
         android:orientation="horizontal">
 
         <!-- Left navigation menu -->
@@ -18,8 +17,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingBottom="@dimen/content_padding_small"
-            android:paddingLeft="@dimen/content_padding_big"
-            android:paddingRight="@dimen/content_padding_big"
+            android:paddingLeft="@dimen/content_padding_large"
+            android:paddingRight="@dimen/content_padding_large"
             android:paddingTop="@dimen/content_padding_small">
 
             <TextView

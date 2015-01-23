@@ -244,10 +244,10 @@
     <string name="viewer_progress_task_slicing">Generando laminado (%1$s)</string>
     <string name="viewer_settings_select_profile">Selecciona un perfil de impresión</string>
     <string name="printview_retract_button">Extraer</string>
-    <string name="printview_etrude_button">Insertar</string>
+    <string name="printview_etrude_button">Retraer</string>
     <string name="printview_extruder_tag">Extrusor</string>
     <string name="printview_bed_tag">Cama</string>
-    <string name="printview_change_temp_button">Cambiar</string>
+    <string name="printview_change_temp_button">Cambiar a %1$d</string>
     <string name="library_list_date_tag">Última modificación</string>
     <string name="library_list_go_back_tag">Ir atrás</string>
     <string name="library_print_model">Imprimir</string>
@@ -268,5 +268,6 @@
     <string name="library_scan_dialog_title">Añadir modelos a tu librería</string>
     <string name="viewer_restore_session">¿Restaurar la última sesión?</string>
     <string name="viewer_menu_last_session">Última sesión</string>
+    <string name="printview_extruder_extrude_tag">Extraer/Retraer</string>
 
 </resources>

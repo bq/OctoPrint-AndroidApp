@@ -1,69 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/main_activity_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_activity_layout">
+    android:orientation="vertical">
 
     <SurfaceView
-    android:layout_width="0px"
-    android:layout_height="0px"
-    android:visibility="gone" />
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/container_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <TabHost
+            android:id="@+id/tabHost"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tabHost">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/almost_white"
                 android:orientation="vertical">
 
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/tab_height"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="@dimen/content_margin_xsmall"
-                    android:layout_marginRight="0dip"
                     android:paddingLeft="0dip"></TabWidget>
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:id="@+id/maintab1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/pager_background"
                         android:orientation="vertical">
-
-
-                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/maintab2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/pager_background"
                         android:orientation="vertical">
-
-
-                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/maintab3"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/pager_background"
                         android:orientation="vertical">
+                    </LinearLayout>
 
-
-                        </LinearLayout>
                 </FrameLayout>
             </LinearLayout>
         </TabHost>

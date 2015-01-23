@@ -14,9 +14,9 @@
     <color name="theme_primary_dark">#169300</color>
     <color name="theme_primary_light">#557bdd3b</color>
     <color name="shadow">#77000000</color>
-    <color name="almost_white">#f0f0f0</color>
+    <color name="almost_white">#FAFAFA</color>
 
-    <color name="pager_background">@color/almost_white</color>
+    <color name="pager_background">#E2EAEC</color>
 
     <color name="body_text_1">#de000000</color>
     <color name="body_text_2">#8a000000</color>

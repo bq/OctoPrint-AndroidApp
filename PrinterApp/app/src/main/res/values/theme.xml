@@ -28,7 +28,7 @@
         <!--<item name="dropDownListViewStyle">@style/DropDownListView.Green</item>-->
 
         <!-- Spinner -->
-        <item name="android:dropDownSpinnerStyle">@style/Spinner.Green</item>
+        <!--<item name="android:dropDownSpinnerStyle">@style/Spinner.Green</item>-->
         <!-- Button -->
         <item name="android:buttonStyle">@style/Button.Green</item>
         <!-- Seek bar -->

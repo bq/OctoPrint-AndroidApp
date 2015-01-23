@@ -5,7 +5,6 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@+id/grid"
         android:layout_width="match_parent"
