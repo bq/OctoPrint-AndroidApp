@@ -263,7 +263,8 @@ public class DevicesListController {
                     m.setLoaded(false);
 
                 }else {
-                    OctoprintFiles.uploadFile(context, file, m);
+                    OctoprintFiles.getFiles(context,m,file);
+                    //OctoprintFiles.uploadFile(context, file, m);
                 }
                 MainActivity.performClick(2);
                 MainActivity.showExtraFragment(1, m.getId());

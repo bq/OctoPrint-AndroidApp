@@ -488,10 +488,8 @@ public class StlFile {
 
         if (slicer!=null){
 
-
-            Log.i("Slicer","Restart timer");
             slicer.setData(data);
-            slicer.sendTimer();
+            //slicer.sendTimer();
 
         } else {
             String path = LibraryController.getParentFolder().getAbsolutePath() + "/" + projectName + ".stl";

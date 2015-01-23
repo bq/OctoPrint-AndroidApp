@@ -228,29 +228,6 @@ public class WitboxFaces {
         mDrawListBuffer.put(drawOrder);
         mDrawListBuffer.position(0);
 
-        /*planeCoordsDown = new float[]{
-            -mSizeArray[0],  mSizeArray[1], 0,   // top left
-            -mSizeArray[0], -mSizeArray[1], 0,   // bottom left
-             mSizeArray[0], -mSizeArray[1], 0,   // bottom right
-             mSizeArray[0],  mSizeArray[1], 0 }; // top right
-
-        planeCoordsBack = new float[]{
-            -mSizeArray[0],  mSizeArray[1], mSizeArray[2],   // top left
-            -mSizeArray[0],  mSizeArray[1], 0,   // bottom left
-             mSizeArray[0],  mSizeArray[1], 0,   // bottom right
-             mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
-
-        planeCoordsRight = new float[]{
-            mSizeArray[0], -mSizeArray[1], mSizeArray[2],   // top left
-            mSizeArray[0], -mSizeArray[1], 0,   // bottom left
-            mSizeArray[0],  mSizeArray[1], 0,   // bottom right
-            mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right
-
-        planeCoordsLeft = new float[]{
-            -mSizeArray[0], -mSizeArray[1], mSizeArray[2],   // top left
-            -mSizeArray[0], -mSizeArray[1], 0,   // bottom left
-            -mSizeArray[0],  mSizeArray[1], 0,   // bottom right
-            -mSizeArray[0],  mSizeArray[1], mSizeArray[2] }; // top right*/
 
     }
     

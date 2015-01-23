@@ -8,6 +8,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,7 +31,7 @@ public class SlicingHandler {
 
     //Data array to send to the server
     private byte[] mData = null;
-
+    private List<DataStorage> mDataList = null;
 
     private Activity mActivity;
     //private String mProfile = null;
@@ -56,7 +58,7 @@ public class SlicingHandler {
         isRunning = false;
 
        //TODO Clear temp folder?
-       // cleanTempFolder();
+        cleanTempFolder();
     }
 
 
@@ -116,20 +118,17 @@ public class SlicingHandler {
 
         try {
 
-
-
             //add an extra random id
             int randomInt = new Random().nextInt(100000);
 
             tempFile = File.createTempFile("tmp",randomInt+".stl", tempPath);
-            //tempFile.deleteOnExit();
+            tempFile.deleteOnExit();
 
             //delete previous file
             try{
 
 
-                OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last"), "/local/");
-                File lastFile = null;
+                 File lastFile = null;
                 if (mLastReference!=null){
                     lastFile= new File(mLastReference);
                     lastFile.delete();
@@ -158,6 +157,9 @@ public class SlicingHandler {
                 Log.i("Slicer","New reference is " + mLastReference);
 
 
+
+                StlFile.saveModel(mDataList,null,SlicingHandler.this);
+
                 FileOutputStream fos = new FileOutputStream(tempFile);
                 fos.write(mData);
                 fos.getFD().sync();
@@ -185,7 +187,7 @@ public class SlicingHandler {
     }
 
     //TODO implementation with timers, should change to ScheduledThreadPoolExecutor maybe
-    public void sendTimer(){
+    public void sendTimer(List<DataStorage> data){
 
         //Reset timer in case it was on progress
         if (isRunning) {
@@ -198,7 +200,7 @@ public class SlicingHandler {
 
         //Reschedule task
         mTimer = new Timer();
-
+        mDataList = data;
         mTimer.schedule(new SliceTask(),DELAY);
         isRunning = true;
 
@@ -219,6 +221,9 @@ public class SlicingHandler {
 
     public void setLastReference(String path) { mLastReference = path; }
 
+    /**
+     * Task to start the uploading and slicing process from a timer
+     */
     private class SliceTask extends TimerTask {
 
         @Override
@@ -234,12 +239,9 @@ public class SlicingHandler {
 
                         if (mPrinter.getStatus()== StateUtils.STATE_OPERATIONAL){
 
-                            Log.i("Slicer","Sending slice command");
-                            OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),createTempFile(),mExtras);
-                            //if (mExtras.has("print")) mExtras.remove("print");
+                            OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last"), "/local/");
 
-                            Log.i("Slicer","Showing progress bar");
-                            ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
+                            new SaveTask().execute();
 
                         } else {
 
@@ -265,6 +267,36 @@ public class SlicingHandler {
 
         }
     }
+
+    /**
+     * Task to save the actual file ia background process and then upload it to the server
+     */
+    private class SaveTask extends AsyncTask {
+
+        File mFile;
+
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+
+            mFile = createTempFile();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+
+            Log.i("Slicer", "Sending slice command");
+            OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),mFile,mExtras);
+            //if (mExtras.has("print")) mExtras.remove("print");
+
+            Log.i("Slicer","Showing progress bar");
+            ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
+
+        }
+    }
+
 
     //delete temp folder
     private void cleanTempFolder(){

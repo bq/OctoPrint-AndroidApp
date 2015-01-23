@@ -35,6 +35,7 @@ public class HttpClientHandler {
   //Base URL to handle http requests, only needs one slash because services come with another one
   private static final String BASE_URL = "http:/";
   private static final int DEFAULT_TIMEOUT = 30000;
+    private static final int BIG_TIMEOUT = 70000;
 
   
   //GET method for both APIs
@@ -53,7 +54,11 @@ public class HttpClientHandler {
 
   //POST method for multipart forms
   public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-      generateAsyncHttpClient(url).post(getAbsoluteUrl(url), params, responseHandler);
+      AsyncHttpClient client = new AsyncHttpClient();
+      client.addHeader("X-Api-Key", HttpUtils.getApiKey(url));
+      client.setTimeout(BIG_TIMEOUT);
+      client.setResponseTimeout(BIG_TIMEOUT);
+      client.post(getAbsoluteUrl(url), params, responseHandler);
   }
 
   //POST method for the new API
@@ -136,12 +141,14 @@ public class HttpClientHandler {
     private static AsyncHttpClient generateAsyncHttpClient(String relativeUrl){
 
         AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("Content-Type", "application/json");
 
         if (!relativeUrl.contains(HttpUtils.URL_AUTHENTICATION)){
             client.addHeader("X-Api-Key", HttpUtils.getApiKey(relativeUrl));
         }
 
         client.setTimeout(DEFAULT_TIMEOUT);
+        client.setResponseTimeout(DEFAULT_TIMEOUT);
 
         return client;
 

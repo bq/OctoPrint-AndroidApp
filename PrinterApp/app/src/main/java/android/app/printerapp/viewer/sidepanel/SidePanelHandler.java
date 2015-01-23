@@ -313,7 +313,7 @@ public class SidePanelHandler {
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-                            mSlicingHandler.setExtras("profile.platform_adhesion", s_adhesion.getItemAtPosition(i).toString());
+                            mSlicingHandler.setExtras("profile.platform_adhesion", s_adhesion.getItemAtPosition(i).toString().toLowerCase());
 
                         }
 
@@ -328,7 +328,7 @@ public class SidePanelHandler {
                     s_support.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            mSlicingHandler.setExtras("profile.support", s_support.getItemAtPosition(i).toString());
+                            mSlicingHandler.setExtras("profile.support", s_support.getItemAtPosition(i).toString().toLowerCase());
 
                         }
 

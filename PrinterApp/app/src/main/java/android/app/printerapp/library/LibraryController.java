@@ -7,9 +7,15 @@ import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -314,6 +320,49 @@ public class LibraryController {
         }
 
         return false;
+
+    }
+
+    /*
+    Calculates a file SHA1 hash
+     */
+    public static String calculateHash(File file){
+
+        String hash = "";
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+
+            FileInputStream fis = new FileInputStream(file);
+            byte[] dataBytes = new byte[1024];
+
+            int nread = 0;
+
+            while ((nread = fis.read(dataBytes)) != -1) {
+                md.update(dataBytes, 0, nread);
+            };
+
+            byte[] mdbytes = md.digest();
+
+            //convert the byte to hex format
+            StringBuffer sb = new StringBuffer("");
+            for (int i = 0; i < mdbytes.length; i++) {
+                sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            Log.i("Slicer", "Digest(in hex format):: " + sb.toString());
+
+            hash = sb.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return hash;
 
     }
 }
