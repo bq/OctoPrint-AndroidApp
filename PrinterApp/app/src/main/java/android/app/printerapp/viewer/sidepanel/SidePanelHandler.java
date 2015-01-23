@@ -15,6 +15,8 @@ import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -188,7 +190,6 @@ public class SidePanelHandler {
     }
 
 
-
     //Initializes the side panel with the printer data
     public void initSidePanel() {
 
@@ -211,25 +212,29 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                            switch(i){
+                            switch (i) {
 
-                                case 0: ViewerMainFragment.changePlate(ModelProfile.WITBOX_PROFILE); break;
-                                case 1: ViewerMainFragment.changePlate(ModelProfile.PRUSA_PROFILE); break;
+                                case 0:
+                                    ViewerMainFragment.changePlate(ModelProfile.WITBOX_PROFILE);
+                                    break;
+                                case 1:
+                                    ViewerMainFragment.changePlate(ModelProfile.PRUSA_PROFILE);
+                                    break;
                                 default:
 
                                     //TODO
 
-                                    try{
+                                    try {
 
                                         ViewerMainFragment.changePlate(s_type.getSelectedItem().toString());
 
-                                    } catch (NullPointerException e){
+                                    } catch (NullPointerException e) {
 
-                                        Log.i("Profile","Profile dead!");
+                                        Log.i("Profile", "Profile dead!");
 
                                     }
 
-                                break;
+                                    break;
 
                             }
 
@@ -238,7 +243,6 @@ public class SidePanelHandler {
                             mSlicingHandler.setPrinter(mPrinter);
 
                             ViewerMainFragment.slicingCallback();
-
 
 
                         }
@@ -251,16 +255,15 @@ public class SidePanelHandler {
                     });
 
 
-
                     //Add default types plus custom types from internal storage
                     ArrayList<String> profileArray = new ArrayList<String>();
-                    for (String s : PRINTER_TYPE){
+                    for (String s : PRINTER_TYPE) {
 
                         profileArray.add(s);
                     }
 
                     //Add internal storage types
-                    for (File file : mActivity.getApplicationContext().getFilesDir().listFiles()){
+                    for (File file : mActivity.getApplicationContext().getFilesDir().listFiles()) {
 
                         //Only files with the .profile extension
                         if (file.getAbsolutePath().contains(".profile")) {
@@ -649,51 +652,74 @@ public class SidePanelHandler {
     public void openInfillPopupWindow() {
 
 //        if (mInfillOptionsPopupWindow == null) {
-            //Get the content view of the pop up window
-            final LinearLayout popupLayout = (LinearLayout) mActivity.getLayoutInflater()
-                    .inflate(R.layout.print_panel_infill_dropdown_menu, null);
-            popupLayout.measure(0, 0);
+        //Get the content view of the pop up window
+        final LinearLayout popupLayout = (LinearLayout) mActivity.getLayoutInflater()
+                .inflate(R.layout.print_panel_infill_dropdown_menu, null);
+        popupLayout.measure(0, 0);
 
-            //Set the behavior of the infill seek bar
-            final SeekBar infillSeekBar = (SeekBar) popupLayout.findViewById(R.id.seekBar_infill);
-            final TextView infillPercent = (TextView) popupLayout.findViewById(R.id.infill_number_view);
-            final ImageView infillGrid = (ImageView) popupLayout.findViewById(R.id.infill_grid_view);
-            infillSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    infillPercent.setText(i + "%");
-                    infillText.setText(i + "%");
-                    //TODO Acercas o alejar el grid de relleno en función del valor de la seekbar
+        final Bitmap gridResource = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.fill_grid);
+
+        //Set the behavior of the infill seek bar
+        final SeekBar infillSeekBar = (SeekBar) popupLayout.findViewById(R.id.seekBar_infill);
+        final TextView infillPercent = (TextView) popupLayout.findViewById(R.id.infill_number_view);
+        final ImageView infillGrid = (ImageView) popupLayout.findViewById(R.id.infill_grid_view);
+        infillSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                infillPercent.setText(progress + "%");
+                infillText.setText(progress + "%");
+                //TODO Acercas o alejar el grid de relleno en función del valor de la seekbar
+
+//                Bitmap resizedbitmap = Bitmap.createScaledBitmap(gridResource, progress, progress, true);
+
+                if(progress == 0) {
+                    infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_empty));
                 }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
+                if (progress > 0 && progress <= 25) {
+                    infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_0));
                 }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    mSlicingHandler.setExtras("profile.fill_density", infillSeekBar.getProgress());
+                if (progress > 26 && progress <= 50) {
+                    infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_25));
                 }
-            });
+                if (progress > 51 && progress <= 75) {
+                    infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_50));
+                }
+                if (progress > 76 && progress < 100) {
+                    infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_75));
+                }
+                if (progress == 100) {
+                    infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_full));
+                }
+            }
 
-            infillSeekBar.setProgress(DEFAULT_INFILL);
-            infillPercent.setText(DEFAULT_INFILL + " %");
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
-            //Show the pop up window in the correct position
-            int[] infillSpinnerCoordinates = new int[2];
-            s_infill.getLocationOnScreen(infillSpinnerCoordinates);
-            int popupLayoutPadding = (int) mActivity.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
-            int popupLayoutWidth = 180; //FIXED WIDTH
-            int popupLayoutHeight = popupLayout.getMeasuredHeight();
-            final int popupLayoutX = infillSpinnerCoordinates[0] - 2; //Remove the background padding
-            final int popupLayoutY = infillSpinnerCoordinates[1];
+            }
 
-            mInfillOptionsPopupWindow = (new CustomPopupWindow(popupLayout, popupLayoutWidth,
-                    popupLayoutHeight, R.style.PopupMenuAnimation, true).getPopupWindow());
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mSlicingHandler.setExtras("profile.fill_density", infillSeekBar.getProgress());
+            }
+        });
 
-            mInfillOptionsPopupWindow.showAtLocation(s_infill, Gravity.NO_GRAVITY,
-                    popupLayoutX, popupLayoutY);
+        infillSeekBar.setProgress(DEFAULT_INFILL);
+        infillPercent.setText(DEFAULT_INFILL + " %");
+
+        //Show the pop up window in the correct position
+        int[] infillSpinnerCoordinates = new int[2];
+        s_infill.getLocationOnScreen(infillSpinnerCoordinates);
+        int popupLayoutPadding = (int) mActivity.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
+        int popupLayoutWidth = 180; //FIXED WIDTH
+        int popupLayoutHeight = popupLayout.getMeasuredHeight();
+        final int popupLayoutX = infillSpinnerCoordinates[0] - 2; //Remove the background padding
+        final int popupLayoutY = infillSpinnerCoordinates[1];
+
+        mInfillOptionsPopupWindow = (new CustomPopupWindow(popupLayout, popupLayoutWidth,
+                popupLayoutHeight, R.style.PopupMenuAnimation, true).getPopupWindow());
+
+        mInfillOptionsPopupWindow.showAtLocation(s_infill, Gravity.NO_GRAVITY,
+                popupLayoutX, popupLayoutY);
 //        }
     }
 
