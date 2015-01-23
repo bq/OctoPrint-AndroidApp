@@ -4,7 +4,10 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="@dimen/content_padding_small">
+    android:paddingRight="@dimen/content_padding_small"
+    android:paddingLeft="@dimen/content_padding_small"
+    android:paddingTop="@dimen/content_padding_xsmall"
+    android:paddingBottom="@dimen/content_padding_xsmall">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,6 +36,14 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:padding="@dimen/content_padding_xsmall">
+
+            <ImageButton
+                android:id="@+id/detail_share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/content_padding_xsmall"
+                android:background="@drawable/selectable_rect_background_gray"
+                android:src="@drawable/ic_action_share" />
 
             <ImageButton
                 android:id="@+id/detail_fav_button"
