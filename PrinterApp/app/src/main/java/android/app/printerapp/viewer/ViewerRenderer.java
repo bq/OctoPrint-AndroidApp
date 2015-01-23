@@ -1078,7 +1078,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                 && ((int) mDx== (int)(POSITION_DEFAULT_X - dx)) && ((int) mDy == (int)(dyx - dy))) return true;
         else {
 
-            Log.i("CAMERA","FAIL: " + (int)mDx +";" + (int)mDy + ";;;; Should be @" + (int)(POSITION_DEFAULT_X - dx) + ";" + (int)(dyx - dy));
             return false;
         }
 

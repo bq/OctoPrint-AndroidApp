@@ -355,7 +355,7 @@ public class EditPrinterDialog {
 
                     mPrinter.setDisplayName(newName);
                     DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, mPrinter.getId(), newName);
-                }
+                } else newName = null;
 
                 //if (!editText_name.isEnabled()) newName = null;
 

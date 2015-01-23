@@ -523,7 +523,6 @@ public class OctoprintConnection {
 		            		}
 
                             //A file was uploaded
-                            //TODO we don't always receive this confirmation
 		            		if (response.getString("type").equals("Upload")){
 
 		            			//p.setLoaded(true);
@@ -663,7 +662,7 @@ public class OctoprintConnection {
         //getSettings(p);
 
         //Get a new set of files
-        OctoprintFiles.getFiles(context, p);
+        OctoprintFiles.getFiles(context, p, null);
 
         //Get a new set of profiles
         //OctoprintSlicing.retrieveProfiles(context,p); //Don't retrieve profiles yet

@@ -29,7 +29,18 @@ public class OctoprintFiles {
 	/**
 	 * Get the whole filelist from the server.
 	 */
-	public static void getFiles(final Context context , final ModelPrinter p){
+	public static void getFiles(final Context context , final ModelPrinter p, final File fileUpload){
+
+        if (fileUpload!=null){ //TODO emulating fileUpload
+
+            p.setLoaded(false);
+
+            //if it's a local file
+            p.setJobPath(fileUpload.getAbsolutePath());
+            DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, p.getName(), p.getJobPath(), true);
+
+
+        }
 				
 		HttpClientHandler.get(p.getAddress() + HttpUtils.URL_FILES, null, new JsonHttpResponseHandler(){
 			
@@ -49,71 +60,101 @@ public class OctoprintFiles {
 				
 				JSONArray json = response.getJSONArray("files");				
   
-				 if (json != null) { 
-					 
-				    for (int i=0;i<json.length();i++){ 
-				    	
-				    //Retrieve every file	
-				     JSONObject object = json.getJSONObject(i);
+				 if (json != null) {
 
-                    //TODO check pending files
-				     
-				     
-				     File m = null;
-				     
-				     //If it has an origin we need to set it for the printer
-				     if (object.getString("origin").equals("sdcard")){
-				    	 
-				    	//Set the storage to sd
-				    	 m = new File("sd/" +object.getString("name"));
-				     }
-				     else   {
+                     if (fileUpload == null){
 
-                         if (object.getString("name").contains(".stl")){
+                         for (int i=0;i<json.length();i++){
 
-                             if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null){
+                             //Retrieve every file
+                             JSONObject object = json.getJSONObject(i);
 
-                                 if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(object.getString("name"))){
+                             //TODO check pending files
 
-                                     Log.i("Slicer","Hey that's my fucking file");
 
-                                     if (object.has("links")){
+                             File m = null;
 
-                                         Log.i("Slicer","And it's fucking done!!");
 
-                                         Log.i("Slicer","Changed PREFERENCE [Last]: " + "temp.gco");
-                                         DatabaseController.handlePreference(DatabaseController.TAG_SLICING,"Last","temp.gco", true);
+                             //If it has an origin we need to set it for the printer
+                             if (object.getString("origin").equals("sdcard")){
 
-                                         OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
-                                                 LibraryController.getParentFolder() + "/temp/", "temp.gco");
-                                         OctoprintFiles.deleteFile(context,p.getAddress(),object.getString("name"), "/local/");
+                                 //Set the storage to sd
+                                 m = new File("sd/" +object.getString("name"));
+                             }
+                             else   {
 
-                                     } else {
+                                 if (object.getString("name").contains(".stl")){
 
-                                         Log.i("Slicer","Ah not yet nigga");
+                                     if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null){
+
+                                         if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(object.getString("name"))){
+
+                                             Log.i("Slicer","Hey that's my file");
+
+                                             if (object.has("links")){
+
+                                                 Log.i("Slicer","And it's done!!");
+
+                                                 Log.i("Slicer","Changed PREFERENCE [Last]: " + "temp.gco");
+                                                 DatabaseController.handlePreference(DatabaseController.TAG_SLICING,"Last","temp.gco", true);
+
+                                                 OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
+                                                         LibraryController.getParentFolder() + "/temp/", "temp.gco");
+                                                 OctoprintFiles.deleteFile(context,p.getAddress(),object.getString("name"), "/local/");
+
+                                             } else {
+
+                                                 Log.i("Slicer","Ah not yet");
+
+                                             }
+
+                                         }
 
                                      }
 
+
+                                 }else {
+
+                                     //Set the storage to Witbox
+                                     m = new File("local/" +object.getString("name"));
                                  }
+
+
 
                              }
 
+                             //Add to storage file list
+                             if (m!=null) p.updateFiles(m);
 
-                         }else {
 
-                             //Set the storage to Witbox
-                             m = new File("local/" +object.getString("name"));
+
                          }
-				    	 
 
-					     
-				     }
-				     
-				     //Add to storage file list
-				     if (m!=null) p.updateFiles(m);
 
-				    } 
-				 } 
+                     } else {
+
+                         String hash = LibraryController.calculateHash(fileUpload);
+                         int found = -1;
+
+                         for (int i=0;i<json.length();i++) {
+
+                             //Retrieve every file
+                             JSONObject object = json.getJSONObject(i);
+
+                             if (object.getString("hash").equals(hash)) {
+
+                                 Log.i("Slicer", "File found with hash " + object.getString("hash"));
+                                 found = i;
+
+                             }
+
+                         }
+
+                         if (found!= -1) fileCommand(context, p.getAddress(), json.getJSONObject(found).getString("name"), "/local/", false, true);
+                         else uploadFile(context, fileUpload, p);
+                     }
+
+                 }
 
 				
 			} catch (JSONException e) {
@@ -121,8 +162,8 @@ public class OctoprintFiles {
 			}
 			
 		}
-		
-		@Override
+
+            @Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
 				
@@ -177,7 +218,7 @@ public class OctoprintFiles {
 			public void onSuccess(int statusCode,
 					Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
-				Log.i("OUT","Upload successful");
+				Log.i("OUT","Command successful");
 				
 				if (delete){
 					

@@ -557,8 +557,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
             //doTranslation (dx,dy);
 			break;
 		case TRANSLATION_MODE:
-            Log.i("PINCH","Moviendo:" + mRenderer.getCameraPosY());
-
             float scale = -mRenderer.getCameraPosY() / 500f;
 			doTranslation ((dx * scale) , (dy * scale));
 			break;

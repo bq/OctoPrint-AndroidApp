@@ -140,18 +140,17 @@ public class PrintViewFragment extends Fragment {
 
             retrieveGcode();
 
-            mCamera = new CameraHandler(mContext, mPrinter.getAddress());
+            //TODO CAMERA DISABLED
+            /*mCamera = new CameraHandler(mContext, mPrinter.getAddress());
+
+
             //Get video
             mLayoutVideo = (FrameLayout) mRootView.findViewById(R.id.printview_video);
 
-            /* if (mPrinter.getVideo().getParent() != null) {
-                mPrinter.getVideo().stopPlayback();
-                ((ViewGroup) mPrinter.getVideo().getParent()).removeAllViews();
-            }*/
             mVideoSurface = mCamera.getView();
             mLayoutVideo.addView(mVideoSurface);
 
-            mCamera.startVideo();
+            mCamera.startVideo();*/
 
             //Get tabHost from the xml
             TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
@@ -185,7 +184,9 @@ public class PrintViewFragment extends Fragment {
 
                     }
 
-                    mLayoutVideo.invalidate();
+                    //TODO CAMERA DISABLED
+                    //mLayoutVideo.invalidate();
+
 
                     Log.i(TAG,"Now showing: " + s);
                 }
@@ -409,13 +410,13 @@ public class PrintViewFragment extends Fragment {
 
     public void stopCameraPlayback() {
 
-        mCamera.getView().stopPlayback();
-        mCamera.getView().setVisibility(View.GONE);
+        //TODO CAMERA DEISABLE
+        //mCamera.getView().stopPlayback();
+        //mCamera.getView().setVisibility(View.GONE);
 
 
     }
 
-    //TODO Properly close the video when destroying the view
     @Override
     public void onDestroy() {
 

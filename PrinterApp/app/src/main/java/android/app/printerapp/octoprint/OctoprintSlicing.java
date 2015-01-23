@@ -241,7 +241,19 @@ public class OctoprintSlicing {
                     //Override onProgress because it's faulty
                     @Override
                     public void onProgress(int bytesWritten, int totalSize) {
+                        super.onProgress(bytesWritten, totalSize);
+
+                        int progress = ( bytesWritten * 100 ) / totalSize;
+
+                        if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null)
+                            if ((DatabaseController.getPreference("Slicing","Last")).equals(file.getName())){
+                                ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, progress);
+                            } //else sendFailureMessage(0, null, null, null);
+
+
                     }
+
+
 
                     //If success, the file was uploaded correctly
                     @Override

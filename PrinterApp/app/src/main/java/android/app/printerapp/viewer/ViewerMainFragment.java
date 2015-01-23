@@ -122,8 +122,8 @@ public class ViewerMainFragment extends Fragment {
     private static SlicingHandler mSlicingHandler;
     private static SidePanelHandler mSidePanelHandler;
 
-    private static int mCurrentType;
-    private static int[] mCurrentPlate;
+    private static int mCurrentType =  WitboxFaces.TYPE_WITBOX;;
+    private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT}; ;
 
     private static TextView mRotationText;
     private static TextView mAxisText;
@@ -437,7 +437,9 @@ public class ViewerMainFragment extends Fragment {
                 return true;
 
             case R.id.viewer_last_session:
-                restoreLastPanel();
+
+                Toast.makeText(mContext,"Option unavailable",Toast.LENGTH_SHORT).show();
+                //restoreLastPanel();
                 return true;
 
             case R.id.viewer_restore:
@@ -1416,7 +1418,8 @@ public class ViewerMainFragment extends Fragment {
             if ((mSlicingHandler != null) && (mFile != null)) {
 
                 if (LibraryController.hasExtension(0, mFile.getName())) {
-                    StlFile.saveModel(newList, null, mSlicingHandler);
+                   // StlFile.saveModel(newList, null, mSlicingHandler);
+                    mSlicingHandler.sendTimer(mDataList);
                 }
 
             }
@@ -1424,6 +1427,10 @@ public class ViewerMainFragment extends Fragment {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+        }
     }
 
 
@@ -1436,7 +1443,6 @@ public class ViewerMainFragment extends Fragment {
     }
 
     public static int[] getCurrentPlate() {
-
         return mCurrentPlate;
     }
 

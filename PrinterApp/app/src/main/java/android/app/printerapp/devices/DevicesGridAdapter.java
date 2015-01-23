@@ -105,6 +105,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             holder.textViewTag.setText("");
             holder.textViewIp.setText("");
             holder.imageIcon.setVisibility(View.INVISIBLE);
+            holder.imageIcon.clearColorFilter();
             //holder.gridItem.setBackgroundResource(0);
 
         //It's a printer

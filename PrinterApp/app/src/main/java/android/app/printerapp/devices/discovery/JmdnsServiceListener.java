@@ -120,10 +120,14 @@ public class JmdnsServiceListener implements ServiceListener{
 
             Log.i("OUT","Network ID: " + PrintNetworkManager.getNetworkId(service.getName()));
 
-            mContext.addElement(new ModelPrinter(service.getName(),
-                    service.getInetAddresses()[0].toString() /*+ HttpUtils.CUSTOM_PORT*/+ ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));
+            if (!service.getInetAddresses()[0].equals("/10.250.250.1")){
 
-            PrintNetworkManager.checkNetworkId(service.getName(),true);
+                mContext.addElement(new ModelPrinter(service.getName(),
+                        service.getInetAddresses()[0].toString() /*+ HttpUtils.CUSTOM_PORT*/+ ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));
+
+                PrintNetworkManager.checkNetworkId(service.getName(),true);
+            }
+
 
 		}
 		

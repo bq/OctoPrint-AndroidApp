@@ -9,6 +9,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +41,7 @@ public class OctoprintControl {
 		try {
 			object.put("command", command);
 			entity = new StringEntity(object.toString(), "UTF-8");
+            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
 			
 		} catch (JSONException e) {		e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {	e.printStackTrace();

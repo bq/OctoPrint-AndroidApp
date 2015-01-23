@@ -91,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
         //Set tab host for the view
         setTabHost();
 
+
     }
 
     public static void performClick(int i){

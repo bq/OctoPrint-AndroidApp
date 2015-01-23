@@ -99,6 +99,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                     showRightPanel(arg2);
 
                 } else {
+
                     //Not a project, open folder
                     String folderName = f.getName();
                     LibraryController.reloadFiles(f.getAbsolutePath());
@@ -106,6 +107,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                     mContext.showListHeader(folderName);
 
                     mContext.sortAdapter();
+
+
                 }
 
                 //If it's not a folder, just send the file
