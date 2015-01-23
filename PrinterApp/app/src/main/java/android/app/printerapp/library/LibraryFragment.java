@@ -27,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.Comparator;
 
@@ -37,12 +39,10 @@ import java.util.Comparator;
  */
 public class LibraryFragment extends Fragment {
 
-    private LibraryAdapter mGridAdapter;
     private LibraryAdapter mListAdapter;
 
     private ListView mListView;
-
-    private ViewSwitcher mSwitcher;
+    private View mListHeader;
 
     private String mCurrentFilter = null;
     private String mCurrentTab = null;
@@ -105,20 +105,24 @@ public class LibraryFragment extends Fragment {
             //References to adapters
             //TODO maybe share a gridview
 
-            mSwitcher = (ViewSwitcher) mRootView.findViewById(R.id.view_switcher_library);
-
             //Initial file list
             LibraryController.reloadFiles("all");
 
-            mGridAdapter = new LibraryAdapter(getActivity(), this, R.layout.grid_item_library, LibraryController.getFileList());
             mListAdapter = new LibraryAdapter(getActivity(), this, R.layout.list_item_library, LibraryController.getFileList());
 
-
+            mListHeader = (View) mRootView.findViewById(R.id.list_storage_header);
+            hideListHeader();
 
             mListView = (ListView) mRootView.findViewById(R.id.list_storage);
-            View lheader = View.inflate(getActivity(), R.layout.list_header_library, null);
-            mListView.addHeaderView(lheader);
-            ImageButton backButton = (ImageButton) lheader.findViewById(R.id.go_back_icon);
+
+            LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
+            mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
+            mListView.setOnItemClickListener(clickListener);
+            mListView.setOnItemLongClickListener(clickListener);
+            mListView.setDivider(null);
+            mListView.setAdapter(mListAdapter);
+
+            ImageButton backButton = (ImageButton) mRootView.findViewById(R.id.go_back_icon);
             if (backButton != null)
                 backButton.setColorFilter(getActivity().getResources().getColor(R.color.body_text_2),
                         PorterDuff.Mode.MULTIPLY);
@@ -127,20 +131,21 @@ public class LibraryFragment extends Fragment {
                 public void onClick(View view) {
 
                     //Logic to go back on the library navigation
+//                    if(!LibraryController.getCurrentPath().getParent().equals(LibraryController.getParentFolder().getAbsolutePath())) {
+//                        hideListHeader();
+//                    }
                     if (!LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
                         Log.i("OUT", "This is " + LibraryController.getCurrentPath());
                         LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
                         sortAdapter();
+
+                        if (LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
+                            hideListHeader();
+                        }
                     }
                 }
-            });
-            LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
-            mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
-            mListView.setOnItemClickListener(clickListener);
-            mListView.setOnItemLongClickListener(clickListener);
-            mListView.setDivider(null);
-            mListView.setAdapter(mListAdapter);
 
+            });
 
             //Set left navigation menu behavior
             ((TextView) mRootView.findViewById(R.id.library_nav_all_models)).setOnClickListener(getOnNavTextViewClickListener());
@@ -198,6 +203,18 @@ public class LibraryFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("Tag", "Se para el fragmento");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("Tag", "Se pausa el fragmento");
     }
 
     /**
@@ -336,7 +353,6 @@ public class LibraryFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mCurrentFilter = et.getText().toString();
-                mGridAdapter.getFilter().filter(mCurrentFilter);
             }
         });
 
@@ -346,7 +362,7 @@ public class LibraryFragment extends Fragment {
     }
 
     //Search for models in filesystem
-    public void optionSearchSystem(){
+    public void optionSearchSystem() {
 
         new FileScanner(Environment.getExternalStorageDirectory().getAbsolutePath(), getActivity());
 
@@ -385,11 +401,6 @@ public class LibraryFragment extends Fragment {
 
     }
 
-    public void optionSwitchList() {
-        mSwitcher.showNext();
-        notifyAdapter();
-    }
-
     public void optionPaste() {
 
         //Copy file to new folder
@@ -416,14 +427,24 @@ public class LibraryFragment extends Fragment {
 
     }
 
+    public void showListHeader(String folderName) {
+        TextView goBackTextView = (TextView) mListHeader.findViewById(R.id.model_name_column_textview);
+        goBackTextView.setText(goBackTextView.getText().toString() + " (" + folderName + ")");
+        mListHeader.setVisibility(View.VISIBLE);
+    }
+
+    public void hideListHeader() {
+        mListHeader.setVisibility(View.GONE);
+    }
+
     //Random adapter with lots of comparisons
     @SuppressLint("DefaultLocale")
     public void sortAdapter() {
 
-        if (mCurrentFilter != null) mGridAdapter.removeFilter();
+        if (mCurrentFilter != null) mListAdapter.removeFilter();
 
         //Sort by absolute file (puts folders before files)
-        mGridAdapter.sort(new Comparator<File>() {
+        mListAdapter.sort(new Comparator<File>() {
 
             public int compare(File arg0, File arg1) {
 
@@ -458,13 +479,12 @@ public class LibraryFragment extends Fragment {
         });
 
         //Apply the current filter to the folder
-        if (mCurrentFilter != null) mGridAdapter.getFilter().filter(mCurrentFilter);
+        if (mCurrentFilter != null) mListAdapter.getFilter().filter(mCurrentFilter);
         notifyAdapter();
     }
 
 
     public void notifyAdapter() {
-        mGridAdapter.notifyDataSetChanged();
         mListAdapter.notifyDataSetChanged();
     }
 

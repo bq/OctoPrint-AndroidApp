@@ -3,6 +3,7 @@ package android.app.printerapp.library;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.app.printerapp.ListContent;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
@@ -71,7 +72,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
         //Avoid to click in the header
-        arg2--;
+//        arg2--;
 
         if (mListView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){
 
@@ -99,7 +100,11 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                 } else {
                     //Not a project, open folder
+                    String folderName = f.getName();
                     LibraryController.reloadFiles(f.getAbsolutePath());
+
+                    mContext.showListHeader(folderName);
+
                     mContext.sortAdapter();
                 }
 
@@ -161,7 +166,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         args.putInt("index", index);
         detail.setArguments(args);
 
-        fragmentTransaction.replace(R.id.right_panel_container, detail).commit();
+        fragmentTransaction.replace(R.id.right_panel_container, detail, ListContent.ID_DETAIL).commit();
     }
 
     //Show dialog for handling files

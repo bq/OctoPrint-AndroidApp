@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pager_background"
@@ -43,40 +44,24 @@
 
         </LinearLayout>
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/library_models_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!-- ViewSwitcher to change between grid and list models view -->
-            <ViewSwitcher
-                android:id="@+id/view_switcher_library"
-                android:layout_width="wrap_content"
+            <include
+                android:id="@+id/list_storage_header"
+                layout="@layout/list_header_library" />
+
+            <uk.co.androidalliance.edgeeffectoverride.ListView
+                android:id="@+id/list_storage"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/content_padding_xsmall">
+                android:paddingTop="@dimen/content_padding_small"
+                app:edgeeffect_color="@color/theme_accent_1"/>
 
-                <ListView
-                    android:id="@+id/list_storage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"></ListView>
-
-                <GridView
-                    android:id="@+id/grid_storage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:numColumns="5"></GridView>
-
-            </ViewSwitcher>
-
-            <!-- Right slide panel -->
-            <FrameLayout
-                android:id="@+id/right_panel_container"
-                android:layout_width="380dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="right|center_vertical"/>
-
-
-        </FrameLayout>
+        </LinearLayout>
 
 
     </LinearLayout>

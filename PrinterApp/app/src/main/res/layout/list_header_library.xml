@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/content_padding_xsmall">
+    android:paddingTop="@dimen/content_padding_xsmall"
+    android:paddingLeft="@dimen/content_padding_xsmall"
+    android:paddingRight="@dimen/content_padding_xsmall">
 
     <!-- Model icon -->
     <LinearLayout
@@ -28,6 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
+        android:ellipsize="middle"
         android:text="@string/library_list_go_back_tag" />
 
     <!-- Last modification date -->
@@ -36,8 +39,7 @@
         style="@style/ModelDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.5"
-        android:text="@string/library_list_date_tag" />
+        android:layout_weight="1.5"/>
 
     <!-- Dummie column -->
     <LinearLayout

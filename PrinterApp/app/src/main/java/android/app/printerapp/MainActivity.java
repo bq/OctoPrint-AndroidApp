@@ -7,6 +7,7 @@ import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
+import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.app.printerapp.viewer.ViewerMainFragment;
@@ -125,16 +126,6 @@ public class MainActivity extends ActionBarActivity {
 
         mTabHost.getTabWidget().setDividerDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
 
-        //Set style for the tab widget
-//        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
-//            final View tab = mTabHost.getTabWidget().getChildTabViewAt(i);
-//            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
-//            TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-//            tv.setTextColor(getResources().getColor(R.color.body_text_2));
-//            tv.setTextSize(15);
-//            tv.setPadding(40,0,40,0);
-//        }
-
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -188,7 +179,6 @@ public class MainActivity extends ActionBarActivity {
         switch (id) {
 
             case 0: {
-
                 closePrintView();
                 //Check if we already created the Fragment to avoid having multiple instances
                 if (getFragmentManager().findFragmentByTag(ListContent.ID_LIBRARY) == null) {
@@ -200,8 +190,8 @@ public class MainActivity extends ActionBarActivity {
 
             break;
             case 1: {
-
                 closePrintView();
+                closeDetailView();
                 //Check if we already created the Fragment to avoid having multiple instances
                 if (getFragmentManager().findFragmentByTag(ListContent.ID_VIEWER) == null) {
                     mViewerFragment = new ViewerMainFragment();
@@ -211,6 +201,7 @@ public class MainActivity extends ActionBarActivity {
             }
             break;
             case 2: {
+                closeDetailView();
                 //Check if we already created the Fragment to avoid having multiple instances
                 if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
                     mDevicesFragment = new DevicesFragment();
@@ -288,6 +279,12 @@ public class MainActivity extends ActionBarActivity {
         //Refresh printview fragment if exists
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
         if (fragment != null) ((PrintViewFragment) fragment).stopCameraPlayback();
+    }
+
+    private void closeDetailView(){
+        //Refresh printview fragment if exists
+        Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DETAIL);
+        if (fragment != null) ((DetailViewFragment) fragment).removeRightPanel();
     }
 
     /**

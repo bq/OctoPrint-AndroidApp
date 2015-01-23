@@ -53,6 +53,17 @@ public class DetailViewFragment extends Fragment {
 
             mFile = (ModelFile) LibraryController.getFileList().get(args.getInt("index"));
 
+            //Share button
+            ImageButton shareButton = (ImageButton) rootView.findViewById(R.id.detail_share_button);
+            shareButton.setColorFilter(getResources().getColor(R.color.body_text_2), PorterDuff.Mode.MULTIPLY);
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO Add the behavior of share button
+                }
+            });
+
+            //Favorite button
             final ImageButton favButton = (ImageButton) rootView.findViewById(R.id.detail_fav_button);
             if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, mFile.getName()))
                 favButton.setImageResource(R.drawable.ic_action_star);
@@ -65,12 +76,13 @@ public class DetailViewFragment extends Fragment {
                 }
             });
 
+            //Close button
             ImageButton closeButton = (ImageButton) rootView.findViewById(R.id.detail_close_button);
             closeButton.setColorFilter(getResources().getColor(R.color.body_text_2), PorterDuff.Mode.MULTIPLY);
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    removeFragment();
+                    removeRightPanel();
                 }
             });
 
@@ -140,7 +152,7 @@ public class DetailViewFragment extends Fragment {
         }
     }
 
-    private void removeFragment() {
+    public void removeRightPanel() {
         FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
         fragmentTransaction.remove(this).commit();
