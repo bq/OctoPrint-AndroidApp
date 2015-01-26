@@ -124,8 +124,9 @@
                                     android:layout_height="wrap_content"
                                     android:text="@string/viewer_settings_enable_retraction" />
 
-                                <com.material.widget.CheckBox
+                                <CheckBox
                                     android:id="@+id/enable_retraction_checkbox"
+                                    android:layout_margin="5dp"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
                             </TableRow>
@@ -376,10 +377,11 @@
                                     android:layout_height="wrap_content"
                                     android:text="@string/viewer_settings_enable_fan" />
 
-                                <com.material.widget.CheckBox
+                                <CheckBox
                                     android:id="@+id/enable_cooling_fan_checkbox"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" />
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"/>
                             </TableRow>
                         </TableLayout>
 
