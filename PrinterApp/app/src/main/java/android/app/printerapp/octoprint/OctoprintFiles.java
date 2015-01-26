@@ -141,6 +141,7 @@ public class OctoprintFiles {
                              //Retrieve every file
                              JSONObject object = json.getJSONObject(i);
 
+                             if (object.getString("origin").equals("local"))
                              if (object.getString("hash").equals(hash)) {
 
                                  Log.i("Slicer", "File found with hash " + object.getString("hash"));

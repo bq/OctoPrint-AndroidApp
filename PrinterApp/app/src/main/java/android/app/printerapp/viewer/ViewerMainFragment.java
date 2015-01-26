@@ -37,7 +37,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -46,8 +45,6 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -75,7 +72,7 @@ public class ViewerMainFragment extends Fragment {
     private static final int XRAY = 3;
     private static final int LAYER = 4;
 
-    private int mCurrentViewMode = 0;
+    private static int mCurrentViewMode = 0;
 
     //Constants
     public static final int DO_SNAPSHOT = 0;
@@ -286,8 +283,6 @@ public class ViewerMainFragment extends Fragment {
                 //Calculation on a 12 point seekbar
                 float newAngle = (i - 12) * POSITIVE_ANGLE;
 
-
-                //TODO FINGER CRASH
                 try {
 
 
@@ -546,6 +541,7 @@ public class ViewerMainFragment extends Fragment {
                 mFile = new File(filePath);
                 StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
                 mSidePanelHandler.enableProfileSelection(true);
+                mCurrentViewMode = NORMAL;
 
 
             } else if (LibraryController.hasExtension(1, filePath)) {
@@ -555,6 +551,7 @@ public class ViewerMainFragment extends Fragment {
                 mFile = new File(filePath);
                 GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
                 mSidePanelHandler.enableProfileSelection(false);
+                mCurrentViewMode = LAYER;
 
             }
             mDataList.add(data);
@@ -570,8 +567,6 @@ public class ViewerMainFragment extends Fragment {
 
     private void changeStlViews(int state) {
 
-        mCurrentViewMode = state;
-
         //Handle the special mode: LAYER
         if (state == LAYER) {
             File tempFile = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
@@ -582,6 +577,7 @@ public class ViewerMainFragment extends Fragment {
 
                     //Open desired file
                     openFile(tempFile.getAbsolutePath());
+                    mCurrentViewMode = state;
 
                 } else {
                     Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
@@ -589,21 +585,37 @@ public class ViewerMainFragment extends Fragment {
 
             } else {
                 Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+
             }
         }
         //Handle TRANSPARENT, NORMAL and OVERHANG modes
         else {
             if (mFile != null) {
-                if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL"))
-                    openStlFile();
-                else mSurface.configViewMode(state);
+                if (!mFile.getPath().endsWith(".stl") && !mFile.getPath().endsWith(".STL")) {
+
+
+                    if (openStlFile()) {
+
+                        mCurrentViewMode = state;
+
+                    };
+                }else {
+
+                    mSurface.configViewMode(state);
+                    mCurrentViewMode = state;
+                }
+
+
+
+
+
             } else {
                 Toast.makeText(getActivity(), R.string.viewer_toast_not_available_2, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void openStlFile() {
+    private boolean openStlFile() {
 
         //Name didn't work with new gcode creation so new stuff!
         //String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
@@ -614,6 +626,8 @@ public class ViewerMainFragment extends Fragment {
 
             pathStl = mSlicingHandler.getLastReference();
             openFile(pathStl);
+
+            return true;
 
         } else {
 
@@ -627,65 +641,17 @@ public class ViewerMainFragment extends Fragment {
             //Only when it's a project
             if (f.isDirectory() && f.list().length > 0) {
                 openFile(pathStl + f.list()[0]);
+
+                return true;
+
             } else {
                 Toast.makeText(getActivity(), R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+
+                return false;
             }
         }
 
 
-    }
-
-
-    //TODO remove
-    private void showGcodeFiles() {
-        //Logic for getting file type
-        String name = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-        String pathProject = LibraryController.getParentFolder().getAbsolutePath() + "/Files/" + name;
-        File f = new File(pathProject);
-
-        //Only when it's a project
-        if (f.isDirectory()) {
-            String path = pathProject + "/_gcode";
-
-            if (LibraryController.isProject(f) && new File(path).list().length > 0) {
-                AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-                adb.setTitle(mContext.getString(R.string.gcode_viewer));
-
-                //We need the alertdialog instance to dismiss it
-                final AlertDialog ad = adb.create();
-
-                if (path != null) {
-                    final File[] files = (new File(path)).listFiles();
-
-                    //Create a string-only array for the adapter
-                    if (files != null) {
-                        String[] names = new String[files.length];
-
-                        for (int i = 0; i < files.length; i++) {
-                            names[i] = files[i].getName();
-                        }
-
-                        adb.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, names), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                File m = files[which];
-
-                                //Open desired file
-                                openFile(m.getAbsolutePath());
-
-                                ad.dismiss();
-                            }
-                        });
-
-                    }
-                }
-                adb.show();
-            } else {
-                Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getActivity(), R.string.devices_toast_no_gcode, Toast.LENGTH_SHORT).show();
-        }
     }
 
     public static void draw() {
