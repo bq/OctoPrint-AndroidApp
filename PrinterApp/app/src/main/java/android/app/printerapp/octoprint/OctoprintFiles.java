@@ -191,7 +191,7 @@ public class OctoprintFiles {
 	 * @param target
 	 * @param delete
 	 */
-	public static void fileCommand(final Context context, final String url, final String filename, final String target, final boolean delete, boolean print){
+	public static void fileCommand(final Context context, final String url, final String filename, final String target, final boolean delete, final boolean print){
 		
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
@@ -226,6 +226,51 @@ public class OctoprintFiles {
 					
 				}
 			}
+
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+
+                        Log.i("OUT", "Not found on local, trying sd");
+
+                        JSONObject object = new JSONObject();
+                        StringEntity entity = null;
+
+                        try {
+                            object.put("command", "select");
+                            if (print)object.put("print", "true");
+                            entity = new StringEntity(object.toString(), "UTF-8");
+
+                        } catch (JSONException e) {		e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        HttpClientHandler.post(context, url + HttpUtils.URL_FILES + "/sdcard/" + filename,
+                                entity, "application/json", new JsonHttpResponseHandler() {
+
+                                    @Override
+                                    public void onProgress(int bytesWritten,
+                                                           int totalSize) {
+                                    }
+
+                                    @Override
+                                    public void onSuccess(int statusCode,
+                                                          Header[] headers, JSONObject response) {
+                                        super.onSuccess(statusCode, headers, response);
+                                        Log.i("OUT", "Command successful");
+
+                                        if (delete) {
+
+                                            deleteFile(context, url, filename, "/sdcard/");
+
+                                        }
+                                    }
+
+                                });
+                    }
                 });
 						
 		

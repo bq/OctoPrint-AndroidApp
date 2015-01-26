@@ -118,9 +118,9 @@ public class JmdnsServiceListener implements ServiceListener{
 			 Log.i("Model","Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 
-            Log.i("OUT","Network ID: " + PrintNetworkManager.getNetworkId(service.getName()));
+            Log.i("OUT","Network ID: " + service.getInetAddresses()[0] + " -> " + PrintNetworkManager.getNetworkId(service.getName()));
 
-            if (!service.getInetAddresses()[0].equals("/10.250.250.1")){
+            if (!service.getInetAddresses()[0].toString().equals("/10.250.250.1")){
 
                 mContext.addElement(new ModelPrinter(service.getName(),
                         service.getInetAddresses()[0].toString() /*+ HttpUtils.CUSTOM_PORT*/+ ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));

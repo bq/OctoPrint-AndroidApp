@@ -78,45 +78,38 @@ public class OctoprintProfiles {
 
     }
 
-    /*public static void selectProfile(final Context context, final String url, final String profile){
+    /**
+     * Delete profiles from the server
+     * @param context
+     * @param url
+     * @param profile
+     */
+    public static void deleteProfile(final Context context, final String url, final String profile){
 
-        JSONObject object = new JSONObject();
-        StringEntity entity = null;
-
-        try {
-            object.put("current", "true");
-            entity = new StringEntity(object.toString(), "UTF-8");
-
-        } catch (JSONException e) {		e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {	e.printStackTrace();
-        }
+        HttpClientHandler.delete(context, url + HttpUtils.URL_PROFILES + "/" + profile, new JsonHttpResponseHandler(){
 
 
-        HttpClientHandler.patch(context,url + HttpUtils.URL_PROFILES + "/" + "bq_witbox",
-                entity, "application/json", new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
 
-                    @Override
-                    public void onProgress(int bytesWritten,
-                                           int totalSize) {
-                    }
 
-                    @Override
-                    public void onSuccess(int statusCode,
-                                          Header[] headers, JSONObject response) {
-                        super.onSuccess(statusCode, headers, response);
-                        Log.i("OUT", "Profile Select successful");
-                    }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        Log.i("OUT", "Errorcito " + responseString);
-                    }
-                });
+                Log.i("OUT", "Profile DELETE  successful");
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Log.i("OUT", "Profile DELETE  FOESNT EXIST");
+            }
+        });
+
 
 
     }
-    */
-
 
 }

@@ -251,6 +251,8 @@ import java.io.File;
 
             if((p.getStatus()!=StateUtils.STATE_NEW)&&(p.getStatus()!=StateUtils.STATE_ADHOC)){
 
+                Log.i("CONNECTION","Connection from: RELOAD");
+
                 OctoprintConnection.doConnection(getActivity(),p);
 
             }
