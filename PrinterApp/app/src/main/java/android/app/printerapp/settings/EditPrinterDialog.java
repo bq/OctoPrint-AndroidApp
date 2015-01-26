@@ -212,6 +212,7 @@ public class EditPrinterDialog {
                 Log.i("OUT","Delete " + spinner_printer.getSelectedItem());
 
                 deleteProfile(spinner_printer.getSelectedItem().toString());
+                OctoprintProfiles.deleteProfile(mContext,mPrinter.getAddress(),spinner_printer.getSelectedItem().toString());
 
             }
         });
@@ -374,12 +375,20 @@ public class EditPrinterDialog {
 
                         case 0: auxType = "bq_witbox"; break;
                         case 1: auxType = "bq_hephestos"; break;
-                        default: auxType = spinner_printer.getSelectedItem().toString(); break;
+                        default: {
+
+                            //Upload profile, connect if successful
+                            OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),ModelProfile.retrieveProfile(mContext,spinner_printer.getSelectedItem().toString()),
+                                    spinner_port.getSelectedItem().toString());
+
+
+                            //auxType = spinner_printer.getSelectedItem().toString();
+                        } break;
 
                     }
 
                     //update new profile
-                    OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
+                    if (auxType!=null) OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
 
 
                 } else { //CUSTOM selected

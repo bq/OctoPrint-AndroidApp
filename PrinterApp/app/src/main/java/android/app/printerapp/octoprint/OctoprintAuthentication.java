@@ -131,6 +131,7 @@ public class OctoprintAuthentication {
 
                             if (!retry){
 
+                                Log.i("CONNECTION","Connection from: AUTH");
                                 OctoprintConnection.doConnection(context,p);
 
                             } else OctoprintConnection.getNewConnection(context, p);

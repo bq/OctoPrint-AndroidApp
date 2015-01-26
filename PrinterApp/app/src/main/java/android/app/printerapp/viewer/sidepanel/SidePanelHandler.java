@@ -53,7 +53,6 @@ import java.util.ArrayList;
 public class SidePanelHandler {
 
     //static parameters
-    private static final String[] INFILL_OPTIONS = {"Low", "Medium", "High", "Full", "None"}; //quality options
     private static final String[] PROFILE_OPTIONS = {ModelProfile.HIGH_PROFILE, ModelProfile.MEDIUM_PROFILE, ModelProfile.LOW_PROFILE}; //support options
     private static final String[] SUPPORT_OPTIONS = {"None", "Buildplate", "Everywhere"}; //support options
     private static final String[] ADHESION_OPTIONS = {"None", "Brim", "Raft"}; //adhesion options
@@ -109,6 +108,9 @@ public class SidePanelHandler {
     //private EditText profileText;
 
     private ArrayList<ModelPrinter> mTemporaryPrinterList;
+
+    private ArrayList<String> mProfileList;
+    private ArrayAdapter<String> mProfileAdapter;
 
     //Constructor
     public SidePanelHandler(SlicingHandler handler, Activity activity, View v) {
@@ -222,7 +224,7 @@ public class SidePanelHandler {
                                     break;
                                 default:
 
-                                    //TODO
+                                    //TODO Profiles being removed automatically
 
                                     try {
 
@@ -231,6 +233,8 @@ public class SidePanelHandler {
                                     } catch (NullPointerException e) {
 
                                         Log.i("Profile", "Profile dead!");
+                                        mProfileList.remove(i);
+                                        mProfileAdapter.notifyDataSetChanged();
 
                                     }
 
@@ -254,33 +258,13 @@ public class SidePanelHandler {
                         }
                     });
 
+                    reloadProfiles();
 
-                    //Add default types plus custom types from internal storage
-                    ArrayList<String> profileArray = new ArrayList<String>();
-                    for (String s : PRINTER_TYPE) {
 
-                        profileArray.add(s);
-                    }
-
-                    //Add internal storage types
-                    for (File file : mActivity.getApplicationContext().getFilesDir().listFiles()) {
-
-                        //Only files with the .profile extension
-                        if (file.getAbsolutePath().contains(".profile")) {
-
-                            int pos = file.getName().lastIndexOf(".");
-                            String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
-
-                            //Add only the name
-                            profileArray.add(name);
-                        }
-
-                    }
-
-                    ArrayAdapter<String> type_adapter = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, profileArray);
-                    type_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
-                    s_type.setAdapter(type_adapter);
+                    mProfileAdapter = new ArrayAdapter<String>(mActivity,
+                            R.layout.print_panel_spinner_item, mProfileList);
+                    mProfileAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
+                    s_type.setAdapter(mProfileAdapter);
 
 
                     /******************** INITIALIZE SECONDARY PANEL ************************************/
@@ -880,6 +864,35 @@ public class SidePanelHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void reloadProfiles(){
+
+        //Add default types plus custom types from internal storage
+        mProfileList = new ArrayList<String>();
+        mProfileList.clear();
+        for (String s : PRINTER_TYPE) {
+
+            mProfileList.add(s);
+        }
+
+        //Add internal storage types
+        for (File file : mActivity.getApplicationContext().getFilesDir().listFiles()) {
+
+            //Only files with the .profile extension
+            if (file.getAbsolutePath().contains(".profile")) {
+
+                int pos = file.getName().lastIndexOf(".");
+                String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
+
+                //Add only the name
+                mProfileList.add(name);
+            }
+
+        }
+
+
 
     }
 
