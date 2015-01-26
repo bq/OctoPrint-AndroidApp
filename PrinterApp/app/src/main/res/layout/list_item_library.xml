@@ -2,22 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/content_padding_xsmall"
-    android:descendantFocusability="blocksDescendants">
+    android:padding="@dimen/content_padding_xsmall">
 
     <!-- Model icon -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight=".3"
+        android:layout_weight=".2"
         android:gravity="center">
 
-        <ImageView
-            android:id="@+id/model_icon"
-            android:layout_width="80dp"
-            android:layout_height="60dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/model_icon"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:layout_toRightOf="@+id/select_model_checkbox"/>
+
+            <CheckBox
+                android:id="@+id/select_model_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"/>
+
+        </RelativeLayout>
+
+
     </LinearLayout>
 
     <!-- Model name -->
@@ -47,10 +67,10 @@
 
         <ImageButton
             android:id="@+id/model_settings_imagebutton"
-            android:padding="@dimen/content_padding_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selectable_rect_background_gray"
+            android:padding="@dimen/content_padding_small"
             android:src="@drawable/ic_more_vert" />
 
     </LinearLayout>

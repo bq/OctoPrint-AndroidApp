@@ -6,6 +6,7 @@
     
     <string name="add">Añadir</string>
     <string name="cancel">Cancelar</string>
+    <string name="confirm">Confirmar</string>
     <string name="filter">Filtrar</string>
     <string name="search">Buscar</string>
     <string name="create">Crear</string>
@@ -116,6 +117,16 @@
     <string name="library_models_memory">Memoria Witbox</string>
     <string name="library_models_usb">USB</string>
     <string name="library_models_favorites">Favoritos</string>
+    <plurals name="library_models_delete_title">
+        <item quantity="one">Eliminar el archivo</item>
+        <item quantity="other">Eliminar archivos</item>
+    </plurals>
+    <plurals name="library_models_delete">
+        <item quantity="one">¿Estás seguro de eliminar el archivo?</item>
+        <item quantity="other">¿Estás seguro de eliminar los archivos seleccionados?</item>
+    </plurals>
+    <string name="library_menu_models_delete_undo">Esta acción no se podrá deshacer</string>
+    <string name="library_menu_models_delete_files">%1$d archivos</string>
     
     <string name="detailview_description">Descripción</string>
     <string name="detailview_notes">Comentarios</string>

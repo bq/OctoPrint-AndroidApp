@@ -67,7 +67,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:21.+'
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
     compile project(':materialdesignlibrary')
-
+    compile 'com.afollestad:material-dialogs:0.6.1.6' //Material design dialogs
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile files('libs/android-async-http-1.4.6.jar')
 }
