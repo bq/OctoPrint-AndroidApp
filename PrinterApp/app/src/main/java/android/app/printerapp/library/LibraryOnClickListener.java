@@ -12,12 +12,14 @@ import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,9 +28,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 
@@ -76,7 +82,12 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
         if (mListView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){
 
-            mListView.setItemChecked(arg2, true);
+            boolean checked = mListView.isItemChecked(arg2);
+
+            mListView.setItemChecked(arg2, checked);
+
+            LibraryAdapter listAdapter = (LibraryAdapter) mListView.getAdapter();
+            listAdapter.setItemChecked(arg2, checked);
 
             Log.i("OUT","OUTA " + mListView.getCheckedItemCount()); //TODO Finish
             mContext.notifyAdapter();
@@ -270,7 +281,10 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        mListView.setSelector(mContext.getResources().getDrawable(android.R.drawable.list_selector_background)); //TODO
+        mListView.setSelector(mContext.getResources().getDrawable(R.drawable.list_selector));
+
+        LibraryAdapter listAdapter = (LibraryAdapter) mListView.getAdapter();
+        listAdapter.setSelectionMode(true);
 
         if (mActionMode != null) {
             return false;
@@ -278,7 +292,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
         // Start the CAB using the ActionMode.Callback defined above
         mActionMode = ((ActionBarActivity)mContext.getActivity()).startSupportActionMode(mActionModeCallback);
-        view.setSelected(true);
+//        view.setSelected(true);
 
         Log.i("OUT","LongCLICK");
         return false;
@@ -287,11 +301,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     private void selectItemToDelete(int i){
 
 
-
     }
-
-
-
 
     /**
      * Action mode
@@ -324,23 +334,49 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                     Log.i("OUT","COÑOA " + mListView.getCheckedItemCount());
 
-                    SparseBooleanArray ids = mListView.getCheckedItemPositions();
-                    for (int i = 0; i < ids.size() ; i++){
+                    final SparseBooleanArray ids = mListView.getCheckedItemPositions();
 
-                        if (ids.valueAt(i)) {
+                    LayoutInflater inflater = (LayoutInflater) mContext.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View deleteDialogView = inflater.inflate(R.layout.dialog_delete_models, null);
+                    ((TextView)deleteDialogView.findViewById(R.id.delete_files_info_textview)).setText(mContext.getResources().getQuantityString(R.plurals.library_models_delete, ids.size()));
+                    ((ImageView)deleteDialogView.findViewById(R.id.delete_files_icon)).setColorFilter(mContext.getResources().getColor(R.color.body_text_2));
 
-                            File file = LibraryController.getFileList().get(ids.keyAt(i) - 1);
-
-                            Log.i("OUT","DELETE " + file.getName());
-
-                            LibraryController.deleteFiles(file);
-
-                        }
-
+                    //TODO Set images
+                    if(ids.size() == 1) {
+                        //TODO Set model name
+//                        ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(LibraryController.getFileList().get(ids.keyAt(0) - 1).getName());
+                    }
+                    else {
+                        ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(String.format(mContext.getResources().getString(R.string.library_menu_models_delete_files), ids.size()));
                     }
 
-                    mActionMode.finish();
+                    new MaterialDialog.Builder(mContext.getActivity())
+                            .title(mContext.getResources().getQuantityString(R.plurals.library_models_delete_title, ids.size()))
+                            .customView(deleteDialogView, true)
+                            .positiveColorRes(R.color.theme_accent_1)
+                            .positiveText(R.string.confirm)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
 
+                                    for (int i = 0; i < ids.size(); i++) {
+
+                                        if (ids.valueAt(i)) {
+
+                                            File file = LibraryController.getFileList().get(ids.keyAt(i) - 1);
+
+                                            Log.i("OUT", "DELETE " + file.getName());
+                                            LibraryController.deleteFiles(file);
+
+                                        }
+                                    }
+                                }
+                            })
+                            .negativeText(R.string.cancel)
+                            .negativeColorRes(R.color.body_text_2)
+                            .show();
+
+                    mActionMode.finish();
 
                     break;
 
@@ -352,10 +388,20 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         // Called when the user exits the action mode
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            mActionMode = null;
-            mListView.setSelector(R.drawable.list_selector);
-            mListView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
-            mContext.notifyAdapter();
+            mListView.clearChoices();
+            for (int i = 0; i < mListView.getCount(); i++)
+                mListView.setItemChecked(i, false);
+            mListView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mActionMode = null;
+                    mListView.setSelector(R.drawable.list_selector);
+                    mListView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+                    mContext.notifyAdapter();
+                    LibraryAdapter listAdapter = (LibraryAdapter) mListView.getAdapter();
+                    listAdapter.setSelectionMode(false);
+                }
+            });
         }
     };
 }

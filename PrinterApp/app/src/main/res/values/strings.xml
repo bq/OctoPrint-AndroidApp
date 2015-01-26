@@ -8,6 +8,7 @@
     
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
     <string name="filter">Filter</string>
     <string name="search">Search</string>
     <string name="create">Create</string>
@@ -136,6 +137,16 @@
     <string name="library_models_memory">Witbox memory</string>
     <string name="library_models_usb">USB</string>
     <string name="library_models_favorites">Favorites</string>
+    <plurals name="library_models_delete_title">
+        <item quantity="one">Remove the file</item>
+        <item quantity="other">Remove files</item>
+    </plurals>
+    <plurals name="library_models_delete">
+        <item quantity="one">Are you sure to delete the file?</item>
+        <item quantity="other">Are you sure to delete the selected files?</item>
+    </plurals>
+    <string name="library_menu_models_delete_undo">This action can not be undone</string>
+    <string name="library_menu_models_delete_files">%1$d files</string>
 
     <string name="library_list_go_back_tag">Go back</string>
     <string name="library_list_date_tag">Last modification</string>

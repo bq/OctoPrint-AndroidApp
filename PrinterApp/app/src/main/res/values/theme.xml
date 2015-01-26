@@ -15,18 +15,20 @@
         <item name="colorAccent">@color/theme_accent_1</item>
         <!--<item name="actionModeCloseDrawable">@drawable/ic_action_done</item>-->
         <!--<item name="actionModeStyle">@style/AppBaseTheme.Green.ActionMode</item>-->
+        <item name="actionModeBackground">@color/theme_primary</item>
         <item name="android:textColorPrimary">@color/white</item>
         <!--<item name="actionBarItemBackground">@drawable/drawer_item_selector</item>-->
         <!-- Menu -->
         <!--<item name="android:popupMenuStyle">@style/PopupMenu.Green</item>-->
         <item name="textAppearanceLargePopupMenu">@style/PopupMenu.TextAppearanceLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/PopupMenu.TextAppearanceSmall</item>
-        <item name="android:textAppearanceLargePopupMenu">@style/PopupMenu.TextAppearanceLarge</item>
-        <item name="android:textAppearanceSmallPopupMenu">@style/PopupMenu.TextAppearanceSmall</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/PopupMenu.TextAppearanceLarge
+        </item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/PopupMenu.TextAppearanceSmall
+        </item>
         <item name="android:listPreferredItemHeightSmall">@dimen/popup_menu_item_height</item>
         <!--<item name="actionDropDownStyle">@style/DropDownNav.Green</item>-->
         <!--<item name="dropDownListViewStyle">@style/DropDownListView.Green</item>-->
-
         <!-- Spinner -->
         <!--<item name="android:dropDownSpinnerStyle">@style/Spinner.Green</item>-->
         <!-- Button -->
@@ -35,6 +37,8 @@
         <item name="android:seekBarStyle">@style/SeekBar.Green</item>
         <!-- Progress bar -->
         <item name="android:progressBarStyleHorizontal">@style/ProgressBar.Green</item>
+        <!-- Edit  text-->
+        <item name="android:editTextStyle">@style/App_EditTextStyle</item>
     </style>
 
     <style name="AppBaseTheme.Green.NoActionBar" parent="@android:style/Theme.Holo.Light.DarkActionBar">
@@ -49,6 +53,13 @@
     <style name="AppBaseTheme.Green.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textSize">@dimen/text_size_xlarge</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Style for the action mode -->
+    <style name="AppBaseTheme.Green.ActionMode">
+        <item name="android:background">@drawable/selectable_rect_background_green</item>
+        <!--<item name="android:backgroundSplit">?android:attr/actionModeSplitBackground</item>-->
+        <!--<item name="android:titleTextStyle">@style/AppBaseTheme.Green.ActionBar.TitleTextStyle</item>-->
     </style>
 
     <!-- Styles for the pup up menu -->
@@ -110,5 +121,10 @@
         <item name="android:maxHeight">20dip</item>
         <item name="android:layout_marginBottom">-8dp</item>
         <item name="android:layout_marginTop">-8dp</item>
+    </style>
+
+    <!-- Edit text -->
+    <style name="App_EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/body_text_2</item>
     </style>
 </resources>

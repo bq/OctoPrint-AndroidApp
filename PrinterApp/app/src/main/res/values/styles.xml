@@ -161,6 +161,15 @@
         <item name="android:layout_margin">5dip</item>
     </style>
 
+    <style name="DialogContent">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/body_text_2</item>
+        <item name="android:textIsSelectable">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_margin">3dip</item>
+    </style>
+
     <style name="SectionHeader">
         <item name="android:textSize">@dimen/text_size_large</item>
         <item name="android:textStyle">normal</item>

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
@@ -37,6 +38,12 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
 
     //Filter
     private ListFilter mFilter;
+
+    //Flag to know if the list is being modified
+    private boolean mListInSelectionMode;
+
+    //List of selected items in selection mode
+    private ArrayList<Boolean> mCheckedItems = new ArrayList<>();
 
     LibraryFragment mContext;
 
@@ -72,6 +79,16 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         nameTextView.setText(m.getName());
 
         ImageView iv = (ImageView) v.findViewById(R.id.model_icon);
+
+        //If selection mode is on, show the selection checkbox
+        CheckBox selectModelCheckbox = (CheckBox) v.findViewById(R.id.select_model_checkbox);
+        if (mListInSelectionMode) {
+            selectModelCheckbox.setChecked(mCheckedItems.get(position));
+            selectModelCheckbox.setVisibility(View.VISIBLE);
+        } else {
+            selectModelCheckbox.setChecked(false);
+            selectModelCheckbox.setVisibility(View.INVISIBLE);
+        }
 
         if (m.isDirectory()) {
 
@@ -123,7 +140,6 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         return v;
     }
 
-
     //Retrieve item from current list
     @Override
     public File getItem(int position) {
@@ -151,6 +167,18 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         mCurrent = mOriginal;
         notifyDataSetChanged();
 
+    }
+
+    public void setSelectionMode(boolean isSelectionMode) {
+        this.mListInSelectionMode = isSelectionMode;
+        mCheckedItems = new ArrayList<>();
+        for (int i = 0; i < mCurrent.size(); i++) {
+            mCheckedItems.add(false);
+        }
+    }
+
+    public void setItemChecked(int position, boolean checked) {
+        mCheckedItems.set(position, checked);
     }
 
     /**
@@ -206,7 +234,6 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                     		}
                     		
                     	}
-                    	
                     	
                     	
                     }*/

@@ -27,6 +27,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.MaterialDialogCompat;
+
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -342,10 +345,10 @@ public class LibraryFragment extends Fragment {
     //Search an item within the library applying a filter to the adapter
     public void optionSearchLibrary() {
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.library_search_dialog_title);
-
         final EditText et = new EditText(getActivity());
+
+        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(getActivity());
+        adb.setTitle(R.string.library_search_dialog_title);
         adb.setView(et);
 
         adb.setPositiveButton(R.string.search, new DialogInterface.OnClickListener() {
@@ -358,6 +361,21 @@ public class LibraryFragment extends Fragment {
 
         adb.setNegativeButton(R.string.cancel, null);
         adb.show();
+
+//        boolean wrapInScrollView = true;
+//        new MaterialDialog.Builder(getActivity())
+//                .title(R.string.library_search_dialog_title)
+//                .customView(et, wrapInScrollView)
+//                .positiveText(R.string.search)
+//                .callback(new MaterialDialog.ButtonCallback() {
+//                    @Override
+//                    public void onPositive(MaterialDialog dialog) {
+//                        mCurrentFilter = et.getText().toString();
+//                    }
+//                })
+//                .negativeText(R.string.cancel)
+//                .build()
+//                .show();
 
     }
 

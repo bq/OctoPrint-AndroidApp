@@ -652,9 +652,6 @@ public class SidePanelHandler {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 infillPercent.setText(progress + "%");
                 infillText.setText(progress + "%");
-                //TODO Acercas o alejar el grid de relleno en función del valor de la seekbar
-
-//                Bitmap resizedbitmap = Bitmap.createScaledBitmap(gridResource, progress, progress, true);
 
                 if(progress == 0) {
                     infillGrid.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.grid_empty));
