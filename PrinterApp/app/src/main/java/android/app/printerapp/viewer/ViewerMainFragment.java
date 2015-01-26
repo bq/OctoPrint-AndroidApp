@@ -10,6 +10,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelProfile;
+import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
@@ -542,7 +543,6 @@ public class ViewerMainFragment extends Fragment {
                 StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
                 mSidePanelHandler.enableProfileSelection(true);
                 mCurrentViewMode = NORMAL;
-
 
             } else if (LibraryController.hasExtension(1, filePath)) {
 
@@ -1195,6 +1195,7 @@ public class ViewerMainFragment extends Fragment {
 
             ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
             TextView tv = (TextView) mRootView.findViewById(R.id.viewer_text_progress_slice);
+            TextView tve = (TextView) mRootView.findViewById(R.id.viewer_text_estimated_time);
 
             ll.bringToFront();
             ll.setVisibility(View.VISIBLE);
@@ -1204,7 +1205,14 @@ public class ViewerMainFragment extends Fragment {
 
                 case StateUtils.SLICER_HIDE:
 
-                    tv.setText(R.string.viewer_text_downloaded);
+                    if (i<0){
+
+                        tv.setText(R.string.error);
+
+                    }else {
+                        tv.setText(R.string.viewer_text_downloaded);
+                    }
+
                     pb.setVisibility(View.INVISIBLE);
 
                     break;
@@ -1225,6 +1233,7 @@ public class ViewerMainFragment extends Fragment {
                     }
 
                     tv.setText(uploadText);
+                    tve.setText(null);
 
                     break;
 
@@ -1239,6 +1248,7 @@ public class ViewerMainFragment extends Fragment {
                     } else if (i == 100) {
 
                         pb.setIndeterminate(false);
+                        pb.setProgress(100);
 
                         slicingText += " " + mContext.getString(R.string.viewer_text_done);
 
@@ -1252,6 +1262,7 @@ public class ViewerMainFragment extends Fragment {
                     }
 
                     tv.setText(slicingText);
+                    tve.setText(null);
 
                     mRootView.invalidate();
 
@@ -1259,6 +1270,10 @@ public class ViewerMainFragment extends Fragment {
 
                 case StateUtils.SLICER_DOWNLOAD:
 
+
+                    if (i>0) {
+                        tve.setText(OctoprintConnection.ConvertSecondToHHMMString(String.valueOf(i)));
+                    }
                     tv.setText(R.string.viewer_text_downloading);
                     pb.setIndeterminate(true);
 
@@ -1318,6 +1333,7 @@ public class ViewerMainFragment extends Fragment {
 
                     Log.i("Slicer", "Removing PREFERENCE [Last]");
                     DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", null, false);
+
 
                     showProgressBar(StateUtils.SLICER_HIDE, 0);
                 } else {

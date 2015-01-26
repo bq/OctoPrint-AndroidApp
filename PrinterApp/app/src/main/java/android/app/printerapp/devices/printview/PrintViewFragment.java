@@ -11,6 +11,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.HttpUtils;
+import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintControl;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
@@ -46,12 +47,8 @@ import android.widget.Toast;
 import com.material.widget.PaperButton;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * This class will show the PrintView detailed view for every printer
@@ -361,14 +358,14 @@ public class PrintViewFragment extends Fragment {
         tv_printer.setText(mPrinter.getDisplayName() + ": " + mPrinter.getMessage() + " [" + mPrinter.getPort() + "]");
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
-        tv_profile.setText(mPrinter.getProfile());
+        tv_profile.setText(" " + mPrinter.getProfile());
 
         if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING) ||
                 (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) {
 
             isPrinting = true;
-            tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) +
-                    " left / " + ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed) - ");
+            tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + OctoprintConnection.ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) +
+                    " left / " + OctoprintConnection.ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed) - ");
 
             if (!mPrinter.getJob().getProgress().equals("null")) {
                 Double n = Double.valueOf(mPrinter.getJob().getProgress());
@@ -391,22 +388,7 @@ public class PrintViewFragment extends Fragment {
     }
 
 
-    //External method to convert seconds to HHmmss
-    private String ConvertSecondToHHMMString(String secondtTime) {
-        String time = "--:--:--";
 
-        if (!secondtTime.equals("null")) {
-
-            TimeZone tz = TimeZone.getTimeZone("UTC");
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.US);
-            df.setTimeZone(tz);
-            time = df.format(new Date(Integer.parseInt(secondtTime) * 1000L));
-        }
-
-
-        return time;
-
-    }
 
     public void stopCameraPlayback() {
 

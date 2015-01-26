@@ -219,6 +219,13 @@
                         android:textAllCaps="true" />
 
                     <TextView
+                        android:id="@+id/viewer_text_estimated_time"
+                        style="@style/TextInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="italic" />
+
+                    <TextView
                         android:id="@+id/viewer_text_progress_slice"
                         style="@style/TextInfo"
                         android:layout_width="wrap_content"

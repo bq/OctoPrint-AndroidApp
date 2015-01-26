@@ -26,6 +26,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -483,7 +487,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	    //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	    Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 
@@ -714,6 +718,7 @@ public class OctoprintConnection {
 
                 ViewerMainFragment.showProgressBar(StateUtils.SLICER_DOWNLOAD, 0);
 
+                OctoprintSlicing.getMetadata(url, payload.getString("gcode"));
                 OctoprintFiles.downloadFile(context, url + HttpUtils.URL_DOWNLOAD_FILES,
                 LibraryController.getParentFolder() + "/temp/", payload.getString("gcode"));
                 OctoprintFiles.deleteFile(context,url,payload.getString("stl"), "/local/");
@@ -729,5 +734,22 @@ public class OctoprintConnection {
 		}
 		
 	}
+
+    //External method to convert seconds to HHmmss
+    public static String ConvertSecondToHHMMString(String secondtTime) {
+        String time = "--:--:--";
+
+        if (!secondtTime.equals("null")) {
+
+            TimeZone tz = TimeZone.getTimeZone("UTC");
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            df.setTimeZone(tz);
+            time = df.format(new Date(Integer.parseInt(secondtTime) * 1000L));
+        }
+
+
+        return time;
+
+    }
 
 }
