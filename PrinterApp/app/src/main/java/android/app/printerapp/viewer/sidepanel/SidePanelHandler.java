@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,7 +90,7 @@ public class SidePanelHandler {
 
     private EditText layerHeight;
     private EditText shellThickness;
-    private com.material.widget.CheckBox enableRetraction;
+    private CheckBox enableRetraction;
     private EditText bottomTopThickness;
     private EditText printSpeed;
     private EditText printTemperature;
@@ -103,7 +104,7 @@ public class SidePanelHandler {
     private EditText innerShellSpeed;
 
     private EditText minimalLayerTime;
-    private com.material.widget.CheckBox enableCoolingFan;
+    private CheckBox enableCoolingFan;
 
     //private EditText profileText;
 
@@ -143,7 +144,7 @@ public class SidePanelHandler {
 
         layerHeight = (EditText) mRootView.findViewById(R.id.layer_height_edittext);
         shellThickness = (EditText) mRootView.findViewById(R.id.shell_thickness_edittext);
-        enableRetraction = (com.material.widget.CheckBox) mRootView.findViewById(R.id.enable_retraction_checkbox);
+        enableRetraction = (CheckBox) mRootView.findViewById(R.id.enable_retraction_checkbox);
         bottomTopThickness = (EditText) mRootView.findViewById(R.id.bottom_top_thickness_edittext);
         printSpeed = (EditText) mRootView.findViewById(R.id.print_speed_edittext);
         printTemperature = (EditText) mRootView.findViewById(R.id.print_temperature_edittext);
@@ -157,7 +158,7 @@ public class SidePanelHandler {
         innerShellSpeed = (EditText) mRootView.findViewById(R.id.inner_shell_speed_edittext);
 
         minimalLayerTime = (EditText) mRootView.findViewById(R.id.minimal_layer_time_edittext);
-        enableCoolingFan = (com.material.widget.CheckBox) mRootView.findViewById(R.id.enable_cooling_fan_checkbox);
+        enableCoolingFan = (CheckBox) mRootView.findViewById(R.id.enable_cooling_fan_checkbox);
 
 
         //profileText = (EditText) mRootView.findViewById(R.id.profile_edittext);
