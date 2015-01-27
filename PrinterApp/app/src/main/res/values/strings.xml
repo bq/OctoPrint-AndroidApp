@@ -16,6 +16,7 @@
     <string name="error">Error</string>
     <string name="help">Help</string>
     <string name="warning">Warning</string>
+    <string name="dialog_continue">Continue</string>
     
     <string name="fragment_devices">Printer</string>
     <string name="fragment_print">Panel</string>
@@ -284,7 +285,8 @@
     <string name="viewer_text_done">done</string>
     <string name="viewer_open_gcode_dialog">You will lose any unsaved data. Continue?</string>
     <string name="library_menu_search_global">Search for models</string>
-    <string name="library_scan_dialog_title">Add models to your library</string>
+    <string name="library_scan_dialog_title">Add files</string>
+    <string name="library_scan_dialog_nomodels">No models found on your device</string>
     <string name="viewer_restore_session">Restore last session?</string>
     <string name="viewer_menu_last_session">Last session</string>
 
