@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.app.printerapp.util.ui.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/content_padding_small"
+    android:paddingBottom="@dimen/content_padding_small"
+    android:paddingLeft="@dimen/content_padding_normal"
+    android:paddingRight="@dimen/content_padding_normal">
+
+    <ImageView
+        android:id="@+id/file_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_file_gray"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/content_margin_small"/>
+
+    <CheckedTextView
+        android:id="@+id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:layout_centerVertical="true"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:layout_toRightOf="@+id/file_icon"/>
+
+</android.app.printerapp.util.ui.CheckableRelativeLayout>

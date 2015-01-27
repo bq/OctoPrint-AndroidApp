@@ -14,6 +14,7 @@
     <string name="error">Error</string>
     <string name="help">Ayuda</string>
     <string name="warning">Aviso</string>
+    <string name="dialog_continue">Continuar</string>
     
     <string name="fragment_devices">Impresora</string>
     <string name="fragment_print">Panel</string>
@@ -276,7 +277,8 @@
     <string name="viewer_text_done">hecho</string>
     <string name="viewer_open_gcode_dialog">Perderás todos los datos no guardados. ¿Continuar?</string>
     <string name="library_menu_search_global">Buscar modelos</string>
-    <string name="library_scan_dialog_title">Añadir modelos a tu librería</string>
+    <string name="library_scan_dialog_title">Añadir archivos</string>
+    <string name="library_scan_dialog_nomodels">No se han encontrado modelos en tu dispositivo</string>
     <string name="viewer_restore_session">¿Restaurar la última sesión?</string>
     <string name="viewer_menu_last_session">Última sesión</string>
     <string name="printview_extruder_extrude_tag">Extraer/Retraer</string>

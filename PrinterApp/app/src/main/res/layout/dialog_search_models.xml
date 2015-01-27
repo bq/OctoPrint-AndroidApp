@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/search_models_emptytext"
+        style="@style/DialogContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/content_padding_normal"
+        android:text="@string/library_scan_dialog_nomodels"
+        android:textColor="@color/body_text_1"
+        android:textSize="@dimen/text_size_xlarge" />
+
+    <uk.co.androidalliance.edgeeffectoverride.ListView
+        android:id="@+id/search_models_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:edgeeffect_color="@color/theme_accent_1" />
+
+</LinearLayout>
