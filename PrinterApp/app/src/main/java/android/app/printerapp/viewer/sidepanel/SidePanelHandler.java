@@ -61,6 +61,7 @@ public class SidePanelHandler {
     private static final String[] PREDEFINED_PROFILES = {"bq"}; //filter for profile deletion
 
     private static final int DEFAULT_INFILL = 20;
+    private int mCurrentInfill = DEFAULT_INFILL;
 
     //Printer to send the files
     private ModelPrinter mPrinter;
@@ -681,12 +682,14 @@ public class SidePanelHandler {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                mCurrentInfill = infillSeekBar.getProgress();
                 mSlicingHandler.setExtras("profile.fill_density", infillSeekBar.getProgress());
+
             }
         });
 
-        infillSeekBar.setProgress(DEFAULT_INFILL);
-        infillPercent.setText(DEFAULT_INFILL + " %");
+        infillSeekBar.setProgress(mCurrentInfill);
+        infillPercent.setText(mCurrentInfill + " %");
 
         //Show the pop up window in the correct position
         int[] infillSpinnerCoordinates = new int[2];
