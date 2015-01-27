@@ -49,6 +49,7 @@ public class LibraryModelCreation {
     private static Context mContext;
     private static File mFile;
     private static ArrayList<File> mFileQueue = null;
+    private static int mCount = 0;
 	
 	//Static method to create a folder structure
 	public static void createFolderStructure(Context context, File source){
@@ -138,10 +139,13 @@ public class LibraryModelCreation {
 		mSnapshotLayout = (FrameLayout) dialogText.findViewById (R.id.framesnapshot);
 
         Log.i("OUT","Opening to snap " + path);
+        String count = context.getString(R.string.new_project);
+
+        if (mFileQueue!=null) count += " "  + (mCount - (mFileQueue.size() - 1)) + "/" + mCount;
 
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
    		adb.setView(dialogText)
-			.setTitle(context.getString(R.string.new_project))
+			.setTitle(count)
 			.setCancelable(false);
    			
 		
@@ -225,6 +229,12 @@ public class LibraryModelCreation {
                 //Only show delete dialog if there is no queue //TODO
                 if (mFileQueue==null) deleteFileDialog();
                 else checkQueue();
+
+                Intent intent = new Intent("notify");
+                intent.putExtra("message", "Files");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+
+
             }
         }, WAIT_TIME);
 
@@ -248,7 +258,6 @@ public class LibraryModelCreation {
         /**
          * Use an intent because it's an asynchronous static method without any reference (yet)
          */
-        //TODO What have I done -_-
         Intent intent = new Intent("notify");
         intent.putExtra("message", "Files");
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
@@ -265,6 +274,7 @@ public class LibraryModelCreation {
     public static void enqueueJobs(Context context, ArrayList<File> q){
 
         mFileQueue = q;
+        mCount = mFileQueue.size();
         createFolderStructure(context, mFileQueue.get(0));
 
     }
@@ -280,7 +290,11 @@ public class LibraryModelCreation {
 
                 createFolderStructure(mContext, mFileQueue.get(0)); //Create folder again
 
-            } else mFileQueue = null; //Remove queue
+            } else {
+
+                mFileQueue = null; //Remove queue
+                mCount = 0;
+            }
 
 
         }

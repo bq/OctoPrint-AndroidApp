@@ -31,6 +31,11 @@ public class LibraryController {
 
 	private static ArrayList<File> mFileList = new ArrayList<File>();
 	private static File mCurrentPath;
+
+    public static final String TAB_ALL = "all";
+    public static final String TAB_CURRENT = "current";
+    public static final String TAB_PRINTER = "printer";
+    public static final String TAB_FAVORITES = "favorites";
 	
 	public LibraryController(){
 
@@ -198,13 +203,15 @@ public class LibraryController {
 		
 		//Retrieve every single file by recursive search
 		//TODO Not retrieving printers
-		if (path.equals("all")){
-			retrieveFiles(getParentFolder(), true);
-			mCurrentPath = getParentFolder();
+		if (path.equals(TAB_ALL)){
+
+            File parent = new File(getParentFolder() + "/Files/");
+			retrieveFiles(parent, true);
+			mCurrentPath = parent;
 		} else {
 			
 			//Retrieve only the printers like folders
-			if ((path.equals("printer"))){
+			if ((path.equals(TAB_PRINTER))){
 				
 				for (ModelPrinter p : DevicesListController.getList()){
 
@@ -215,11 +222,11 @@ public class LibraryController {
 								
 			} else {
 
-                if ((path.equals("favorites"))){
+                if ((path.equals(TAB_FAVORITES))){
                     retrieveFavorites();
                 } else{
 
-                    if ((path.equals("current"))){
+                    if ((path.equals(TAB_CURRENT))){
 
                         retrieveFiles(mCurrentPath, false);
 

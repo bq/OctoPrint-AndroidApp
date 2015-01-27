@@ -40,13 +40,15 @@ import java.util.Comparator;
  */
 public class LibraryFragment extends Fragment {
 
+
+
     private LibraryAdapter mListAdapter;
 
     private ListView mListView;
     private View mListHeader;
 
     private String mCurrentFilter = null;
-    private String mCurrentTab = null;
+    private String mCurrentTab = LibraryController.TAB_ALL;
 
     private File mMoveFile = null;
 
@@ -107,7 +109,7 @@ public class LibraryFragment extends Fragment {
             //TODO maybe share a gridview
 
             //Initial file list
-            LibraryController.reloadFiles("all");
+            LibraryController.reloadFiles(LibraryController.TAB_ALL);
 
             mListAdapter = new LibraryAdapter(getActivity(), this, R.layout.list_item_library, LibraryController.getFileList());
 
@@ -232,16 +234,16 @@ public class LibraryFragment extends Fragment {
 
                 switch (v.getId()) {
                     case R.id.library_nav_all_models:
-                        mCurrentTab = "all";
+                        mCurrentTab = LibraryController.TAB_ALL;
                         break;
                     case R.id.library_nav_local_models:
-                        mCurrentTab = "current";
+                        mCurrentTab = LibraryController.TAB_CURRENT;
                         break;
                     case R.id.library_nav_printer_models:
-                        mCurrentTab = "printer";
+                        mCurrentTab = LibraryController.TAB_PRINTER;
                         break;
                     case R.id.library_nav_fav_models:
-                        mCurrentTab = "favorites";
+                        mCurrentTab = LibraryController.TAB_FAVORITES;
                         break;
                     default:
                         break;
