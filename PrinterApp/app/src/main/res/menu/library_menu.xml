@@ -43,11 +43,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/library_search_system"
-        android:title="@string/library_menu_search_global"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/library_paste"
         android:title="@string/library_menu_paste"
         app:showAsAction="never" />

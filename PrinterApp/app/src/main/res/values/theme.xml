@@ -28,7 +28,7 @@
         </item>
         <item name="android:listPreferredItemHeightSmall">@dimen/popup_menu_item_height</item>
         <!--<item name="actionDropDownStyle">@style/DropDownNav.Green</item>-->
-        <!--<item name="dropDownListViewStyle">@style/DropDownListView.Green</item>-->
+        <item name="dropDownListViewStyle">@style/DropDownListView.Gray</item>
         <!-- Spinner -->
         <!--<item name="android:dropDownSpinnerStyle">@style/Spinner.Green</item>-->
         <!-- Button -->
@@ -76,8 +76,8 @@
         <item name="android:textColor">@color/body_text_1</item>
     </style>
 
-    <style name="DropDownListView.Green" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_rect_background_green</item>
+    <style name="DropDownListView.Gray" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_rect_background_gray</item>
     </style>
 
     <style name="DropDownNav.Green" parent="@android:style/Widget.Holo.Light.Spinner">
