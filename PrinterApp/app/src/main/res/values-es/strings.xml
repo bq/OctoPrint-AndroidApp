@@ -6,6 +6,7 @@
     
     <string name="add">Añadir</string>
     <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
     <string name="confirm">Confirmar</string>
     <string name="filter">Filtrar</string>
     <string name="search">Buscar</string>
@@ -118,6 +119,7 @@
     <string name="library_models_memory">Memoria Witbox</string>
     <string name="library_models_usb">USB</string>
     <string name="library_models_favorites">Favoritos</string>
+    <string name="library_get_models_title">Obtener modelos</string>
     <plurals name="library_models_delete_title">
         <item quantity="one">Eliminar el archivo</item>
         <item quantity="other">Eliminar archivos</item>
