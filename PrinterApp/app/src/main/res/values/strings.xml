@@ -8,6 +8,7 @@
     
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
     <string name="confirm">Confirm</string>
     <string name="filter">Filter</string>
     <string name="search">Search</string>
@@ -138,6 +139,7 @@
     <string name="library_models_memory">Witbox memory</string>
     <string name="library_models_usb">USB</string>
     <string name="library_models_favorites">Favorites</string>
+    <string name="library_get_models_title">Get models</string>
     <plurals name="library_models_delete_title">
         <item quantity="one">Remove the file</item>
         <item quantity="other">Remove files</item>
@@ -151,6 +153,9 @@
 
     <string name="library_list_go_back_tag">Go back</string>
     <string name="library_list_date_tag">Last modification</string>
+
+    <string name="library_thingiverse_url" translatable="false">http://www.thingiverse.com/</string>
+    <string name="library_youmagine_url" translatable="false">https://www.youmagine.com/</string>
     
     <string name="detailview_description">Description</string>
     <string name="detailview_notes">Comments</string>

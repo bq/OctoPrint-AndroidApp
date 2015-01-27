@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/thingiverse_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/selectable_rect_background_gray"
+        android:clickable="true">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/content_margin_small"
+            android:src="@drawable/logo_thingiverse" />
+
+        <TextView
+            android:id="@+id/thingiverse_url"
+            style="@style/DialogContent"
+            android:textColor="@color/body_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/library_thingiverse_url"
+            android:textIsSelectable="false"/>
+
+
+    </LinearLayout>
+
+    <!-- Separation line --><View style="@style/HorizontalSeparator" />
+
+    <LinearLayout
+        android:id="@+id/youmagine_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/selectable_rect_background_gray"
+        android:clickable="true">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/content_margin_small"
+            android:src="@drawable/logo_youimagine" />
+
+        <TextView
+            android:id="@+id/youimagine_url"
+            style="@style/DialogContent"
+            android:textColor="@color/body_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/library_youmagine_url"
+            android:textIsSelectable="false"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

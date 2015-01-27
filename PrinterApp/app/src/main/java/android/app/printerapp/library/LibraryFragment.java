@@ -7,6 +7,7 @@ import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.viewer.FileBrowser;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -25,12 +26,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialogCompat;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.Comparator;
@@ -198,7 +196,7 @@ public class LibraryFragment extends Fragment {
                 refreshFiles();
                 return true;
             case R.id.library_models:
-                optionThingiverse();
+                optionGetModelsDialog();
                 return true;
             case R.id.library_settings:
                 MainActivity.showExtraFragment(0, 0);
@@ -436,13 +434,39 @@ public class LibraryFragment extends Fragment {
     }
 
     /**
-     * Open Thingiverse in the browser
+     * Show a dialog to select between Thingiverse or Yoymagine and open the selected url in the browser
      */
-    public void optionThingiverse() {
+    public void optionGetModelsDialog() {
 
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_THINGIVERSE));
-        startActivity(browserIntent);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View getModelsDialogView = inflater.inflate(R.layout.dialog_get_models, null);
 
+        final MaterialDialog getModelsDialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.library_get_models_title)
+                .customView(getModelsDialogView, true)
+                .positiveColorRes(R.color.body_text_1)
+                .positiveText(R.string.close)
+                .show();
+
+        LinearLayout thingiverseButton = (LinearLayout) getModelsDialogView.findViewById(R.id.thingiverse_button);
+        thingiverseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_THINGIVERSE));
+                startActivity(browserIntent);
+                getModelsDialog.dismiss();
+            }
+        });
+
+        LinearLayout youmagineButton = (LinearLayout) getModelsDialogView.findViewById(R.id.youmagine_button);
+        youmagineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HttpUtils.URL_YOUMAGINE));
+                startActivity(browserIntent);
+                getModelsDialog.dismiss();
+            }
+        });
     }
 
     public void showListHeader(String folderName) {
