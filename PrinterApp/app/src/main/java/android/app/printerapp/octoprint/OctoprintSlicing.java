@@ -215,6 +215,36 @@ public class OctoprintSlicing {
 		
 	}
 
+    public static void getMetadata(String url, String filename){
+
+
+        HttpClientHandler.get(url + HttpUtils.URL_FILES + "/local/" + filename, null, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                Log.i("Metadata", response.toString());
+
+                try {
+
+                    String estimated = response.getJSONObject("gcodeAnalysis").getString("estimatedPrintTime");
+                    ViewerMainFragment.showProgressBar(StateUtils.SLICER_DOWNLOAD, Integer.parseInt(estimated));
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        });
+
+
+    }
+
 
     /**
      * Send a slice command by uploading the file first and then send the command, the result
@@ -318,7 +348,7 @@ public class OctoprintSlicing {
                                         super.onFailure(statusCode, headers, responseString, throwable);
                                         Log.i("OUT",responseString.toString());
 
-                                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
+                                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, -1);
                                     }
                                 });
 
@@ -329,7 +359,7 @@ public class OctoprintSlicing {
                         super.onFailure(statusCode, headers, responseString, throwable);
 
                         Log.i("Slicer","FAILURESLICING");
-                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, 0);
+                        ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, -1);
                     }
                 });
 
