@@ -81,8 +81,8 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
 
         TextView dateTextView = (TextView) v.findViewById(R.id.model_mod_date_textview);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        dateTextView.setText(sdf.format(m.lastModified()));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        dateTextView.setText(sdf.format(m.lastModified()) + " " + m.getParentFile().getName() + "/");
 
         ImageView iv = (ImageView) v.findViewById(R.id.model_icon);
 
