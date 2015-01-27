@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,11 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         TextView nameTextView = (TextView) v.findViewById(R.id.model_name_textview);
         nameTextView.setText(m.getName());
 
+        TextView dateTextView = (TextView) v.findViewById(R.id.model_mod_date_textview);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dateTextView.setText(sdf.format(m.lastModified()));
+
         ImageView iv = (ImageView) v.findViewById(R.id.model_icon);
 
         //If selection mode is on, show the selection checkbox
@@ -119,10 +125,13 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                 ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(m.getName()));
                 nameTextView.setText(p.getDisplayName());
 
+
             } else {
                 iv.setImageResource(R.drawable.ic_file_gray);
                 iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
+
+            dateTextView.setText(null);
         }
 
         ImageButton overflowButton = (ImageButton) v.findViewById(R.id.model_settings_imagebutton);

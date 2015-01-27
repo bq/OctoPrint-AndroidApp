@@ -106,7 +106,8 @@
                 android:id="@+id/file_name_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="lorem_ipsum.stl" />
+                android:text="lorem_ipsum.stl"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

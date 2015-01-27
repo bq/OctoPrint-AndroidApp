@@ -89,7 +89,6 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
             LibraryAdapter listAdapter = (LibraryAdapter) mListView.getAdapter();
             listAdapter.setItemChecked(arg2, checked);
 
-            Log.i("OUT","OUTA " + mListView.getCheckedItemCount()); //TODO Finish
             mContext.notifyAdapter();
 
 
@@ -259,7 +258,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                                 if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, f.getName())) {
                                     DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, f.getName(), null, false);
                                 }
-                                mContext.notifyAdapter();
+                                mContext.refreshFiles();
 
                             }
                         });
@@ -332,7 +331,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                 case R.id.library_menu_delete:
 
-                    Log.i("OUT","COÑOA " + mListView.getCheckedItemCount());
+                    Log.i("DELETE","COUNT " + mListView.getCheckedItemCount());
 
                     final SparseBooleanArray ids = mListView.getCheckedItemPositions();
 
@@ -342,12 +341,12 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                     ((ImageView)deleteDialogView.findViewById(R.id.delete_files_icon)).setColorFilter(mContext.getResources().getColor(R.color.body_text_2));
 
                     //TODO Set images
-                    if(ids.size() == 1) {
-                        //TODO Set model name
-//                        ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(LibraryController.getFileList().get(ids.keyAt(0) - 1).getName());
+                    if(mListView.getCheckedItemCount() == 1) {
+
+                         ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(LibraryController.getFileList().get(ids.keyAt(0)).getName());
                     }
                     else {
-                        ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(String.format(mContext.getResources().getString(R.string.library_menu_models_delete_files), ids.size()));
+                        ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(String.format(mContext.getResources().getString(R.string.library_menu_models_delete_files), mListView.getCheckedItemCount()));
                     }
 
                     new MaterialDialog.Builder(mContext.getActivity())
@@ -356,29 +355,38 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                             .positiveColorRes(R.color.theme_accent_1)
                             .positiveText(R.string.confirm)
                             .callback(new MaterialDialog.ButtonCallback() {
+
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
+                                    super.onNegative(dialog);
+
+                                    mActionMode.finish();
+
+                                }
+
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
 
                                     for (int i = 0; i < ids.size(); i++) {
 
+
                                         if (ids.valueAt(i)) {
 
-                                            File file = LibraryController.getFileList().get(ids.keyAt(i) - 1);
+                                            File file = LibraryController.getFileList().get(ids.keyAt(i));
 
-                                            Log.i("OUT", "DELETE " + file.getName());
+                                            Log.i("DELETE", "DELETE " + file.getName());
+
                                             LibraryController.deleteFiles(file);
 
                                         }
                                     }
+
+                                    mActionMode.finish();
                                 }
                             })
                             .negativeText(R.string.cancel)
                             .negativeColorRes(R.color.body_text_2)
                             .show();
-
-                    mActionMode.finish();
-
-                    break;
 
             }
 
@@ -389,8 +397,13 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mListView.clearChoices();
-            for (int i = 0; i < mListView.getCount(); i++)
-                mListView.setItemChecked(i, false);
+
+            //Removed because was causing issues with checked items size
+            /*for (int i = 0; i < mListView.getCount(); i++){
+               mListView.setItemChecked(i, false);
+            }*/
+
+
             mListView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -402,6 +415,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                     listAdapter.setSelectionMode(false);
                 }
             });
+
+            mContext.refreshFiles();
         }
     };
 }

@@ -27,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialogCompat;
 
 import java.io.File;
@@ -181,9 +180,7 @@ public class LibraryFragment extends Fragment {
                 optionSearchLibrary();
                 return true;
             case R.id.library_add:
-                optionAddLibrary();
-                return true;
-            case R.id.library_search_system:
+                //optionAddLibrary();
                 optionSearchSystem();
                 return true;
             case R.id.library_create:

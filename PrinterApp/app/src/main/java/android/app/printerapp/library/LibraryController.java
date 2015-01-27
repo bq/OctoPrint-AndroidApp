@@ -304,6 +304,8 @@ public class LibraryController {
 
         file.delete();
 
+
+
     }
 
     //Check if a file already exists in the current folder
