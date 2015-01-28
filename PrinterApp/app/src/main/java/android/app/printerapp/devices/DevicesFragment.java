@@ -246,6 +246,7 @@ import java.io.File;
     public void optionReload(){
 
         mServiceListener.reloadListening();
+        mNetworkManager.reloadNetworks();
 
         for (ModelPrinter p : DevicesListController.getList()){
 

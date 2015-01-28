@@ -41,28 +41,31 @@ import java.util.List;
  */
 public class PrintNetworkManager {
 	
-		//This should contain the static generic password to the ad-hoc network
-		//TODO hardcoded password
-		private static final String PASS = "OctoPrint";
-		
-		//Reference to main Controller
-		private static DevicesFragment mController;
-		
-		//Wifi network manager
-		private static WifiManager mManager;
-		
-		//Dialog handler
-		private static ProgressDialog mDialog;
-		
-		//Check if the network is currently being configured
-		private boolean isOffline = false;
-		
-		private PrintNetworkReceiver mReceiver;
-		
-		//position for the current printer being selected
-		private int mPosition = -1;
-        private ModelPrinter mPrinter = null;
-				
+    //This should contain the static generic password to the ad-hoc network
+    //TODO hardcoded password
+    private static final String PASS = "OctoPrint";
+
+    //Reference to main Controller
+    private static DevicesFragment mController;
+
+    //Wifi network manager
+    private static WifiManager mManager;
+
+    //Dialog handler
+    private static ProgressDialog mDialog;
+
+    //Check if the network is currently being configured
+    private boolean isOffline = false;
+
+    private PrintNetworkReceiver mReceiver;
+
+    //position for the current printer being selected
+    private int mPosition = -1;
+    private ModelPrinter mPrinter = null;
+
+    //original network to configure if an error happens
+    private int mOriginalNetwork;
+
 		
 		//Constructor
 		public PrintNetworkManager(DevicesFragment context){
@@ -79,7 +82,8 @@ public class PrintNetworkManager {
 		 * @param position
 		 */
 		public void setupNetwork(ModelPrinter p, int position){
-			
+
+
 			//Get connection parameters
 			WifiConfiguration conf = new WifiConfiguration();
 			conf.SSID = "\"" + p.getName() + "\"";
@@ -90,18 +94,18 @@ public class PrintNetworkManager {
 
 			//Add the new network
 			mManager = (WifiManager)mController.getActivity().getSystemService(Context.WIFI_SERVICE);
-			final int nId = mManager.addNetwork(conf);	
+
+            mOriginalNetwork = mManager.getConnectionInfo().getNetworkId();
+
+            final int nId = mManager.addNetwork(conf);
 					
 			//Configure network
 			isOffline = true;
 			
 			
-			//Disconnect to the current network and reconnect to the new
-	         mManager.disconnect();
-	         mManager.enableNetwork(nId, true);
-	         mManager.reconnect();
+			connectSpecificNetwork(nId);
 
-	         createNetworkDialog(getContext().getString(R.string.devices_discovery_connect));
+	        createNetworkDialog(getContext().getString(R.string.devices_discovery_connect));
     
 		}
 		
@@ -198,81 +202,7 @@ public class PrintNetworkManager {
 									String psk = et_pass.getText().toString();
 																								
 									
-									/**
-									 * SAVE PARAMETERS
-									 */
-									
-									//Target network for both the client and the device
-									
-									final WifiConfiguration target = new WifiConfiguration();
-									//Set the parameters for the target network
-									target.SSID = "\"" + ssid + "\"";
-									target.preSharedKey = "\"" + psk + "\"";
-									
-									createNetworkDialog(getContext().getString(R.string.devices_discovery_config));
-									
-								
-									//Send a network configuration request to the server
-									OctoprintNetwork.configureNetwork(mReceiver, getContext(), ssid, psk, url);
-									
-									
-									mReceiver.unregister();
-									
-									//From this point on we need a delay to the configuration to ensure a clear connection
-								
-									/**
-									 * TODO Need a handler for this?
-									 * Remove AP from the network list and connect to the Target network
-									 */
-									Handler handler = new Handler();
-							        handler.postDelayed((new Runnable() {
-										
-										@Override
-										public void run() {
-											
-											//Configuring network
-											isOffline = true;
-											
-								         	mManager.disconnect();
-
-                                            final String origin = getNetworkId(mManager.getConnectionInfo().getSSID());
-
-                                            mManager.disableNetwork(mManager.getConnectionInfo().getNetworkId());
-											mManager.removeNetwork(mManager.getConnectionInfo().getNetworkId());
-											
-											//Clear existing networks
-											//clearNetwork(target.SSID);
-											mManager.enableNetwork(searchNetwork(target), true);
-											
-											
-											
-											Handler postHandler = new Handler();
-											postHandler.postDelayed(new Runnable() {
-												
-												@Override
-												public void run() {
-												
-													Log.i("MANAGER","Registering again with " + target.SSID + "!");
-
-                                                    DevicesListController.removeElement(mPosition);
-
-
-                                                    DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", origin, true);
-
-                                                    //Remove ad-hoc network
-                                                    clearNetwork("OctoPi-Dev");
-													mPosition = -1;
-                                                    mPrinter = null;
-
-                                                    mController.notifyAdapter();
-                                                   // mReceiver.register();
-													dismissNetworkDialog();
-													
-												}
-											}, 10000);	
-											
-										}
-									}), 5000);
+                                    configureSelectedNetwork(ssid,psk,url);
 								
 								}
 					        });
@@ -288,6 +218,95 @@ public class PrintNetworkManager {
 					e.printStackTrace();
 				}
 		 }
+
+    public void configureSelectedNetwork(String ssid, String pass, String url){
+
+        /**
+         * SAVE PARAMETERS
+         */
+
+        //Target network for both the client and the device
+
+        final WifiConfiguration target = new WifiConfiguration();
+        //Set the parameters for the target network
+        target.SSID = "\"" + ssid + "\"";
+        target.preSharedKey = "\"" + pass + "\"";
+
+        createNetworkDialog(getContext().getString(R.string.devices_discovery_config));
+
+
+        //Send a network configuration request to the server
+        OctoprintNetwork.configureNetwork(mReceiver, getContext(), ssid, pass, url);
+
+
+        mReceiver.unregister();
+
+        //From this point on we need a delay to the configuration to ensure a clear connection
+
+        /**
+         * TODO Need a handler for this?
+         * Remove AP from the network list and connect to the Target network
+         */
+        Handler handler = new Handler();
+        handler.postDelayed((new Runnable() {
+
+            @Override
+            public void run() {
+
+                //Configuring network
+                isOffline = true;
+
+                mManager.disconnect();
+
+                final String origin = getNetworkId(mManager.getConnectionInfo().getSSID());
+
+                mManager.disableNetwork(mManager.getConnectionInfo().getNetworkId());
+                mManager.removeNetwork(mManager.getConnectionInfo().getNetworkId());
+
+                //Clear existing networks
+                //clearNetwork(target.SSID);
+                connectSpecificNetwork(searchNetwork(target));
+
+
+                Handler postHandler = new Handler();
+                postHandler.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        Log.i("MANAGER","Registering again with " + target.SSID + "!");
+
+                        DevicesListController.removeElement(mPosition);
+
+
+                        DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", origin, true);
+
+                        //Remove ad-hoc network
+                        clearNetwork("OctoPi-Dev");
+                        mPosition = -1;
+                        mPrinter = null;
+
+                        mController.notifyAdapter();
+                        // mReceiver.register();
+                        dismissNetworkDialog();
+
+                    }
+                }, 10000);
+
+            }
+        }), 5000);
+
+
+    }
+
+    public void connectSpecificNetwork(int nId){
+
+        //Disconnect to the current network and reconnect to the new
+        mManager.disconnect();
+        mManager.enableNetwork(nId, true);
+        mManager.reconnect();
+
+    }
 		 
 		 
 		 /*********************************************************************
@@ -341,6 +360,22 @@ public class PrintNetworkManager {
 				
 			}
 
+    public void errorNetworkDialog(){
+
+        if (mDialog!=null){
+
+            mDialog.dismiss();
+            connectSpecificNetwork(mOriginalNetwork);
+            createNetworkDialog("Connection taking longer than usual, reconnecting to previous network");
+
+        }
+
+
+
+    }
+
+
+
 			/**
 			 * This method will clear the existing Networks with the same name as the new inserted
 			 * @param ssid
@@ -362,8 +397,6 @@ public class PrintNetworkManager {
 				List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
 		        for (WifiConfiguration c: configs){
 		        	if (c.SSID.equals(ssid.SSID)){
-		        		
-		        		Log.i("Network","No need to add a new network bitch");
 		        		return c.networkId;
 		        		
 		    		}
@@ -453,4 +486,11 @@ public class PrintNetworkManager {
 
     }
 
+
+    public void reloadNetworks(){
+
+        mReceiver.unregister();
+        mReceiver.register();
+
+    }
 }

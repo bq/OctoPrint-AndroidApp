@@ -88,8 +88,6 @@ public class PrintViewFragment extends Fragment {
 
     //Context needed for file loading
     private static Context mContext;
-
-    //TODO: temp variable for initial progress
     private static int mActualProgress = 0;
 
     private ProgressDialog mDownloadDialog;
@@ -116,7 +114,6 @@ public class PrintViewFragment extends Fragment {
             (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) isPrinting = true;
             else {
 
-                //TODO Set print status as 100% if it's not printing
                 mActualProgress = 100;
                 isPrinting = false;
             }
@@ -138,7 +135,7 @@ public class PrintViewFragment extends Fragment {
             retrieveGcode();
 
             //TODO CAMERA DISABLED
-            /*mCamera = new CameraHandler(mContext, mPrinter.getAddress());
+            mCamera = new CameraHandler(mContext, mPrinter.getAddress());
 
 
             //Get video
@@ -147,7 +144,7 @@ public class PrintViewFragment extends Fragment {
             mVideoSurface = mCamera.getView();
             mLayoutVideo.addView(mVideoSurface);
 
-            mCamera.startVideo();*/
+            mCamera.startVideo();
 
             //Get tabHost from the xml
             TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
@@ -182,7 +179,7 @@ public class PrintViewFragment extends Fragment {
                     }
 
                     //TODO CAMERA DISABLED
-                    //mLayoutVideo.invalidate();
+                    mLayoutVideo.invalidate();
 
 
                     Log.i(TAG,"Now showing: " + s);
@@ -393,8 +390,8 @@ public class PrintViewFragment extends Fragment {
     public void stopCameraPlayback() {
 
         //TODO CAMERA DEISABLE
-        //mCamera.getView().stopPlayback();
-        //mCamera.getView().setVisibility(View.GONE);
+        mCamera.getView().stopPlayback();
+        mCamera.getView().setVisibility(View.GONE);
 
 
     }
