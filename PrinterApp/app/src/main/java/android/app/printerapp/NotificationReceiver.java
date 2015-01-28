@@ -17,59 +17,93 @@ import android.support.v4.app.NotificationCompat;
  */
 public class NotificationReceiver extends BroadcastReceiver {
 
+   private static boolean isForeground = true;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        long id = intent.getLongExtra("printer", 0);
-
-        //Target printer
-        ModelPrinter p = DevicesListController.getPrinter(id);
-
-
-        // Sets an ID for the notification
-        int mNotificationId = (int)id;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        Intent resultIntent = new Intent(context, SplashScreenActivity.class);
-        resultIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        // Because clicking the notification opens a new ("special") activity, there's
-        // no need to create an artificial back stack.
+            Intent resultIntent = new Intent(context, SplashScreenActivity.class);
+            resultIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        context,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+            // Because clicking the notification opens a new ("special") activity, there's
+            // no need to create an artificial back stack.
 
-        //TODO random crash
-        try{
-            //Creates notification
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.notification_logo)
-                            .setContentTitle(context.getString(R.string.finish_dialog_title) + " " + p.getJob().getFilename())
-                            .setContentText(p.getDisplayName())
-                            .setAutoCancel(true);
+            PendingIntent resultPendingIntent =
+                    PendingIntent.getActivity(
+                            context,
+                            0,
+                            resultIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
 
-            mBuilder.setContentIntent(resultPendingIntent);
 
-            // Gets an instance of the NotificationManager service
-            NotificationManager mNotifyMgr =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            // Builds the notification and issues it.
-            mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
-        } catch (NullPointerException e){
+            long id = intent.getLongExtra("printer", 0);
+            int progress = intent.getIntExtra("progress", 0);
 
-            e.printStackTrace();
+            //Target printer
+            ModelPrinter p = DevicesListController.getPrinter(id);
+
+
+            // Sets an ID for the notification
+            int mNotificationId = (int)id;
+
+        if (!isForeground){
+
+            try{
+
+                String text = null;
+
+                String type = intent.getStringExtra("type");
+
+                if (type.equals("finish")) text = context.getString(R.string.finish_dialog_title) + " " + p.getJob().getFilename();
+                if (type.equals("print")) text = context.getString(R.string.notification_printing_progress);
+                if (type.equals("slice")) text = context.getString(R.string.notification_slicing_progress);
+
+
+                //Creates notification
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(context)
+                                .setSmallIcon(R.drawable.notification_logo)
+                                .setContentTitle(p.getDisplayName())
+                                .setContentText(text + " (" + progress + "%)")
+                                .setAutoCancel(true);
+
+                mBuilder.setContentIntent(resultPendingIntent);
+
+
+
+                // Builds the notification and issues it.
+                mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+            } catch (NullPointerException e){
+
+                e.printStackTrace();
+            }
+
+        } else {
+
+            mNotifyMgr.cancel(mNotificationId);
+
+
         }
 
 
+
+
+    }
+
+    //Change if the application goes background
+    public static void setForeground (boolean foreground){
+        isForeground = foreground;
 
     }
 }

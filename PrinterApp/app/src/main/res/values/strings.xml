@@ -98,7 +98,9 @@
     
     <string name="slicing_title">Slicing done in </string>
     <string name="slicing_download">Download file into project folder?</string>
-    <string name="finish_dialog_title">Print finished: </string>
+    <string name="finish_dialog_title">Print finished:</string>
+    <string name="notification_slicing_progress">Slicing</string>
+    <string name="notification_printing_progress">Print progress</string>
     <string name="finish_dialog_message">Select action</string>
     <string name="finish_dialog_option_1">Keep gcode in server</string>
     <string name="finish_dialog_option_2">Keep gcode in local project folder</string>

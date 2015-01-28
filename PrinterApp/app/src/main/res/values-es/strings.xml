@@ -284,5 +284,7 @@
     <string name="viewer_restore_session">¿Restaurar la última sesión?</string>
     <string name="viewer_menu_last_session">Última sesión</string>
     <string name="printview_extruder_extrude_tag">Extraer/Retraer</string>
+    <string name="notification_printing_progress">Imprimiendo</string>
+    <string name="notification_slicing_progress">Laminando</string>
 
 </resources>
