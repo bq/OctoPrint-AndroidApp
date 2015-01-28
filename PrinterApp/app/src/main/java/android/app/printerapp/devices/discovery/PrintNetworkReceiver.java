@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	//TODO: Hardcoded Network name for testing
 	//Filter to search for when scanning networks
 	private static final String NETWORK_NAME = "OctoPi";
+    private static final int MAX_RETRIES = 5;
 
 	private static WifiManager mWifiManager;
 	private PrintNetworkManager mController;
@@ -35,8 +37,10 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	private ConnectivityManager cm;
 	private static  ArrayAdapter<String> mNetworkList;
 
-    private String mCurrentNetwork;
-	
+    private int mRetries = MAX_RETRIES;
+
+
+
 	
 	//Constructor
 	public PrintNetworkReceiver(PrintNetworkManager controller){
@@ -63,7 +67,6 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 
 	/**
 	 * Search for a pre-defined network name and treat them as a new offline printer.
-	 * TODO: REMOVE MULTIPLE INSERTIONS
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -82,6 +85,36 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 				 
 			 }
 		}
+
+        if (intent.getAction() == WifiManager.SUPPLICANT_STATE_CHANGED_ACTION){
+
+            SupplicantState state = (SupplicantState) intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+            Log.i("NETWORK", state.toString());
+
+            switch(state){
+
+                case DISCONNECTED:
+
+                    mRetries--;
+
+                    Log.i("NETWORK", "Retries " + mRetries);
+
+                    if (mRetries == 0) {
+                        mController.errorNetworkDialog();
+                        mRetries = MAX_RETRIES;
+                    }
+
+                break;
+
+                case COMPLETED:
+
+                    mRetries = MAX_RETRIES;
+
+                break;
+
+            }
+
+        }
 
 		 //Search for the Network with the desired name    
 		 if (intent.getAction() == WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
@@ -123,17 +156,28 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 
 	//Start scanning for Networks.
 	public void startScan(){
+
+        mRetries = MAX_RETRIES;
 		mWifiManager.startScan();
+        mWifiManager.getScanResults();
 		
 	}
 	
 	public void register(){
 		mContext.registerReceiver(this, mFilter);
 		startScan();
+
 	}
 	
 	public void unregister(){
-		mContext.unregisterReceiver(this);
+        try{
+            mContext.unregisterReceiver(this);
+
+        } catch (IllegalArgumentException e){
+
+            Log.i("NETWORK","Register not registered");
+        }
+
 	}
 	
 	/**
