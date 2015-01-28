@@ -15,7 +15,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +23,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -397,7 +395,22 @@ Close app on locale change
         super.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+
+        NotificationReceiver.setForeground(true);
+
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
 
 
+        NotificationReceiver.setForeground(false);
 
+        super.onPause();
+
+    }
 }

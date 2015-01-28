@@ -135,7 +135,7 @@ public class PrintViewFragment extends Fragment {
             retrieveGcode();
 
             //TODO CAMERA DISABLED
-            mCamera = new CameraHandler(mContext, mPrinter.getAddress());
+            /*mCamera = new CameraHandler(mContext, mPrinter.getAddress());
 
 
             //Get video
@@ -144,7 +144,7 @@ public class PrintViewFragment extends Fragment {
             mVideoSurface = mCamera.getView();
             mLayoutVideo.addView(mVideoSurface);
 
-            mCamera.startVideo();
+            mCamera.startVideo();*/
 
             //Get tabHost from the xml
             TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
@@ -179,7 +179,7 @@ public class PrintViewFragment extends Fragment {
                     }
 
                     //TODO CAMERA DISABLED
-                    mLayoutVideo.invalidate();
+                    //mLayoutVideo.invalidate();
 
 
                     Log.i(TAG,"Now showing: " + s);
@@ -299,7 +299,6 @@ public class PrintViewFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
-        //TODO Añadir las opciones del menú
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
@@ -390,8 +389,8 @@ public class PrintViewFragment extends Fragment {
     public void stopCameraPlayback() {
 
         //TODO CAMERA DEISABLE
-        mCamera.getView().stopPlayback();
-        mCamera.getView().setVisibility(View.GONE);
+        //mCamera.getView().stopPlayback();
+        //mCamera.getView().setVisibility(View.GONE);
 
 
     }

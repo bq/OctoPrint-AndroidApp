@@ -510,6 +510,22 @@ public class OctoprintConnection {
                             intent.putExtra("message", "Devices");
                             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
+                            if (!response.getJSONObject("progress").getString("completion").equals("null")){
+
+                                Double d = Double.parseDouble(response.getJSONObject("progress").getString("completion"));
+
+                                if ((d>0) && (p.getStatus() == StateUtils.STATE_PRINTING)){
+                                    Intent intentN = new Intent();
+                                    intentN.setAction("android.app.printerapp.NotificationReceiver");
+                                    intentN.putExtra("printer", p.getId());
+                                    intentN.putExtra("progress", d.intValue());
+                                    intentN.putExtra("type","print");
+                                    context.sendBroadcast(intentN);
+                                }
+
+
+                            }
+
 
 		            	}
 
@@ -551,10 +567,12 @@ public class OctoprintConnection {
 
                                 //SEND NOTIFICATION
 
-                                Intent intent = new Intent();
-                                intent.setAction("android.app.printerapp.NotificationReceiver");
-                                intent.putExtra("printer", p.getId());
-                                context.sendBroadcast(intent);
+                                Intent intentN = new Intent();
+                                intentN.setAction("android.app.printerapp.NotificationReceiver");
+                                intentN.putExtra("printer", p.getId());
+                                intentN.putExtra("progress", 100);
+                                intentN.putExtra("type","finish");
+                                context.sendBroadcast(intentN);
 
 
                             }
@@ -595,6 +613,15 @@ public class OctoprintConnection {
 
                                       //TODO
                                       ViewerMainFragment.showProgressBar(StateUtils.SLICER_SLICE, progress);
+
+                                      //SEND NOTIFICATION
+
+                                      Intent intent = new Intent();
+                                      intent.setAction("android.app.printerapp.NotificationReceiver");
+                                      intent.putExtra("printer", p.getId());
+                                      intent.putExtra("progress", progress);
+                                      intent.putExtra("type","slice");
+                                      context.sendBroadcast(intent);
                                   }
                               } catch (NullPointerException e){
 
