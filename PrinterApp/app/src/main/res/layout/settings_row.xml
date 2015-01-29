@@ -24,14 +24,6 @@
         android:textColor="#FF000000" />
 
     <ImageButton
-        android:id="@+id/settings_hide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="5dp"
-        android:src="@android:drawable/ic_menu_close_clear_cancel" />
-
-    <ImageButton
         android:id="@+id/settings_connection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
