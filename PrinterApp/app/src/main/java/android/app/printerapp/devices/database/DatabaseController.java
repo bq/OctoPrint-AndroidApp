@@ -21,7 +21,6 @@ import java.util.Map;
  */
 public class DatabaseController {
 
-    public static final String TAG_BLACKLIST = "Blacklist";
     public static final String TAG_NETWORK = "Network";
     public static final String TAG_REFERENCES = "References";
     public static final String TAG_FAVORITES = "Favorites";

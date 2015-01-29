@@ -189,31 +189,23 @@ import java.io.File;
      */
     public void addElement(final ModelPrinter m) {
 
-        //Don't add element if it's blacklisted
-        if (!DatabaseController.isPreference(DatabaseController.TAG_BLACKLIST, m.getName() + " " + m.getAddress())){
 
+        getActivity().runOnUiThread(new Runnable() {
 
-            getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-                @Override
-                public void run() {
+                if (!DevicesListController.checkExisting(m.getAddress())) {
 
-                    if (!DevicesListController.checkExisting(m.getAddress())) {
+                    DevicesListController.addToList(m);
 
-                        DevicesListController.addToList(m);
-
-                        //m.setNotLinked();
-                        notifyAdapter();
-
-                    }
+                    //m.setNotLinked();
+                    notifyAdapter();
 
                 }
-            });
-        } else {
 
-            Log.i("OUT","Blacklisted " + m.getName());
-
-        }
+            }
+        });
 
 
 
@@ -447,21 +439,20 @@ import java.io.File;
                             }
                             if (p!=null){
 
+
+
                                 if ((p.getStatus() == StateUtils.STATE_ADHOC) || (p.getStatus() == StateUtils.STATE_NEW)){
 
-                                    DatabaseController.handlePreference(DatabaseController.TAG_BLACKLIST,p.getName() + " " + p.getAddress(),null,true);
+                                    //DatabaseController.handlePreference(DatabaseController.TAG_BLACKLIST,p.getName() + " " + p.getAddress(),null,true);
                                     DevicesListController.removeElement(p.getPosition());
 
 
                                 } else {
 
-                                     p.setPosition(-1);
+                                    DatabaseController.deleteFromDb(p.getId());
+                                    DevicesListController.getList().remove(p); p.setPosition(-1);
 
                                 }
-
-                                Toast.makeText(getActivity(),getString(R.string.devices_toast_hide) + " " + p.getDisplayName(), Toast.LENGTH_SHORT).show();
-
-
                                 notifyAdapter();
 
                                 //SEND NOTIFICATION

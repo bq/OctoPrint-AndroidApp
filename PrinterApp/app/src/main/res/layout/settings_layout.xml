@@ -5,31 +5,10 @@
     android:orientation="vertical"
     android:background="@color/white" >
 
-    <TabHost
-        android:id="@android:id/tabhost"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </TabWidget>
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <LinearLayout
-                    android:id="@+id/tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -117,39 +96,6 @@
 
                             </LinearLayout>
 
-                            <LinearLayout
-                                android:orientation="vertical"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:id="@+id/textSeparator3"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:padding="8dp"
-                                    android:text="@string/settings_hidden"
-                                    android:textAllCaps="true"
-                                    android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:textColor="#FFF"
-                                    android:textStyle="bold"
-                                    android:background="#00B800"
-                                    android:visibility="visible" />
-
-                                <ListView
-                                    android:id="@+id/lv_hidden"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="124dp"
-                                    android:layout_weight="0.16" >
-
-                                </ListView>
-
-
-                                </LinearLayout>
-
-
-
                         </LinearLayout>
 
                         <!-- Cuando haya que quitar la versión, borrar este textView y poner en el list view de arriba layout_height = match_parent y borrar el parámetro weight -->
@@ -160,38 +106,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                     android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="NYI" />
-                    
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                     android:orientation="vertical" >
-                    
-                     <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="NYI" />
-                </LinearLayout>
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
 
 </LinearLayout>

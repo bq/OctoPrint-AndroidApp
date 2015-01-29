@@ -15,7 +15,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,14 +23,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Class to manage the application and printer settings
@@ -39,10 +34,6 @@ import java.util.Map;
 public class SettingsFragment extends Fragment {
 	
 	private SettingsListAdapter mAdapter;
-    private SettingsHiddenAdapter mHiddenAdapter;
-
-    //Blacklist created by the new printers
-    private ArrayList<String> mBlackList;
 
 	public SettingsFragment(){}
 	
@@ -75,9 +66,6 @@ public class SettingsFragment extends Fragment {
 			rootView = inflater.inflate(R.layout.settings_layout,
 					container, false);
 			
-			//Set tab host for the view
-			setTabHost(rootView);
-			
 			/*********************************************************/
 			
 			getNetworkSsid(rootView);
@@ -85,14 +73,6 @@ public class SettingsFragment extends Fragment {
 			mAdapter = new SettingsListAdapter(getActivity(), R.layout.settings_row, DevicesListController.getList());
 			ListView l = (ListView) rootView.findViewById(R.id.lv_settings);
 			l.setAdapter(mAdapter);
-
-            mBlackList = new ArrayList<String>();
-
-
-
-            mHiddenAdapter = new SettingsHiddenAdapter(getActivity(), R.layout.settings_row, mBlackList);
-            ListView lh = (ListView) rootView.findViewById(R.id.lv_hidden);
-            lh.setAdapter(mHiddenAdapter);
 
 			TextView tv = (TextView) rootView.findViewById(R.id.tv_version);
 			tv.setText(setBuildVersion());
@@ -133,53 +113,7 @@ public class SettingsFragment extends Fragment {
 	   }
 	}
 	
-	/**
-	 * Constructor for the tab host
-	 * TODO: Should be moved to a View class since it only handles ui.
-	 */
-    public void setTabHost(View v){
-				 
-		TabHost tabs=(TabHost) v.findViewById(android.R.id.tabhost);
-		tabs.setup();
-		 
-		TabHost.TabSpec spec=tabs.newTabSpec("Connection");
-		spec.setIndicator(getString(R.string.settings_tabhost_tab_connection));
-		spec.setContent(R.id.tab1);
-		tabs.addTab(spec);
-		 
-		spec=tabs.newTabSpec("Devices");
-		spec.setIndicator(getString(R.string.settings_tabhost_tab_devices));
-		spec.setContent(R.id.tab2);
-		tabs.addTab(spec);
-		
-		spec=tabs.newTabSpec("Users");
-		spec.setIndicator(getString(R.string.settings_tabhost_tab_users));
-		spec.setContent(R.id.tab3);
-		tabs.addTab(spec);
-		 
-		tabs.setCurrentTab(0);
 
-        //Set style for the tab widget
-        for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {
-            final View tab = tabs.getTabWidget().getChildTabViewAt(i);
-            tab.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_indicator_ab_green));
-            TextView tv = (TextView) tabs.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(getResources().getColor(R.color.body_text_2));
-        }
-
-
-        tabs.setOnTabChangedListener(new OnTabChangeListener() {
-		    @Override
-		    public void onTabChanged(String tabId) {
-		    	
-		    	//TODO Notify adapters elsewhere
-		    	mAdapter.notifyDataSetChanged();
-                mHiddenAdapter.notifyDataSetChanged();
-		        Log.i("CONTROLLER", "Tab pressed: " + tabId);
-		    }
-		});
-		
-	}
 	
 	//Return network without quotes
 	public void getNetworkSsid(View v){
@@ -245,21 +179,6 @@ public class SettingsFragment extends Fragment {
 
     public void notifyAdapter(){
         mAdapter.notifyDataSetChanged();
-        loadBlacklist();
-        mHiddenAdapter.notifyDataSetChanged();
-    }
-
-    //Load/reload blacklist
-    public void loadBlacklist(){
-
-        //Update blacklist
-        mBlackList.clear();
-
-        for (Map.Entry<String, ?> entry : DatabaseController.getPreferences(DatabaseController.TAG_BLACKLIST).entrySet()) {
-
-            mBlackList.add(entry.getKey());
-        }
-
     }
 
 
