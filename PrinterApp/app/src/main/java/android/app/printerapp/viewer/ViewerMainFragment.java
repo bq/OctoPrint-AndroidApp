@@ -95,7 +95,7 @@ public class ViewerMainFragment extends Fragment {
     private int mSettingsPanelMinHeight;
 
     //Buttons
-    private ImageButton mVisibilityModeButton;
+    private static ImageButton mVisibilityModeButton;
 
     private static SeekBar mSeekBar;
 
@@ -539,6 +539,9 @@ public class ViewerMainFragment extends Fragment {
             if (LibraryController.hasExtension(0, filePath)) {
 
                 data = new DataStorage();
+
+                mVisibilityModeButton.setVisibility(View.VISIBLE );
+
                 mFile = new File(filePath);
                 StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
                 mSidePanelHandler.enableProfileSelection(true);
@@ -547,7 +550,10 @@ public class ViewerMainFragment extends Fragment {
             } else if (LibraryController.hasExtension(1, filePath)) {
 
                 data = new DataStorage();
-                if (!filePath.contains("/temp")) optionClean();
+                if (!filePath.contains("/temp")) {
+                    mVisibilityModeButton.setVisibility(View.GONE );
+                    optionClean();
+                }
                 mFile = new File(filePath);
                 GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
                 mSidePanelHandler.enableProfileSelection(false);
@@ -1038,6 +1044,8 @@ public class ViewerMainFragment extends Fragment {
 
         //Hide action mode pop up window to show the new menu
         hideActionModePopUpWindow();
+
+
 
         //Show a menu with the visibility options
         if (mCurrentActionPopupWindow == null) {
