@@ -1360,10 +1360,16 @@ public class ViewerMainFragment extends Fragment {
      */
     public void notifyAdapter() {
 
+        Log.i("Profile","I was notified senpai");
+
         try {
             if (mSidePanelHandler.profileAdapter!=null)mSidePanelHandler.profileAdapter.notifyDataSetChanged();
-            if (mSidePanelHandler.printerAdapter != null)
-                mSidePanelHandler.printerAdapter.notifyDataSetChanged();
+
+            Log.i("Profile","I also can do stuff");
+
+            mSidePanelHandler.reloadProfileAdapter();
+
+
         } catch (NullPointerException e) {
 
             e.printStackTrace();

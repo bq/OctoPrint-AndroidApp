@@ -212,7 +212,7 @@ public class EditPrinterDialog {
                 Log.i("OUT","Delete " + spinner_printer.getSelectedItem());
 
                 deleteProfile(spinner_printer.getSelectedItem().toString());
-                OctoprintProfiles.deleteProfile(mContext,mPrinter.getAddress(),spinner_printer.getSelectedItem().toString());
+//                OctoprintProfiles.deleteProfile(mContext,mPrinter.getAddress(),spinner_printer.getSelectedItem().toString());
 
             }
         });
@@ -515,7 +515,7 @@ public class EditPrinterDialog {
 
                     JSONObject extruder = new JSONObject();
 
-                    extruder.put("nozzleDiameter",Float.parseFloat(editText_nozzle.getText().toString()));
+                    extruder.put("nozzleDiameter",Double.parseDouble(editText_nozzle.getText().toString()));
                     extruder.put("count",Integer.parseInt(editText_extruders.getText().toString()));
 
                     ArrayList<Float> s = new ArrayList<Float>();
@@ -541,7 +541,14 @@ public class EditPrinterDialog {
 
                         //Upload profile, connect if successful
                         OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),json, spinner_port.getSelectedItem().toString());
+
+                        Intent intent = new Intent("notify");
+                        intent.putExtra("message", "Profile");
+                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+
                     }
+
+
                 } catch (JSONException e){
 
                     e.printStackTrace();
@@ -617,13 +624,15 @@ public class EditPrinterDialog {
 
         Intent intent = new Intent("notify");
         intent.putExtra("message", "Devices");
-        //intent.putExtra("message", "Devices");
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
         Intent intent2 = new Intent("notify");
         intent2.putExtra("message", "Settings");
-        //intent.putExtra("message", "Devices");
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent2);
+
+        Intent intent3 = new Intent("notify");
+        intent.putExtra("message", "Profile");
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent3);
 
     }
 }

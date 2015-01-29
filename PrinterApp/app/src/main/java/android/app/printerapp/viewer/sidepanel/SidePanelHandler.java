@@ -45,7 +45,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Class to initialize and handle the side panel in the print panel
@@ -106,13 +105,6 @@ public class SidePanelHandler {
 
     private EditText minimalLayerTime;
     private CheckBox enableCoolingFan;
-
-    //private EditText profileText;
-
-    private ArrayList<ModelPrinter> mTemporaryPrinterList;
-
-    private ArrayList<String> mProfileList;
-    private ArrayAdapter<String> mProfileAdapter;
 
     //Constructor
     public SidePanelHandler(SlicingHandler handler, Activity activity, View v) {
@@ -211,6 +203,7 @@ public class SidePanelHandler {
 
                     /************************* INITIALIZE TYPE SPINNER ******************************/
 
+
                     s_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
@@ -235,8 +228,6 @@ public class SidePanelHandler {
                                     } catch (NullPointerException e) {
 
                                         Log.i("Profile", "Profile dead!");
-                                        mProfileList.remove(i);
-                                        mProfileAdapter.notifyDataSetChanged();
 
                                     }
 
@@ -260,13 +251,10 @@ public class SidePanelHandler {
                         }
                     });
 
-                    reloadProfiles();
+                    reloadProfileAdapter();
 
 
-                    mProfileAdapter = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, mProfileList);
-                    mProfileAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
-                    s_type.setAdapter(mProfileAdapter);
+
 
 
                     /******************** INITIALIZE SECONDARY PANEL ************************************/
@@ -868,29 +856,20 @@ public class SidePanelHandler {
 
     }
 
-    public void reloadProfiles(){
+    public void reloadProfileAdapter(){
 
-        //Add default types plus custom types from internal storage
-        mProfileList = new ArrayList<String>();
-        mProfileList.clear();
-        for (String s : PRINTER_TYPE) {
+        ModelProfile.reloadList(mActivity);
 
-            mProfileList.add(s);
-        }
+        ArrayAdapter mProfileAdapter = new ArrayAdapter<String>(mActivity,
+                R.layout.print_panel_spinner_item, ModelProfile.getProfileList());
+        mProfileAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
+        s_type.setAdapter(mProfileAdapter);
 
-        //Add internal storage types
-        for (File file : mActivity.getApplicationContext().getFilesDir().listFiles()) {
-
-            //Only files with the .profile extension
-            if (file.getAbsolutePath().contains(".profile")) {
-
-                int pos = file.getName().lastIndexOf(".");
-                String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
-
-                //Add only the name
-                mProfileList.add(name);
-            }
-
+        Log.i("Profile","Oh yes");
+        if (mProfileAdapter!=null){
+            Log.i("Profile","NotifyMe");
+           mProfileAdapter.notifyDataSetChanged();
+            s_type.postInvalidate();
         }
 
 

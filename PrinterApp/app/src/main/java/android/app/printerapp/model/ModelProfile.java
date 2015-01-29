@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * This class will define the profile type that will be used by the printers / quality types
@@ -30,6 +31,10 @@ public class ModelProfile {
     public static final String LOW_PROFILE = "low_bq";
     public static final String MEDIUM_PROFILE = "medium_bq";
     public static final String HIGH_PROFILE = "high_bq";
+
+    private static final String[] PRINTER_TYPE = {"Witbox", "Hephestos"};
+
+    private static ArrayList<String> mProfileList;
 
     //Retrieve a profile in JSON format
     public static JSONObject retrieveProfile(Context context, String resource){
@@ -126,6 +131,39 @@ public class ModelProfile {
 
         return false;
 
+    }
+
+    public static void reloadList(Context context){
+
+        //Add default types plus custom types from internal storage
+        mProfileList = new ArrayList<String>();
+        mProfileList.clear();
+        for (String s : PRINTER_TYPE) {
+
+            mProfileList.add(s);
+        }
+
+        //Add internal storage types
+        for (File file : context.getApplicationContext().getFilesDir().listFiles()) {
+
+            //Only files with the .profile extension
+            if (file.getAbsolutePath().contains(".profile")) {
+
+                Log.i("Profile","Putin " + file.getAbsolutePath());
+
+                int pos = file.getName().lastIndexOf(".");
+                String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
+
+                //Add only the name
+                mProfileList.add(name);
+            }
+
+        }
+
+    }
+
+    public static ArrayList<String> getProfileList(){
+        return mProfileList;
     }
 
 }

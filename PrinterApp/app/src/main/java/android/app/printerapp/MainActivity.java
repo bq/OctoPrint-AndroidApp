@@ -344,6 +344,7 @@ public class MainActivity extends ActionBarActivity {
             // Extract data included in the Intent
             String message = intent.getStringExtra("message");
 
+            if (message!=null)
             if (message.equals("Devices")){
 
                 if (mDevicesFragment!=null) mDevicesFragment.notifyAdapter();
@@ -354,7 +355,13 @@ public class MainActivity extends ActionBarActivity {
 
             } else if (message.equals("Profile")){
 
-                if (mViewerFragment!=null) mViewerFragment.notifyAdapter();
+                Log.i("Profile","Hey received yo");
+
+                if (mViewerFragment!=null) {
+
+                    Log.i("Profile","K mate");
+                    mViewerFragment.notifyAdapter();
+                }
 
             } else if (message.equals("Files")){
 
