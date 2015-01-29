@@ -6,7 +6,7 @@ import android.opengl.Matrix;
 import java.util.List;
 
 public class Geometry {
-	 private static final float OFFSET = 0.1f;
+	 private static final float OFFSET = 20f;
 
 	 public static class Point {
 		 public final float x, y, z;
