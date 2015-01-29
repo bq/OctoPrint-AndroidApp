@@ -994,7 +994,7 @@ public class ViewerMainFragment extends Fragment {
                     break;*/
             case R.id.multiply_item_button:
                 hideCurrentActionPopUpWindow();
-                shoMultiplyDialog();
+                showMultiplyDialog();
                 break;
             case R.id.delete_item_button:
                 hideCurrentActionPopUpWindow();
@@ -1102,7 +1102,7 @@ public class ViewerMainFragment extends Fragment {
      * ********************** MULTIPLY ELEMENTS *******************************
      */
 
-    public static void shoMultiplyDialog() {
+    public static void showMultiplyDialog() {
         View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_copies_dialog, null);
         final NumberPicker numPicker = (NumberPicker) dialogText.findViewById(R.id.number_copies);
         numPicker.setMaxValue(10);
@@ -1160,6 +1160,8 @@ public class ViewerMainFragment extends Fragment {
             newData.copyData(mDataList.get(model));
             mDataList.add(newData);
 
+            Log.i("Multiply","Adding piece nº " + num);
+
             /**
              * Check if the piece is out of the plate and stop multiplying
              */
@@ -1170,7 +1172,7 @@ public class ViewerMainFragment extends Fragment {
                 break;
 
             }
-            ;
+
             num++;
         }
 

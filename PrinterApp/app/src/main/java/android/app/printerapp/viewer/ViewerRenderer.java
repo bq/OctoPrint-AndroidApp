@@ -216,13 +216,16 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	public void setObjectPressed (int i) {
 		mObjectPressed = i;
+        Log.i("Multiply","Object pressed: " + i); //TODO PRESS
 	}
-	
+
 	public void deleteObject (int i) {
 		if (!mDataList.isEmpty()) {
 			mStlObjectList.remove(i);
 			mDataList.remove(i);
+            Log.i("Multiply","Object deleted: " + i); //TODO DELETYE
 		}
+
 	}
 	
 	private boolean isStl() {
@@ -256,7 +259,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 	public void changeTouchedState () {
 		for (int i=0; i<mDataList.size();i++) {
-			DataStorage d = mDataList.get(i);	
+			DataStorage d = mDataList.get(i);
 			if (i==mObjectPressed) {
 				if (!Geometry.isValidPosition(d.getMaxX(), d.getMinX(), d.getMaxY(), d.getMinY(), mDataList, i)) mDataList.get(i).setStateObject(OUT_TOUCHED);
 				else mDataList.get(i).setStateObject(INSIDE_TOUCHED);
@@ -795,59 +798,68 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
 
         if (mDataList.size()>0) {
-        	if (mObjectPressed!=-1) {
-		        DataStorage data = mDataList.get(mObjectPressed);
-		        Point center = data.getLastCenter();
+            if (mObjectPressed!=-1) {
 
-                Log.i("CENTER","Settings center @" + center.x + ";" + center.y + ";" + center.z);
+                //Check pressed object to avoid index out of bounds when deleting models
+                if (mObjectPressed < mDataList.size()){
+                    DataStorage data = mDataList.get(mObjectPressed);
+                    Point center = data.getLastCenter();
 
-		        Matrix.setIdentityM(mTemporaryModel, 0);
-		        Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);
-		        Matrix.scaleM(mTemporaryModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
-		        
-		        Matrix.translateM(mTemporaryModel, 0, 0, 0, data.getAdjustZ());
-		
-		        //Object rotation  
-		        float [] rotateObjectMatrix = data.getRotationMatrix();
+                    Log.i("CENTER","Settings center @" + center.x + ";" + center.y + ";" + center.z);
 
-                //Multiply the model by the accumulated rotation
-		        Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);
-		        Matrix.multiplyMM(mMVPObjectMatrix, 0,mMVPMatrix, 0, mObjectModel, 0);   
-	
-		        Matrix.multiplyMM(mMVObjectMatrix, 0,mMVMatrix, 0, mObjectModel, 0);   
-		        Matrix.transposeM(mTransInvMVMatrix, 0, mMVObjectMatrix, 0);
-		        Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
+                    Matrix.setIdentityM(mTemporaryModel, 0);
+                    Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);
+                    Matrix.scaleM(mTemporaryModel, 0, data.getLastScaleFactorX(), data.getLastScaleFactorY(), data.getLastScaleFactorZ());
 
-	        }
-        
-	                                                                                              
-	        if (isStl()) 
-	    		for (int i=0; i<mStlObjectList.size(); i++) {
-	    			if (i==mObjectPressed) {
+                    Matrix.translateM(mTemporaryModel, 0, 0, 0, data.getAdjustZ());
 
-	    				mDataList.get(i).setModelMatrix(mObjectModel);
-	
-	    				mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
+                    //Object rotation
+                    float [] rotateObjectMatrix = data.getRotationMatrix();
+
+                    //Multiply the model by the accumulated rotation
+                    Matrix.multiplyMM(mObjectModel, 0, mTemporaryModel, 0,rotateObjectMatrix, 0);
+                    Matrix.multiplyMM(mMVPObjectMatrix, 0,mMVPMatrix, 0, mObjectModel, 0);
+
+                    Matrix.multiplyMM(mMVObjectMatrix, 0,mMVMatrix, 0, mObjectModel, 0);
+                    Matrix.transposeM(mTransInvMVMatrix, 0, mMVObjectMatrix, 0);
+                    Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
+                } else {
+
+                    Log.i("Multiply","IndexOutOfBounds " + mDataList.size() + " is smaller than " + mObjectPressed);
+
+                }
+
+
+            }
+
+
+            if (isStl())
+                for (int i=0; i<mStlObjectList.size(); i++) {
+                    if (i==mObjectPressed) {
+
+                        mDataList.get(i).setModelMatrix(mObjectModel);
+
+                        mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
 
                         mCircle.draw(mDataList.get(i), mMVPMatrix, mAxis);
 
                     } else  {
-	    				float [] modelMatrix = mDataList.get(i).getModelMatrix();
-	    				float [] mvpMatrix = new float[16];
-	    				float [] mvMatrix = new float[16];
-	    				float [] mvFinalMatrix = new float[16];
-	
-	    				Matrix.multiplyMM(mvpMatrix, 0,mMVPMatrix, 0, modelMatrix, 0);  
-	    				
-	    				Matrix.multiplyMM(mvMatrix, 0,mMVMatrix, 0, modelMatrix, 0);  
-	    				
-	    		        Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
-	    		        Matrix.invertM(mvFinalMatrix, 0, mvFinalMatrix, 0);
-	    		        
-	    				mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace, modelMatrix);
-	    			}
-	    		}
-	        else {
+                        float [] modelMatrix = mDataList.get(i).getModelMatrix();
+                        float [] mvpMatrix = new float[16];
+                        float [] mvMatrix = new float[16];
+                        float [] mvFinalMatrix = new float[16];
+
+                        Matrix.multiplyMM(mvpMatrix, 0,mMVPMatrix, 0, modelMatrix, 0);
+
+                        Matrix.multiplyMM(mvMatrix, 0,mMVMatrix, 0, modelMatrix, 0);
+
+                        Matrix.transposeM(mvFinalMatrix, 0, mvMatrix, 0);
+                        Matrix.invertM(mvFinalMatrix, 0, mvFinalMatrix, 0);
+
+                        mStlObjectList.get(i).draw(mvpMatrix, mvFinalMatrix, mLightPosInEyeSpace, modelMatrix);
+                    }
+                }
+            else {
 
                 //TODO Random crash
                 try{
@@ -860,6 +872,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                 }
             }
         }
+
+
+
 
         if (mMode == ViewerMainFragment.DO_SNAPSHOT) {
         	mInfinitePlane.draw(mMVPMatrix, mMVMatrix);
