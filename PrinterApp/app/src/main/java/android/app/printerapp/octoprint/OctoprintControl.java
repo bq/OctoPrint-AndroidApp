@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.content.Context;
+import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -92,11 +93,11 @@ public class OctoprintControl {
 	 * @param axis
 	 * @param amount
 	 */
-	public static void sendHeadCommand(Context context, String url, String command, String axis, int amount){
+	public static void sendHeadCommand(Context context, String url, String command, String axis, double amount){
 		
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
-		
+
 		try {
 			
 			object.put("command", command);
@@ -104,9 +105,12 @@ public class OctoprintControl {
 				
 				//Must be array list to be able to convert a JSONArray in API < 19
 				ArrayList<String> s = new ArrayList<String>();
-				s.add("x");
-				s.add("y");
-				s.add("z");
+				if (axis.equals("xy")){
+                    s.add("x");
+                    s.add("y");
+                }
+
+                if (axis.equals("z"))s.add("z");
 				
 				
 				object.put("axes", new JSONArray(s));
@@ -144,5 +148,60 @@ public class OctoprintControl {
 		});
 		
 	}
+
+    public static void sendToolCommand(Context context, String url, String command, String tool, double amount){
+
+        JSONObject object = new JSONObject();
+        StringEntity entity = null;
+
+        try {
+
+            object.put("command", command);
+
+            JSONObject json = new JSONObject();
+
+            if (tool!=null){
+                json.put(tool,amount);
+                object.put("targets", json);
+            } else {
+
+                object.put("amount",amount);
+
+            }
+
+            entity = new StringEntity(object.toString(), "UTF-8");
+
+        } catch (JSONException e) {		e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {	e.printStackTrace();
+        }
+
+
+        Log.i("TOOL", "Sending: " + object.toString());
+        HttpClientHandler.post(context,url + HttpUtils.URL_TOOL,
+                entity, "application/json", new JsonHttpResponseHandler(){
+
+                    @Override
+                    public void onProgress(int bytesWritten, int totalSize) {
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers,
+                                          JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+
+                        Log.i("TOOL", "Success tool: " + response.toString());
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers,
+                                          String responseString, Throwable throwable) {
+
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        MainActivity.showDialog(responseString);
+                    }
+                });
+
+    }
 
 }

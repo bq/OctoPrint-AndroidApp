@@ -106,7 +106,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_pause" />
+                                android:src="@drawable/ic_play" />
 
                             <com.material.widget.PaperButton
                                 android:id="@+id/printview_pause_button"
@@ -482,6 +482,7 @@
                         </LinearLayout>
 
                         <SeekBar
+                            android:id="@+id/seekbar_head_movement_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:max="3" />
@@ -522,13 +523,15 @@
 
                                 <EditText
                                     android:id="@+id/et_amount"
-                                    style="@style/TextInfo"
                                     android:layout_width="100dp"
                                     android:layout_height="wrap_content"
                                     android:hint="10"
                                     android:imeOptions="actionDone"
                                     android:inputType="number"
-                                    android:text="10" />
+                                    android:text="10"
+                                    android:textSize="@dimen/text_size_small"
+                                    android:textColor="@color/body_text_2">
+                                    </EditText>
 
                                 <TextView
                                     android:id="@+id/textView1"

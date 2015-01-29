@@ -66,7 +66,7 @@
     <string name="printview_video_text">Vídeo</string>
     <string name="printview_3d_text">Render 3D</string>
     <string name="printview_profile_tag">Perfil - </string>
-    <string name="printview_start_button">PAUSAR</string>
+    <string name="printview_start_button">COMENZAR</string>
     <string name="printview_stop_button">DETENER</string>
     <string name="printview_download_dialog">Archivo no disponible, descargando</string>
     <string name="printview_download_toast_error">Error al descargar el archivo</string>
@@ -261,7 +261,7 @@
     <string name="printview_etrude_button">Retraer</string>
     <string name="printview_extruder_tag">Extrusor</string>
     <string name="printview_bed_tag">Cama</string>
-    <string name="printview_change_temp_button">Cambiar a %1$d</string>
+    <string name="printview_change_temp_button">Cambiar a %1$d°C</string>
     <string name="library_list_date_tag">Última modificación</string>
     <string name="library_list_go_back_tag">Ir atrás</string>
     <string name="library_print_model">Imprimir</string>
@@ -286,5 +286,6 @@
     <string name="printview_extruder_extrude_tag">Extraer/Retraer</string>
     <string name="notification_printing_progress">Imprimiendo</string>
     <string name="notification_slicing_progress">Laminando</string>
+    <string name="printview_pause_button">PAUSAR</string>
 
 </resources>

@@ -25,6 +25,7 @@ public class HttpUtils {
     public static final String URL_SOCKET = "/sockjs/websocket"; //Socket handling
     public static final String URL_CONNECTION = "/api/connection"; //Connection handling
     public static final String URL_PRINTHEAD = "/api/printer/printhead"; //Send print head commands
+    public static final String URL_TOOL = "/api/printer/tool"; //Send tool commands
     public static final String URL_NETWORK = "/api/plugin/netconnectd"; //Network config
     public static final String URL_SLICING = "/api/slicing/cura/profiles";
     public static final String URL_DOWNLOAD_FILES = "/downloads/files/local/";

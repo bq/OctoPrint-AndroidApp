@@ -130,6 +130,11 @@ public class PaperButton extends View {
         invalidate();
     }
 
+    public void setText(String text) {
+        mText = text;
+        invalidate();
+    }
+
     public void setTextSize(int pixel) {
         mTextSize = pixel;
         textPaint.setTextSize(mTextSize);
