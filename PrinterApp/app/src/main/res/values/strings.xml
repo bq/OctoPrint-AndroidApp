@@ -78,7 +78,7 @@
     <string name="printview_extruder_extrude_tag">Extrude/Retract</string>
     <string name="printview_bed_tag">Bed</string>
     <string name="printview_change_temp_button">Set to %1$d°C</string>
-    <string name="printview_start_button">PAUSE</string>
+    <string name="printview_start_button">START</string>
     <string name="printview_stop_button">STOP</string>
     <string name="printview_retract_button">Retract</string>
     <string name="printview_etrude_button">Etrude</string>
@@ -296,6 +296,7 @@
     <string name="library_scan_dialog_nomodels">No models found on your device</string>
     <string name="viewer_restore_session">Restore last session?</string>
     <string name="viewer_menu_last_session">Last session</string>
+    <string name="printview_pause_button">PAUSE</string>
 
 
 </resources>

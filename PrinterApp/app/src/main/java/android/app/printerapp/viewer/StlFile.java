@@ -434,7 +434,9 @@ public class StlFile {
 		//a flag (2 bytes per triangle) to indicate the final of the triangle.
 		ByteBuffer bb = ByteBuffer.allocateDirect(84+(coordinateCount+normals) * 4 + coordinateCount * 2);
 	    bb.order(ByteOrder.LITTLE_ENDIAN);
-	    
+
+        //TODO Out of Memory when saving file to slice
+
 	    //Header
 	    byte[] header = new byte[80];
 	    bb.put(header);

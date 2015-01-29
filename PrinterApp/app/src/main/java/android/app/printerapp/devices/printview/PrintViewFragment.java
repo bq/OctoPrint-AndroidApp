@@ -34,12 +34,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +76,7 @@ public class PrintViewFragment extends Fragment {
 
     private PaperButton button_pause;
     private PaperButton button_stop;
+    private ImageView icon_pause;
 
     //File references
     private static DataStorage mDataGcode;
@@ -188,91 +189,10 @@ public class PrintViewFragment extends Fragment {
 
             /***************************************************************************/
 
-            //UI references
-            tv_printer = (TextView) mRootView.findViewById(R.id.printview_printer_tag);
-            tv_file = (TextView) mRootView.findViewById(R.id.printview_printer_file);
-            tv_temp = (TextView) mRootView.findViewById(R.id.printview_extruder_temp);
-            tv_prog = (TextView) mRootView.findViewById(R.id.printview_printer_progress);
-            tv_profile = (TextView) mRootView.findViewById(R.id.printview_text_profile_text);
-            pb_prog = (ProgressBar) mRootView.findViewById(R.id.printview_progress_bar);
 
-            button_pause = (PaperButton) mRootView.findViewById(R.id.printview_pause_button);
-            button_stop = (PaperButton) mRootView.findViewById(R.id.printview_stop_button);
+        initUiElements();
 
-            ((ImageView) mRootView.findViewById(R.id.printview_pause_image)).
-                    setColorFilter(mContext.getResources().getColor(R.color.body_text_2),
-                            PorterDuff.Mode.MULTIPLY);
-            button_pause.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!isPrinting) {
-                        OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "start");
-                    } else {
-                        OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "pause");
-                    }
-                }
-            });
 
-            ((ImageView) mRootView.findViewById(R.id.printview_stop_image)).
-                    setColorFilter(mContext.getResources().getColor(android.R.color.holo_red_dark),
-                            PorterDuff.Mode.MULTIPLY);
-            button_stop.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "cancel");
-                }
-            });
-
-            final EditText et_am = (EditText) mRootView.findViewById(R.id.et_amount);
-
-            mRootView.findViewById(R.id.button_xy_down).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", Integer.parseInt(et_am.getText().toString()));
-                }
-            });
-
-            mRootView.findViewById(R.id.button_xy_up).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", -Integer.parseInt(et_am.getText().toString()));
-                }
-            });
-
-            mRootView.findViewById(R.id.button_xy_left).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", -Integer.parseInt(et_am.getText().toString()));
-                }
-            });
-
-            mRootView.findViewById(R.id.button_xy_right).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", Integer.parseInt(et_am.getText().toString()));
-                }
-            });
-
-            mRootView.findViewById(R.id.button_z_down).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", -Integer.parseInt(et_am.getText().toString()));
-                }
-            });
-
-            mRootView.findViewById(R.id.button_z_up).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", Integer.parseInt(et_am.getText().toString()));
-                }
-            });
-
-            mRootView.findViewById(R.id.button_z_home).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "home", null, 0);
-                }
-            });
 
             refreshData();
 
@@ -306,6 +226,212 @@ public class PrintViewFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //Initialize all UI elements
+    private void initUiElements(){
+
+        //UI references
+        tv_printer = (TextView) mRootView.findViewById(R.id.printview_printer_tag);
+        tv_file = (TextView) mRootView.findViewById(R.id.printview_printer_file);
+        tv_temp = (TextView) mRootView.findViewById(R.id.printview_extruder_temp);
+        tv_prog = (TextView) mRootView.findViewById(R.id.printview_printer_progress);
+        tv_profile = (TextView) mRootView.findViewById(R.id.printview_text_profile_text);
+        pb_prog = (ProgressBar) mRootView.findViewById(R.id.printview_progress_bar);
+
+        button_pause = (PaperButton) mRootView.findViewById(R.id.printview_pause_button);
+        icon_pause = (ImageView) mRootView.findViewById(R.id.printview_pause_image);
+
+
+
+        button_stop = (PaperButton) mRootView.findViewById(R.id.printview_stop_button);
+
+
+
+        icon_pause.setColorFilter(mContext.getResources().getColor(R.color.body_text_2),
+                PorterDuff.Mode.MULTIPLY);
+
+
+
+
+        button_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!isPrinting) OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "start");
+                else OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "pause");
+
+            }
+        });
+
+        ((ImageView) mRootView.findViewById(R.id.printview_stop_image)).
+                setColorFilter(mContext.getResources().getColor(android.R.color.holo_red_dark),
+                        PorterDuff.Mode.MULTIPLY);
+        button_stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "cancel");
+            }
+        });
+
+
+
+        final SeekBar seekBarHead = (SeekBar) mRootView.findViewById(R.id.seekbar_head_movement_amount);
+
+
+        mRootView.findViewById(R.id.button_xy_down).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", convertProgress(seekBarHead.getProgress()));
+            }
+        });
+
+        mRootView.findViewById(R.id.button_xy_up).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", -convertProgress(seekBarHead.getProgress()));
+            }
+        });
+
+        mRootView.findViewById(R.id.button_xy_left).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", - convertProgress(seekBarHead.getProgress()));
+            }
+        });
+
+        mRootView.findViewById(R.id.button_xy_right).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x",  convertProgress(seekBarHead.getProgress()));
+            }
+        });
+
+        mRootView.findViewById(R.id.button_z_down).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", - convertProgress(seekBarHead.getProgress()));
+            }
+        });
+
+        mRootView.findViewById(R.id.button_z_up).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", convertProgress(seekBarHead.getProgress()));
+            }
+        });
+
+        mRootView.findViewById(R.id.button_z_home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "home", "z", 0);
+            }
+        });
+
+        mRootView.findViewById(R.id.button_xy_home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "home", "xy", 0);
+            }
+        });
+
+        /**
+         * Temperatures
+         */
+
+        final SeekBar extruder1SeekBar = (SeekBar)  mRootView.findViewById(R.id.printview_extruder_temp_slider);
+        final PaperButton extruder1Button = (PaperButton) mRootView.findViewById(R.id.printview_extruder_temp_button);
+        extruder1Button.setText(String.format(getResources().getString(R.string.printview_change_temp_button), 0));
+
+        extruder1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                extruder1Button.setText(String.format(getResources().getString(R.string.printview_change_temp_button), i));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        extruder1Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendToolCommand(getActivity(), mPrinter.getAddress(), "target", "tool0", extruder1SeekBar.getProgress());
+            }
+        });
+
+        final SeekBar bedSeekBar = (SeekBar)  mRootView.findViewById(R.id.printview_bed_temp_slider);
+        final PaperButton bedButton = (PaperButton) mRootView.findViewById(R.id.printview_bed_temp_button);
+        bedButton.setText(String.format(getResources().getString(R.string.printview_change_temp_button), 0));
+
+        bedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                bedButton.setText(String.format(getResources().getString(R.string.printview_change_temp_button), i));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        bedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OctoprintControl.sendToolCommand(getActivity(), mPrinter.getAddress(), "target", "bed", bedSeekBar.getProgress());
+            }
+        });
+
+        /*
+        Extruder
+
+         */
+
+        final EditText et_am = (EditText) mRootView.findViewById(R.id.et_amount);
+
+        mRootView.findViewById(R.id.printview_retract_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                OctoprintControl.sendToolCommand(getActivity(), mPrinter.getAddress(), "extrude",  null, Double.parseDouble(et_am.getText().toString()));
+
+            }
+        });
+
+        mRootView.findViewById(R.id.printview_etrude_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                OctoprintControl.sendToolCommand(getActivity(), mPrinter.getAddress(), "extrude",  null, - Double.parseDouble(et_am.getText().toString()));
+
+            }
+        });
+
+    }
+
+    private double convertProgress(int amount){
+
+        double finalAmount = 0.1 * Math.pow(10,Math.abs(amount));
+
+        return finalAmount;
+
     }
 
     /**
@@ -360,6 +486,20 @@ public class PrintViewFragment extends Fragment {
                 (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) {
 
             isPrinting = true;
+
+            if (mPrinter.getStatus() == StateUtils.STATE_PRINTING){
+
+                button_pause.setText(getString(R.string.printview_pause_button));
+                icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+
+            } else {
+
+                button_pause.setText(getString(R.string.printview_start_button));
+                icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+
+            }
+
+
             tv_prog.setText(getProgress(mPrinter.getJob().getProgress()) + "% (" + OctoprintConnection.ConvertSecondToHHMMString(mPrinter.getJob().getPrintTimeLeft()) +
                     " left / " + OctoprintConnection.ConvertSecondToHHMMString(mPrinter.getJob().getPrintTime()) + " elapsed) - ");
 
@@ -377,6 +517,9 @@ public class PrintViewFragment extends Fragment {
             if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
             tv_prog.setText(mPrinter.getMessage() + " - ");
             isPrinting = false;
+
+            button_pause.setText(getString(R.string.printview_start_button));
+            icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
         }
 
         getActivity().invalidateOptionsMenu();
