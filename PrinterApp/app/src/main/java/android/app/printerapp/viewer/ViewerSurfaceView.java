@@ -4,6 +4,7 @@ import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,7 +24,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
     public static final int MIN_ZOOM = -500;
     public static final int MAX_ZOOM = -30;
     public static final float SCALE_FACTOR = 400f;
-		
+
 	ViewerRenderer mRenderer;
 	private List<DataStorage> mDataList = new ArrayList<DataStorage>();
 	//Touch
@@ -33,7 +34,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private float mPreviousY;
     private float mPreviousDragX;
     private float mPreviousDragY;
-	
+
    // zoom rate (larger > 1.0f > smaller)
 	private float pinchScale = 1.0f;
 
@@ -50,20 +51,20 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private static final int TOUCH_DRAG = 1;
 	private static final int TOUCH_ZOOM = 2;
 	private int touchMode = TOUCH_NONE;
-		
+
 	//Viewer modes
 	public static final int ROTATION_MODE =0;
 	public static final int TRANSLATION_MODE = 1;
 	public static final int LIGHT_MODE = 2;
-	
+
 	private int mMovementMode;
-	
+
 	//Edition mode
 	private boolean mEdition = false;
 	private int mEditionMode;
 	private int mRotateMode;
 
-	
+
 	//Edition modes
 	public static final int NONE_EDITION_MODE = 0;
 	public static final int MOVE_EDITION_MODE = 1;
@@ -91,13 +92,13 @@ public class ViewerSurfaceView extends GLSurfaceView{
     long mDoubleTapCurrentTime = 0;
 
     public static final int DOUBLE_TAP_MAX_TIME = 300;
-		
+
 	/**
-	 * 
+	 *
 	 * @param context Context
 	 * @param data Data to render
 	 * @param state Type of rendering: normal, triangle, overhang, layers
-	 * @param mode Mode of rendering: do snapshot (take picture for library), dont snapshot (normal) and print_preview (gcode preview in print progress)  
+	 * @param mode Mode of rendering: do snapshot (take picture for library), dont snapshot (normal) and print_preview (gcode preview in print progress)
 	 */
 	public ViewerSurfaceView(Context context, List<DataStorage> data, int state, int mode, SlicingHandler handler) {
 		super(context);
@@ -112,7 +113,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
-	
+
 	/**
 	 * Check if it is an stl model.
 	 * @return
@@ -120,10 +121,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	private boolean isStl() {
 		if (mDataList.size()>0)
 			if (mDataList.get(0).getPathFile().endsWith(".stl") || mDataList.get(0).getPathFile().endsWith(".STL")) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Set the view options depending on the model
 	 * @param state
@@ -134,7 +135,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			setOverhang(false);
 			setXray(false);
 			setTransparent(false);
-			break;			
+			break;
 		case (ViewerSurfaceView.XRAY):
 			setOverhang(false);
 			setXray(true);
@@ -151,45 +152,45 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			setTransparent(false);
 			break;
 		}
-		
+
 		requestRender();
 	}
-		
+
 	/**
-	 * Show/Hide back Witbox Face 
+	 * Show/Hide back Witbox Face
 	 */
 	public void showBackWitboxFace () {
 		if (mRenderer.getShowBackWitboxFace()) mRenderer.showBackWitboxFace(false);
-		else mRenderer.showBackWitboxFace(true);	
-		requestRender();		
+		else mRenderer.showBackWitboxFace(true);
+		requestRender();
 	}
-	
+
 	public void showRightWitboxFace () {
 		if (mRenderer.getShowRightWitboxFace()) mRenderer.showRightWitboxFace(false);
 		else mRenderer.showRightWitboxFace(true);
-		requestRender();		
+		requestRender();
 	}
-	
+
 	public void showLeftWitboxFace () {
 		if (mRenderer.getShowLeftWitboxFace()) mRenderer.showLeftWitboxFace(false);
 		else mRenderer.showLeftWitboxFace(true);
-		requestRender();		
+		requestRender();
 	}
-	
+
 	public void showDownWitboxFace () {
 		if (mRenderer.getShowDownWitboxFace()) mRenderer.showDownWitboxFace(false);
 		else mRenderer.showDownWitboxFace(true);
-		requestRender();		
+		requestRender();
 	}
-	
+
 	/**
 	 * Tells the render if overhang is activated or not
-	 * @param overhang 
+	 * @param overhang
 	 */
 	public void setOverhang (boolean overhang) {
 		mRenderer.setOverhang(overhang);
 	}
-	
+
 	/**
 	 * Tell the render if transparent view is activated or not
 	 * @param trans
@@ -197,7 +198,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void setTransparent (boolean trans) {
 		mRenderer.setTransparent(trans);
 	}
-	
+
 	/**
 	 * Tells render if xray view (triangles view) is activated or not
 	 * @param xray
@@ -205,7 +206,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void setXray (boolean xray) {
 		mRenderer.setXray(xray);
 	}
-	
+
 	/**
 	 * Set edition mode
 	 * @param mode MOVE_EDITION_MODE, ROTATION_EDITION_MODE, SCALED_EDITION_MODE, MIRROR_EDITION_MODE
@@ -213,22 +214,22 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void setEditionMode (int mode) {
 		mEditionMode = mode;
 	}
-	
+
 	/**
 	 * Delete selected object
 	 */
 	public void deleteObject() {
 		mRenderer.deleteObject(mObjectPressed);
 	}
-	
+
 	/**
 	 * Get the object that has been pressed
-	 * @return mObjectPressed 
+	 * @return mObjectPressed
 	 */
 	public int getObjectPresed () {
 		return mObjectPressed;
 	}
-	
+
 	/**
 	 * Set the rotation axis
 	 * @param mode ROTATION_X, ROTATION_Y, ROTATION_Z
@@ -256,7 +257,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle = new float[]{0, 0, 0};
 	}
 
-		
+
 	/**
 	 * Rotate the object in the X axis
 	 * @param angle angle to rotate
@@ -271,7 +272,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	    //mRenderer.refreshRotatedObjectCoordinates();
 
 	}
-	
+
 	/**
 	 * Rotate the object in the Y axis
 	 * @param angle angle to rotate
@@ -285,7 +286,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setRotationObject (rotation);
 		//mRenderer.refreshRotatedObjectCoordinates();
 	}
-	
+
 	/**
 	 * Rotate the object in the Z axis
 	 * @param angle angle to rotate
@@ -336,10 +337,10 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 		float x = event.getX();
         float y = event.getY();
-               
+
         float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
 		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
-								
+
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -497,7 +498,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 					requestRender();
 	                break;
-			
+
 			// end pinch
 			case MotionEvent.ACTION_UP:
 
@@ -510,7 +511,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 					pinchStartPoint.x = 0.0f;
 					pinchStartPoint.y = 0.0f;
 				}
-								
+
 				if(mEdition) {
 
                     mRenderer.changeTouchedState();
@@ -521,12 +522,12 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 				touchMode = TOUCH_NONE;
 
-				requestRender();			
+				requestRender();
 				break;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Exit edition mode.
 	 * Set object pressed to -1 (no object pressed)
@@ -534,15 +535,36 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	 * Change state of the object (which means the colour of the models in the plate will probably change)
 	 */
 	public void exitEditionMode () {
-		mEdition = false;
-		mEditionMode = NONE_EDITION_MODE;
-		//We can exit edition mode at clicking in the menu or at deleting a model. If the model has been deleted, it is possible that
-		//mRenderer.exitEditionModel fails because of the size of the arrays.
-		mObjectPressed = -1;
-		mRenderer.setObjectPressed(mObjectPressed);
-		mRenderer.changeTouchedState();
-    	
-    	requestRender();
+
+        //We can exit edition mode at clicking in the menu or at deleting a model. If the model has been deleted, it is possible that
+        //mRenderer.exitEditionModel fails because of the size of the arrays.
+
+        mEdition = false;
+        mEditionMode = NONE_EDITION_MODE;
+
+
+
+        //Delay the render slightly to avoid inconsistency while drawing models
+        Handler handler = new Handler();
+
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                mObjectPressed = -1;
+                mRenderer.setObjectPressed(mObjectPressed);
+
+
+                mRenderer.changeTouchedState();
+
+
+                requestRender();
+
+            }
+        }, 100);
+
+
 	}
 		
 	/**
