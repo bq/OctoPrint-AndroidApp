@@ -1,7 +1,6 @@
 package android.app.printerapp.devices;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
@@ -9,6 +8,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.JmdnsServiceListener;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.devices.printview.GcodeCache;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintFiles;
@@ -36,10 +36,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialogCompat;
 
 import java.io.File;
 
@@ -80,6 +83,8 @@ import java.io.File;
 
         super.onCreate(savedInstanceState);
 
+        Log.i("Devices","CREATE TOTAL");
+
         //Retain instance to keep the Fragment from destroying itself
         setRetainInstance(true);
 
@@ -95,6 +100,8 @@ import java.io.File;
 
         //If is not new
         if (savedInstanceState == null) {
+
+            Log.i("Devices","CREATE VIEW");
 
             //Show custom option menu
             setHasOptionsMenu(true);
@@ -500,12 +507,55 @@ import java.io.File;
      * ******************************************
      */
 
-    //TODO OUT OF HERE!
-    public void createFinishDialog(final ModelPrinter m) {
+    private static final String STRING_TEMP = "/_tmp";
+
+    public void createFinishDialog(final ModelPrinter m){
 
         //Constructor
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(getActivity());
         adb.setTitle(getActivity().getString(R.string.finish_dialog_title) + " " + m.getJob().getFilename());
+
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_finish_printing, null, false);
+
+        adb.setView(v);
+        adb.setPositiveButton(R.string.confirm, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if (m.getJobPath()!=null){
+                    File file = new File(m.getJobPath());
+
+                    if (file.getParentFile().getAbsolutePath().contains(STRING_TEMP)) {
+
+                        Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs to be saved. Hello: " + DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, m.getName()));
+                        createFinishDialogSave(m,file);
+
+
+
+                    } else {
+                        Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs NO SAVING CUZ ITS MINE.");
+                        OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
+                    }
+
+                    GcodeCache.removeGcodeFromCache(m.getJobPath());
+                    m.setJobPath(null);
+                    DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES,m.getName(),null,false);
+                }
+
+            }
+        });
+
+        adb.show();
+
+    }
+
+    public void createFinishDialogSave(final ModelPrinter m, final File file) {
+
+        //Constructor
+        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(getActivity());
+        adb.setTitle(m.getDisplayName() + " (100%) - " +file.getName());
 
         //Inflate the view
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -513,6 +563,9 @@ import java.io.File;
 
         final CheckBox cb_server = (CheckBox) v.findViewById(R.id.checkbox_keep_server);
         final CheckBox cb_local = (CheckBox) v.findViewById(R.id.checkbox_keep_local);
+        final EditText et_name = (EditText) v.findViewById(R.id.et_name_model);
+
+        et_name.setText(file.getName());
 
         adb.setView(v);
 
@@ -531,20 +584,20 @@ import java.io.File;
                     //Remove file from server
                     OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
 
-                    GcodeCache.removeGcodeFromCache(m.getJobPath());
-                    m.setJobPath(null);
+
                 }
 
                 if (cb_local.isChecked()){
 
+                    File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + et_name.getText().toString());
+                    file.renameTo(to);
 
 
                 } else {
 
                     try{
                         //Delete file locally
-                        File fileDelete = new File(m.getJobPath());
-                        if (fileDelete.delete()){
+                        if (file.delete()){
 
                             Log.i("OUT","File deleted!");
 
@@ -560,11 +613,11 @@ import java.io.File;
 
                 }
 
-
-
+                LibraryController.deleteFiles(file.getParentFile());
 
 
             }
+
         });
 
         adb.setNegativeButton(R.string.cancel, null);

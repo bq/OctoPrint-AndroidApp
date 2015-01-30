@@ -542,9 +542,7 @@ public class EditPrinterDialog {
                         //Upload profile, connect if successful
                         OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),json, spinner_port.getSelectedItem().toString());
 
-                        Intent intent = new Intent("notify");
-                        intent.putExtra("message", "Profile");
-                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                        notifyAdapters();
 
                     }
 

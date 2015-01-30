@@ -1,34 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/finish_dialog_message"
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="60dp"
         android:layout_margin="10dp"
-        android:id="@+id/tv_keep_file_tag" />
+        android:src="@drawable/random"
+        android:id="@+id/iv_save_model"/>
 
-    <CheckBox
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/finish_dialog_option_1"
-        android:layout_margin="10dp"
-        android:id="@+id/checkbox_keep_server"
-        android:checked="false"
-        android:button="@null"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"/>
+        android:layout_height="wrap_content">
 
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/finish_dialog_option_2"
-        android:id="@+id/checkbox_keep_local"
-        android:layout_margin="10dp"
-        android:checked="true"
-        android:button="@null"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_finish_save_title"
+            android:layout_margin="10dp"
+            android:id="@+id/tv_keep_file_tag" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_finish_model_name"
+            android:id="@+id/tv_name_model"
+            android:textStyle="bold"
+            android:layout_margin="10dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_name_model"
+            android:layout_margin="10dp"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/finish_dialog_option_1"
+            android:layout_margin="10dp"
+            android:id="@+id/checkbox_keep_server"
+            android:checked="false"
+            android:button="@null"
+            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/finish_dialog_option_2"
+            android:id="@+id/checkbox_keep_local"
+            android:layout_margin="10dp"
+            android:checked="true"
+            android:button="@null"
+            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"/>
+
+        </LinearLayout>
+
+
 </LinearLayout>

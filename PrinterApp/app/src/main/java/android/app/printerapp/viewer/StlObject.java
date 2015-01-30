@@ -252,7 +252,7 @@ public class StlObject {
 			program = mProgram;
 			GLES20.glUseProgram(mProgram);
 		}
-				
+
 	    if (mTransparent)
 			GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 	    else 

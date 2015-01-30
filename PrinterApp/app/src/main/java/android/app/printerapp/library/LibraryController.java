@@ -259,9 +259,12 @@ public class LibraryController {
 			}
 		};
 		
-		
-		if (file.list(f).length > 0) return true;
-		else return false;
+		if (file.exists()){
+            if (file.list(f).length > 0) return true;
+        }
+
+
+        return false;
 	}
 	
 	/**

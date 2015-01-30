@@ -355,11 +355,7 @@ public class MainActivity extends ActionBarActivity {
 
             } else if (message.equals("Profile")){
 
-                Log.i("Profile","Hey received yo");
-
                 if (mViewerFragment!=null) {
-
-                    Log.i("Profile","K mate");
                     mViewerFragment.notifyAdapter();
                 }
 

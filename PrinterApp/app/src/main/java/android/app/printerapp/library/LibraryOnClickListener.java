@@ -376,6 +376,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                                             Log.i("DELETE", "DELETE " + file.getName());
 
+
                                             LibraryController.deleteFiles(file);
 
                                         }

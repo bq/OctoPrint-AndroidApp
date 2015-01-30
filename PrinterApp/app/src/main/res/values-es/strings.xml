@@ -82,7 +82,6 @@
     <string name="slicing_title">Laminado completado en </string>
     <string name="slicing_download">¿Descargar el archivo a la carpeta del proyecto?</string>
     <string name="finish_dialog_title">Impresión finalizada: </string>
-    <string name="finish_dialog_message">Elegir acción</string>
     <string name="finish_dialog_option_1">Guardar gcode en el servidor</string>
     <string name="finish_dialog_option_2">Guardar gcode en la carpeta del proyecto</string>
     
@@ -287,5 +286,8 @@
     <string name="notification_printing_progress">Imprimiendo</string>
     <string name="notification_slicing_progress">Laminando</string>
     <string name="printview_pause_button">PAUSAR</string>
+    <string name="dialog_finish_message">Retira la pieza del plato y pulsa el botón de confirmar para que la impresora esté disponible de nuevo.</string>
+    <string name="dialog_finish_save_title">¿Quieres guardar el modelo impreso?</string>
+    <string name="dialog_finish_model_name">Nombre del modelo</string>
 
 </resources>

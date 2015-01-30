@@ -7,8 +7,6 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -186,12 +184,8 @@ public class OctoprintSlicing {
 
                                 p.getProfiles().add(response);
 
-                                Intent intent = new Intent("notify");
-                                intent.putExtra("message", "Profile");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
                                 Log.i("OUT","Adding profile");
-                            } else Log.i("OUT","NOPEEEYAYAYA");
+                            }
 
 
                         }
