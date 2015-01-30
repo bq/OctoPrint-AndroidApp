@@ -101,7 +101,6 @@
     <string name="finish_dialog_title">Print finished:</string>
     <string name="notification_slicing_progress">Slicing</string>
     <string name="notification_printing_progress">Print progress</string>
-    <string name="finish_dialog_message">Select action</string>
     <string name="finish_dialog_option_1">Keep gcode in server</string>
     <string name="finish_dialog_option_2">Keep gcode in local project folder</string>
     
@@ -297,6 +296,9 @@
     <string name="viewer_restore_session">Restore last session?</string>
     <string name="viewer_menu_last_session">Last session</string>
     <string name="printview_pause_button">PAUSE</string>
+    <string name="dialog_finish_message">Take the piece from the plate and press the confirm button to make the printer available again.</string>
+    <string name="dialog_finish_save_title">Do you want to save the printed model?</string>
+    <string name="dialog_finish_model_name">Model name</string>
 
 
 </resources>

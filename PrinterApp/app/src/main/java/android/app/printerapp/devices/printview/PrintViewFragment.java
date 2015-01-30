@@ -591,14 +591,36 @@ public class PrintViewFragment extends Fragment {
 
                 Log.i(TAG, "Either it's not the same or I don't have it, download: " + mPrinter.getJob().getFilename());
 
+                String download = "";
+                if (DatabaseController.getPreference(DatabaseController.TAG_REFERENCES,mPrinter.getName())!=null){
+
+                    Log.i(TAG, "NOT NULLO");
+
+                    download = DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, mPrinter.getName());
+
+                }else {
+
+                    Log.i(TAG, "Çyesp NULLO");
+                    download = LibraryController.getParentFolder() + "/temp/" + mPrinter.getJob().getFilename();
+
+                    //Add it to the reference list
+                    DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(),
+                            LibraryController.getParentFolder() + "/temp/" + mPrinter.getJob().getFilename(), true);
+                }
+
+
 
                 //Check if we've downloaded the same file before
-                File downloadPath = new File(LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
+                //File downloadPath = new File(LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
+                File downloadPath = new File(download);
 
                 if (downloadPath.exists()) {
 
                     Log.i(TAG, "Wait, I downloaded it once!");
                     openGcodePrintView(getActivity(), downloadPath.getAbsolutePath(), mRootView, R.id.view_gcode);
+
+                    //File changed, remove jobpath
+                    mPrinter.setJobPath(downloadPath.getAbsolutePath());
 
                     //We have to download it again
                 } else {
@@ -607,13 +629,13 @@ public class PrintViewFragment extends Fragment {
                     if (!downloadPath.getParentFile().exists())
                         downloadPath.getParentFile().mkdirs();
 
+                    Log.i(TAG,"Downloadinag " + downloadPath.getParentFile().getAbsolutePath() + " PLUS " + mPrinter.getJob().getFilename());
+
                     //Download file
                     OctoprintFiles.downloadFile(mContext, mPrinter.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
-                            LibraryController.getParentFolder() + "/temp/", mPrinter.getJob().getFilename());
+                            downloadPath.getParentFile().getAbsolutePath() + "/", mPrinter.getJob().getFilename());
 
-                    //Add it to the reference list
-                    DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(),
-                            LibraryController.getParentFolder() + "/temp/" + mPrinter.getJob().getFilename(), true);
+
 
                     Log.i(TAG, "Downloading and adding to preferences");
 
@@ -621,10 +643,12 @@ public class PrintViewFragment extends Fragment {
                     mDownloadDialog = new ProgressDialog(getActivity());
                     mDownloadDialog.setMessage(getActivity().getString(R.string.printview_download_dialog) + "...");
                     mDownloadDialog.show();
+
+                    //File changed, remove jobpath
+                    mPrinter.setJobPath(null);
                 }
 
-                //File changed, remove jobpath
-                mPrinter.setJobPath(null);
+
             }
     }
 

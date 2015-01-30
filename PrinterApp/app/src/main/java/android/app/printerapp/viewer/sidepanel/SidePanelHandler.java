@@ -440,7 +440,7 @@ public class SidePanelHandler {
 
                                 //Add it to the reference list
                                 DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES, mPrinter.getName(),
-                                        LibraryController.getParentFolder() + "/temp/temp.gco", true);
+                                        mSlicingHandler.getOriginalProject() + "/_tmp/temp.gco", true);
 
                                 mPrinter.setJobPath(null);
 
@@ -460,9 +460,16 @@ public class SidePanelHandler {
                                     //final File actualFile = new File(mSlicingHandler.getOriginalProject());
 
                                     //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                                    finalFile = new File(mSlicingHandler.getOriginalProject() + "/_gcode/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
+                                    finalFile = new File(mSlicingHandler.getOriginalProject() + "/_tmp/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
 
-                                    Log.i("OUT", "Creating new file in " + finalFile.getAbsolutePath());
+                                    File tempFolder = finalFile.getParentFile();
+                                    if (tempFolder.mkdir()){
+
+                                        Log.i("Slicer", "Creating temp " + tempFolder.getAbsolutePath());
+
+                                    }Log.i("Slicer", "Creating temp NOPE " + tempFolder.getAbsolutePath());
+
+                                    Log.i("Slicer", "Creating new file in " + finalFile.getAbsolutePath());
 
                                     Log.i("Slicer", "Final file is: STL or Sliced STL");
 
@@ -476,6 +483,7 @@ public class SidePanelHandler {
 
 
                                         Log.i("Slicer", "Final file is: Project GCODE");
+
                                         finalFile = mFile;
 
                                     } else {
@@ -515,14 +523,12 @@ public class SidePanelHandler {
 
 
                     if (finalFile != null)
+
                         //either case if the file exists, we send it to the printer
                         if (finalFile.exists()) {
 
-                        /*OctoprintFiles.uploadFile(mActivity, finalFile, mPrinter);
-                            ItemListFragment.performClick(0);
-                        ItemListActivity.showExtraFragment(1, mPrinter.getId());*/
-
                             DevicesListController.selectPrinter(mActivity, finalFile, null);
+                            mPrinter.setJobPath(finalFile.getAbsolutePath());
 
                         } else {
 
@@ -865,9 +871,7 @@ public class SidePanelHandler {
         mProfileAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
         s_type.setAdapter(mProfileAdapter);
 
-        Log.i("Profile","Oh yes");
         if (mProfileAdapter!=null){
-            Log.i("Profile","NotifyMe");
            mProfileAdapter.notifyDataSetChanged();
             s_type.postInvalidate();
         }

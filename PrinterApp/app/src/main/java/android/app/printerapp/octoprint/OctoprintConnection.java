@@ -487,7 +487,7 @@ public class OctoprintConnection {
 		         @Override
 		         public void onTextMessage(String payload) {
 
-		        	    Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
+		        	    //Log.i("SOCK", "Got echo [" + p.getAddress() + "]: " + payload);
 
 		        	  try {
 
@@ -584,12 +584,6 @@ public class OctoprintConnection {
 
 
                             }
-
-                            //SEND NOTIFICATION
-
-                            Intent intent = new Intent("notify");
-                            intent.putExtra("message", "Profile");
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
 		            	}
 
