@@ -388,7 +388,11 @@ public class EditPrinterDialog {
                     }
 
                     //update new profile
-                    if (auxType!=null) OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
+                    if (auxType!=null) {
+
+                        OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
+                        OctoprintProfiles.updateProfile(mContext,mPrinter.getAddress(),auxType);
+                    }
 
 
                 } else { //CUSTOM selected
@@ -496,10 +500,12 @@ public class EditPrinterDialog {
 
                 try{
 
+                    String nameFormat = name.getText().toString().replace(" ","_");
+
                     JSONObject json = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE);
 
                     json.put("name", name.getText().toString());
-                    json.put("id", name.getText().toString());
+                    json.put("id", name.getText().toString().replace(" ","_"));
                     json.put("model", "ModelPrinter");
 
                     JSONObject volume = new JSONObject();

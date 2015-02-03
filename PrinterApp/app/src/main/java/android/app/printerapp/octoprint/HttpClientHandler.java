@@ -17,7 +17,6 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -76,8 +75,10 @@ public class HttpClientHandler {
       generateAsyncHttpClient(url).put(context, getAbsoluteUrl(url), entity, contentType, responseHandler);
   }
 
+        //TODO Temporal patch method until it's implemented on the AsyncHttpClient library
     //PUT method for the new API
     public static void patch(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
+
 
 
         CloseableHttpResponse response = null;
@@ -91,13 +92,12 @@ public class HttpClientHandler {
                     .build();
 
             //CloseableHttpClient httpClient = HttpClients.custom().build();
-            HttpPatch httpPatch = null;
-            //TODO
-            httpPatch = new HttpPatch(new URI(getAbsoluteUrl( url) + "?apikey=" + HttpUtils.getApiKey(url)));
+            HttpPatch httpPatch = new HttpPatch(new URI(getAbsoluteUrl( url) ));
+            httpPatch.addHeader("Content-Type", "application/json");
+            httpPatch.addHeader("X-Api-Key", HttpUtils.getApiKey(url));
             httpPatch.setEntity(entity);
             response = httpClient.execute(httpPatch);
 
-            Log.i("OUT", "Dafux: " + EntityUtils.toString(response.getEntity()));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -110,6 +110,8 @@ public class HttpClientHandler {
         } finally {
             try {
                 response.close();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
