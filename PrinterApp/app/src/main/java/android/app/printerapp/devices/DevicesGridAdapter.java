@@ -77,7 +77,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
             holder = new ViewHolder();
             holder.textViewTag = (TextView) convertView.findViewById(R.id.grid_element_tag);
-            holder.textViewIp = (TextView) convertView.findViewById(R.id.grid_element_ip);
             holder.textViewLoading = (TextView) convertView.findViewById(R.id.grid_text_loading);
             holder.imageIcon = (ImageView) convertView.findViewById(R.id.grid_element_icon);
             holder.progressBarPrinting = (ProgressBar) convertView.findViewById(R.id.grid_element_progressbar);
@@ -103,7 +102,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             //Empty slot is an invisible printer on the current position
             convertView.setOnDragListener(new DevicesEmptyDragListener(position, this));
             holder.textViewTag.setText("");
-            holder.textViewIp.setText("");
             holder.imageIcon.setVisibility(View.INVISIBLE);
             holder.imageIcon.clearColorFilter();
             //holder.gridItem.setBackgroundResource(0);
@@ -115,7 +113,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             convertView.setOnDragListener(new DevicesDragListener(mContext, m, this));
             holder.textViewTag.setText(m.getDisplayName());
             //holder.textViewTag.setTextColor(m.getDisplayColor());
-            holder.textViewIp.setText(m.getAddress().replace("/", ""));
             holder.imageIcon.setVisibility(View.VISIBLE);
             holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.SRC_ATOP);
 
@@ -346,7 +343,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
     static class ViewHolder {
 
         TextView textViewTag;
-        TextView textViewIp;
         TextView textViewLoading;
         ImageView imageIcon;
         ProgressBar progressBarPrinting;
