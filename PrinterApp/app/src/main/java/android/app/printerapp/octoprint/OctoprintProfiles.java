@@ -112,4 +112,56 @@ public class OctoprintProfiles {
 
     }
 
+    /**
+     * Delete profiles from the server
+     * @param context
+     * @param url
+     * @param profile
+     */
+    public static void updateProfile(final Context context, final String url, final String profile){
+
+        StringEntity entity = null;
+        try {
+
+            JSONObject finalProfile = new JSONObject();
+            JSONObject settings = new JSONObject();
+            settings.put("default",true);
+
+            finalProfile.put("profile",settings);
+
+            entity = new StringEntity(finalProfile.toString(), "UTF-8");
+            Log.i("OUT", "Profile to add:" + finalProfile.toString());
+
+        } catch (UnsupportedEncodingException e) {	e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        HttpClientHandler.patch(context,url + HttpUtils.URL_PROFILES + "/" + profile,
+                entity, "application/json", new JsonHttpResponseHandler(){
+
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+
+
+                Log.i("OUT", "Profile PATCH  successful");
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Log.i("OUT", "Profile PATCH  FOESNT EXIST");
+            }
+        });
+
+
+
+    }
+
 }
