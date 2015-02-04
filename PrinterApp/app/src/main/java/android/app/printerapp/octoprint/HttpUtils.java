@@ -44,11 +44,33 @@ public class HttpUtils {
     public static String getApiKey(String url) {
         String parsedUrl = url.substring(0, url.indexOf("/", 1));
 
+
+
         String id = null;
 
         for (ModelPrinter p : DevicesListController.getList()) {
-            if (p.getAddress().equals(parsedUrl))
-                id = PrintNetworkManager.getNetworkId(p.getName());
+
+
+
+            switch (p.getStatus()){
+
+                case StateUtils.STATE_ADHOC:
+
+                    if (p.getName().equals(PrintNetworkManager.getCurrentNetwork().replace("\"","")))
+                        id = PrintNetworkManager.getNetworkId(p.getName());
+
+                    break;
+
+                default:
+
+                    if (p.getAddress().equals(parsedUrl))
+                        id = PrintNetworkManager.getNetworkId(p.getName());
+
+                    break;
+
+            }
+
+
         }
 
         if (DatabaseController.isPreference(DatabaseController.TAG_KEYS, id)) {
