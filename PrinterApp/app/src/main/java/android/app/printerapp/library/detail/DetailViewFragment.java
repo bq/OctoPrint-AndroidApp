@@ -45,7 +45,7 @@ public class DetailViewFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
             //Inflate the fragment
             rootView = inflater.inflate(R.layout.library_model_detail_right_panel,

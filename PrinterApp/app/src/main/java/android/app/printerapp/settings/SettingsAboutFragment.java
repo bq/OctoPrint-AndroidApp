@@ -2,7 +2,6 @@ package android.app.printerapp.settings;
 
 import android.app.Fragment;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.net.wifi.WifiInfo;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +19,7 @@ import java.util.Locale;
 /**
  * Created by sara on 5/02/15.
  */
-public class SettingsGeneralFragment extends Fragment {
+public class SettingsAboutFragment extends Fragment {
 
     private SettingsListAdapter mAdapter;
 
@@ -44,44 +42,15 @@ public class SettingsGeneralFragment extends Fragment {
         if (savedInstanceState==null){
 
             //Inflate the fragment
-            rootView = inflater.inflate(R.layout.settings_general_fragment, container, false);
+            rootView = inflater.inflate(R.layout.settings_about_fragment, container, false);
 
             /*********************************************************/
 
-            getNetworkSsid(rootView);
+            TextView tv = (TextView) rootView.findViewById(R.id.app_version_textview);
+            tv.setText(setBuildVersion());
 
         }
         return rootView;
-    }
-
-
-    public void notifyAdapter(){
-        mAdapter.notifyDataSetChanged();
-    }
-
-    //Return network without quotes
-    public void getNetworkSsid(View v){
-
-        WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-
-        TextView tv = (TextView) v.findViewById(R.id.network_name_textview);
-        tv.setText(wifiInfo.getSSID().replace("\"", ""));
-
-        ImageView iv = (ImageView) v.findViewById(R.id.wifi_signal_imageview);
-
-        int signal = wifiInfo.getRssi();
-
-        if ((signal <= 0) && (signal > -40)){
-            iv.setImageResource(R.drawable.ic_signal_wifi_4);
-        } else if ((signal <= -40) && (signal > -60)){
-            iv.setImageResource(R.drawable.ic_signal_wifi_3);
-        } else if ((signal <= -60) && (signal > -70)){
-            iv.setImageResource(R.drawable.ic_signal_wifi_2);
-        } else if ((signal <= -70) && (signal > -80)){
-            iv.setImageResource(R.drawable.ic_signal_wifi_1);
-        } else iv.setImageResource(R.drawable.ic_signal_wifi_0);
-
     }
 
     public String setBuildVersion(){

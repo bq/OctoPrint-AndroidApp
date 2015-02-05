@@ -123,7 +123,7 @@ public class PrintViewFragment extends Fragment {
             setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
             //Inflate the fragment
             mRootView = inflater.inflate(R.layout.printview_layout,

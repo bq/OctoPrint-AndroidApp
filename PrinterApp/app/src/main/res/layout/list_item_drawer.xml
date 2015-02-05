@@ -5,7 +5,7 @@
     android:paddingLeft="@dimen/navigation_drawer_margin"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:background="@drawable/drawer_item_selector">
+    android:background="@drawable/actionbar_item_selector">
 
     <ImageView
         android:id="@+id/navigation_drawer_icon_imageview"

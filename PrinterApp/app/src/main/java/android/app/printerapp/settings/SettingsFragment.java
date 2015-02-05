@@ -73,11 +73,17 @@ public class SettingsFragment extends Fragment {
 
             //Set left navigation menu behavior
             (mRootView.findViewById(R.id.settings_nav_general_textview)).setOnClickListener(getOnNavTextViewClickListener());
-            ((ImageView)(mRootView.findViewById(R.id.settings_nav_general_icon))).setColorFilter(R.color.dark_gray, PorterDuff.Mode.MULTIPLY);
+            ((ImageView) (mRootView.findViewById(R.id.settings_nav_general_icon))).setColorFilter(R.color.dark_gray, PorterDuff.Mode.MULTIPLY);
             (mRootView.findViewById(R.id.settings_nav_devices_textview)).setOnClickListener(getOnNavTextViewClickListener());
-            ((ImageView)(mRootView.findViewById(R.id.settings_nav_devices_icon))).setColorFilter(R.color.dark_gray, PorterDuff.Mode.MULTIPLY);
+            ((ImageView) (mRootView.findViewById(R.id.settings_nav_devices_icon))).setColorFilter(R.color.dark_gray, PorterDuff.Mode.MULTIPLY);
             (mRootView.findViewById(R.id.settings_nav_about_textview)).setOnClickListener(getOnNavTextViewClickListener());
-            ((ImageView)(mRootView.findViewById(R.id.settings_nav_about_icon))).setColorFilter(R.color.dark_gray, PorterDuff.Mode.MULTIPLY);
+            ((ImageView) (mRootView.findViewById(R.id.settings_nav_about_icon))).setColorFilter(R.color.dark_gray, PorterDuff.Mode.MULTIPLY);
+
+            //Set the general settings fragment as the main view
+            FragmentTransaction fragmentTransaction = mManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_top, R.anim.fragment_slide_out_down);
+            SettingsGeneralFragment generalSettings = new SettingsGeneralFragment();
+            fragmentTransaction.replace(R.id.settings_fragment_container, generalSettings).commit();
 
         }
         return mRootView;
@@ -103,14 +109,16 @@ public class SettingsFragment extends Fragment {
 
                 switch (v.getId()) {
                     case R.id.settings_nav_general_textview:
-
+                        SettingsGeneralFragment generalSettings = new SettingsGeneralFragment();
+                        fragmentTransaction.replace(R.id.settings_fragment_container, generalSettings).commit();
                         break;
                     case R.id.settings_nav_devices_textview:
                         SettingsDevicesFragment devicesSettings = new SettingsDevicesFragment();
                         fragmentTransaction.replace(R.id.settings_fragment_container, devicesSettings, ListContent.ID_DEVICES_SETTINGS).commit();
                         break;
                     case R.id.settings_nav_about_textview:
-
+                        SettingsAboutFragment aboutSettings = new SettingsAboutFragment();
+                        fragmentTransaction.replace(R.id.settings_fragment_container, aboutSettings, ListContent.ID_DEVICES_SETTINGS).commit();
                         break;
                     default:
                         break;
@@ -135,12 +143,17 @@ public class SettingsFragment extends Fragment {
             //Set the behavior of the nav items
             for (int i = 0; i < navMenu.getChildCount(); i++) {
                 View v = navMenu.getChildAt(i);
-                if (v instanceof TextView) {
-                    TextView tv = (TextView) v;
-                    if (tv.getId() == selectedId)
-                        tv.setTextAppearance(getActivity(), R.style.SelectedNavigationMenuItem);
-                    else
-                        tv.setTextAppearance(getActivity(), R.style.NavigationMenuItem);
+                if (v instanceof LinearLayout) {
+                    for (int j = 0; j < navMenu.getChildCount(); j++) {
+                        View l = ((LinearLayout) v).getChildAt(j);
+                        if (l instanceof TextView) {
+                            TextView tv = (TextView) l;
+                            if (tv.getId() == selectedId)
+                                tv.setTextAppearance(getActivity(), R.style.SelectedNavigationMenuItem);
+                            else
+                                tv.setTextAppearance(getActivity(), R.style.NavigationMenuItem);
+                        }
+                    }
                 }
             }
 
@@ -218,7 +231,7 @@ public class SettingsFragment extends Fragment {
         adb.show();
     }
 
-    public void notifyAdapter(){
+    public void notifyAdapter() {
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DEVICES_SETTINGS);
         if (fragment != null) ((SettingsDevicesFragment) fragment).notifyAdapter();
     }

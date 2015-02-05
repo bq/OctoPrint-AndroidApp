@@ -48,13 +48,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         mTabHost = (TabHost) findViewById(R.id.tabHost);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
 
         //Initialize variables
         mManager = getFragmentManager();
@@ -291,10 +288,13 @@ public class MainActivity extends ActionBarActivity {
      */
     @Override
     public void onBackPressed() {
+
+        //Update the actionbar to show the up carat/affordance
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         if (mCurrent != null) {
 
             Log.i("FRAGMENT","Current not null");
-
 
             closePrintView();
             if (mManager.popBackStackImmediate());

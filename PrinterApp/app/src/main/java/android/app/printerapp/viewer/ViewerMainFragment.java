@@ -432,12 +432,6 @@ public class ViewerMainFragment extends Fragment {
                 saveGcodeDialog();
                 return true;
 
-            case R.id.viewer_last_session:
-
-                Toast.makeText(mContext,"Option unavailable",Toast.LENGTH_SHORT).show();
-                //restoreLastPanel();
-                return true;
-
             case R.id.viewer_restore:
                 optionRestoreView();
                 return true;
