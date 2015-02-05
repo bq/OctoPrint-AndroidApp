@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">OctoPrint</string>
+    <string name="about_app_name" translatable="false">Octoprint 3d bq printer controller</string>
+    <string name="about_url" translatable="false">http://www.octoprint.org</string>
+    <string name="about_feedback_url" translatable="false">feedback@octorprint.com</string>
     <string name="title_item_detail">Item Detail</string>
     
     <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</string>

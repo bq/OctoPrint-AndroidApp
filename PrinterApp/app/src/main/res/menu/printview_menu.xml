@@ -29,9 +29,4 @@
         app:showAsAction="never"
         android:title="@string/fragment_settings"/>
 
-    <item
-        android:id="@+id/printview_help"
-        app:showAsAction="never"
-        android:title="@string/help"/>
-
 </menu>
