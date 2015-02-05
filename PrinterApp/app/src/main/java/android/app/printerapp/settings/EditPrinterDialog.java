@@ -418,9 +418,6 @@ public class EditPrinterDialog {
 
                 notifyAdapters();
 
-                MainActivity.performClick(2);
-
-
 
 
             }

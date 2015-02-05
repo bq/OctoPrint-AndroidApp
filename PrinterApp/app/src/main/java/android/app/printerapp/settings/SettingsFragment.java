@@ -209,7 +209,7 @@ public class SettingsFragment extends Fragment {
 
                 ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), StateUtils.TYPE_CUSTOM);
 
-                if (!DevicesListController.checkExisting(m)) {
+                if (!DevicesListController.checkExisting(m.getAddress())) {
 
                     DevicesListController.addToList(m);
                     m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(m.getType()),

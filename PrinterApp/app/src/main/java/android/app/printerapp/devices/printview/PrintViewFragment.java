@@ -133,7 +133,10 @@ public class PrintViewFragment extends Fragment {
 
             //Show gcode tracking if there's a current path in the printer/preferences
 
-            retrieveGcode();
+            if (mPrinter.getJob().getFilename()!=null){
+                retrieveGcode();
+            }
+
 
             //TODO CAMERA DISABLED
             /*mCamera = new CameraHandler(mContext, mPrinter.getAddress());
@@ -586,6 +589,8 @@ public class PrintViewFragment extends Fragment {
         }
 
         if (mPrinter.getLoaded())
+
+            if (mPrinter.getJob().getFilename()!=null)
             //The server actually has a job
             if (!mPrinter.getJob().getFilename().equals("null")) {
 

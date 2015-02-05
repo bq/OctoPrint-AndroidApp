@@ -207,26 +207,17 @@ public class MainActivity extends ActionBarActivity {
                 closeDetailView();
                 //Check if we already created the Fragment to avoid having multiple instances
 
-                Cursor c = DatabaseController.retrieveDeviceList();
-                if (c.getCount() == 0) {
 
-                    showExtraFragment(2, 0);
-
-                } else {
-
-                    if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
-                        mDevicesFragment = new DevicesFragment();
+                if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
+                    mDevicesFragment = new DevicesFragment();
 
 
-                        fragmentTransaction.add(R.id.maintab3, mDevicesFragment, ListContent.ID_DEVICES);
-                    }
-
-                    mCurrent = mDevicesFragment;
-
+                    fragmentTransaction.add(R.id.maintab3, mDevicesFragment, ListContent.ID_DEVICES);
                 }
 
+                mCurrent = mDevicesFragment;
 
-
+                refreshDevicesCount();
             }
             break;
         }
@@ -249,6 +240,22 @@ public class MainActivity extends ActionBarActivity {
            // getSupportActionBar().setTitle(ListContent.ITEMS.get(id).content);
         }
 
+
+    }
+
+    public static void refreshDevicesCount(){
+
+        Cursor c = DatabaseController.retrieveDeviceList();
+        if (c.getCount() == 0) {
+
+            showExtraFragment(2, 0);
+
+        } /*if (c.getCount() == 1) {
+
+            c.moveToFirst();
+            showExtraFragment(1,c.getInt(0));
+
+        }*/
 
     }
 

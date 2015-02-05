@@ -6,6 +6,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
+import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
@@ -31,12 +32,13 @@ public class DiscoveryController {
     private ListView mListView;
 
     private Context mContext;
+    private PrintNetworkManager mNetworkManager;
 
     public DiscoveryController(Context context){
 
         mContext = context;
         mServiceList = new ArrayList<ModelPrinter>();
-        new PrintNetworkManager(DiscoveryController.this);
+        mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
         new JmdnsServiceListener(DiscoveryController.this);
 
         scanDelayDialog();
@@ -66,7 +68,6 @@ public class DiscoveryController {
             public void run() {
 
                 pd.dismiss();
-                endDiscovery();
 
             }
         }, 3000);
@@ -117,12 +118,27 @@ public class DiscoveryController {
 
                         DevicesListController.addToList(p);
 
-                        OctoprintConnection.getNewConnection(mContext, p);
-                        dialog.dismiss();
+                        if (p.getStatus() == StateUtils.STATE_NEW) {
+
+
+                            OctoprintConnection.getNewConnection(mContext, p);
+
+
+                        } else if (p.getStatus() == StateUtils.STATE_ADHOC) {
+
+                            mNetworkManager.setupNetwork(p, i);
+                        }
+
+
+
 
                     }
 
+
+
                 }
+
+                dialog.dismiss();
 
 
             }
@@ -131,19 +147,33 @@ public class DiscoveryController {
         dialog.show();
 
     }
-    private void endDiscovery(){
+    public boolean checkExisting(ModelPrinter m){
 
+        boolean exists = false;
 
+        for (ModelPrinter p : mServiceList){
+
+            if ((m.getName().equals(p.getName()))||(m.getName().contains(PrintNetworkManager.getNetworkId(p.getName())))){
+
+                exists = true;
+
+            }
+
+        }
+
+        return exists;
 
     }
 
     public void addElement(ModelPrinter name){
 
-        if (!DevicesListController.checkExisting(name.getAddress())){
+        if (!DevicesListController.checkExisting(name.getAddress()))
+            if (!checkExisting(name)){
 
-            mServiceList.add(name);
-            mAdapter.notifyDataSetChanged();
-        }
+                mServiceList.add(name);
+                if (mAdapter!=null)
+                    mAdapter.notifyDataSetChanged();
+            }
 
     }
     public Context getActivity(){

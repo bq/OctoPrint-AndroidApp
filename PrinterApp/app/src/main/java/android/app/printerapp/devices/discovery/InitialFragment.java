@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 /**
+ * This fragment will contain the initial screen before any printer is added
+ *
  * Created by alberto-baeza on 2/4/15.
  */
 public class InitialFragment extends Fragment{

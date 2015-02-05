@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
@@ -172,26 +171,6 @@ public class DevicesListController {
 		
 		
 		return -1;
-		
-	}
-
-    //TODO remove this method
-	
-	public static boolean checkExisting(ModelPrinter m){
-		
-		boolean exists = false;
-		
-		for (ModelPrinter p : mList){
-			
-			if ((m.getName().equals(p.getName()))||(m.getName().contains(PrintNetworkManager.getNetworkId(p.getName())))){
-				
-				exists = true;
-				
-			}
-			
-		}
-		
-		return exists;
 		
 	}
 
