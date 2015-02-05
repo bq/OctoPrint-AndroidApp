@@ -1,10 +1,10 @@
 package android.app.printerapp.octoprint;
 
 import android.app.ProgressDialog;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
-import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
@@ -238,7 +238,7 @@ public class OctoprintConnection {
                                 getSettings(p);
                                 Log.i("Connection","Printer already connected to " + p.getPort());
 
-                                String network = PrintNetworkReceiver.getCurrentNetwork();
+                                String network = MainActivity.getCurrentNetwork(context);
                                 p.setNetwork(network);
 
                                 p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType()), network));

@@ -210,10 +210,6 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 		return mNetworkList;
 	}
 
-    public static String getCurrentNetwork(){
 
-        return  mWifiManager.getConnectionInfo().getSSID();
-
-    }
 	
 }

@@ -21,6 +21,7 @@ public class ListContent {
     public static final String ID_SETTINGS = "Settings";
     public static final String ID_DETAIL = "Detail";
     public static final String ID_PRINTVIEW = "PrintView";
+    public static final String ID_INITIAL = "Initial";
 
 	/**
 	 * An array of sample (dummy) items.

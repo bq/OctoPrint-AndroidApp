@@ -5,8 +5,7 @@ import android.app.Fragment;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.devices.discovery.JmdnsServiceListener;
-import android.app.printerapp.devices.discovery.PrintNetworkManager;
+import android.app.printerapp.devices.discovery.DiscoveryController;
 import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
@@ -56,11 +55,6 @@ import java.io.File;
 
     //Controllers and adapters
     private DevicesGridAdapter mGridAdapter;
-
-    //Network manager contoller
-    private PrintNetworkManager mNetworkManager;
-    private JmdnsServiceListener mServiceListener;
-
     private ImageView mHideOption;
 
     //Empty constructor
@@ -130,8 +124,8 @@ import java.io.File;
             hideOptionHandler();
 
                     //Custom service listener
-            mServiceListener = new JmdnsServiceListener(this);
-            mNetworkManager = new PrintNetworkManager(this);
+            //mServiceListener = new JmdnsServiceListener(this);
+            //mNetworkManager = new PrintNetworkManager(this);
 
         }
         return rootView;
@@ -149,13 +143,19 @@ import java.io.File;
 
         switch (item.getItemId()) {
 
+            case R.id.devices_add:
+
+                new DiscoveryController(getActivity());
+
+                return true;
+
             case R.id.settings:
                 MainActivity.showExtraFragment(0, 0);
                 return true;
 
             case R.id.devices_menu_reload: //Reload service discovery
 
-                optionReload();
+                //optionReload();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -188,35 +188,6 @@ import java.io.File;
 
 
 
-    /**
-     * Add a new element to the list and notify the adapter
-     * It's handled on this Fragment to allow dynamic addition
-     *
-     * @param m Printer to add
-     */
-    public void addElement(final ModelPrinter m) {
-
-
-        getActivity().runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                if (!DevicesListController.checkExisting(m.getAddress())) {
-
-                    DevicesListController.addToList(m);
-
-                    //m.setNotLinked();
-                    notifyAdapter();
-
-                }
-
-            }
-        });
-
-
-
-    }
 
     //TODO get rid of this
     //Notify all adapters
@@ -230,33 +201,6 @@ import java.io.File;
         } catch (NullPointerException e) {
             //Random adapter crash
             e.printStackTrace();
-        }
-
-    }
-
-
-
-
-
-
-    /**
-     * Method to reload the service discovery and reload the devices
-     */
-    public void optionReload(){
-
-        mServiceListener.reloadListening();
-        mNetworkManager.reloadNetworks();
-
-        for (ModelPrinter p : DevicesListController.getList()){
-
-            if((p.getStatus()!=StateUtils.STATE_NEW)&&(p.getStatus()!=StateUtils.STATE_ADHOC)){
-
-                Log.i("CONNECTION","Connection from: RELOAD");
-
-                OctoprintConnection.doConnection(getActivity(),p);
-
-            }
-
         }
 
     }
@@ -291,9 +235,9 @@ import java.io.File;
                 if (m != null) {
 
                     if (m.getStatus() == StateUtils.STATE_NEW) {
-                        codeDialog(m);
+                        //codeDialog(m);
                     } else if (m.getStatus() == StateUtils.STATE_ADHOC) {
-                        mNetworkManager.setupNetwork(m, arg2);
+                        //mNetworkManager.setupNetwork(m, arg2);
                     } else {
                         //show custom dialog
                         if (m.getStatus() == StateUtils.STATE_ERROR) {
@@ -376,20 +320,6 @@ import java.io.File;
                 return false;
             }
         };
-    }
-
-
-    /**
-     * Dialog for the QR code insertion and sending
-     *
-     * @param m
-     */
-    public void codeDialog(final ModelPrinter m) {
-
-        OctoprintConnection.getNewConnection(getActivity(), m);
-
-        notifyAdapter();
-
     }
 
     /********************************************************************

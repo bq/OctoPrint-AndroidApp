@@ -3,7 +3,6 @@ package android.app.printerapp.devices.discovery;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
@@ -46,7 +45,7 @@ public class PrintNetworkManager {
     private static final String PASS = "OctoPrint";
 
     //Reference to main Controller
-    private static DevicesFragment mController;
+    private static DiscoveryController mController;
 
     //Wifi network manager
     private static WifiManager mManager;
@@ -68,7 +67,7 @@ public class PrintNetworkManager {
 
 		
 		//Constructor
-		public PrintNetworkManager(DevicesFragment context){
+		public PrintNetworkManager(DiscoveryController context){
 			
 			mController = context;
 
@@ -166,7 +165,7 @@ public class PrintNetworkManager {
 							//Inflate network layout
 							
 							AlertDialog.Builder adb_net = new AlertDialog.Builder(getContext());
-							LayoutInflater inflater = mController.getActivity().getLayoutInflater();
+							LayoutInflater inflater = (LayoutInflater)mController.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 							View v = inflater.inflate(R.layout.alertdialog_network, null);
 							
 							final EditText et_ssid = (EditText)v.findViewById(R.id.adb_et1);
@@ -286,7 +285,7 @@ public class PrintNetworkManager {
                         mPosition = -1;
                         mPrinter = null;
 
-                        mController.notifyAdapter();
+                        //mController.notifyAdapter();
                         // mReceiver.register();
                         dismissNetworkDialog();
 
@@ -466,13 +465,8 @@ public class PrintNetworkManager {
 
                 DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", null, false);
 
+                Toast.makeText(mController.getActivity(), message, Toast.LENGTH_LONG).show();
 
-                mController.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(mController.getActivity(), message, Toast.LENGTH_LONG).show();
-                    }
-                });
 
             }
         }

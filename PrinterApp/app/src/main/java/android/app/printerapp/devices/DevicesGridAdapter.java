@@ -1,7 +1,7 @@
 package android.app.printerapp.devices;
 
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
@@ -162,7 +162,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                         case StateUtils.TYPE_PRUSA:
 
                             if (m.getNetwork() != null)
-                                if (m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())) {
+                                if (m.getNetwork().equals(MainActivity.getCurrentNetwork(getContext()))) {
                                     if (m.getDisplayColor() != 0) {
 
                                         holder.imageIcon.setImageResource(R.drawable.prusa_transparent);
@@ -303,7 +303,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
 
             if (m.getNetwork() != null)
-                if (!m.getNetwork().equals(PrintNetworkReceiver.getCurrentNetwork())) {
+                if (!m.getNetwork().equals(MainActivity.getCurrentNetwork(getContext()))) {
                     Log.i("Network", "NOPE Network");
                     holder.imageIcon.clearColorFilter();
                     holder.imageIcon.setImageResource(R.drawable.witbox_nowifi);

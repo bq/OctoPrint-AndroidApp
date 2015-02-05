@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.InitialFragment;
 import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
@@ -15,7 +17,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -202,11 +206,27 @@ public class MainActivity extends ActionBarActivity {
             case 2: {
                 closeDetailView();
                 //Check if we already created the Fragment to avoid having multiple instances
-                if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
-                    mDevicesFragment = new DevicesFragment();
-                    fragmentTransaction.add(R.id.maintab3, mDevicesFragment, ListContent.ID_DEVICES);
+
+                Cursor c = DatabaseController.retrieveDeviceList();
+                if (c.getCount() == 0) {
+
+                    showExtraFragment(2, 0);
+
+                } else {
+
+                    if (getFragmentManager().findFragmentByTag(ListContent.ID_DEVICES) == null) {
+                        mDevicesFragment = new DevicesFragment();
+
+
+                        fragmentTransaction.add(R.id.maintab3, mDevicesFragment, ListContent.ID_DEVICES);
+                    }
+
+                    mCurrent = mDevicesFragment;
+
                 }
-                mCurrent = mDevicesFragment;
+
+
+
             }
             break;
         }
@@ -271,6 +291,12 @@ public class MainActivity extends ActionBarActivity {
                 mTransaction.replace(R.id.maintab3, detailp, ListContent.ID_PRINTVIEW).commit();
                 break;
 
+            case 2:
+
+                InitialFragment initial = new InitialFragment();
+                mTransaction.replace(R.id.maintab3, initial, ListContent.ID_INITIAL).commit();
+
+                break;
         }
     }
 
@@ -332,6 +358,13 @@ public class MainActivity extends ActionBarActivity {
                 ViewerMainFragment.openFileDialog(path);
             }
         });
+
+    }
+
+    public static String getCurrentNetwork(Context context){
+
+        WifiManager mWifiManager =  (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        return  mWifiManager.getConnectionInfo().getSSID();
 
     }
 

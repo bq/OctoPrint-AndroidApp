@@ -2,10 +2,10 @@ package android.app.printerapp.settings;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
@@ -213,7 +213,7 @@ public class SettingsFragment extends Fragment {
 
                     DevicesListController.addToList(m);
                     m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(m.getType()),
-                            PrintNetworkReceiver.getCurrentNetwork()));
+                            MainActivity.getCurrentNetwork(getActivity())));
                     //m.setLinked(getActivity());
                     notifyAdapter();
 
