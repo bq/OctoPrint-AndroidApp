@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">OctoPrint</string>
+    <string name="about_app_name" translatable="false">Octoprint 3d bq printer controller</string>
+    <string name="about_url" translatable="false">http://www.octoprint.org</string>
+    <string name="about_feedback_url" translatable="false">feedback@octorprint.com</string>
     <string name="title_item_detail">Item Detail</string>
     
     <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</string>
@@ -179,9 +182,16 @@
     <string name="viewer_profile_delete">Do you want to delete this profile?</string>
     <string name="viewer_profile_delete_error">That profile can\'t be deleted</string>
     <string name="viewer_multiply_error">No more models can be added to the plate</string>
-    
-    <string name="settings_network">Default network</string>
-    <string name="settings_printers">Linked Witbox</string>
+
+    <string name="settings_general">General</string>
+    <string name="settings_devices">Devices</string>
+    <string name="settings_about">About</string>
+    <string name="settings_push_notifications">Push notifications</string>
+    <string name="settings_slicing">Slicing</string>
+    <string name="settings_print">Printing</string>
+    <string name="settings_save_files">Save all the printed files in the device</string>
+    <string name="settings_network">Wireless network</string>
+    <string name="settings_printers">Linked devices</string>
     <string name="settings_hidden">Hidden elements</string>
     <string name="settings_add_title">Add new printer</string>
     <string name="settings_edit_name">Edit printer</string>

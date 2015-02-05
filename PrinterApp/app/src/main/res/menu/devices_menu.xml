@@ -18,11 +18,4 @@
         app:showAsAction="never"
         android:title="@string/fragment_settings"/>
 
-    <item
-        android:id="@+id/devices_menu_help"
-        app:showAsAction="never"
-        android:icon="@android:drawable/stat_notify_sync"
-        android:title="@string/help"/>
- 
-  
 </menu>

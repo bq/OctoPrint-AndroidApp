@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <!-- Title -->
+    <TextView
+        style="@style/SettingsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/settings_general" />
+
+    <View
+        style="@style/HorizontalSeparator"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginBottom="@dimen/content_margin_xsmall"/>
+
+    <TextView
+        style="@style/SettingsSectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:text="@string/settings_push_notifications" />
+
+    <View
+        style="@style/HorizontalSeparator"
+        android:layout_marginTop="@dimen/content_margin_xsmall"
+        android:layout_marginBottom="@dimen/content_margin_xsmall"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp">
+
+        <TextView
+            style="@style/SettingsSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_slicing" />
+
+        <CheckBox
+            android:id="@+id/settings_slicing_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp">
+
+        <TextView
+            style="@style/SettingsSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_print" />
+
+        <CheckBox
+            android:id="@+id/settings_printing_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <View
+        style="@style/HorizontalSeparator"
+        android:layout_marginTop="@dimen/content_margin_xsmall"
+        android:layout_marginBottom="@dimen/content_margin_xsmall"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginBottom="@dimen/content_margin_normal">
+
+        <TextView
+            style="@style/SettingsSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_save_files" />
+
+        <CheckBox
+            android:id="@+id/settings_save_files_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <!-- Network Title -->
+    <TextView
+        style="@style/SettingsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/settings_network" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="60dp"
+        android:padding="@dimen/content_padding_xsmall">
+
+        <ImageView
+            android:id="@+id/wifi_signal_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_signal_wifi_4" />
+
+        <TextView
+            android:id="@+id/network_name_textview"
+            style="@style/SettingsSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hardware test" />
+
+        <TextView
+            android:id="@+id/network_status_textview"
+            style="@style/SettingsDeviceInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Conexión establecida" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -150,9 +150,16 @@
     <string name="viewer_profile_delete">¿Quieres eliminar este perfil?</string>
     <string name="viewer_profile_delete_error">No se puede eliminar ese perfil</string>
     <string name="viewer_multiply_error">No se pueden añadir mas modelos al plato</string>
-    
-    <string name="settings_network">Red por defecto</string>
-    <string name="settings_printers">Witbox enlazadas</string>
+
+    <string name="settings_general">Generales</string>
+    <string name="settings_devices">Dispositivos</string>
+    <string name="settings_about">About</string>
+    <string name="settings_push_notifications">Notificaciones push</string>
+    <string name="settings_slicing">Laminado</string>
+    <string name="settings_print">Impresión</string>
+    <string name="settings_save_files">Guardar todos los archivos impresos en dispositivo</string>
+    <string name="settings_network">Conexión inalámbrica</string>
+    <string name="settings_printers">Dispositivos enlazados</string>
     <string name="settings_hidden">Elementos ocultos</string>
     <string name="settings_add_title">Añadir nueva impresora</string>
     <string name="settings_edit_name">Editar impresora</string>

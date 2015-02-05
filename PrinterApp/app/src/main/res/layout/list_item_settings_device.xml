@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/device_icon_imageview"
+        android:layout_width="50dp"
+        android:layout_height="42dp"
+        android:layout_margin="@dimen/content_margin_xsmall"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_custom_generic" />
+
+    <TextView
+        android:id="@+id/device_name_textview"
+        style="@style/SettingsDeviceTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/device_icon_imageview"
+        android:text="BQ Witbox 3d printer (B9:42) [192.168.10.212]"/>
+
+    <TextView
+        android:id="@+id/device_network_textview"
+        style="@style/SettingsDeviceInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/device_name_textview"
+        android:text="(Hardware test)"/>
+
+    <LinearLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/device_connection_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/selectable_rect_background_gray"
+            android:padding="@dimen/content_margin_xsmall"
+            android:layout_margin="@dimen/content_margin_xsmall"
+            android:src="@drawable/ic_settings_disconnect" />
+
+        <ImageButton
+            android:id="@+id/device_edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/selectable_rect_background_gray"
+            android:padding="@dimen/content_margin_xsmall"
+            android:layout_margin="@dimen/content_margin_xsmall"
+            android:src="@drawable/ic_edit" />
+
+        <ImageButton
+            android:id="@+id/device_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/selectable_rect_background_gray"
+            android:padding="@dimen/content_margin_xsmall"
+            android:layout_margin="@dimen/content_margin_xsmall"
+            android:src="@drawable/ic_delete_grey" />
+    </LinearLayout>
+
+
+</RelativeLayout>

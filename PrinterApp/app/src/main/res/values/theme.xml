@@ -17,7 +17,7 @@
         <!--<item name="actionModeStyle">@style/AppBaseTheme.Green.ActionMode</item>-->
         <item name="actionModeBackground">@color/theme_primary</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <!--<item name="actionBarItemBackground">@drawable/drawer_item_selector</item>-->
+        <item name="actionBarItemBackground">@drawable/actionbar_item_selector</item>
         <!-- Menu -->
         <!--<item name="android:popupMenuStyle">@style/PopupMenu.Green</item>-->
         <item name="textAppearanceLargePopupMenu">@style/PopupMenu.TextAppearanceLarge</item>

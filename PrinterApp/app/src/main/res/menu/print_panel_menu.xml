@@ -21,11 +21,6 @@
         android:title="@string/viewer_menu_save_gcode"/>
 
     <item
-        android:id="@+id/viewer_last_session"
-        app:showAsAction="never"
-        android:title="@string/viewer_menu_last_session"/>
-
-    <item
         android:id="@+id/viewer_restore"
         app:showAsAction="never"
         android:title="@string/viewer_menu_restore"/>
@@ -35,15 +30,9 @@
         app:showAsAction="never"
         android:title="@string/viewer_menu_clean"/>
 
-
     <item
         android:id="@+id/library_settings"
         android:title="@string/fragment_settings"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/viewer_help"
-        app:showAsAction="never"
-        android:title="@string/help"/>
 
 </menu>

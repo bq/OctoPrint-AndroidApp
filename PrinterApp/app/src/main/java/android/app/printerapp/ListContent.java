@@ -19,6 +19,7 @@ public class ListContent {
     public static final String ID_LIBRARY = "Library";
     public static final String ID_VIEWER = "Viewer";
     public static final String ID_SETTINGS = "Settings";
+    public static final String ID_DEVICES_SETTINGS = "Devices_settings";
     public static final String ID_DETAIL = "Detail";
     public static final String ID_PRINTVIEW = "PrintView";
 
