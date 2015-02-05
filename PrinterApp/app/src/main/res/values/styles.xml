@@ -196,6 +196,37 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="SettingsTitle" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/content_padding_small</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="SettingsSectionTitle" parent="SettingsTitle">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="SettingsDeviceTitle" parent="SettingsTitle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="SettingsDeviceInfo" parent="android:TextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">@color/body_text_3</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/content_padding_small</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
     <!-- Library styles -->
     <style name="ModelName" parent="android:TextAppearance">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>

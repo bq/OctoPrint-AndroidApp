@@ -26,18 +26,18 @@ import java.util.List;
 /**
  * This is the adapter for the printer list on the settings fragment
  * It's going to hold the same device list as the Devices fragment
- * @author alberto-baeza
  *
+ * @author alberto-baeza
  */
-public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
+public class SettingsListAdapter extends ArrayAdapter<ModelPrinter> {
 
-    	public SettingsListAdapter(Context context, int resource,
-			List<ModelPrinter> objects) {
-		super(context, resource, objects);
-	}
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+    public SettingsListAdapter(Context context, int resource,
+                               List<ModelPrinter> objects) {
+        super(context, resource, objects);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
         final ModelPrinter m = getItem(position);
@@ -52,21 +52,24 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
             if (v == null) {
 
-                v = inflater.inflate(R.layout.settings_row, null, false);
+                v = inflater.inflate(R.layout.list_item_settings_device, null, false);
 
             } else {
-                if (!DatabaseController.checkExisting(m))  v = inflater.inflate(R.layout.null_item, null, false);
-                else v = inflater.inflate(R.layout.settings_row, null, false);
+                if (!DatabaseController.checkExisting(m))
+                    v = inflater.inflate(R.layout.null_item, null, false);
+                else v = inflater.inflate(R.layout.list_item_settings_device, null, false);
                 //v = convertView;
             }
 
+            TextView deviceNameTextView = (TextView) v.findViewById(R.id.device_name_textview);
+            deviceNameTextView.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
 
-            TextView tv = (TextView) v.findViewById(R.id.settings_text);
-            tv.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
+            TextView deviceNetworkTextView = (TextView) v.findViewById(R.id.device_network_textview);
+            deviceNetworkTextView.setText("(" + m.getNetwork().replace("\"", "") + ")");
 
-            ImageView iv = (ImageView) v.findViewById(R.id.imageView_settings);
+            ImageView iv = (ImageView) v.findViewById(R.id.device_icon_imageview);
 
-            final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.settings_connection);
+            final ImageButton connectionButton = (ImageButton) v.findViewById(R.id.device_connection_button);
 
             switch (m.getStatus()) {
 
@@ -80,7 +83,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
             }
 
-            switch (m.getType()){
+            switch (m.getType()) {
 
                 case StateUtils.TYPE_WITBOX:
                     iv.setImageResource(R.drawable.icon_witbox);
@@ -94,7 +97,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
             }
 
-            v.findViewById(R.id.settings_delete).setOnClickListener(new View.OnClickListener() {
+            v.findViewById(R.id.device_delete_button).setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
@@ -109,11 +112,11 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                 }
             });
 
-            v.findViewById(R.id.settings_edit).setOnClickListener(new View.OnClickListener() {
+            v.findViewById(R.id.device_edit_button).setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                  appearanceEditDialog(m);
+                    appearanceEditDialog(m);
                 }
             });
 
@@ -137,13 +140,13 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
         }
 
-		return v;
-	}
+        return v;
+    }
 
     //Edit printer name by changing its display name and write it into the Database
-    public void appearanceEditDialog(final ModelPrinter m){
+    public void appearanceEditDialog(final ModelPrinter m) {
 
-        final String [] colorArray = new String[]{getContext().getResources().getString(R.string.settings_default_color),"default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
+        final String[] colorArray = new String[]{getContext().getResources().getString(R.string.settings_default_color), "default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
 
         AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
         adb.setTitle(R.string.settings_edit_name);
@@ -156,7 +159,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
         et.setText(m.getDisplayName());
 
         final Spinner spinner = (Spinner) v.findViewById(R.id.settings_edit_color_spinner);
-        spinner.setAdapter(new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, colorArray));
+        spinner.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, colorArray));
 
         adb.setView(v);
 
@@ -167,7 +170,8 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
 
                 String newName = et.getText().toString();
                 String newColor = null;
-                if (spinner.getSelectedItemPosition()!=0) newColor = colorArray[spinner.getSelectedItemPosition()];
+                if (spinner.getSelectedItemPosition() != 0)
+                    newColor = colorArray[spinner.getSelectedItemPosition()];
 
                 if (!newName.equals("")) m.setDisplayName(newName);
                 DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, m.getId(), newName);
@@ -175,7 +179,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
                 notifyDataSetChanged();
 
                 //Set the new name on the server
-                OctoprintConnection.setSettings(m,newName,newColor,getContext());
+                OctoprintConnection.setSettings(m, newName, newColor, getContext());
 
             }
         });
@@ -185,9 +189,7 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter>{
         adb.show();
 
 
-
     }
-	
 
- 
+
 }

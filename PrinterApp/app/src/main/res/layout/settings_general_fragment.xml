@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <!-- Title -->
+    <TextView
+        style="@style/SettingsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/settings_general"/>
+
+    <View
+        style="@style/HorizontalSeparator"
+        android:layout_marginTop="@dimen/content_margin_small" />
+
+    <!-- Network Title -->
+    <TextView
+        style="@style/SettingsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/settings_network"/>
+
+    <View
+        style="@style/HorizontalSeparator"
+        android:layout_marginTop="@dimen/content_margin_small" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_xsmall">
+
+        <ImageView
+            android:id="@+id/wifi_signal_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_signal_wifi_4" />
+
+        <TextView
+            android:id="@+id/network_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/SettingsSectionTitle"
+            android:text="Hardware test"/>
+
+        <TextView
+            android:id="@+id/network_status_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/SettingsDeviceInfo"
+            android:text="Conexión establecida"/>
+
+    </LinearLayout>
+
+</LinearLayout>

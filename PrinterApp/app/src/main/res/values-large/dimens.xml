@@ -41,4 +41,7 @@
 
     <!-- Print view action buttons -->
     <dimen name="printview_action_button_padding">3dp</dimen>
+
+    <!-- Settings tab -->
+    <dimen name="settings_left_nav_panel_width">260dp</dimen>
 </resources>
