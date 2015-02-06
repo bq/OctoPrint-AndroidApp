@@ -51,6 +51,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.devsmart.android.ui.HorizontalListView;
 
 import org.json.JSONException;
@@ -692,8 +693,8 @@ public class ViewerMainFragment extends Fragment {
      * ********************** SAVE FILE *******************************
      */
     private void saveNewProject() {
-        View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_project_name_dialog, null);
-        final EditText proyectNameText = (EditText) dialogText.findViewById(R.id.proyect_name);
+        View createProjectDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_create_project, null);
+        final EditText proyectNameText = (EditText) createProjectDialog.findViewById(R.id.proyect_name);
 
         proyectNameText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -713,63 +714,44 @@ public class ViewerMainFragment extends Fragment {
         });
 
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-        adb.setView(dialogText)
-                .setTitle(mContext.getString(R.string.project_name))
-                .setCancelable(false)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(getActivity());
+        createFolderDialog.title(R.string.project_name_title)
+                .customView(createProjectDialog, true)
+                .positiveColorRes(R.color.theme_accent_1)
+                .positiveText(R.string.ok)
+                .negativeColorRes(R.color.body_text_2)
+                .negativeText(R.string.cancel)
+                .autoDismiss(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        if (mFile!=null){
+                            if (LibraryController.hasExtension(0, mFile.getName())) {
+                                if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
+                                    proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
+                                else {
+                                    if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null))
+                                        dialog.dismiss();
+                                    else {
+                                        Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        } else dialog.dismiss();
+                    }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
+                        dialog.dismiss();
                     }
+
                 })
-                .setPositiveButton(R.string.ok, null); //onclicklistener=null to avoid to dismiss the dialog
+                .show();
 
-        //We need the alertdialog instance to dismiss it
-        final AlertDialog ad = adb.create();
-        ad.show();
-
-        //We look for
-        Button okButton = ad.getButton(DialogInterface.BUTTON_POSITIVE);
-        okButton.setOnClickListener(new CustomListener(ad, proyectNameText));
-    }
-
-    private class CustomListener implements View.OnClickListener {
-        private final Dialog dialog;
-        private final EditText proyectNameText;
-
-        public CustomListener(Dialog dialog, EditText proyectNameText) {
-            this.dialog = dialog;
-            this.proyectNameText = proyectNameText;
-        }
-
-        @Override
-        public void onClick(View v) {
-
-            /**
-             * Added filename check for .stl files.
-             *
-             *  Alberto
-             */
-            if (mFile!=null){
-                if (LibraryController.hasExtension(0, mFile.getName())) {
-                    if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
-                        proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
-                    else {
-                        if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null))
-                            dialog.dismiss();
-                        else {
-                            Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                    }
-                } else {
-                    Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-            } else dialog.dismiss();
-
-
-        }
     }
 
 

@@ -113,7 +113,9 @@
     <string name="library_filter_dialog_stl">Show STL files</string>
     <string name="library_filter_dialog_remove">Remove filters</string>
         
-    <string name="library_create_dialog_title">Name new folder</string>
+    <string name="library_create_dialog_title">Create new folder</string>
+    <string name="library_create_folder_name">New folder name</string>
+    <string name="library_create_folder_name_error">The folder name can\'t be empty</string>
     <string name="library_select_printer_title">Select available printers</string>
     <string name="library_option_dialog_title">Model options</string>
     <string name="library_option_print">Send to printer</string>
@@ -275,7 +277,8 @@
     <string name="error_saving_invalid_model">Print Panel is empty. Open and edit a file and try again.</string>
          
     <string name="ok">OK</string>
-    <string name="project_name">Please, insert a new name</string>
+    <string name="project_name_title">Save project</string>
+    <string name="project_name">Project name</string>
     <string name="proyect_name_not_available">That name exists! Please, choose another name</string>
     <string name="creating_project">Creating project &#8230;</string> 
     <string name="new_project">New project</string>

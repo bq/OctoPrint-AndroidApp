@@ -91,7 +91,9 @@
     <string name="library_filter_dialog_stl">Mostrar archivos STL</string>
     <string name="library_filter_dialog_remove">Borrar filtros</string>
         
-    <string name="library_create_dialog_title">Nombre de la nueva carpeta</string>
+    <string name="library_create_dialog_title">Crear nueva carpeta</string>
+    <string name="library_create_folder_name">Nombre de carpeta</string>
+    <string name="library_create_folder_name_error">El nombre de la carpeta no puede estar vacío</string>
     <string name="library_select_printer_title">Seleccionar impresoras disponibles</string>
     <string name="library_option_dialog_title">Opciones del modelo</string>
     <string name="library_option_print">Enviar a impresora</string>
@@ -251,7 +253,8 @@
     <string name="gcode_viewer">Archivos Gcode</string>
     <string name="new_project">Nuevo proyecto</string>
     <string name="ok">OK</string>
-    <string name="project_name">Introduzca un nuevo nombre por favor</string>
+    <string name="project_name_title">Guardar proyecto</string>
+    <string name="project_name">Nombre del proyecto</string>
     <string name="proyect_name_not_available">Ese nombre ya existe, elija uno distinto</string>
     <string name="viewer_button_rotate_negative_angle">-15º</string>
     <string name="viewer_button_rotate_positive_angle">+15º</string>

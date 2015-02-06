@@ -24,7 +24,7 @@
 
             <TextView
                 style="@style/DialogContent"
-                android:id="@+id/delete_files_info_textview"
+                android:id="@+id/new_folder_name_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/library_menu_models_delete_files" />

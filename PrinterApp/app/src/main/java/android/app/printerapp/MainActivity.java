@@ -4,15 +4,18 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.printerapp.devices.DevicesFragment;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
+import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.settings.SettingsFragment;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
@@ -25,6 +28,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialogCompat;
+
+import java.io.File;
 
 /**
  * Created by alberto-baeza on 1/21/15.
@@ -85,7 +92,6 @@ public class MainActivity extends ActionBarActivity {
 
         //Set tab host for the view
         setTabHost();
-
 
     }
 

@@ -337,7 +337,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                     LayoutInflater inflater = (LayoutInflater) mContext.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View deleteDialogView = inflater.inflate(R.layout.dialog_delete_models, null);
-                    ((TextView)deleteDialogView.findViewById(R.id.delete_files_info_textview)).setText(mContext.getResources().getQuantityString(R.plurals.library_models_delete, ids.size()));
+                    ((TextView)deleteDialogView.findViewById(R.id.new_folder_name_textview)).setText(mContext.getResources().getQuantityString(R.plurals.library_models_delete, ids.size()));
                     ((ImageView)deleteDialogView.findViewById(R.id.delete_files_icon)).setColorFilter(mContext.getResources().getColor(R.color.body_text_2));
 
                     //TODO Set images

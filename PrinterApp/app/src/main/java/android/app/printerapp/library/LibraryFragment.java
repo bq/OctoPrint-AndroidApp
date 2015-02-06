@@ -2,6 +2,7 @@ package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,8 +31,12 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialogCompat;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -393,28 +399,38 @@ public class LibraryFragment extends Fragment {
     //Create a single new folder via mkdir
     public void optionCreateLibrary() {
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.library_create_dialog_title);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View getModelsDialogView = inflater.inflate(R.layout.dialog_create_folder, null);
+        final MaterialEditText nameEditText = (MaterialEditText) getModelsDialogView.findViewById(R.id.new_folder_name_edittext);
 
-        final EditText et = new EditText(getActivity());
-        adb.setView(et);
-        et.setText("New");
-        et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        et.setSelectAllOnFocus(true);
+        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(getActivity());
+        createFolderDialog.title(R.string.library_create_dialog_title)
+                .customView(getModelsDialogView, true)
+                .positiveColorRes(R.color.theme_accent_1)
+                .positiveText(R.string.create)
+                .negativeColorRes(R.color.body_text_2)
+                .negativeText(R.string.cancel)
+                .autoDismiss(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        String name = nameEditText.getText().toString().trim();
+                        if (name == null || name.equals("")) {
+                            nameEditText.setError(getString(R.string.library_create_folder_name_error));
+                        }
+                        else {
+                            LibraryController.createFolder(name);
+                            notifyAdapter();
+                            dialog.dismiss();
+                        }
+                    }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
 
-        adb.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String name = et.getText().toString();
-                if (name != null) LibraryController.createFolder(name);
-                notifyAdapter();
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-        adb.show();
-
+                })
+                .show();
     }
 
     public void optionPaste() {
