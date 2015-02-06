@@ -1,6 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.BroadcastReceiver;
@@ -138,12 +137,8 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1", StateUtils.STATE_ADHOC);
 
 
-                        mController.checkNetworkId(s.SSID,false);
-
-	        			//Check if network is already on the list
-	        			if (!DevicesListController.checkExisting(m)){
-	        				mController.addElementController(m);
-	        			}
+                        //mController.checkNetworkId(s.SSID,false);
+	        			mController.addElementController(m);
 
 	       			 
 	        			
@@ -210,10 +205,6 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 		return mNetworkList;
 	}
 
-    public static String getCurrentNetwork(){
 
-        return  mWifiManager.getConnectionInfo().getSSID();
-
-    }
 	
 }

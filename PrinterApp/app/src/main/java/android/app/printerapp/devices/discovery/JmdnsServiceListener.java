@@ -1,7 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import android.app.printerapp.devices.DevicesFragment;
-import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
@@ -27,30 +25,23 @@ import javax.jmdns.ServiceListener;
  *
  */
 public class JmdnsServiceListener implements ServiceListener{
-	
+
 	//Allows this application to receive Multicast packets, can cause a noticable battery drain.
 		private static WifiManager.MulticastLock mMulticastLock;
-				
+
 		//New thread to handle both listeners.
-		private Handler mHandler;
-			
+	private Handler mHandler;
+    private DiscoveryController mContext;
+
 		//JmDNS manager which will create both listeners
 		private static JmDNS mJmdns = null;
-		
-		//Reference to the fragment controller
-		private DevicesFragment mContext;
-		
-		/*****************
-		 * Main constructor
-		 * @param context
-		 *****************/
-		
-		public JmdnsServiceListener(DevicesFragment context){
-			
-			mContext = context;
-						
+
+		public JmdnsServiceListener(DiscoveryController context){
+
+
+            mContext = context;
+
 			//Create new Handler after 1s to setup the service listener
-			//TODO: Check if it's actually listening because it seems unreliable
 			mHandler = new Handler();		
 			mHandler.postDelayed(new Runnable() {
 				
@@ -58,9 +49,7 @@ public class JmdnsServiceListener implements ServiceListener{
 	                setUp();
 	            }
 	        }, 1000);
-			
-			
-	
+
 		}
 		
 		/**
@@ -115,22 +104,25 @@ public class JmdnsServiceListener implements ServiceListener{
 		public void serviceResolved(ServiceEvent event) {	
 			
 			//Creates a service with info
-			 Log.i("Model","Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
-			 ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
-
-            Log.i("OUT","Network ID: " + service.getInetAddresses()[0] + " -> " + PrintNetworkManager.getNetworkId(service.getName()));
+			Log.i("Discovery","Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
+			ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 
             if (!service.getInetAddresses()[0].toString().equals("/10.250.250.1")){
 
+                Log.i("Discovery","Added to list");
                 mContext.addElement(new ModelPrinter(service.getName(),
                         service.getInetAddresses()[0].toString() /*+ HttpUtils.CUSTOM_PORT*/+ ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));
 
-                PrintNetworkManager.checkNetworkId(service.getName(),true);
             }
 
 
 		}
-		
+
+    private void checkNetworkId(){
+
+
+    }
+
 
 		//This method was obtained externally, basically it gets our IP Address, or return Android localhost by default.
 		public  static InetAddress getDeviceIpAddress(WifiManager wifi) {
@@ -153,7 +145,6 @@ public class JmdnsServiceListener implements ServiceListener{
 			   return result;
 		}
 
-
     /**
      * Reload the service discovery by registering the service again in case it's not detected automatically
      */
@@ -171,28 +162,12 @@ public class JmdnsServiceListener implements ServiceListener{
 			
 			
 		}
-		
-		//Search the printer by the network id and take its position		
-		public int searchPrinter(String name){
-			
-			int pos = DevicesListController.searchAvailablePosition();
-			
-			Log.i("SEARCH","Searching for... " + name);
-			
-			if ((name.length()==4)&&(name!=null))
-			for (ModelPrinter p : DevicesListController.getList()){
-				
-				if (p.getName().contains(name)){
-					
-					Log.i("OUT","Match found!: " + p.getName());
-					pos = p.getPosition();
-					DevicesListController.getList().remove(p);
-				} else Log.i("OUT","Not found!: " + p.getName());
-				
-			}
-			
-			return pos;
-			
-		}
+
+    public void unregister(){
+        if (mJmdns!=null) {
+            mJmdns.unregisterAllServices();
+            mMulticastLock.release();
+        }
+    }
 
 }

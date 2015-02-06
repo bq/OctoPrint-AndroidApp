@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.database;
 
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ContentValues;
@@ -59,6 +60,8 @@ public class DatabaseController {
 		long id = mDb.insert(FeedEntry.TABLE_NAME, null, values);
 		mDb.close();
 
+        MainActivity.refreshDevicesCount();
+
         return id;
 		
 	}
@@ -69,8 +72,8 @@ public class DatabaseController {
 		
 		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry._ID + " = '" + id + "'", null);
 		mDb.close();
-		
-		//DevicesListController.loadList(mContext);
+
+        MainActivity.refreshDevicesCount();
 		
 		
 	}
