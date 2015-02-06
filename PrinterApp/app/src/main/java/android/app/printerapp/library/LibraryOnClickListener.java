@@ -1,19 +1,16 @@
 package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.printerapp.ListContent;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -244,27 +241,11 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                         Toast.makeText(mContext.getActivity(), R.string.library_paste_toast, Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.library_model_delete: //Delete
-                        AlertDialog.Builder adb_delete = new AlertDialog.Builder(mContext.getActivity());
-                        adb_delete.setTitle(R.string.library_delete_dialog_title);
-                        adb_delete.setMessage(f.getName());
-                        adb_delete.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        SparseBooleanArray ids = new SparseBooleanArray();
+                        ids.append(index,true);
+                        createDeleteDialog(ids);
 
-                                LibraryController.deleteFiles(f);
-                                LibraryController.getFileList().remove(f);
-
-                                if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, f.getName())) {
-                                    DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, f.getName(), null, false);
-                                }
-                                mContext.refreshFiles();
-
-                            }
-                        });
-
-                        adb_delete.setNegativeButton(R.string.cancel, null);
-                        adb_delete.show();
                         break;
                 }
                 return true;
@@ -297,11 +278,6 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         return false;
     }
 
-    private void selectItemToDelete(int i){
-
-
-    }
-
     /**
      * Action mode
      */
@@ -331,63 +307,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                 case R.id.library_menu_delete:
 
-                    Log.i("DELETE","COUNT " + mListView.getCheckedItemCount());
-
-                    final SparseBooleanArray ids = mListView.getCheckedItemPositions();
-
-                    LayoutInflater inflater = (LayoutInflater) mContext.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View deleteDialogView = inflater.inflate(R.layout.dialog_delete_models, null);
-                    ((TextView)deleteDialogView.findViewById(R.id.delete_files_info_textview)).setText(mContext.getResources().getQuantityString(R.plurals.library_models_delete, ids.size()));
-                    ((ImageView)deleteDialogView.findViewById(R.id.delete_files_icon)).setColorFilter(mContext.getResources().getColor(R.color.body_text_2));
-
-                    //TODO Set images
-                    if(mListView.getCheckedItemCount() == 1) {
-
-                         ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(LibraryController.getFileList().get(ids.keyAt(0)).getName());
-                    }
-                    else {
-                        ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(String.format(mContext.getResources().getString(R.string.library_menu_models_delete_files), mListView.getCheckedItemCount()));
-                    }
-
-                    new MaterialDialog.Builder(mContext.getActivity())
-                            .title(mContext.getResources().getQuantityString(R.plurals.library_models_delete_title, ids.size()))
-                            .customView(deleteDialogView, true)
-                            .positiveColorRes(R.color.theme_accent_1)
-                            .positiveText(R.string.confirm)
-                            .callback(new MaterialDialog.ButtonCallback() {
-
-                                @Override
-                                public void onNegative(MaterialDialog dialog) {
-                                    super.onNegative(dialog);
-
-                                    mActionMode.finish();
-
-                                }
-
-                                @Override
-                                public void onPositive(MaterialDialog dialog) {
-
-                                    for (int i = 0; i < ids.size(); i++) {
-
-
-                                        if (ids.valueAt(i)) {
-
-                                            File file = LibraryController.getFileList().get(ids.keyAt(i));
-
-                                            Log.i("DELETE", "DELETE " + file.getName());
-
-
-                                            LibraryController.deleteFiles(file);
-
-                                        }
-                                    }
-
-                                    mActionMode.finish();
-                                }
-                            })
-                            .negativeText(R.string.cancel)
-                            .negativeColorRes(R.color.body_text_2)
-                            .show();
+                    SparseBooleanArray ids = mListView.getCheckedItemPositions();
+                    createDeleteDialog(ids);
 
             }
 
@@ -417,7 +338,71 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                 }
             });
 
-            mContext.refreshFiles();
+
         }
     };
+
+   private void  createDeleteDialog(final SparseBooleanArray ids){
+
+       LayoutInflater inflater = (LayoutInflater) mContext.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+       View deleteDialogView = inflater.inflate(R.layout.dialog_delete_models, null);
+       ((TextView)deleteDialogView.findViewById(R.id.delete_files_info_textview)).setText(mContext.getResources().getQuantityString(R.plurals.library_models_delete, ids.size()));
+       ((ImageView)deleteDialogView.findViewById(R.id.delete_files_icon)).setColorFilter(mContext.getResources().getColor(R.color.body_text_2));
+
+       //TODO Set images
+       if (mListView!=null){
+           if(mListView.getCheckedItemCount() == 1) {
+
+               ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(LibraryController.getFileList().get(ids.keyAt(0)).getName());
+           }
+           else {
+               ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(String.format(mContext.getResources().getString(R.string.library_menu_models_delete_files), mListView.getCheckedItemCount()));
+           }
+       } else {
+
+           ((TextView)deleteDialogView.findViewById(R.id.files_num_textview)).setText(LibraryController.getFileList().get(ids.keyAt(0)).getName());
+
+       }
+
+
+       new MaterialDialog.Builder(mContext.getActivity())
+               .title(mContext.getResources().getQuantityString(R.plurals.library_models_delete_title, ids.size()))
+               .customView(deleteDialogView, true)
+               .positiveColorRes(R.color.theme_accent_1)
+               .positiveText(R.string.confirm)
+               .callback(new MaterialDialog.ButtonCallback() {
+
+                   @Override
+                   public void onNegative(MaterialDialog dialog) {
+                       super.onNegative(dialog);
+
+                       if (mActionMode!=null)
+                       mActionMode.finish();
+
+                   }
+
+                   @Override
+                   public void onPositive(MaterialDialog dialog) {
+
+                       for (int i = 0; i < ids.size(); i++) {
+
+
+                           if (ids.valueAt(i)) {
+
+                               File file = LibraryController.getFileList().get(ids.keyAt(i));
+                               LibraryController.deleteFiles(file);
+
+                               mContext.refreshFiles();
+
+                           }
+                       }
+                       if (mActionMode!=null)
+                       mActionMode.finish();
+                   }
+               })
+               .negativeText(R.string.cancel)
+               .negativeColorRes(R.color.body_text_2)
+               .show();
+
+    }
 }
