@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/content_padding_small"
+    android:paddingBottom="@dimen/content_padding_small"
+    android:paddingLeft="@dimen/content_padding_normal"
+    android:paddingRight="@dimen/content_padding_normal"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/list_selector">
+
+    <ImageView
+        android:id="@+id/browser_file_icon_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/content_margin_small"/>
+
+    <TextView
+        android:id="@+id/browser_file_name_textview"
+        style="@style/DialogContent"
+        android:textIsSelectable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"/>
+
+</LinearLayout>

@@ -116,7 +116,8 @@
     <string name="library_create_dialog_title">Create new folder</string>
     <string name="library_create_folder_name">New folder name</string>
     <string name="library_create_folder_name_error">The folder name can\'t be empty</string>
-    <string name="library_select_printer_title">Select available printers</string>
+    <string name="library_select_printer_title">Print file: </string>
+    <string name="library_select_printer">Select printer</string>
     <string name="library_option_dialog_title">Model options</string>
     <string name="library_option_print">Send to printer</string>
     <string name="library_option_edit">Edit</string>
@@ -175,7 +176,7 @@
     <string name="viewer_menu_restore">Restore panel</string>
     <string name="viewer_menu_autofit">Autofit</string>
     <string name="viewer_menu_clean">Clean panel</string>
-    <string name="viewer_menu_multiply_title">Select number of copies</string>
+    <string name="viewer_menu_multiply_title">Multiply model</string>
 
     <string name="viewer_slice_wait">Wait for the file to slice</string>
     <string name="viewer_slice_error">Error uploading the file</string>
@@ -280,7 +281,8 @@
     <string name="project_name_title">Save project</string>
     <string name="project_name">Project name</string>
     <string name="proyect_name_not_available">That name exists! Please, choose another name</string>
-    <string name="creating_project">Creating project &#8230;</string> 
+    <string name="generating_project">Generating project</string>
+    <string name="generating_screenshot">Generating screenshot&#8230;</string>
     <string name="new_project">New project</string>
     
     <string name="edition_menu_move">Move</string>

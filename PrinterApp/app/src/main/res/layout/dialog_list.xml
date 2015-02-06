@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/search_models_emptytext"
+        android:id="@+id/dialog_list_emptyview"
         style="@style/DialogContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:textSize="@dimen/text_size_xlarge" />
 
     <uk.co.androidalliance.edgeeffectoverride.ListView
-        android:id="@+id/search_models_listview"
+        android:id="@+id/dialog_list_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

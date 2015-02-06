@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -135,22 +137,22 @@ public class LibraryModelCreation {
 	 * @param path
 	 */
 	private static void openModel (final Context context, final String path) {
-		View dialogText = LayoutInflater.from(context).inflate(R.layout.loading_project, null);
-		mSnapshotLayout = (FrameLayout) dialogText.findViewById (R.id.framesnapshot);
+		View generatingProjectDialog = LayoutInflater.from(context).inflate(R.layout.dialog_loading_project, null);
+		mSnapshotLayout = (FrameLayout) generatingProjectDialog.findViewById (R.id.framesnapshot);
 
         Log.i("OUT","Opening to snap " + path);
-        String count = context.getString(R.string.new_project);
+        String count = context.getString(R.string.generating_project);
 
-        if (mFileQueue!=null) count += " "  + (mCount - (mFileQueue.size() - 1)) + "/" + mCount;
+        if (mFileQueue!=null) count += " ("  + (mCount - (mFileQueue.size() - 1)) + "/" + mCount + ")";
 
-		AlertDialog.Builder adb = new AlertDialog.Builder(context);
-   		adb.setView(dialogText)
-			.setTitle(count)
-			.setCancelable(false);
-   			
+        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(mContext);
+        createFolderDialog.title(count)
+                .customView(generatingProjectDialog, true)
+                .cancelable(false)
+                .autoDismiss(false);
 		
 		//We need the alertdialog instance to dismiss it
-   		mAlert = adb.create();
+   		mAlert = createFolderDialog.build();
 		mAlert.show();
 		
 		File file = new File (path);

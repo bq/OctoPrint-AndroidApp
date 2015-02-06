@@ -12,15 +12,35 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight=".3"
+        android:layout_weight=".2"
         android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/go_back_icon"
-            android:layout_width="80dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_action_arrow_back"
-            android:background="@drawable/selectable_rect_background_gray"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/go_back_icon"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_action_arrow_back"
+                android:background="@drawable/selectable_rect_background_gray"
+                android:layout_toRightOf="@+id/select_model_checkbox"/>
+
+            <!-- DUMMIE CHECKBOX -->
+            <CheckBox
+                android:id="@+id/select_model_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"/>
+
+        </RelativeLayout>
+
     </LinearLayout>
 
     <!-- Model name -->
@@ -29,7 +49,7 @@
         style="@style/ModelName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="2.8"
         android:ellipsize="middle"
         android:text="@string/library_list_go_back_tag" />
 
@@ -39,7 +59,7 @@
         style="@style/ModelDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.5"/>
+        android:layout_weight="1.7"/>
 
     <!-- Dummie column -->
     <LinearLayout

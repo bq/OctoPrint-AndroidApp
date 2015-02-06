@@ -2,13 +2,13 @@ package android.app.printerapp.viewer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
+import android.app.printerapp.library.LibraryModelCreation;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -29,6 +30,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +40,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -52,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.MaterialDialogCompat;
 import com.devsmart.android.ui.HorizontalListView;
 
 import org.json.JSONException;
@@ -504,21 +506,21 @@ public class ViewerMainFragment extends Fragment {
 
         } else if (LibraryController.hasExtension(1, filePath)){
 
-            AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-            adb.setTitle(R.string.warning);
-            adb.setMessage(R.string.viewer_open_gcode_dialog);
-            adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                    openFile(filePath);
-
-                }
-            });
-
-            adb.setNegativeButton(R.string.cancel, null);
-
-            adb.show();
+            new MaterialDialog.Builder(mContext)
+                    .title(R.string.warning)
+                    .content(R.string.viewer_open_gcode_dialog)
+                    .negativeText(R.string.cancel)
+                    .negativeColorRes(R.color.body_text_2)
+                    .positiveText(R.string.ok)
+                    .positiveColorRes(R.color.theme_accent_1)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            openFile(filePath);
+                        }
+                    })
+                    .build()
+                    .show();
         }
 
 
@@ -1087,8 +1089,8 @@ public class ViewerMainFragment extends Fragment {
      */
 
     public static void showMultiplyDialog() {
-        View dialogText = LayoutInflater.from(mContext).inflate(R.layout.set_copies_dialog, null);
-        final NumberPicker numPicker = (NumberPicker) dialogText.findViewById(R.id.number_copies);
+        View multiplyModelDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_multiply_model, null);
+        final NumberPicker numPicker = (NumberPicker) multiplyModelDialog.findViewById(R.id.number_copies_numberpicker);
         numPicker.setMaxValue(10);
         numPicker.setMinValue(0);
 
@@ -1100,9 +1102,25 @@ public class ViewerMainFragment extends Fragment {
                     Field selectorWheelPaintField = numPicker.getClass()
                             .getDeclaredField("mSelectorWheelPaint");
                     selectorWheelPaintField.setAccessible(true);
-                    ((Paint)selectorWheelPaintField.get(numPicker)).setColor(mContext.getResources().getColor(R.color.body_text_1));
-                    ((EditText)child).setTextColor(mContext.getResources().getColor(R.color.body_text_1));
-                    Field selectorDivider = numPicker.getClass().getDeclaredField("mSelectionDivider");
+                    ((Paint)selectorWheelPaintField.get(numPicker)).setColor(mContext.getResources().getColor(R.color.theme_primary_dark));
+                    ((EditText)child).setTextColor(mContext.getResources().getColor(R.color.theme_primary_dark));
+
+                    Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+                    for (Field pf : pickerFields) {
+                        if (pf.getName().equals("mSelectionDivider")) {
+                            pf.setAccessible(true);
+                            try {
+                                pf.set(numPicker, mContext.getResources().getDrawable(R.drawable.separation_line_horizontal));
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
+                            } catch (Resources.NotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        }
+                    }
 
                     numPicker.invalidate();
                 }
@@ -1120,19 +1138,23 @@ public class ViewerMainFragment extends Fragment {
 
         //Remove soft-input from number picker
         numPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-
-        AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-        adb.setView(dialogText)
-                .setTitle(mContext.getString(R.string.viewer_menu_multiply_title))
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(mContext);
+        createFolderDialog.title(R.string.viewer_menu_multiply_title)
+                .customView(multiplyModelDialog, true)
+                .positiveColorRes(R.color.theme_accent_1)
+                .positiveText(R.string.dialog_continue)
+                .negativeColorRes(R.color.body_text_2)
+                .negativeText(R.string.cancel)
+                .autoDismiss(true)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
                         drawCopies(numPicker.getValue());
                         slicingCallback();
                     }
-                });
+                })
+                .show();
 
-        adb.show();
     }
 
     private static void drawCopies(int numCopies) {

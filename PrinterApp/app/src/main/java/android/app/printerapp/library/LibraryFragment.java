@@ -487,7 +487,7 @@ public class LibraryFragment extends Fragment {
 
     public void showListHeader(String folderName) {
         TextView goBackTextView = (TextView) mListHeader.findViewById(R.id.model_name_column_textview);
-        goBackTextView.setText(goBackTextView.getText().toString() + " (" + folderName + ")");
+        goBackTextView.setText(getString(R.string.library_list_go_back_tag) + " (" + folderName + ")");
         mListHeader.setVisibility(View.VISIBLE);
     }
 

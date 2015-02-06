@@ -69,6 +69,7 @@ dependencies {
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
     compile project(':materialdesignlibrary')
     compile 'com.afollestad:material-dialogs:0.6.1.6' //Material design dialogs
+    compile 'com.pnikosis:materialish-progress:1.4'
     compile 'com.rengwuxian.materialedittext:library:1.8.2'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile files('libs/android-async-http-1.4.6.jar')
