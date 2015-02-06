@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.discovery;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.printerapp.R;
@@ -43,8 +44,7 @@ public class DiscoveryController {
 
         mContext = context;
         mServiceList = new ArrayList<ModelPrinter>();
-        mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
-        mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
+
 
         scanDelayDialog();
 
@@ -52,6 +52,11 @@ public class DiscoveryController {
     }
 
     private void scanDelayDialog(){
+
+        mServiceList.clear();
+        if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
+        if (mServiceListener==null) mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
+        else mServiceListener.reloadListening();
 
         final ProgressDialog pd = new ProgressDialog(mContext);
         pd.setIndeterminate(true);
@@ -102,7 +107,19 @@ public class DiscoveryController {
 
         adb = new MaterialDialog.Builder(mContext)
                 .title("Stuff")
-                .customView(v, false);
+                .customView(v, false)
+                .positiveText("Retry")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+
+                        scanDelayDialog();
+
+
+
+                    }
+                });
+
 
 
         dialog  = adb.build();
@@ -165,16 +182,58 @@ public class DiscoveryController {
         mWaitProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-               if (mFinalPrinter!=null) OctoprintConnection.getNewConnection(mContext,mFinalPrinter);
+               if (mFinalPrinter!=null) {
+
+                   OctoprintConnection.getNewConnection(mContext,mFinalPrinter);
+                   mFinalPrinter = null;
+                   mWaitProgressDialog = null;
+
+
+               }
+
             }
         });
         mWaitProgressDialog.show();
 
         mServiceListener.reloadListening();
 
-        //mServiceListener = new JmdnsServiceListener(this);
+
+        Handler timeOut = new Handler();
+
+        timeOut.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
 
+
+                if (mWaitProgressDialog!=null) {
+
+                    mWaitProgressDialog.dismiss();
+                    errorDialog();
+
+                }
+
+            }
+        }, 30000);
+
+
+
+    }
+
+    private void errorDialog(){
+
+        new AlertDialog.Builder(mContext)
+                .setTitle("Error")
+                .setMessage("Error configuring the printer try again.")
+                .setPositiveButton(R.string.confirm,new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        scanDelayDialog();
+
+                    }
+                })
+                .show();
 
     }
 
@@ -211,6 +270,7 @@ public class DiscoveryController {
                 mServiceListener.unregister();
 
                 mFinalPrinter = printer;
+
 
                 mWaitProgressDialog.dismiss();
 
