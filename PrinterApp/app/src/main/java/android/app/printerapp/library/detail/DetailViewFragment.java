@@ -119,10 +119,11 @@ public class DetailViewFragment extends Fragment {
             iv.setImageDrawable(mFile.getSnapshot());
             lv.addHeaderView(lheader);
 
-            View lfooter = View.inflate(getActivity(), R.layout.detailview_list_footer, null);
-            TextView footertv = (TextView) lfooter.findViewById(R.id.detail_tv_description);
-            footertv.setText(getResources().getString(R.string.lorem_ipsum)); //TODO Set the correct text
-            lv.addFooterView(lfooter);
+            //FIXME Uncomment this in the final version
+//            View lfooter = View.inflate(getActivity(), R.layout.detailview_list_footer, null);
+//            TextView footertv = (TextView) lfooter.findViewById(R.id.detail_tv_description);
+//            footertv.setText(getResources().getString(R.string.lorem_ipsum)); //TODO Set the correct text
+//            lv.addFooterView(lfooter);
 
             lv.setAdapter(adapter);
         }

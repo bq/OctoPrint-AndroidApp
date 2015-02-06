@@ -5,7 +5,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.printerapp.devices.DevicesFragment;
 import android.app.printerapp.devices.database.DatabaseController;
+<<<<<<< HEAD
 import android.app.printerapp.devices.discovery.InitialFragment;
+=======
+>>>>>>> feature/CELL-482
 import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryFragment;

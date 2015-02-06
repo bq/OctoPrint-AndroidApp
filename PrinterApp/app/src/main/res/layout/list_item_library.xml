@@ -46,7 +46,7 @@
         style="@style/ModelName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="2.8"
         android:text="Elemento" />
 
     <!-- Last modification date -->
@@ -55,7 +55,7 @@
         style="@style/ModelDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.5"
+        android:layout_weight="1.7"
         android:text="30/12/2014" />
 
     <!-- Overflow settings button -->

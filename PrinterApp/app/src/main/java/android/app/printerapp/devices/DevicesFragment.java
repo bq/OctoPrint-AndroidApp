@@ -458,11 +458,8 @@ import java.io.File;
                     File file = new File(m.getJobPath());
 
                     if (file.getParentFile().getAbsolutePath().contains(STRING_TEMP)) {
-
                         Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs to be saved. Hello: " + DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, m.getName()));
                         createFinishDialogSave(m,file);
-
-
 
                     } else {
                         Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs NO SAVING CUZ ITS MINE.");

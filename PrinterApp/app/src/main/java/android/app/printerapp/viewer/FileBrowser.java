@@ -1,15 +1,25 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryModelCreation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.MaterialDialogCompat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -128,36 +138,91 @@ public class FileBrowser extends Activity  {
 					}
 				}
 
-				mDialogFileList = fileList.toArray(mDialogFileList);
+                final Dialog dialog;
+
+                LayoutInflater li = LayoutInflater.from(mContext);
+                View view = li.inflate(R.layout.dialog_list, null);
+
+                final uk.co.androidalliance.edgeeffectoverride.ListView listView =
+                        (uk.co.androidalliance.edgeeffectoverride.ListView) view.findViewById(R.id.dialog_list_listview);
+                listView.setSelector(mContext.getResources().getDrawable(R.drawable.list_selector));
+                TextView emptyText = (TextView) view.findViewById(R.id.dialog_list_emptyview);
+                listView.setEmptyView(emptyText);
+
+                FileBrowserAdapter fileBrowserAdapter = new FileBrowserAdapter(mContext, list, fileList);
+                listView.setAdapter(fileBrowserAdapter);
+                listView.setDivider(null);
+
+                mDialogFileList = fileList.toArray(mDialogFileList);
+
+                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext)
+                        .title(mTitle)
+                        .customView(view, false)
+                        .negativeText(R.string.cancel)
+                        .negativeColorRes(R.color.theme_accent_1)
+                        .cancelable(false)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                mFileListListener.onClickFileList(null);
+                                dialog.dismiss();
+                            }
+                        });
+
+                dialog = dialogBuilder.build();
+                dialog.show();
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        // save current position
+                        mSelectedIndex = position;
+                        if ((mDialogFileList == null) || (mFileListListener == null)) {
+                        } else {
+                            File file = mDialogFileList[position];
+
+                            if (file.isDirectory()) {
+                                // is a directory: display file list-up again.
+                                show(file.getAbsolutePath());
+                            } else {
+                                // file selected. call the event mFileListListener
+                                mFileListListener.onClickFileList(file);
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
 
 				// Build file chooser dialog
-				Builder dialog = new AlertDialog.Builder(mContext).setTitle(mTitle).setItems(list.toArray(new String[] {}), mClickListener).setOnKeyListener(mKeyListener)
-									.setNeutralButton(mContext.getResources().getString(R.string.close_browser), new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// finish the dialog
-						mFileListListener.onClickFileList(null);
-						dialog.dismiss();
-					}
-				});
-				if (mCurrentPath.getParentFile() != null) {
-					dialog = dialog.setPositiveButton(mContext.getResources().getString(R.string.open), new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							File fileParent = mCurrentPath.getParentFile();
-							if (fileParent != null) {
-								show(fileParent.getAbsolutePath());
-								dialog.dismiss();
-							} else {
-								// Already the root directory: finish dialog.
-								mFileListListener.onClickFileList(null);
-								dialog.dismiss();
-							}
-
-						}
-					});
-				}
-				dialog.show();
+//                MaterialDialogCompat.Builder dialog = new MaterialDialogCompat.Builder(mContext)
+//                        .setTitle(mTitle)
+//                        .setItems(list.toArray(new String[] {}), mClickListener).setOnKeyListener(mKeyListener)
+//						.setNeutralButton(mContext.getResources().getString(R.string.close_browser), new OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						// finish the dialog
+//						mFileListListener.onClickFileList(null);
+//						dialog.dismiss();
+//					}
+//				});
+//				if (mCurrentPath.getParentFile() != null) {
+//					dialog = dialog.setPositiveButton(mContext.getResources().getString(R.string.open), new OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface dialog, int which) {
+//							File fileParent = mCurrentPath.getParentFile();
+//							if (fileParent != null) {
+//								show(fileParent.getAbsolutePath());
+//								dialog.dismiss();
+//							} else {
+//								// Already the root directory: finish dialog.
+//								mFileListListener.onClickFileList(null);
+//								dialog.dismiss();
+//							}
+//
+//						}
+//					});
+//				}
+//				dialog.show();
 			}
 		} catch (SecurityException se) {
 			se.printStackTrace();

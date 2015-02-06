@@ -3,14 +3,11 @@ package android.app.printerapp.library;
 import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,7 +16,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class will search for files inside the External directory to add them as projects.
@@ -119,12 +115,12 @@ public class FileScanner {
         }
 
         LayoutInflater li = LayoutInflater.from(context);
-        View view = li.inflate(R.layout.dialog_search_models, null);
+        View view = li.inflate(R.layout.dialog_list, null);
 
         final uk.co.androidalliance.edgeeffectoverride.ListView listView =
-                (uk.co.androidalliance.edgeeffectoverride.ListView) view.findViewById(R.id.search_models_listview);
+                (uk.co.androidalliance.edgeeffectoverride.ListView) view.findViewById(R.id.dialog_list_listview);
         listView.setSelector(context.getResources().getDrawable(R.drawable.list_selector));
-        TextView emptyText = (TextView) view.findViewById(R.id.search_models_emptytext);
+        TextView emptyText = (TextView) view.findViewById(R.id.dialog_list_emptyview);
         listView.setEmptyView(emptyText);
 
         ArrayAdapter<String> ad = new ArrayAdapter<String>(context, R.layout.list_item_add_models_dialog, R.id.text1, fileNames);

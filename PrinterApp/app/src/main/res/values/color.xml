@@ -15,6 +15,7 @@
     <color name="theme_primary_light">#557bdd3b</color>
     <color name="shadow">#77000000</color>
     <color name="almost_white">#FAFAFA</color>
+    <color name="theme_error">#f36c60</color>
 
     <color name="pager_background">#EEEEEE</color>
 
@@ -59,8 +60,6 @@
 
     <color name="tab_background">@color/theme_primary</color>
     <color name="tab_selected_strip">@color/theme_accent_1</color>
-
-    <color name="error">#f36c60</color>
 
     <color name="drag_and_drop_hover_background">@color/theme_primary_light</color>
 

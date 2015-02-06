@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_small">
+
+        <ImageView
+            android:id="@+id/generic_printer_icon"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/content_margin_normal"
+            android:src="@drawable/icon_custom_generic" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/select_printer_text"
+                style="@style/DialogContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/library_select_printer"
+                android:textColor="@color/body_text_1" />
+
+            <Spinner
+                android:id="@+id/select_printer_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"></Spinner>
+
+            <!-- Separation line -->
+            <View
+                style="@style/HorizontalSeparator"
+                android:layout_marginTop="0dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

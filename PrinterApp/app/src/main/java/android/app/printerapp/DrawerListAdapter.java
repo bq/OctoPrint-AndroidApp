@@ -1,7 +1,6 @@
 package android.app.printerapp;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,7 +63,7 @@ public class DrawerListAdapter extends BaseAdapter {
 
             viewHolder = new ViewHolder();
             viewHolder.drawerItemName = (TextView) convertView.findViewById(R.id.layout_navigation_drawer_item_textview);
-            viewHolder.drawerItemIcon = (ImageView) convertView.findViewById(R.id.navigation_drawer_icon_imageview);
+            viewHolder.drawerItemIcon = (ImageView) convertView.findViewById(R.id.browser_file_icon_imageview);
 
             convertView.setTag(viewHolder);
         } else {

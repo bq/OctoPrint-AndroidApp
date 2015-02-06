@@ -6,29 +6,23 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_small">
 
         <ImageView
             android:id="@+id/delete_files_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/content_margin_small"
-            android:src="@android:drawable/stat_sys_warning" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
+            android:src="@drawable/ic_warning_grey600_24dp" />
 
             <TextView
                 style="@style/DialogContent"
-                android:id="@+id/delete_files_info_textview"
+                android:id="@+id/new_folder_name_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="false"
                 android:text="@string/dialog_finish_message" />
-
-        </LinearLayout>
 
     </LinearLayout>
 
