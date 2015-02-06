@@ -250,12 +250,15 @@ public class MainActivity extends ActionBarActivity {
 
             showExtraFragment(2, 0);
 
-        } /*if (c.getCount() == 1) {
+        } else {
+            closeInitialFragment();
+         /*if (c.getCount() == 1) {
 
             c.moveToFirst();
             showExtraFragment(1,c.getInt(0));
 
         }*/
+        }
 
     }
 
@@ -305,6 +308,13 @@ public class MainActivity extends ActionBarActivity {
 
                 break;
         }
+    }
+
+    private static void closeInitialFragment(){
+
+        Fragment fragment = mManager.findFragmentByTag(ListContent.ID_INITIAL);
+        if (fragment != null) mManager.popBackStack();
+
     }
 
     private void closePrintView(){

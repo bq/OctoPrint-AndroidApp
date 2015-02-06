@@ -152,6 +152,8 @@ public class OctoprintNetwork {
 
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
+
+        Log.i("Discovery","Configure Network for: " + ssid);
 		
 		try {
 			object.put("command", "configure_wifi");
@@ -163,46 +165,8 @@ public class OctoprintNetwork {
 		} catch (UnsupportedEncodingException e) {	e.printStackTrace();
 		}
 		
-		HttpClientHandler.post(context,url + HttpUtils.URL_NETWORK, 
-				entity, "application/json", new JsonHttpResponseHandler(){
-			
-			@Override
-			public void onProgress(int bytesWritten, int totalSize) {
-			}
-			
-			@Override
-			public void onSuccess(int statusCode, Header[] headers,
-					JSONObject response) {
-				super.onSuccess(statusCode, headers, response);
-				
-				Log.i("OUT",response.toString());
-                pr.register();
-			}
-			
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					String responseString, Throwable throwable) {
-
-				super.onFailure(statusCode, headers, responseString, throwable);
-
-                pr.register();
-				Log.i("OUT",responseString);
-
-			}
-
-			
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-                pr.register();
-				Log.i("OUT","Failure while connecting " + statusCode);
-
-                //Toast.makeText(context,"There was an error configuring the Network",Toast.LENGTH_LONG).show();
-            }
-		});
+		HttpClientHandler.post(context,url + HttpUtils.URL_NETWORK,
+				entity, "application/json", new JsonHttpResponseHandler(){});
 	}
 
 }

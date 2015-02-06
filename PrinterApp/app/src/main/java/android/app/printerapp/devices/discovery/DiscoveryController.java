@@ -33,13 +33,18 @@ public class DiscoveryController {
 
     private Context mContext;
     private PrintNetworkManager mNetworkManager;
+    private JmdnsServiceListener mServiceListener;
+
+    private ProgressDialog mWaitProgressDialog;
+
+    private ModelPrinter mFinalPrinter;
 
     public DiscoveryController(Context context){
 
         mContext = context;
         mServiceList = new ArrayList<ModelPrinter>();
         mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
-        new JmdnsServiceListener(DiscoveryController.this);
+        mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
 
         scanDelayDialog();
 
@@ -126,7 +131,8 @@ public class DiscoveryController {
 
                         } else if (p.getStatus() == StateUtils.STATE_ADHOC) {
 
-                            mNetworkManager.setupNetwork(p, i);
+                            DevicesListController.addToList(p);
+                            mNetworkManager.setupNetwork(p, p.getPosition());
                         }
 
 
@@ -139,6 +145,8 @@ public class DiscoveryController {
                 }
 
                 dialog.dismiss();
+                //mServiceListener.unregister();
+
 
 
             }
@@ -147,6 +155,29 @@ public class DiscoveryController {
         dialog.show();
 
     }
+
+
+    public void waitServiceDialog(){
+
+        mWaitProgressDialog = new ProgressDialog(mContext);
+        mWaitProgressDialog.setIndeterminate(true);
+        mWaitProgressDialog.setTitle("Waiting for service");
+        mWaitProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+               if (mFinalPrinter!=null) OctoprintConnection.getNewConnection(mContext,mFinalPrinter);
+            }
+        });
+        mWaitProgressDialog.show();
+
+        mServiceListener.reloadListening();
+
+        //mServiceListener = new JmdnsServiceListener(this);
+
+
+
+    }
+
     public boolean checkExisting(ModelPrinter m){
 
         boolean exists = false;
@@ -165,17 +196,43 @@ public class DiscoveryController {
 
     }
 
-    public void addElement(ModelPrinter name){
+    public void addElement(ModelPrinter printer){
 
-        if (!DevicesListController.checkExisting(name.getAddress()))
-            if (!checkExisting(name)){
+        if (mWaitProgressDialog!=null){
 
-                mServiceList.add(name);
+
+            if (printer.getStatus() == StateUtils.STATE_NEW)
+            if (mNetworkManager.checkNetworkId(printer.getName(), true)){
+
+                mServiceList.add(printer);
+
+                DevicesListController.addToList(printer);
+
+                mServiceListener.unregister();
+
+                mFinalPrinter = printer;
+
+                mWaitProgressDialog.dismiss();
+
+            }
+
+
+
+        } else {
+
+
+            if (!DevicesListController.checkExisting(printer.getAddress()))
+            if (!checkExisting(printer)){
+
+                mServiceList.add(printer);
                 if (mAdapter!=null)
                     mAdapter.notifyDataSetChanged();
             }
+        }
 
     }
+
+
     public Context getActivity(){
 
         return mContext;

@@ -21,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -143,6 +142,9 @@ public class PrintNetworkManager {
 			 
 		 
 			 try {
+
+                 mReceiver.unregister();
+
 					JSONArray wifis = response.getJSONArray("wifis");
 					
 					final ArrayAdapter<String> networkList = new ArrayAdapter<String>(getContext(), android.R.layout.select_dialog_singlechoice);
@@ -202,6 +204,7 @@ public class PrintNetworkManager {
 																								
 									
                                     configureSelectedNetwork(ssid,psk,url);
+                                    mReceiver.unregister();
 								
 								}
 					        });
@@ -238,8 +241,6 @@ public class PrintNetworkManager {
         OctoprintNetwork.configureNetwork(mReceiver, getContext(), ssid, pass, url);
 
 
-        mReceiver.unregister();
-
         //From this point on we need a delay to the configuration to ensure a clear connection
 
         /**
@@ -267,6 +268,8 @@ public class PrintNetworkManager {
                 connectSpecificNetwork(searchNetwork(target));
 
 
+                DevicesListController.removeElement(mPosition);
+
                 Handler postHandler = new Handler();
                 postHandler.postDelayed(new Runnable() {
 
@@ -288,6 +291,8 @@ public class PrintNetworkManager {
                         //mController.notifyAdapter();
                         // mReceiver.register();
                         dismissNetworkDialog();
+
+
 
                     }
                 }, 10000);
@@ -332,6 +337,8 @@ public class PrintNetworkManager {
 		  *
 		  */
 			public void dismissNetworkDialog(){
+
+
 				
 				if (isOffline)	{
 					isOffline = false;
@@ -347,7 +354,13 @@ public class PrintNetworkManager {
 						String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
 						Log.i("OUT","Numerito_ " +hostaddr);
 
-                        if (mPrinter!=null)OctoprintNetwork.getNetworkList(this, mPrinter);
+                        if (mPrinter!=null){
+                            OctoprintNetwork.getNetworkList(this, mPrinter);
+                        } else {
+
+                            mController.waitServiceDialog();
+
+                        }
 
 					
 					} catch (UnknownHostException e) {
@@ -449,9 +462,12 @@ public class PrintNetworkManager {
      * @param ssid
      * @param result
      */
-    public static void checkNetworkId(String ssid, boolean result){
+    public static boolean checkNetworkId(String ssid, boolean result){
+
+        Log.i("Discovery","Checking ID");
 
         final int message;
+        boolean exists = false;
 
         if (result) message = R.string.devices_discovery_toast_success;
         else message = R.string.devices_discovery_toast_error;
@@ -463,13 +479,19 @@ public class PrintNetworkManager {
 
             if (DatabaseController.getPreference(DatabaseController.TAG_NETWORK,"Last").equals(getNetworkId(ssid))){
 
+                exists = true;
+
+                Log.i("Discovery", "I do exist in the mortal realm");
+
                 DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", null, false);
 
-                Toast.makeText(mController.getActivity(), message, Toast.LENGTH_LONG).show();
+                //Toast.makeText(mController.getActivity(), message, Toast.LENGTH_LONG).show();
 
 
             }
         }
+
+        return exists;
     }
 
     public static String getCurrentNetwork(){
@@ -484,7 +506,7 @@ public class PrintNetworkManager {
     public void reloadNetworks(){
 
         mReceiver.unregister();
-        mReceiver.register();
+        //mReceiver.register();
 
     }
 }

@@ -137,7 +137,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1", StateUtils.STATE_ADHOC);
 
 
-                        mController.checkNetworkId(s.SSID,false);
+                        //mController.checkNetworkId(s.SSID,false);
 	        			mController.addElementController(m);
 
 	       			 

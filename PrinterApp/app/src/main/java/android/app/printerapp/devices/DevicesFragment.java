@@ -473,6 +473,13 @@ import java.io.File;
                     m.setJobPath(null);
                     DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES,m.getName(),null,false);
                 }
+                else {
+
+                    Log.i("FinishDialog","No jobpath");
+
+
+
+                }
 
             }
         });

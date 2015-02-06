@@ -267,7 +267,7 @@ public class OctoprintConnection {
                 pd.dismiss();
                 OctoprintAuthentication.getAuth(context, p, true);
 			}
-			
+
 		});
 		
 		

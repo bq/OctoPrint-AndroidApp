@@ -460,14 +460,19 @@ public class SidePanelHandler {
                                     //final File actualFile = new File(mSlicingHandler.getOriginalProject());
 
                                     //File renameFile = new File(tempFile.getParentFile().getAbsolutePath() + "/" + (new File(mSlicingHandler.getOriginalProject()).getName() + ".gco"));
-                                    finalFile = new File(mSlicingHandler.getOriginalProject() + "/_tmp/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
 
-                                    File tempFolder = finalFile.getParentFile();
-                                    if (tempFolder.mkdir()){
+                                    File tempFolder =new File(mSlicingHandler.getOriginalProject() + "/_tmp/");
+                                    if (!tempFolder.exists()){
+                                        if (tempFolder.mkdir()){
 
-                                        Log.i("Slicer", "Creating temp " + tempFolder.getAbsolutePath());
+                                            Log.i("Slicer", "Creating temp " + tempFolder.getAbsolutePath());
 
-                                    }Log.i("Slicer", "Creating temp NOPE " + tempFolder.getAbsolutePath());
+                                        }Log.i("Slicer", "Creating temp NOPE " + tempFolder.getAbsolutePath());
+                                    }
+
+                                    finalFile = new File(tempFolder + "/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
+
+
 
                                     Log.i("Slicer", "Creating new file in " + finalFile.getAbsolutePath());
 

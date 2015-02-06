@@ -118,6 +118,11 @@ public class JmdnsServiceListener implements ServiceListener{
 
 		}
 
+    private void checkNetworkId(){
+
+
+    }
+
 
 		//This method was obtained externally, basically it gets our IP Address, or return Android localhost by default.
 		public  static InetAddress getDeviceIpAddress(WifiManager wifi) {
@@ -157,5 +162,12 @@ public class JmdnsServiceListener implements ServiceListener{
 			
 			
 		}
+
+    public void unregister(){
+        if (mJmdns!=null) {
+            mJmdns.unregisterAllServices();
+            mMulticastLock.release();
+        }
+    }
 
 }
