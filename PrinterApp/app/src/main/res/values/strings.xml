@@ -295,7 +295,7 @@
     <string name="viewer_button_rz">Rotation Z</string>
     <string name="viewer_button_ry">Rotation Y</string>
     <string name="viewer_mode_tag">Mode selected</string>
-    <string name="viewer_file_size">The model you are trying to load is too big</string>
+    <string name="viewer_file_size">The model you are trying to load is too big. If you continue the application may run out of memory and crash.</string>
     <string name="viewer_progress_time">"ESTIMATED TIME:  "</string>
     <string name="viewer_progress_task_slicing">Slicing (%1$s)</string>
     <string name="viewer_axis_info" translatable="false">" X = %1$.2f mm &#032;&#032; / &#032;&#032; Y = %2$.2f mm &#032;&#032; / &#032;&#032; Z = %3$.2f mm"</string>

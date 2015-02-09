@@ -47,7 +47,7 @@ public class StlFile {
 	private static final int COORDS_PER_TRIANGLE = 9;		
 	private static int mMode;
 
-    private static final int MAX_SIZE = 25000000; //25Mb
+    private static final int MAX_SIZE = 70000000; //25Mb
 
 
 		
@@ -520,9 +520,7 @@ public class StlFile {
     public static boolean checkFileSize(File file, Context context){
 
         if (file.length() < MAX_SIZE) return true;
-        else Toast.makeText(context, R.string.viewer_file_size, Toast.LENGTH_SHORT).show();
-
-        return false;
+        else return false;
 
     }
 

@@ -499,8 +499,26 @@ public class ViewerMainFragment extends Fragment {
 
         if (LibraryController.hasExtension(0, filePath)){
 
-            openFile(filePath);
+            if (!StlFile.checkFileSize(new File(filePath), mContext)){
+                new MaterialDialog.Builder(mContext)
+                        .title(R.string.warning)
+                        .content(R.string.viewer_file_size)
+                        .negativeText(R.string.cancel)
+                        .negativeColorRes(R.color.body_text_2)
+                        .positiveText(R.string.ok)
+                        .positiveColorRes(R.color.theme_accent_1)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                openFile(filePath);
+                            }
+                        })
+                        .build()
+                        .show();
 
+            } else {
+                openFile(filePath);
+            }
         } else if (LibraryController.hasExtension(1, filePath)){
 
             new MaterialDialog.Builder(mContext)
@@ -527,40 +545,38 @@ public class ViewerMainFragment extends Fragment {
 
     public static void openFile(String filePath) {
         DataStorage data = null;
+        //Open the file
+        if (LibraryController.hasExtension(0, filePath)) {
 
-        if (StlFile.checkFileSize(new File(filePath),mContext)){
-            //Open the file
-            if (LibraryController.hasExtension(0, filePath)) {
+            data = new DataStorage();
 
-                data = new DataStorage();
+            mVisibilityModeButton.setVisibility(View.VISIBLE );
 
-                mVisibilityModeButton.setVisibility(View.VISIBLE );
+            mFile = new File(filePath);
+            StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
+            mSidePanelHandler.enableProfileSelection(true);
+            mCurrentViewMode = NORMAL;
 
-                mFile = new File(filePath);
-                StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
-                mSidePanelHandler.enableProfileSelection(true);
-                mCurrentViewMode = NORMAL;
+        } else if (LibraryController.hasExtension(1, filePath)) {
 
-            } else if (LibraryController.hasExtension(1, filePath)) {
-
-                data = new DataStorage();
-                if (!filePath.contains("/temp")) {
-                    mVisibilityModeButton.setVisibility(View.GONE );
-                    optionClean();
-                }
-                mFile = new File(filePath);
-                GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
-                mSidePanelHandler.enableProfileSelection(false);
-                mCurrentViewMode = LAYER;
-
+            data = new DataStorage();
+            if (!filePath.contains("/temp")) {
+                mVisibilityModeButton.setVisibility(View.GONE );
+                optionClean();
             }
-            mDataList.add(data);
+            mFile = new File(filePath);
+            GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
+            mSidePanelHandler.enableProfileSelection(false);
+            mCurrentViewMode = LAYER;
 
-            //Adding original project //TODO elsewhere?
-        if (mSlicingHandler != null)
-            if (mSlicingHandler.getOriginalProject() == null)
-                mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
         }
+        mDataList.add(data);
+
+        //Adding original project //TODO elsewhere?
+    if (mSlicingHandler != null)
+        if (mSlicingHandler.getOriginalProject() == null)
+            mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
+
 
 
     }
