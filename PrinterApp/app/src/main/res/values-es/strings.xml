@@ -265,7 +265,7 @@
     <string name="viewer_text_rz">Eje Z</string>
     <string name="viewer_mode_tag">Modo seleccionado</string>
     <string name="viewer_file_size">El modelo que intentas cargar es demasiado grande</string>
-    <string name="viewer_progress_time">Tiempo estimado: </string>
+    <string name="viewer_progress_time">TIEMPO ESTIMADO:</string>
     <string name="viewer_progress_task_slicing">Generando laminado (%1$s)</string>
     <string name="viewer_settings_select_profile">Selecciona un perfil de impresión</string>
     <string name="printview_retract_button">Extraer</string>
@@ -283,10 +283,10 @@
     <string name="printview_menu_refresh">Refrescar</string>
     <string name="printview_fans_switch">Ventiladores</string>
     <string name="printview_motors_switch">Motores</string>
-    <string name="viewer_text_slicing">Laminando...</string>
-    <string name="viewer_text_uploading">Subiendo...</string>
-    <string name="viewer_text_downloading">Descargando...</string>
-    <string name="viewer_text_downloaded">Descargado</string>
+    <string name="viewer_text_slicing">GENERANDO LAMINADO</string>
+    <string name="viewer_text_uploading">SUBIENDO</string>
+    <string name="viewer_text_downloading">DESCARGANDO</string>
+    <string name="viewer_text_downloaded">DESCARGADO</string>
     <string name="viewer_text_done">hecho</string>
     <string name="viewer_open_gcode_dialog">Perderás todos los datos no guardados. ¿Continuar?</string>
     <string name="library_menu_search_global">Buscar modelos</string>

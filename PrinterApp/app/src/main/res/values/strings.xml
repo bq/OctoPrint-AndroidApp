@@ -296,13 +296,13 @@
     <string name="viewer_button_ry">Rotation Y</string>
     <string name="viewer_mode_tag">Mode selected</string>
     <string name="viewer_file_size">The model you are trying to load is too big</string>
-    <string name="viewer_progress_time">Estimated time: </string>
+    <string name="viewer_progress_time">"ESTIMATED TIME:  "</string>
     <string name="viewer_progress_task_slicing">Slicing (%1$s)</string>
-    <string name="viewer_axis_info" translatable="false">X=%1$dmm / Y=%2$dmm/ Z=%3$dmm</string>
-    <string name="viewer_text_downloaded">Downloaded</string>
-    <string name="viewer_text_downloading">Downloading...</string>
-    <string name="viewer_text_slicing">Slicing...</string>
-    <string name="viewer_text_uploading">Uploading...</string>
+    <string name="viewer_axis_info" translatable="false">" X = %1$.2f mm &#032;&#032; / &#032;&#032; Y = %2$.2f mm &#032;&#032; / &#032;&#032; Z = %3$.2f mm"</string>
+    <string name="viewer_text_downloaded">DOWNLOADED</string>
+    <string name="viewer_text_downloading">DOWNLOADING</string>
+    <string name="viewer_text_slicing">SLICING</string>
+    <string name="viewer_text_uploading">UPLOADING</string>
     <string name="viewer_text_done">done</string>
     <string name="viewer_open_gcode_dialog">You will lose any unsaved data. Continue?</string>
     <string name="library_menu_search_global">Search for models</string>
