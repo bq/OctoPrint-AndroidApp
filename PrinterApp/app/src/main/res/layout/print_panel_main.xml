@@ -148,6 +148,7 @@
                             android:text="@string/viewer_axis_info"
                             android:textColor="@android:color/white"
                             android:visibility="invisible"
+                            android:layout_marginLeft="10dp"
                             android:textSize="@dimen/text_size_medium" />
 
                     </LinearLayout>
@@ -212,25 +213,34 @@
 
                     <TextView
                         android:id="@+id/viewer_estimated_time_textview"
-                        style="@style/TextInfo"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/body_text_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/viewer_progress_time"
-                        android:textAllCaps="true" />
+                        android:layout_gravity="center"
+                        android:text="@string/viewer_progress_time" />
 
                     <TextView
                         android:id="@+id/viewer_text_estimated_time"
-                        style="@style/TextInfo"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/body_text_2"
+                        android:textStyle="italic"
+                        android:paddingLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="italic" />
+                        android:layout_gravity="center"
+                        android:textAllCaps="true"/>
 
                     <TextView
                         android:id="@+id/viewer_text_progress_slice"
-                        style="@style/TextInfo"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/body_text_2"
+                        android:textStyle="italic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="italic" />
+                        android:layout_gravity="center"
+                        android:paddingLeft="5dp"
+                        android:textAllCaps="true"/>
 
                     <com.material.widget.PaperButton
                         android:id="@+id/print_model_button"

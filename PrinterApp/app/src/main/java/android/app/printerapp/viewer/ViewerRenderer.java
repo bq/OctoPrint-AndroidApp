@@ -1027,7 +1027,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
      * Animation to restore initial position
      * @return
      */
-    public boolean restoreInitialCameraPosition(float dx, float dy, boolean zoom){
+    public boolean restoreInitialCameraPosition(float dx, float dy, boolean zoom, boolean rotation){
 
         float dyx = 0;
 
@@ -1058,39 +1058,43 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         }
 
-        //Rotate X axis
-        if ((int)mCurrentSceneAngleX < ANGLE_X) {
+        if (rotation){
 
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX > (ANGLE_X -10f)) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
-        }
-        else if ((int)mCurrentSceneAngleX > ANGLE_X){
+            //Rotate X axis
+            if ((int)mCurrentSceneAngleX < ANGLE_X) {
 
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleX < (ANGLE_X + 10f)) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
-        }
+                //Slow rotation when approaching the final value
+                if ((int)mCurrentSceneAngleX > (ANGLE_X -10f)) mSceneAngleX = CAMERA_MIN_ROTATION_DISTANCE;
+                else mSceneAngleX = CAMERA_MAX_ROTATION_DISTANCE;
+            }
+            else if ((int)mCurrentSceneAngleX > ANGLE_X){
 
-        //Rotate Y axis
-        if ((int)mCurrentSceneAngleY < ANGLE_Y) {
+                //Slow rotation when approaching the final value
+                if ((int)mCurrentSceneAngleX < (ANGLE_X + 10f)) mSceneAngleX = -CAMERA_MIN_ROTATION_DISTANCE;
+                else mSceneAngleX = -CAMERA_MAX_ROTATION_DISTANCE;
+            }
 
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleY > (ANGLE_Y -10f)) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleY = CAMERA_MAX_ROTATION_DISTANCE;
-        }
-        else if ((int)mCurrentSceneAngleY > ANGLE_Y) {
+            //Rotate Y axis
+            if ((int)mCurrentSceneAngleY < ANGLE_Y) {
 
-            //Slow rotation when approaching the final value
-            if ((int)mCurrentSceneAngleY < (ANGLE_Y + 10f)) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
-            else mSceneAngleY = -CAMERA_MAX_ROTATION_DISTANCE;
+                //Slow rotation when approaching the final value
+                if ((int)mCurrentSceneAngleY > (ANGLE_Y -10f)) mSceneAngleY = CAMERA_MIN_ROTATION_DISTANCE;
+                else mSceneAngleY = CAMERA_MAX_ROTATION_DISTANCE;
+            }
+            else if ((int)mCurrentSceneAngleY > ANGLE_Y) {
+
+                //Slow rotation when approaching the final value
+                if ((int)mCurrentSceneAngleY < (ANGLE_Y + 10f)) mSceneAngleY = -CAMERA_MIN_ROTATION_DISTANCE;
+                else mSceneAngleY = -CAMERA_MAX_ROTATION_DISTANCE;
+            }
+
         }
 
 
         //Return true when we get the final values
         if (((((int)mCameraZ == CAMERA_DEFAULT_Z) && ((int)mCameraY == CAMERA_DEFAULT_Y) && ((int)mCameraX == CAMERA_DEFAULT_X)) || (zoom))
-                && ((int) mCurrentSceneAngleX == ANGLE_X) && ((int) mCurrentSceneAngleY == ANGLE_Y)
-                && ((int) mDx== (int)(POSITION_DEFAULT_X - dx)) && ((int) mDy == (int)(dyx - dy))) return true;
+                && (((int) mCurrentSceneAngleX == ANGLE_X) && ((int) mCurrentSceneAngleY == ANGLE_Y)
+                && ((int) mDx== (int)(POSITION_DEFAULT_X - dx)) && ((int) mDy == (int)(dyx - dy))) || (!rotation)) return true;
         else {
 
             return false;

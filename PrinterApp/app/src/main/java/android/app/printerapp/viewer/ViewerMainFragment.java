@@ -8,7 +8,6 @@ import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
-import android.app.printerapp.library.LibraryModelCreation;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
@@ -30,7 +29,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,7 +51,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.MaterialDialogCompat;
 import com.devsmart.android.ui.HorizontalListView;
 
 import org.json.JSONException;
@@ -1258,14 +1255,14 @@ public class ViewerMainFragment extends Fragment {
                         pb.setIndeterminate(false);
                         pb.setProgress(100);
 
-                        slicingText += " " + mContext.getString(R.string.viewer_text_done);
+                        slicingText += "  " + mContext.getString(R.string.viewer_text_done);
 
                     } else {
 
                         pb.setProgress(i);
                         pb.setIndeterminate(false);
 
-                        slicingText += " (" + i + "%)";
+                        slicingText += "  (" + i + "%)";
 
                     }
 
@@ -1321,7 +1318,8 @@ public class ViewerMainFragment extends Fragment {
             String height = df.format((data.getMaxZ() - data.getMinZ()));
 
             //Display size of the model
-            mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
+            //mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
+            mSizeText.setText(String.format(mContext.getResources().getString(R.string.viewer_axis_info), Double.parseDouble(width), Double.parseDouble(depth), Double.parseDouble(height)));
         } catch (ArrayIndexOutOfBoundsException e){
 
             e.printStackTrace();

@@ -391,7 +391,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                             Geometry.Point p = mDataList.get(mObjectPressed).getLastCenter();
 
                             //Move the camera to the initial values once per frame
-                            while (!mRenderer.restoreInitialCameraPosition(p.x,p.y, true)){
+                            while (!mRenderer.restoreInitialCameraPosition(p.x,p.y, true, false)){
                                 requestRender();
                             };
 
@@ -415,7 +415,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                         mDoubleTapFirstTouch = false;
 
                         //Move the camera to the initial values once per frame
-                        while (!mRenderer.restoreInitialCameraPosition(0,0, false)){
+                        while (!mRenderer.restoreInitialCameraPosition(0,0, false, true)){
                             requestRender();
                         };
 
