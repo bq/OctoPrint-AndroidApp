@@ -72,8 +72,6 @@ public class DatabaseController {
 		
 		mDb.delete(FeedEntry.TABLE_NAME, FeedEntry._ID + " = '" + id + "'", null);
 		mDb.close();
-
-        MainActivity.refreshDevicesCount();
 		
 		
 	}

@@ -18,54 +18,54 @@ import java.util.List;
 public class WitboxPlate {
 	private final String vertexShaderCode =
 			    "uniform mat4 u_MVPMatrix;      \n"		// A constant representing the combined model/view/projection matrix.
-			  + "uniform mat4 u_MVMatrix;       \n"		// A constant representing the combined model/view matrix.				  
-			 
+			  + "uniform mat4 u_MVMatrix;       \n"		// A constant representing the combined model/view matrix.
+
 			  + "uniform vec4 a_Color;          \n"		// Color information we will pass in.
 			  + "attribute vec4 a_Position;     \n"		// Per-vertex position information we will pass in.
 			  + "attribute vec3 a_Normal;       \n"		// Per-vertex normal information we will pass in.
 			  + "attribute vec2 a_TexCoordinate;\n"
-			  
+
 			  + "varying vec4 v_Color;          \n"		// This will be passed into the fragment shader.
 			  + "varying vec3 v_Position;		\n"
 			  + "varying vec3 v_Normal;			\n"
-			  + "varying vec2 v_TexCoordinate;	\n"	
-			  
+			  + "varying vec2 v_TexCoordinate;	\n"
+
 			  + "void main()                    \n" 	// The entry point for our vertex shader.
-			  + "{                              \n"		
+			  + "{                              \n"
 			// Transform the vertex into eye space.
-			  + "	v_Position = vec3(u_MVMatrix*a_Position);							\n"		  	  		  													  			
-			  // Pass through the color.			  
+			  + "	v_Position = vec3(u_MVMatrix*a_Position);							\n"
+			  // Pass through the color.
 			  + "   v_Color = a_Color;  												\n"
 			  // Pass through the texture coordinate.
-			  + "	v_TexCoordinate = a_TexCoordinate;    								\n"                                  	
+			  + "	v_TexCoordinate = a_TexCoordinate;    								\n"
 			  // Transform the normal's orientation into eye space.
-			  + "	v_Normal = vec3(u_MVMatrix * vec4(a_Normal, 0.0));					\n"	 
+			  + "	v_Normal = vec3(u_MVMatrix * vec4(a_Normal, 0.0));					\n"
 			// gl_Position is a special variable used to store the final position.
-			// Multiply the vertex by the matrix to get the final point in normalized screen coordinates.		
-			  + "   gl_Position = u_MVPMatrix * a_Position;                            \n"     
-			  + "}                                                                     \n"; 
- 
+			// Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
+			  + "   gl_Position = u_MVPMatrix * a_Position;                            \n"
+			  + "}                                                                     \n";
+
 
     private final String fragmentShaderCode =
-			"precision mediump float;       \n"		// Set the default precision to medium. We don't need as high of a precision in the fragment shader.				  		  
-  		
+			"precision mediump float;       \n"		// Set the default precision to medium. We don't need as high of a precision in the fragment shader.
+
     		+ "uniform vec3 u_LightPos;		\n"   	// The position of the light in eye space.
   		  	+ "uniform sampler2D u_Texture; \n"		// The input texture.
-  
+
   		  	+ "varying vec3 v_Position;		\n"		// Interpolated position for this fragment.
   		  	+ "varying vec4 v_Color;        \n"		// This is the color from the vertex shader interpolated across the triangle per fragment.
   		  	+ "varying vec3 v_Normal;       \n"		// Interpolated normal for this fragment.
   		  	+ "varying vec2 v_TexCoordinate;\n"     // Interpolated texture coordinate per fragment.
-  		  	+ "void main()					\n"		
+  		  	+ "void main()					\n"
   		  	+ "{                            \n"
   		  	// Will be used for attenuation.
-  		  	+ "	float distance = length(u_LightPos - v_Position); 							\n"                 
-  		
+  		  	+ "	float distance = length(u_LightPos - v_Position); 							\n"
+
   		  	// Get a lighting direction vector from the light to the vertex.
-  		  	+ "	vec3 lightVector = normalize(u_LightPos - v_Position);						\n"              	
+  		  	+ "	vec3 lightVector = normalize(u_LightPos - v_Position);						\n"
 
   		  	// Calculate the dot product of the light vector and vertex normal. If the normal and light vector are pointing in the same direction then it will get max illumination.
-  		  	+ " 	float diffuse = max(dot(v_Normal, lightVector), 0.0);						\n"               	  		  													  
+  		  	+ " 	float diffuse = max(dot(v_Normal, lightVector), 0.0);						\n"
 
   		  	// Add attenuation. Alberto: Removed to show the texture original color
   	        //diffuse * (1.0 / (1.0 + (0.10 * distance)));
@@ -73,9 +73,9 @@ public class WitboxPlate {
   		  	+ "	diffuse = 0.8;													\n"
 
   		  	// Multiply the color by the diffuse illumination level and texture value to get final output color.
-  		  	+ "	gl_FragColor = (v_Color * diffuse * texture2D(u_Texture, v_TexCoordinate));	\n"    	  
+  		  	+ "	gl_FragColor = (v_Color * diffuse * texture2D(u_Texture, v_TexCoordinate));	\n"
   		  	+ "}               																\n";
-    
+
     private final Context mContext;
 	
     private FloatBuffer mVertexBuffer;
@@ -155,7 +155,7 @@ public class WitboxPlate {
      */
     public WitboxPlate(Context context, boolean infinite, int[] type) {
     	this.mContext = context;
-    	
+
     	generatePlaneCoords(type,infinite);
 
         mTextureDataHandle = loadTexture (mContext, R.drawable.witbox_plate);
@@ -331,10 +331,17 @@ public class WitboxPlate {
         							 0, mNormalBuffer);
         
         GLES20.glEnableVertexAttribArray(mNormalHandle);
-	    
+
 	    // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "u_MVPMatrix");
-        ViewerRenderer.checkGlError("glGetUniformLocation"); //TODO error
+
+        try {
+            ViewerRenderer.checkGlError("glGetUniformLocation"); //TODO error
+        } catch (RuntimeException e){
+
+            //Catches runtime exception on Nexus tablets
+        }
+
 
         // Apply the projection and view transformation
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);

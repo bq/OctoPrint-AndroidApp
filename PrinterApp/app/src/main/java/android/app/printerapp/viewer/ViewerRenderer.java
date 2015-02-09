@@ -884,7 +884,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         } else {
 
-        	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mMVPMatrix, mMVMatrix);      
+        	if (mShowDownWitboxFace) mWitboxFaceDown.draw(mMVPMatrix, mMVMatrix);
         	if (mShowBackWitboxFace) mWitboxFaceBack.draw(mMVPMatrix);
         	if (mShowRightWitboxFace) mWitboxFaceRight.draw(mMVPMatrix);
         	if (mShowLeftWitboxFace) mWitboxFaceLeft.draw(mMVPMatrix);
