@@ -506,7 +506,7 @@ public class PrintNetworkManager {
     public void reloadNetworks(){
 
         mReceiver.unregister();
-        //mReceiver.register();
+        mReceiver.register();
 
     }
 }

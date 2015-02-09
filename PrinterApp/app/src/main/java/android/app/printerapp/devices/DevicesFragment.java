@@ -387,6 +387,7 @@ import java.io.File;
                                 } else {
 
                                     DatabaseController.deleteFromDb(p.getId());
+                                    MainActivity.refreshDevicesCount();
                                     DevicesListController.getList().remove(p); p.setPosition(-1);
 
                                 }

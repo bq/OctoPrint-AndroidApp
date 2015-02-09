@@ -4,6 +4,7 @@ package android.app.printerapp.devices.printview;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.camera.CameraHandler;
@@ -139,7 +140,7 @@ public class PrintViewFragment extends Fragment {
 
 
             //TODO CAMERA DISABLED
-            /*mCamera = new CameraHandler(mContext, mPrinter.getAddress());
+            mCamera = new CameraHandler(mContext, mPrinter.getAddress());
 
 
             //Get video
@@ -148,7 +149,7 @@ public class PrintViewFragment extends Fragment {
             mVideoSurface = mCamera.getView();
             mLayoutVideo.addView(mVideoSurface);
 
-            mCamera.startVideo();*/
+            mCamera.startVideo();
 
             //Get tabHost from the xml
             TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
@@ -183,7 +184,7 @@ public class PrintViewFragment extends Fragment {
                     }
 
                     //TODO CAMERA DISABLED
-                    //mLayoutVideo.invalidate();
+                    mLayoutVideo.invalidate();
 
 
                     Log.i(TAG,"Now showing: " + s);
@@ -225,6 +226,11 @@ public class PrintViewFragment extends Fragment {
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
+                return true;
+
+            case R.id.printview_settings:
+                getActivity().onBackPressed();
+                MainActivity.showExtraFragment(0, 0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -535,8 +541,8 @@ public class PrintViewFragment extends Fragment {
     public void stopCameraPlayback() {
 
         //TODO CAMERA DEISABLE
-        //mCamera.getView().stopPlayback();
-        //mCamera.getView().setVisibility(View.GONE);
+        mCamera.getView().stopPlayback();
+        mCamera.getView().setVisibility(View.GONE);
 
 
     }

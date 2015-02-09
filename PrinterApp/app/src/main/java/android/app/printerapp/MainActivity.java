@@ -247,6 +247,7 @@ public class MainActivity extends ActionBarActivity {
 
             showExtraFragment(2, 0);
 
+
         } else {
             closeInitialFragment();
          /*if (c.getCount() == 1) {
@@ -314,6 +315,12 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    private void closeSettings(){
+        //Refresh printview fragment if exists
+        Fragment fragment = mManager.findFragmentByTag(ListContent.ID_SETTINGS);
+        if (fragment != null) refreshDevicesCount();
+    }
+
     private void closePrintView(){
         //Refresh printview fragment if exists
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
@@ -340,8 +347,12 @@ public class MainActivity extends ActionBarActivity {
             Log.i("FRAGMENT","Current not null");
 
             closePrintView();
+
             if (mManager.popBackStackImmediate());
             else super.onBackPressed();
+
+            //Basically refresh printer count if all were deleted in Settings mode
+            refreshDevicesCount();
 
         } else {
 

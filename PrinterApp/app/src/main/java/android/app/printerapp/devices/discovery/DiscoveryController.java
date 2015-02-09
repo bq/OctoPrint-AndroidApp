@@ -55,6 +55,7 @@ public class DiscoveryController {
 
         mServiceList.clear();
         if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
+        else mNetworkManager.reloadNetworks();
         if (mServiceListener==null) mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
         else mServiceListener.reloadListening();
 
