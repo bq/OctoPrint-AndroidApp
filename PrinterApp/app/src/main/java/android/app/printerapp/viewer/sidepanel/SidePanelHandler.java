@@ -444,7 +444,7 @@ public class SidePanelHandler {
 
                                 mPrinter.setJobPath(null);
 
-                                DevicesListController.selectPrinter(mActivity, null, mSlicingHandler);
+                                DevicesListController.selectPrinter(mActivity, actualFile, mSlicingHandler);
 
 
                             } else {
