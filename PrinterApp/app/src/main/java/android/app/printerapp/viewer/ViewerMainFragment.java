@@ -511,6 +511,7 @@ public class ViewerMainFragment extends Fragment {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
                                 openFile(filePath);
+
                             }
                         })
                         .build()
@@ -543,6 +544,14 @@ public class ViewerMainFragment extends Fragment {
     }
 
 
+    //Select the last object added
+    public static void doPress(){
+
+        mSurface.doPress(mDataList.size() - 1);
+
+    }
+
+
     public static void openFile(String filePath) {
         DataStorage data = null;
         //Open the file
@@ -570,7 +579,10 @@ public class ViewerMainFragment extends Fragment {
             mCurrentViewMode = LAYER;
 
         }
+
         mDataList.add(data);
+
+
 
         //Adding original project //TODO elsewhere?
     if (mSlicingHandler != null)
@@ -1477,8 +1489,6 @@ public class ViewerMainFragment extends Fragment {
     }
 
     public static void setSlicingPosition(float x, float y) {
-
-        Log.i("Slicer","MOG, new positiong to pr0nt " + x + ":" + y);
 
         JSONObject position = new JSONObject();
         try {
