@@ -227,7 +227,6 @@ public class LibraryController {
                 } else{
 
                     if ((path.equals(TAB_CURRENT))){
-
                         retrieveFiles(mCurrentPath, false);
 
                     }else {
@@ -294,6 +293,9 @@ public class LibraryController {
 	public static File getCurrentPath(){
 		return mCurrentPath;
 	}
+    public static void setCurrentPath(String path) {
+        mCurrentPath = new File(path);
+    }
 
     /**
      * Delete files recursively
@@ -311,7 +313,6 @@ public class LibraryController {
             }
 
         }
-
         file.delete();
 
 

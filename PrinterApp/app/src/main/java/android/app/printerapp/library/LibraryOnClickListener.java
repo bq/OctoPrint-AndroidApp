@@ -389,15 +389,21 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                            if (ids.valueAt(i)) {
 
+
+
                                File file = LibraryController.getFileList().get(ids.keyAt(i));
+
                                LibraryController.deleteFiles(file);
 
-                               mContext.refreshFiles();
+                               Log.i("Delete","Deleting " + file.getName());
+
+
 
                            }
                        }
                        if (mActionMode!=null)
                        mActionMode.finish();
+                       mContext.refreshFiles();
                    }
                })
                .negativeText(R.string.cancel)

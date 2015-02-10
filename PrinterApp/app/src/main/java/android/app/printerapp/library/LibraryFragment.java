@@ -1,8 +1,6 @@
 package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
@@ -15,9 +13,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.InputType;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,10 +29,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialogCompat;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -148,7 +141,7 @@ public class LibraryFragment extends Fragment {
                         LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
                         sortAdapter();
 
-                        if (LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
+                        if (LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath() + "/Files")) {
                             hideListHeader();
                         }
                     }
@@ -238,6 +231,8 @@ public class LibraryFragment extends Fragment {
 
                 selectNavItem(v.getId());
 
+                LibraryController.setCurrentPath(LibraryController.getParentFolder() + "/Files");
+
                 switch (v.getId()) {
                     case R.id.library_nav_all_models:
                         mCurrentTab = LibraryController.TAB_ALL;
@@ -255,6 +250,7 @@ public class LibraryFragment extends Fragment {
                         break;
                 }
                 refreshFiles();
+                hideListHeader();
             }
         };
 
@@ -289,6 +285,8 @@ public class LibraryFragment extends Fragment {
 
     //Reload file list with the currently selected tab
     public void refreshFiles() {
+
+        Log.i("Files","Refresh for " + mCurrentTab);
 
         if (mCurrentTab != null) LibraryController.reloadFiles(mCurrentTab);
         sortAdapter();
