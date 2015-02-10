@@ -160,7 +160,6 @@ public class FileBrowser extends Activity  {
                         .customView(view, false)
                         .negativeText(R.string.cancel)
                         .negativeColorRes(R.color.theme_accent_1)
-                        .cancelable(false)
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onNegative(MaterialDialog dialog) {
@@ -168,6 +167,7 @@ public class FileBrowser extends Activity  {
                                 dialog.dismiss();
                             }
                         });
+                dialogBuilder.keyListener(mKeyListener);
 
                 dialog = dialogBuilder.build();
                 dialog.show();
