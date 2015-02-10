@@ -652,8 +652,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        float h = data.getHeight();
 	        float l = data.getLong();
 	        float w = data.getWidth();
-
-            Log.i("CAMERA","SIZES: " + w + ";" + l + ";" + h);
 	        
 	        l = l/ratio; //We calculate the height related to the square in the frustum with this width
 	        w = w/ratio;
@@ -673,8 +671,8 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	        else if (dh>dl) mCameraY = -dh;
 	        else mCameraY = - dl;
 
-            mDx = - data.getTrueCenter().x;
-            mDy = - data.getTrueCenter().y;
+            mDx = - data.getLastCenter().x;
+            mDy = - data.getLastCenter().y;
 
             mSceneAngleX = -40f;
             mSceneAngleY = 0f;
