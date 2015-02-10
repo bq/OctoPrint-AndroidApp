@@ -10,7 +10,7 @@
         android:layout_height="42dp"
         android:layout_margin="@dimen/content_margin_xsmall"
         android:layout_centerVertical="true"
-        android:src="@drawable/icon_custom_generic" />
+        android:src="@drawable/printer_custom_default" />
 
     <TextView
         android:id="@+id/device_name_textview"

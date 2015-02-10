@@ -65,8 +65,8 @@ public class FileBrowserAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_item_file_browser, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.fileItemName = (TextView) convertView.findViewById(R.id.browser_file_name_textview);
-            viewHolder.fileItemIcon = (ImageView) convertView.findViewById(R.id.browser_file_icon_imageview);
+            viewHolder.fileItemName = (TextView) convertView.findViewById(R.id.wifi_ssid_textview);
+            viewHolder.fileItemIcon = (ImageView) convertView.findViewById(R.id.wifi_signal_icon);
 
             convertView.setTag(viewHolder);
         } else {

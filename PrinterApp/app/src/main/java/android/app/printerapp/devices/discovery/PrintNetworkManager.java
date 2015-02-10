@@ -1,7 +1,7 @@
 package android.app.printerapp.devices.discovery;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -17,10 +17,15 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,16 +34,17 @@ import org.json.JSONObject;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class will connect to the server AP and select a wifi from the list to connect the server to
  * TODO As it is right now, the server part is unstable and doesn't always creates the AP
- * @author alberto-baeza
  *
+ * @author alberto-baeza
  */
 public class PrintNetworkManager {
-	
+
     //This should contain the static generic password to the ad-hoc network
     //TODO hardcoded password
     private static final String PASS = "OctoPrint";
@@ -50,7 +56,7 @@ public class PrintNetworkManager {
     private static WifiManager mManager;
 
     //Dialog handler
-    private static ProgressDialog mDialog;
+    private static Dialog mDialog;
 
     //Check if the network is currently being configured
     private boolean isOffline = false;
@@ -64,164 +70,193 @@ public class PrintNetworkManager {
     //original network to configure if an error happens
     private int mOriginalNetwork;
 
-		
-		//Constructor
-		public PrintNetworkManager(DiscoveryController context){
-			
-			mController = context;
 
-			//Create a new Network Receiver
-			mReceiver = new PrintNetworkReceiver(this);
+    //Constructor
+    public PrintNetworkManager(DiscoveryController context) {
 
-		}
-		
-		/**
-		 * Method to connect to the AP
-		 * @param position
-		 */
-		public void setupNetwork(ModelPrinter p, int position){
+        mController = context;
+
+        //Create a new Network Receiver
+        mReceiver = new PrintNetworkReceiver(this);
+
+    }
+
+    /**
+     * Method to connect to the AP
+     *
+     * @param position
+     */
+    public void setupNetwork(ModelPrinter p, int position) {
 
 
-			//Get connection parameters
-			WifiConfiguration conf = new WifiConfiguration();
-			conf.SSID = "\"" + p.getName() + "\"";
-			conf.preSharedKey = "\""+ PASS +"\"";
+        //Get connection parameters
+        WifiConfiguration conf = new WifiConfiguration();
+        conf.SSID = "\"" + p.getName() + "\"";
+        conf.preSharedKey = "\"" + PASS + "\"";
 
-            mPrinter = p;
-			mPosition = position;
+        mPrinter = p;
+        mPosition = position;
 
-			//Add the new network
-			mManager = (WifiManager)mController.getActivity().getSystemService(Context.WIFI_SERVICE);
+        //Add the new network
+        mManager = (WifiManager) mController.getActivity().getSystemService(Context.WIFI_SERVICE);
 
-            mOriginalNetwork = mManager.getConnectionInfo().getNetworkId();
+        mOriginalNetwork = mManager.getConnectionInfo().getNetworkId();
 
-            final int nId = mManager.addNetwork(conf);
-					
-			//Configure network
-			isOffline = true;
-			
-			
-			connectSpecificNetwork(nId);
+        final int nId = mManager.addNetwork(conf);
 
-	        createNetworkDialog(getContext().getString(R.string.devices_discovery_connect));
-    
-		}
-		
-		
-		/**
-		 * Reverse an array of bytes to get the actual IP address
-		 * @param array
-		 */
-		 public static void reverse(byte[] array) {
-		      if (array == null) {
-		          return;
-		      }
-		      int i = 0;
-		      int j = array.length - 1;
-		      byte tmp;
-		      while (j > i) {
-		          tmp = array[j];
-		          array[j] = array[i];
-		          array[i] = tmp;
-		          j--;
-		          i++;
-		      }
-		  }
-		 
-		 
-		 
-		 /*******************************************************************
-		  * NETWORK HANDLING
-		  *******************************************************************/
-		 
-		 /**
-		  * Get the network list from the server and select one to connect
-		  * @param response list with the networks
-		  */
-		 public void selectNetworkPrinter(JSONObject response, final String url){
-			 
-		 
-			 try {
+        //Configure network
+        isOffline = true;
 
-                 mReceiver.unregister();
 
-					JSONArray wifis = response.getJSONArray("wifis");
-					
-					final ArrayAdapter<String> networkList = new ArrayAdapter<String>(getContext(), android.R.layout.select_dialog_singlechoice);
-					for (int i = 0 ; i < wifis.length(); i++){
-						
-						networkList.add(wifis.getJSONObject(i).getString("ssid"));
-						
-					}
-										
-					//Custom Dialog to insert network parameters.
-			         AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-			         adb.setTitle("Configuring Network " + mManager.getConnectionInfo().getSSID());
-			                 
-			         //Get an adapter with the Network list retrieved from the main controller
-			         adb.setAdapter(networkList, new OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {    
-							
-							//Inflate network layout
-							
-							AlertDialog.Builder adb_net = new AlertDialog.Builder(getContext());
-							LayoutInflater inflater = (LayoutInflater)mController.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-							View v = inflater.inflate(R.layout.alertdialog_network, null);
-							
-							final EditText et_ssid = (EditText)v.findViewById(R.id.adb_et1);
-					        final EditText et_pass = (EditText)v.findViewById(R.id.adb_et2);
-					        
-					        et_ssid.setText(networkList.getItem(which));
+        connectSpecificNetwork(nId);
 
-                            //Add check box to show/hide the password
-                            final CheckBox showPasswordCheckbox = (CheckBox) v.findViewById(R.id.show_password_cb);
-                            showPasswordCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        createNetworkDialog(getContext().getString(R.string.devices_discovery_connect));
+
+    }
+
+
+    /**
+     * Reverse an array of bytes to get the actual IP address
+     *
+     * @param array
+     */
+    public static void reverse(byte[] array) {
+        if (array == null) {
+            return;
+        }
+        int i = 0;
+        int j = array.length - 1;
+        byte tmp;
+        while (j > i) {
+            tmp = array[j];
+            array[j] = array[i];
+            array[i] = tmp;
+            j--;
+            i++;
+        }
+    }
+
+
+    /*******************************************************************
+     * NETWORK HANDLING
+     *******************************************************************/
+
+    /**
+     * Get the network list from the server and select one to connect
+     *
+     * @param response list with the networks
+     */
+    public void selectNetworkPrinter(JSONObject response, final String url) {
+
+
+        try {
+
+            mReceiver.unregister();
+
+            JSONArray wifis = response.getJSONArray("wifis");
+            final ArrayList<String> wifiList = new ArrayList<String>();
+            final ArrayList<String> wifiQualityList = new ArrayList<String>();
+            for (int i = 0; i < wifis.length(); i++) {
+                wifiList.add(wifis.getJSONObject(i).getString("ssid"));
+                wifiQualityList.add(wifis.getJSONObject(i).getString("quality"));
+
+            }
+
+            final DiscoveryWifiNetworksListAdapter networkListDialogAdapter
+                    = new DiscoveryWifiNetworksListAdapter(getContext(), wifiList, wifiQualityList);
+
+            //Get the dialog UI
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View selectWifiNetworkDialogView = inflater.inflate(R.layout.dialog_select_wifi_network, null);
+
+            MaterialDialog.Builder adb;
+            final Dialog selectNetworkDialog;
+
+            adb = new MaterialDialog.Builder(getContext())
+                    .title(R.string.devices_configure_wifi_title)
+                    .customView(selectWifiNetworkDialogView, false)
+                    .negativeText(R.string.cancel)
+                    .negativeColorRes(R.color.body_text_2);
+
+            selectNetworkDialog = adb.build();
+
+            ListView wifiNetworksListView = (ListView) selectWifiNetworkDialogView.findViewById(R.id.wifi_networks_listview);
+            wifiNetworksListView.setAdapter(networkListDialogAdapter);
+            wifiNetworksListView.setEmptyView(selectWifiNetworkDialogView.findViewById(R.id.wifi_networks_noresults_container));
+            wifiNetworksListView.setSelector(R.drawable.selectable_rect_background_green);
+            wifiNetworksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                    //Inflate network layout
+                    LayoutInflater inflater = (LayoutInflater) mController.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View wifiPasswordDialogView = inflater.inflate(R.layout.dialog_wifi_network_info, null);
+
+                    final EditText wifiPasswordEditText = (EditText) wifiPasswordDialogView.findViewById(R.id.wifi_password_edittext);
+
+                    //Add check box to show/hide the password
+                    final CheckBox showPasswordCheckbox = (CheckBox) wifiPasswordDialogView.findViewById(R.id.show_password_checkbox);
+                    showPasswordCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            // Use this for store the current cursor mPosition of the edit text
+                            int start = wifiPasswordEditText.getSelectionStart();
+                            int end = wifiPasswordEditText.getSelectionEnd();
+
+                            if (isChecked) wifiPasswordEditText.setTransformationMethod(null);
+                            else
+                                wifiPasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
+
+                            wifiPasswordEditText.setSelection(start, end);
+                        }
+                    });
+
+                    wifiPasswordEditText.requestFocus();
+
+                    new MaterialDialog.Builder(getContext())
+                            .title(wifiList.get(position))
+                            .customView(wifiPasswordDialogView, false)
+                            .positiveText(R.string.ok)
+                            .positiveColorRes(R.color.theme_accent_1)
+                            .negativeText(R.string.cancel)
+                            .negativeColorRes(R.color.body_text_2)
+                            .autoDismiss(false)
+                            .callback(new MaterialDialog.ButtonCallback() {
                                 @Override
-                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                    // Use this for store the current cursor mPosition of the edit text
-                                    int start = et_pass.getSelectionStart();
-                                    int end = et_pass.getSelectionEnd();
+                                public void onPositive(MaterialDialog dialog) {
+                                    final String ssid = wifiList.get(position).toString();
+                                    String psk = wifiPasswordEditText.getText().toString().trim();
 
-                                    if (isChecked) et_pass.setTransformationMethod(null);
-                                    else et_pass.setTransformationMethod(new PasswordTransformationMethod());
-
-                                    et_pass.setSelection(start, end);
+                                    if (psk.equals("")) {
+                                        wifiPasswordEditText.setError(getContext().getString(R.string.empty_password_error));
+                                    } else {
+                                        configureSelectedNetwork(ssid, psk, url);
+                                        mReceiver.unregister();
+                                        dialog.dismiss();
+                                        selectNetworkDialog.dismiss();
+                                        wifiPasswordEditText.clearFocus();
+                                    }
                                 }
-                            });
 
-                            et_pass.requestFocus();
-					        
-					        adb_net.setView(v);
-					        adb_net.setPositiveButton(R.string.ok, new OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									
-									final String ssid = et_ssid.getText().toString();
-									String psk = et_pass.getText().toString();
-																								
-									
-                                    configureSelectedNetwork(ssid,psk,url);
-                                    mReceiver.unregister();
-								
-								}
-					        });
-					        
-					        adb_net.setNegativeButton(R.string.cancel, null);
-					        adb_net.show();
-						}
-					});
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
 
-			         adb.show(); 
-			         
-			 } catch (JSONException e) {
-					e.printStackTrace();
-				}
-		 }
+                }
+            });
 
-    public void configureSelectedNetwork(String ssid, String pass, String url){
+            selectNetworkDialog.show();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void configureSelectedNetwork(String ssid, String pass, String url) {
 
         /**
          * SAVE PARAMETERS
@@ -276,7 +311,7 @@ public class PrintNetworkManager {
                     @Override
                     public void run() {
 
-                        Log.i("MANAGER","Registering again with " + target.SSID + "!");
+                        Log.i("MANAGER", "Registering again with " + target.SSID + "!");
 
                         DevicesListController.removeElement(mPosition);
 
@@ -293,7 +328,6 @@ public class PrintNetworkManager {
                         dismissNetworkDialog();
 
 
-
                     }
                 }, 10000);
 
@@ -303,7 +337,7 @@ public class PrintNetworkManager {
 
     }
 
-    public void connectSpecificNetwork(int nId){
+    public void connectSpecificNetwork(int nId) {
 
         //Disconnect to the current network and reconnect to the new
         mManager.disconnect();
@@ -311,70 +345,75 @@ public class PrintNetworkManager {
         mManager.reconnect();
 
     }
-		 
-		 
-		 /*********************************************************************
-		  * DIALOG HANDLING
-		  ********************************************************************/
-		 
-		 /**
-		  * Create Network Dialog while connecting to the Printer
-		  * @param message
-		  */
-		 public void createNetworkDialog(String message){
-				
-				//Configure Progress Dialog
-				mDialog = new ProgressDialog(mController.getActivity());
-				mDialog.setIcon(android.R.drawable.ic_dialog_alert);
-				mDialog.setTitle(getContext().getString(R.string.devices_discovery_title));
-				mDialog.setMessage(message);
-				mDialog.show();
-			}
-			
-		 /**
-		  * Called when the Network is established, should open a Dialog with the network list from the server
-		  *	only will be called if there's a Network available (Dialog won't be null)
-		  *
-		  */
-			public void dismissNetworkDialog(){
 
 
-				
-				if (isOffline)	{
-					isOffline = false;
-					mDialog.dismiss();
-					byte[] ipAddress = BigInteger.valueOf(mManager.getDhcpInfo().gateway).toByteArray();
-					reverse(ipAddress);
-					InetAddress myaddr;
-					try {
-						myaddr = InetAddress.getByAddress(ipAddress);
+    /*********************************************************************
+     * DIALOG HANDLING
+     ********************************************************************/
+
+    /**
+     * Create Network Dialog while connecting to the Printer
+     *
+     * @param message
+     */
+    public void createNetworkDialog(String message) {
+
+        //Get progress dialog UI
+        View configurePrinterDialogView = LayoutInflater.from(mController.getActivity()).inflate(R.layout.dialog_progress_content_horizontal, null);
+        ((TextView) configurePrinterDialogView.findViewById(R.id.progress_dialog_text)).setText(message);
+
+        //Show progress dialog
+        final MaterialDialog.Builder configurePrinterDialogBuilder = new MaterialDialog.Builder(mController.getActivity());
+        configurePrinterDialogBuilder.title(R.string.devices_discovery_title)
+                .customView(configurePrinterDialogView, true)
+                .cancelable(false)
+                .autoDismiss(false);
+        //Progress dialog to notify command events
+        mDialog = configurePrinterDialogBuilder.build();
+        mDialog.show();
+    }
+
+    /**
+     * Called when the Network is established, should open a Dialog with the network list from the server
+     * only will be called if there's a Network available (Dialog won't be null)
+     */
+    public void dismissNetworkDialog() {
 
 
-                        //TODO HARDCODED ACCESS POINT
-						String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
-						Log.i("OUT","Numerito_ " +hostaddr);
+        if (isOffline) {
+            isOffline = false;
+            mDialog.dismiss();
+            byte[] ipAddress = BigInteger.valueOf(mManager.getDhcpInfo().gateway).toByteArray();
+            reverse(ipAddress);
+            InetAddress myaddr;
+            try {
+                myaddr = InetAddress.getByAddress(ipAddress);
 
-                        if (mPrinter!=null){
-                            OctoprintNetwork.getNetworkList(this, mPrinter);
-                        } else {
 
-                            mController.waitServiceDialog();
+                //TODO HARDCODED ACCESS POINT
+                String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
+                Log.i("OUT", "Numerito_ " + hostaddr);
 
-                        }
+                if (mPrinter != null) {
+                    OctoprintNetwork.getNetworkList(this, mPrinter);
+                } else {
 
-					
-					} catch (UnknownHostException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				
-				
-			}
+                    mController.waitServiceDialog();
 
-    public void errorNetworkDialog(){
+                }
 
-        if (mDialog!=null){
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    public void errorNetworkDialog() {
+
+        if (mDialog != null) {
 
             mDialog.dismiss();
             connectSpecificNetwork(mOriginalNetwork);
@@ -383,75 +422,75 @@ public class PrintNetworkManager {
         }
 
 
-
     }
 
 
+    /**
+     * This method will clear the existing Networks with the same name as the new inserted
+     *
+     * @param ssid
+     */
+    private static void clearNetwork(String ssid) {
 
-			/**
-			 * This method will clear the existing Networks with the same name as the new inserted
-			 * @param ssid
-			 */
-			private static void clearNetwork(String ssid){
-					
-					List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
-			        for (WifiConfiguration c: configs){
-			        	Log.i("NETWORK", c.SSID + " is clearly not " + ssid);
-			        	if (c.SSID.contains(ssid)){
-			        		Log.i("out","Removed");
-			        		mManager.removeNetwork(c.networkId);
-		        		}
-			        }
-				}
-			
-			private static int searchNetwork(WifiConfiguration ssid){
-				
-				List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
-		        for (WifiConfiguration c: configs){
-		        	if (c.SSID.equals(ssid.SSID)){
-		        		return c.networkId;
-		        		
-		    		}
-		        }
-		        
-		        return mManager.addNetwork(ssid);
-			}
-			
-			
-		
-	/**
-	 * Add a new Printer calling to the Controller
-	 * @param p
-	 */
-	public void addElementController(ModelPrinter p){
-		
-		mController.addElement(p);
-		//p.setNotConfigured();
-		
-	}
-	
-	/**
-	 * Get Device context
-	 * @return
-	 */
-	public Context getContext(){
-		return mController.getActivity();
-	}
+        List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
+        for (WifiConfiguration c : configs) {
+            Log.i("NETWORK", c.SSID + " is clearly not " + ssid);
+            if (c.SSID.contains(ssid)) {
+                Log.i("out", "Removed");
+                mManager.removeNetwork(c.networkId);
+            }
+        }
+    }
 
+    private static int searchNetwork(WifiConfiguration ssid) {
+
+        List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
+        for (WifiConfiguration c : configs) {
+            if (c.SSID.equals(ssid.SSID)) {
+                return c.networkId;
+
+            }
+        }
+
+        return mManager.addNetwork(ssid);
+    }
+
+
+    /**
+     * Add a new Printer calling to the Controller
+     *
+     * @param p
+     */
+    public void addElementController(ModelPrinter p) {
+
+        mController.addElement(p);
+        //p.setNotConfigured();
+
+    }
+
+    /**
+     * Get Device context
+     *
+     * @return
+     */
+    public Context getContext() {
+        return mController.getActivity();
+    }
 
 
     /**
      * EXCLUSIVE TO THIS IMPLEMENTATION
-     *
+     * <p/>
      * Parse the network ID to search in the preference list
+     *
      * @param s ssid to get the number
      * @return the parsed number
      */
-    public static String getNetworkId(String s){
+    public static String getNetworkId(String s) {
 
         String ssid = s.replaceAll("[^A-Za-z0-9]", "");
 
-        if (ssid.length() >= 4) return ssid.substring(ssid.length() - 4,(ssid.length()));
+        if (ssid.length() >= 4) return ssid.substring(ssid.length() - 4, (ssid.length()));
         else return "0000";
 
     }
@@ -459,12 +498,13 @@ public class PrintNetworkManager {
 
     /**
      * Check if the network was on the preference list to link it to the service
+     *
      * @param ssid
      * @param result
      */
-    public static boolean checkNetworkId(String ssid, boolean result){
+    public static boolean checkNetworkId(String ssid, boolean result) {
 
-        Log.i("Discovery","Checking ID");
+        Log.i("Discovery", "Checking ID");
 
         final int message;
         boolean exists = false;
@@ -475,9 +515,9 @@ public class PrintNetworkManager {
         /**
          * Check for pending networks in the preference list
          */
-        if (DatabaseController.isPreference(DatabaseController.TAG_NETWORK,"Last")){
+        if (DatabaseController.isPreference(DatabaseController.TAG_NETWORK, "Last")) {
 
-            if (DatabaseController.getPreference(DatabaseController.TAG_NETWORK,"Last").equals(getNetworkId(ssid))){
+            if (DatabaseController.getPreference(DatabaseController.TAG_NETWORK, "Last").equals(getNetworkId(ssid))) {
 
                 exists = true;
 
@@ -494,16 +534,16 @@ public class PrintNetworkManager {
         return exists;
     }
 
-    public static String getCurrentNetwork(){
+    public static String getCurrentNetwork() {
 
-        WifiManager manager = (WifiManager)mController.getActivity().getSystemService(Context.WIFI_SERVICE);
+        WifiManager manager = (WifiManager) mController.getActivity().getSystemService(Context.WIFI_SERVICE);
 
-        return  manager.getConnectionInfo().getSSID();
+        return manager.getConnectionInfo().getSSID();
 
     }
 
 
-    public void reloadNetworks(){
+    public void reloadNetworks() {
 
         mReceiver.unregister();
         //mReceiver.register();

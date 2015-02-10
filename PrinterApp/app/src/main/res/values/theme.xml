@@ -81,7 +81,7 @@
     </style>
 
     <style name="DropDownNav.Green" parent="@android:style/Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/spinner_background_ab_green</item>
+        <item name="android:background">@drawable/spinner_background_green</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_green</item>
         <item name="android:backgroundSplit">?android:attr/actionModeSplitBackground</item>
         <item name="android:dropDownSelector">@drawable/selectable_rect_background_green</item>

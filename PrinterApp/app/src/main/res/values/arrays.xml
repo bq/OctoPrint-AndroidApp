@@ -7,7 +7,7 @@
         <item>1</item>
         <item>2</item>
         <item>4</item>
-    </string-array>visual_
+    </string-array>
 
     <array name="models_visibility_icons" translatable="false">
         <item>@drawable/visual_normal_24dp</item>
@@ -28,5 +28,30 @@
         <item>@drawable/ic_viewer_rotation_y</item>
         <item>@drawable/ic_viewer_rotation_z</item>
     </array>
+
+    <!-- Printer colors -->
+    <string-array name="printer_color_values" translatable="false">
+        <item>@string/devices_color_keep_color</item>
+        <item>default</item>
+        <item>red</item>
+        <item>orange</item>
+        <item>yellow</item>
+        <item>green</item>
+        <item>blue</item>
+        <item>violet</item>
+        <item>black</item>
+    </string-array>
+
+    <string-array name="printer_color_labels">
+        <item>@string/devices_color_keep_color</item>
+        <item>@string/devices_color_default</item>
+        <item>@string/devices_color_red</item>
+        <item>@string/devices_color_orange</item>
+        <item>@string/devices_color_yellow</item>
+        <item>@string/devices_color_green</item>
+        <item>@string/devices_color_blue</item>
+        <item>@string/devices_color_violet</item>
+        <item>@string/devices_color_black</item>
+    </string-array>
 
 </resources>

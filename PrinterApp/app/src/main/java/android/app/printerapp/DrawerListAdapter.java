@@ -63,7 +63,7 @@ public class DrawerListAdapter extends BaseAdapter {
 
             viewHolder = new ViewHolder();
             viewHolder.drawerItemName = (TextView) convertView.findViewById(R.id.layout_navigation_drawer_item_textview);
-            viewHolder.drawerItemIcon = (ImageView) convertView.findViewById(R.id.browser_file_icon_imageview);
+            viewHolder.drawerItemIcon = (ImageView) convertView.findViewById(R.id.wifi_signal_icon);
 
             convertView.setTag(viewHolder);
         } else {

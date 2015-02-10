@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/content_padding_xsmall"
+    android:paddingBottom="@dimen/content_padding_xsmall"
+    android:paddingLeft="@dimen/content_padding_small"
+    android:paddingRight="@dimen/content_padding_small"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/list_selector">
+
+    <ImageView
+        android:id="@+id/wifi_signal_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/content_margin_small"
+        android:src="@drawable/ic_signal_wifi_2"/>
+
+    <TextView
+        android:id="@+id/wifi_ssid_textview"
+        style="@style/DialogContent"
+        android:textIsSelectable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"/>
+
+</LinearLayout>

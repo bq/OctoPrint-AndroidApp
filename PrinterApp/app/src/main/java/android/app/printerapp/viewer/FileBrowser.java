@@ -192,37 +192,6 @@ public class FileBrowser extends Activity  {
                         dialog.dismiss();
                     }
                 });
-
-				// Build file chooser dialog
-//                MaterialDialogCompat.Builder dialog = new MaterialDialogCompat.Builder(mContext)
-//                        .setTitle(mTitle)
-//                        .setItems(list.toArray(new String[] {}), mClickListener).setOnKeyListener(mKeyListener)
-//						.setNeutralButton(mContext.getResources().getString(R.string.close_browser), new OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface dialog, int which) {
-//						// finish the dialog
-//						mFileListListener.onClickFileList(null);
-//						dialog.dismiss();
-//					}
-//				});
-//				if (mCurrentPath.getParentFile() != null) {
-//					dialog = dialog.setPositiveButton(mContext.getResources().getString(R.string.open), new OnClickListener() {
-//						@Override
-//						public void onClick(DialogInterface dialog, int which) {
-//							File fileParent = mCurrentPath.getParentFile();
-//							if (fileParent != null) {
-//								show(fileParent.getAbsolutePath());
-//								dialog.dismiss();
-//							} else {
-//								// Already the root directory: finish dialog.
-//								mFileListListener.onClickFileList(null);
-//								dialog.dismiss();
-//							}
-//
-//						}
-//					});
-//				}
-//				dialog.show();
 			}
 		} catch (SecurityException se) {
 			se.printStackTrace();

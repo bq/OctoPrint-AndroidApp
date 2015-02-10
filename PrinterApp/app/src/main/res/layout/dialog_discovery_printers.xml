@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/content_padding_normal"
+    android:paddingRight="@dimen/content_padding_normal"
+    android:paddingTop="@dimen/content_padding_small"
+    android:paddingBottom="@dimen/content_padding_small">
+
+    <GridView
+        android:id="@+id/discovery_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3" />
+
+    <!-- View for the empty grid view -->
+    <LinearLayout
+        android:id="@+id/wifi_networks_noresults_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/wifi_network_retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selectable_rect_background_gray"
+            android:gravity="center"
+            android:padding="@dimen/content_padding_xsmall"
+            android:src="@drawable/ic_refresh_black_48dp" />
+
+        <TextView
+            style="@style/DialogContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/content_padding_xsmall"
+            android:text="@string/printview_searching_networks_dialog_noresults" />
+
+    </LinearLayout>
+
+</LinearLayout>

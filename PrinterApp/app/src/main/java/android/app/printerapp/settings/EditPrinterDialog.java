@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 /**
  * This class will create a dialog to edit and set printer type and settings.
  * It's called from the devices panel when you add a new printer or the settings option.
- *
+ * <p/>
  * Created by alberto-baeza on 12/4/14.
  */
 public class EditPrinterDialog {
@@ -51,11 +53,13 @@ public class EditPrinterDialog {
     private Context mContext;
 
     //Adapters and arays
-    private String[] colorArray;
+    private String[] mColorLabelsArray;
+    private String[] mColorValuesArray;
     private ModelPrinter mPrinter;
     private ArrayList<String> profileArray;
 
     //UI references
+    private View mRootView;
     private Spinner spinner_printer;
     private EditText editText_name;
     private Spinner spinner_color;
@@ -78,7 +82,7 @@ public class EditPrinterDialog {
     private Spinner spinner_port;
 
     //Constructor
-    public EditPrinterDialog(Context context, ModelPrinter p, JSONObject object){
+    public EditPrinterDialog(Context context, ModelPrinter p, JSONObject object) {
 
         mPrinter = p;
         mContext = context;
@@ -87,9 +91,13 @@ public class EditPrinterDialog {
     }
 
     //Initialize the UI elements
-    private void initElements(View v){
+    private void initElements(View v) {
 
-        colorArray = new String[]{mContext.getResources().getString(R.string.settings_default_color),"default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
+        mRootView = v;
+
+//        mColorLabelsArray = new String[]{mContext.getResources().getString(R.string.settings_default_color),"default", "red", "orange", "yellow", "green", "blue", "violet", "black"};
+        mColorLabelsArray = mContext.getResources().getStringArray(R.array.printer_color_labels);
+        mColorValuesArray = mContext.getResources().getStringArray(R.array.printer_color_values);
 
         spinner_printer = (Spinner) v.findViewById(R.id.settings_edit_type_spinner);
         editText_name = (EditText) v.findViewById(R.id.settings_edit_name_edit);
@@ -97,13 +105,13 @@ public class EditPrinterDialog {
 
         //Add default types plus custom types from internal storage
         profileArray = new ArrayList<String>();
-        for (String s : PRINTER_TYPES){
+        for (String s : PRINTER_TYPES) {
 
             profileArray.add(s);
         }
 
         //Add internal storage types
-        for (File file : mContext.getFilesDir().listFiles()){
+        for (File file : mContext.getFilesDir().listFiles()) {
 
             //Only files with the .profile extension
             if (file.getAbsolutePath().contains(".profile")) {
@@ -118,8 +126,10 @@ public class EditPrinterDialog {
         }
 
         //Initialize adapters
-        type_adapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_spinner_item, profileArray);
-        color_adapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_spinner_item, colorArray);
+        type_adapter = new ArrayAdapter<String>(mContext, R.layout.print_panel_spinner_item, profileArray);
+        type_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
+        color_adapter = new ArrayAdapter<String>(mContext, R.layout.print_panel_spinner_item, mColorLabelsArray);
+        color_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
 
         //Initial settings and spinners
         editText_name.setText(mPrinter.getDisplayName());
@@ -128,11 +138,11 @@ public class EditPrinterDialog {
         spinner_printer.setAdapter(type_adapter);
 
         //If it's a custom profile
-        if (mPrinter.getProfile()!=null){
+        if (mPrinter.getProfile() != null) {
 
             int pos = 0;
 
-            for (String s : profileArray){
+            for (String s : profileArray) {
 
                 if (s.equals(mPrinter.getProfile())) {
 
@@ -151,26 +161,21 @@ public class EditPrinterDialog {
 
         //Ports
         try {
-
             JSONArray ports = mSettings.getJSONObject("options").getJSONArray("ports");
             ArrayList<String> ports_array = new ArrayList<String>();
 
             for (int i = 0; i < ports.length(); i++) {
-
                 ports_array.add(ports.get(i).toString());
-
             }
+
             ArrayAdapter<String> ports_adapter = new ArrayAdapter<String>(mContext,
                     R.layout.print_panel_spinner_item, ports_array);
-
+            ports_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
             spinner_port.setAdapter(ports_adapter);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
 
         editText_nozzle = (EditText) v.findViewById(R.id.settings_edit_nozzle_edit);
         editText_extruders = (EditText) v.findViewById(R.id.settings_edit_extruders_edit);
@@ -179,7 +184,7 @@ public class EditPrinterDialog {
         editText_depth = (EditText) v.findViewById(R.id.settings_edit_bed_depth);
 
         checkBox_circular = (CheckBox) v.findViewById(R.id.settings_edit_circular_check);
-        checkBox_hot= (CheckBox) v.findViewById(R.id.settings_edit_hot_check);
+        checkBox_hot = (CheckBox) v.findViewById(R.id.settings_edit_hot_check);
 
         icon_printer = (ImageView) v.findViewById(R.id.settings_edit_icon);
 
@@ -197,7 +202,7 @@ public class EditPrinterDialog {
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 if (imm != null) {
-                    imm.showSoftInput(editText_name,0);
+                    imm.showSoftInput(editText_name, 0);
                 }
 
             }
@@ -209,7 +214,7 @@ public class EditPrinterDialog {
             @Override
             public void onClick(View view) {
 
-                Log.i("OUT","Delete " + spinner_printer.getSelectedItem());
+                Log.i("OUT", "Delete " + spinner_printer.getSelectedItem());
 
                 deleteProfile(spinner_printer.getSelectedItem().toString());
 //                OctoprintProfiles.deleteProfile(mContext,mPrinter.getAddress(),spinner_printer.getSelectedItem().toString());
@@ -229,32 +234,32 @@ public class EditPrinterDialog {
                 button_delete.setVisibility(View.GONE);
 
                 //Check for default types
-                switch(i){
+                switch (i) {
 
                     case 0: //witbox (locked)
 
                         profile = ModelProfile.retrieveProfile(mContext, ModelProfile.WITBOX_PROFILE);
-                        icon_printer.setImageResource(R.drawable.icon_witbox);
+                        icon_printer.setImageResource(R.drawable.printer_witbox_default);
 
                         break;
                     case 1: //prusa (locked)
 
                         profile = ModelProfile.retrieveProfile(mContext, ModelProfile.PRUSA_PROFILE);
-                        icon_printer.setImageResource(R.drawable.icon_prusa);
+                        icon_printer.setImageResource(R.drawable.printer_prusa_default);
 
                         break;
 
                     case 2: //custom (editable)
 
                         profile = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE);
-                        icon_printer.setImageResource(R.drawable.icon_custom_generic);
+                        icon_printer.setImageResource(R.drawable.printer_custom_default);
                         editable = true;
                         break;
 
                     default: //any other user-defined profile (locked)
 
                         profile = ModelProfile.retrieveProfile(mContext, profileArray.get(i));
-                        icon_printer.setImageResource(R.drawable.icon_custom_generic);
+                        icon_printer.setImageResource(R.drawable.printer_custom_default);
                         editable = false;
                         button_delete.setVisibility(View.VISIBLE);
 
@@ -263,7 +268,7 @@ public class EditPrinterDialog {
                 }
 
                 //Load the selected profile
-               loadProfile(profile, editable);
+                loadProfile(profile, editable);
 
 
             }
@@ -273,178 +278,133 @@ public class EditPrinterDialog {
 
             }
         });
-
-        /*spinner_color.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                int color = OctoprintConnection.convertColor(colorArray[spinner_color.getSelectedItemPosition()]);
-
-                if (i!=0)
-                switch(spinner_printer.getSelectedItemPosition()){
-
-                    case 0:
-
-                        if (color!=0){
-
-                            icon_printer.setImageResource(R.drawable.witbox_transparent);
-                            icon_printer.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
-
-                        } else icon_printer.setImageResource(R.drawable.icon_witbox);
-
-                        break;
-
-                    case 1:
-
-                        if (color!=0) {
-
-                            icon_printer.setImageResource(R.drawable.prusa_transparent);
-                            icon_printer.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
-
-                        } else icon_printer.setImageResource(R.drawable.icon_prusa);
-                        break;
-
-                    default:
-                        icon_printer.setImageResource(R.drawable.icon_selectedprinter);
-                        icon_printer.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                        break;
-
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
-
-
 
     }
 
     //Method to create the settings dialog
-    public void createDialog(){
+    public void createDialog() {
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-
-        adb.setTitle(R.string.settings_edit_name);
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View editPrinterDialogView = inflater.inflate(R.layout.dialog_edit_printer_info, null);
+        initElements(editPrinterDialogView);
 
-        View v = inflater.inflate(R.layout.settings_edit_layout, null);
-
-        initElements(v);
-
-        adb.setView(v);
-
-        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                String newName = editText_name.getText().toString();
-                String newColor = null;
-
-                //only edit color if it's not the "keep color" option
-                if (spinner_color.getSelectedItemPosition()!=0) newColor = colorArray[spinner_color.getSelectedItemPosition()];
-
-                //Only edit name if it's enabled
-                if ((newName!=null )&& (editText_name.isEnabled())){
-
-                    mPrinter.setDisplayName(newName);
-                    DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, mPrinter.getId(), newName);
-                } else newName = null;
-
-                //if (!editText_name.isEnabled()) newName = null;
-
-                //Set the new name on the server
-                OctoprintConnection.setSettings(mPrinter, newName, newColor, mContext);
-
-                String auxType = null;
-
-                //if it's not a custom editable profile
-                if (spinner_printer.getSelectedItemPosition()!=2) {
-
-                    mPrinter.setType(spinner_printer.getSelectedItemPosition() + 1, spinner_printer.getSelectedItem().toString());
-                    //OctoprintProfiles.selectProfile(mContext,mPrinter.getAddress(),spinner_printer.getSelectedItem().toString());
-
-                    switch (spinner_printer.getSelectedItemPosition()){
-
-                        case 0: auxType = "bq_witbox"; break;
-                        case 1: auxType = "bq_hephestos"; break;
-                        default: {
-
-                            //Upload profile, connect if successful
-                            OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),ModelProfile.retrieveProfile(mContext,spinner_printer.getSelectedItem().toString()),
-                                    spinner_port.getSelectedItem().toString());
-
-
-                            //auxType = spinner_printer.getSelectedItem().toString();
-                        } break;
-
+        MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext)
+                .title(R.string.settings_edit_name)
+                .customView(editPrinterDialogView, false)
+                .negativeText(R.string.cancel)
+                .negativeColorRes(R.color.body_text_2)
+                .positiveText(R.string.ok)
+                .positiveColorRes(R.color.theme_accent_1)
+                .cancelable(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
                     }
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        String newName = editText_name.getText().toString();
+                        String newColor = null;
 
-                    //update new profile
-                    if (auxType!=null) {
+                        //only edit color if it's not the "keep color" option
+                        if (spinner_color.getSelectedItemPosition() != 0)
+                            newColor = mColorValuesArray[spinner_color.getSelectedItemPosition()];
 
-                        OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
-                        OctoprintProfiles.updateProfile(mContext,mPrinter.getAddress(),auxType);
+                        //Only edit name if it's enabled
+                        if ((newName != null) && (editText_name.isEnabled())) {
+
+                            mPrinter.setDisplayName(newName);
+                            DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_DISPLAY, mPrinter.getId(), newName);
+                        } else newName = null;
+
+                        //if (!editText_name.isEnabled()) newName = null;
+
+                        //Set the new name on the server
+                        OctoprintConnection.setSettings(mPrinter, newName, newColor, mContext);
+
+                        String auxType = null;
+
+                        //if it's not a custom editable profile
+                        if (spinner_printer.getSelectedItemPosition() != 2) {
+
+                            mPrinter.setType(spinner_printer.getSelectedItemPosition() + 1, spinner_printer.getSelectedItem().toString());
+                            //OctoprintProfiles.selectProfile(mContext,mPrinter.getAddress(),spinner_printer.getSelectedItem().toString());
+
+                            switch (spinner_printer.getSelectedItemPosition()) {
+
+                                case 0:
+                                    auxType = "bq_witbox";
+                                    break;
+                                case 1:
+                                    auxType = "bq_hephestos";
+                                    break;
+                                default: {
+
+                                    //Upload profile, connect if successful
+                                    OctoprintProfiles.uploadProfile(mContext, mPrinter.getAddress(), ModelProfile.retrieveProfile(mContext, spinner_printer.getSelectedItem().toString()),
+                                            spinner_port.getSelectedItem().toString());
+
+
+                                    //auxType = spinner_printer.getSelectedItem().toString();
+                                }
+                                break;
+
+                            }
+
+                            //update new profile
+                            if (auxType != null) {
+
+                                OctoprintConnection.startConnection(mPrinter.getAddress(), mContext, spinner_port.getSelectedItem().toString(), auxType);
+                                OctoprintProfiles.updateProfile(mContext, mPrinter.getAddress(), auxType);
+                            }
+
+
+                        } else { //CUSTOM selected
+
+                            mPrinter.setType(3, null);
+                            //Save new profile
+                            saveProfile();
+
+                        }
+
+                        if (!DatabaseController.checkExisting(mPrinter)) {
+
+                            Log.i("OUT", "ADDING NEW PRINTER! " + mPrinter.getDisplayName());
+
+                            mPrinter.setId(DatabaseController.writeDb(mPrinter.getName(), mPrinter.getAddress(), String.valueOf(mPrinter.getPosition()), String.valueOf(mPrinter.getType()),
+                                    MainActivity.getCurrentNetwork(mContext)));
+                            mPrinter.startUpdate(mContext);
+                        } else {
+
+                            DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_TYPE, mPrinter.getId(), String.valueOf(mPrinter.getType()));
+
+                        }
+
+                        notifyAdapters();
+                        dialog.dismiss();
                     }
+                });
 
-
-                } else { //CUSTOM selected
-
-                    mPrinter.setType(3, null);
-                    //Save new profile
-                    saveProfile();
-
-                }
-
-                if (!DatabaseController.checkExisting(mPrinter)){
-
-                    Log.i("OUT","ADDING NEW PRINTER! " + mPrinter.getDisplayName());
-
-                    mPrinter.setId(DatabaseController.writeDb(mPrinter.getName(), mPrinter.getAddress(), String.valueOf(mPrinter.getPosition()), String.valueOf(mPrinter.getType()),
-                            MainActivity.getCurrentNetwork(mContext)));
-                    mPrinter.startUpdate(mContext);
-                } else {
-
-                    DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_TYPE, mPrinter.getId(), String.valueOf(mPrinter.getType()));
-
-                }
-
-                notifyAdapters();
-
-
-
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-
-        Dialog dialog = adb.create();
-
+        Dialog dialog = dialogBuilder.build();
         dialog.show();
-        Window window = dialog.getWindow();
 
-        //TODO RANDOM CRASH
-        try{
-
-
-            window.setLayout(500, LinearLayout.LayoutParams.MATCH_PARENT);
-
-        }catch(ArrayIndexOutOfBoundsException e){
-
-            e.printStackTrace();
-        }
+//        Window window = dialog.getWindow();
+//
+//        //TODO RANDOM CRASH
+//        try {
+//
+//            window.setLayout(500, LinearLayout.LayoutParams.MATCH_PARENT);
+//
+//        } catch (ArrayIndexOutOfBoundsException e) {
+//
+//            e.printStackTrace();
+//        }
 
 
     }
 
-    public void loadProfile(JSONObject profile, boolean editable){
+    public void loadProfile(JSONObject profile, boolean editable) {
 
         try {
 
@@ -467,24 +427,27 @@ public class EditPrinterDialog {
             editText_height.setText(String.valueOf(volume.getInt("height")));
             editText_height.setEnabled(editable);
 
-            if (volume.getString("formFactor").equals("circular")) checkBox_circular.setChecked(true);
+            if (volume.getString("formFactor").equals("circular"))
+                checkBox_circular.setChecked(true);
             else checkBox_circular.setChecked(false);
             checkBox_circular.setEnabled(editable);
 
             checkBox_hot.setChecked(profile.getBoolean("heatedBed"));
             checkBox_hot.setEnabled(editable);
 
-
+            //Enable/disable the tags
+            mRootView.findViewById(R.id.settings_edit_nozzle_tag).setEnabled(editable);
+            mRootView.findViewById(R.id.settings_edit_extruders_tag).setEnabled(editable);
+            mRootView.findViewById(R.id.settings_edit_bed_tag).setEnabled(editable);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-
     }
 
-    public void saveProfile(){
+    public void saveProfile() {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
         adb.setTitle(R.string.settings_profile_add);
@@ -493,35 +456,35 @@ public class EditPrinterDialog {
         adb.setView(name);
 
 
-        adb.setPositiveButton(R.string.ok,new DialogInterface.OnClickListener() {
+        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                try{
+                try {
 
-                    String nameFormat = name.getText().toString().replace(" ","_");
+                    String nameFormat = name.getText().toString().replace(" ", "_");
 
                     JSONObject json = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE);
 
                     json.put("name", name.getText().toString());
-                    json.put("id", name.getText().toString().replace(" ","_"));
+                    json.put("id", name.getText().toString().replace(" ", "_"));
                     json.put("model", "ModelPrinter");
 
                     JSONObject volume = new JSONObject();
 
-                    if (checkBox_circular.isChecked()) volume.put("formFactor","circular");
-                    else volume.put("formFactor","rectangular");
+                    if (checkBox_circular.isChecked()) volume.put("formFactor", "circular");
+                    else volume.put("formFactor", "rectangular");
 
-                    volume.put("depth",Float.parseFloat(editText_depth.getText().toString()));
-                    volume.put("width",Float.parseFloat(editText_width.getText().toString()));
-                    volume.put("height",Float.parseFloat(editText_height.getText().toString()));
+                    volume.put("depth", Float.parseFloat(editText_depth.getText().toString()));
+                    volume.put("width", Float.parseFloat(editText_width.getText().toString()));
+                    volume.put("height", Float.parseFloat(editText_height.getText().toString()));
 
-                    json.put("volume",volume);
+                    json.put("volume", volume);
 
                     JSONObject extruder = new JSONObject();
 
-                    extruder.put("nozzleDiameter",Double.parseDouble(editText_nozzle.getText().toString()));
-                    extruder.put("count",Integer.parseInt(editText_extruders.getText().toString()));
+                    extruder.put("nozzleDiameter", Double.parseDouble(editText_nozzle.getText().toString()));
+                    extruder.put("count", Integer.parseInt(editText_extruders.getText().toString()));
 
                     ArrayList<Float> s = new ArrayList<Float>();
                     s.add(Float.parseFloat("0.0"));
@@ -532,35 +495,31 @@ public class EditPrinterDialog {
 
                     extruder.put("offsets", new JSONArray(sa));
 
-                    json.put("extruder",extruder);
+                    json.put("extruder", extruder);
 
-                    if (checkBox_hot.isChecked()) json.put("heatedBed",true);
-                    else json.put("heatedBed",false);
+                    if (checkBox_hot.isChecked()) json.put("heatedBed", true);
+                    else json.put("heatedBed", false);
 
                     Log.i("OUT", json.toString());
 
-                    if (ModelProfile.saveProfile(mContext, name.getText().toString(), json)){
+                    if (ModelProfile.saveProfile(mContext, name.getText().toString(), json)) {
 
                         mPrinter.setType(3, name.getText().toString());
                         DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_PROFILE, mPrinter.getId(), name.getText().toString());
 
                         //Upload profile, connect if successful
-                        OctoprintProfiles.uploadProfile(mContext,mPrinter.getAddress(),json, spinner_port.getSelectedItem().toString());
+                        OctoprintProfiles.uploadProfile(mContext, mPrinter.getAddress(), json, spinner_port.getSelectedItem().toString());
 
                         notifyAdapters();
 
                     }
 
 
-                } catch (JSONException e){
+                } catch (JSONException e) {
 
                     e.printStackTrace();
 
                 }
-
-
-
-
 
 
             }
@@ -569,11 +528,10 @@ public class EditPrinterDialog {
         adb.show();
 
 
-
     }
 
     //this method will delete the profile from the system and also from any printer that has it
-    public void deleteProfile(final String name){
+    public void deleteProfile(final String name) {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
         adb.setTitle(R.string.warning);
@@ -623,7 +581,7 @@ public class EditPrinterDialog {
 
 
     //TODO intent to notify adapters asynchronously
-    public void notifyAdapters(){
+    public void notifyAdapters() {
 
         Intent intent = new Intent("notify");
         intent.putExtra("message", "Devices");

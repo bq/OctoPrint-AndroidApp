@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/content_padding_normal">
+
+    <TextView
+        android:id="@+id/adb_t2"
+        style="@style/DialogContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:textColor="@color/theme_accent_1" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/wifi_password_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:textSize="@dimen/text_size_medium"
+        app:baseColor="@color/theme_accent_1"
+        app:errorColor="@color/theme_error"
+        app:primaryColor="@color/theme_accent_1">
+
+        <requestFocus />
+    </com.rengwuxian.materialedittext.MaterialEditText>
+
+    <CheckBox
+        android:id="@+id/show_password_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:text="@string/show_password" />
+
+</LinearLayout>

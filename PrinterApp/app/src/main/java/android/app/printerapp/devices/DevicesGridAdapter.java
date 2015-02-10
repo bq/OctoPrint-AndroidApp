@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,11 +78,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
             convertView = inflater.inflate(R.layout.grid_item_printer, null, false);
 
             holder = new ViewHolder();
-            holder.textViewTag = (TextView) convertView.findViewById(R.id.grid_element_tag);
+            holder.textViewTag = (TextView) convertView.findViewById(R.id.discover_printer_name);
             holder.textViewLoading = (TextView) convertView.findViewById(R.id.grid_text_loading);
-            holder.imageIcon = (ImageView) convertView.findViewById(R.id.grid_element_icon);
+            holder.imageIcon = (ImageView) convertView.findViewById(R.id.discover_printer_icon);
             holder.progressBarPrinting = (ProgressBar) convertView.findViewById(R.id.grid_element_progressbar);
-            holder.progressBarLoading = (ProgressBar) convertView.findViewById(R.id.grid_element_loading);
+            holder.progressBarLoading = (ProgressWheel) convertView.findViewById(R.id.grid_element_loading);
             holder.imageWarning = (ImageView) convertView.findViewById(R.id.grid_warning_icon);
             holder.gridItem = (LinearLayout) convertView.findViewById(R.id.grid_item_printer_container);
             convertView.setTag(holder);
@@ -144,11 +146,11 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
                     case StateUtils.STATE_NEW:
 
-                        holder.imageIcon.setImageResource(R.drawable.icon_detectedprinter);
+                        holder.imageIcon.setImageResource(R.drawable.printer_signal_add);
 
                         break;
                     case StateUtils.STATE_ADHOC:
-                        holder.imageIcon.setImageResource(R.drawable.octopidev_wifi);
+                        holder.imageIcon.setImageResource(R.drawable.signal_octopidev);
 
                         break;
 
@@ -162,10 +164,10 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
                                 if (m.getDisplayColor() != 0) {
 
-                                    holder.imageIcon.setImageResource(R.drawable.witbox_transparent);
+                                    holder.imageIcon.setImageResource(R.drawable.printer_witbox_alpha);
                                     holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.DST_ATOP);
 
-                                } else holder.imageIcon.setImageResource(R.drawable.icon_witbox);
+                                } else holder.imageIcon.setImageResource(R.drawable.printer_witbox_default);
 
 
                                 break;
@@ -176,13 +178,13 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                                     if (m.getNetwork().equals(MainActivity.getCurrentNetwork(getContext()))) {
                                         if (m.getDisplayColor() != 0) {
 
-                                            holder.imageIcon.setImageResource(R.drawable.prusa_transparent);
+                                            holder.imageIcon.setImageResource(R.drawable.printer_prusa_alpha);
                                             holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.DST_ATOP);
 
                                         } else
-                                            holder.imageIcon.setImageResource(R.drawable.icon_prusa);
+                                            holder.imageIcon.setImageResource(R.drawable.printer_prusa_default);
                                     } else
-                                        holder.imageIcon.setImageResource(R.drawable.prusa_nowifi);
+                                        holder.imageIcon.setImageResource(R.drawable.printer_prusa_nowifi);
 
                                 break;
 
@@ -190,17 +192,17 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
                                 if (m.getDisplayColor() != 0) {
 
-                                    holder.imageIcon.setImageResource(R.drawable.icon_custom_transparent);
+                                    holder.imageIcon.setImageResource(R.drawable.printer_custom_alpha);
                                     holder.imageIcon.setColorFilter(m.getDisplayColor(), Mode.DST_ATOP);
 
                                 } else
-                                    holder.imageIcon.setImageResource(R.drawable.icon_custom_generic);
+                                    holder.imageIcon.setImageResource(R.drawable.printer_custom_default);
 
                                 break;
 
 
                             default:
-                                holder.imageIcon.setImageResource(R.drawable.icon_custom_generic);
+                                holder.imageIcon.setImageResource(R.drawable.printer_custom_default);
                                 break;
 
 
@@ -319,7 +321,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
                     if (!m.getNetwork().equals(MainActivity.getCurrentNetwork(getContext()))) {
                         Log.i("Network", "NOPE Network");
                         holder.imageIcon.clearColorFilter();
-                        holder.imageIcon.setImageResource(R.drawable.witbox_nowifi);
+                        holder.imageIcon.setImageResource(R.drawable.printer_witbox_nowifi);
                     }
 
             }
@@ -360,7 +362,7 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
         TextView textViewLoading;
         ImageView imageIcon;
         ProgressBar progressBarPrinting;
-        ProgressBar progressBarLoading;
+        ProgressWheel progressBarLoading;
         ImageView imageWarning;
         LinearLayout gridItem;
 

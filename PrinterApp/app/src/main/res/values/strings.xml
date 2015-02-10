@@ -4,7 +4,7 @@
     <string name="app_name">OctoPrint</string>
     <string name="about_app_name" translatable="false">Octoprint 3d bq printer controller</string>
     <string name="about_url" translatable="false">http://www.octoprint.org</string>
-    <string name="about_feedback_url" translatable="false">feedback@octorprint.com</string>
+    <string name="about_feedback_url" translatable="false">feedback@octoprint.com</string>
     <string name="title_item_detail">Item Detail</string>
     
     <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</string>
@@ -19,10 +19,15 @@
     <string name="delete">Delete</string>
     <string name="error">Error</string>
     <string name="help">Help</string>
+    <string name="retry">Retry</string>
     <string name="warning">Warning</string>
     <string name="dialog_continue">Continue</string>
+
+    <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+    <string name="empty_password_error">Password can\'t be empty</string>
     
-    <string name="fragment_devices">Printer</string>
+    <string name="fragment_devices">Printers</string>
     <string name="fragment_print">Panel</string>
     <string name="fragment_models">Models</string>
     <string name="fragment_history">History</string>
@@ -63,11 +68,40 @@
     <string name="devices_filter_dialog_groups">As groups</string>
     <string name="devices_filter_dialog_linked">Only linked printers</string>
 
-    <string name="devices_discovery_connect">Connecting to printer network, this should take a moment.\nIf it takes too long, there may be a problem with the access point.</string>
+    <string name="devices_discovery_connect">Connecting to printer network, this should take a moment. If it takes too long, there may be a problem with the access point.</string>
     <string name="devices_discovery_config">Configuring network parameters, this may take a while. \nNew device discovery is currently down until the configuration finishes.</string>
     <string name="devices_discovery_title">Configuring new printer</string>
     <string name="devices_discovery_toast_error">There was an error configuring the printer, try again</string>
     <string name="devices_discovery_toast_success">Printer configured successfully! </string>
+
+    <string name="devices_configure_wifi_title">Associate the printer to the wifi network</string>
+    <string name="devices_configure_wifi_content">Select the wifi network you want to associate this device.</string>
+    <string name="devices_configure_waiting">Waiting for service&#8230;</string>
+    <string name="devices_configure_wifi_error">Error configuring the printer. Please, try again.</string>
+
+    <string name="devices_edit_printer_title">Edit printer</string>
+    <string name="devices_edit_printer_type">Printer type</string>
+    <string name="devices_edit_port">Port</string>
+    <string name="devices_edit_name">Printer name</string>
+    <string name="devices_edit_color">Color</string>
+    <string name="devices_edit_nozzle_size">Nozzle size</string>
+    <string name="devices_edit_extruder_number">Number of extruder</string>
+    <string name="devices_edit_bed">Bed</string>
+    <string name="devices_edit_bed_width">Width</string>
+    <string name="devices_edit_bed_height">Height</string>
+    <string name="devices_edit_bed_depth">Depth</string>
+    <string name="devices_edit_circular_bed">Circular bed</string>
+    <string name="devices_edit_hot_bed">Hot bed</string>
+
+    <string name="devices_color_keep_color">Keep current color</string>
+    <string name="devices_color_default">Default</string>
+    <string name="devices_color_red">Red</string>
+    <string name="devices_color_orange">Orange</string>
+    <string name="devices_color_yellow">Yellow</string>
+    <string name="devices_color_green">Green</string>
+    <string name="devices_color_blue">Blue</string>
+    <string name="devices_color_violet">Violet</string>
+    <string name="devices_color_black">Black</string>
 
     <string name="printview_menu_add">Add model</string>
     <string name="printview_menu_refresh">Refresh</string>
@@ -89,6 +123,11 @@
     <string name="printview_motors_switch">Motors</string>
     <string name="printview_download_dialog">File not available, downloading</string>
     <string name="printview_download_toast_error">Error while downloading the file</string>
+    <string name="printview_initial_text">Octopidev had not been found.\nMake sure everything is connected correctly.</string>
+    <string name="printview_scan_network">Scan network</string>
+    <string name="printview_searching_networks_dialog_title">Add new printer</string>
+    <string name="printview_searching_networks_dialog_content">Searching networks&#8230;</string>
+    <string name="printview_searching_networks_dialog_noresults">No results. Try again?</string>
 
     <string name="devices_toast_no_stl">No .stl found</string>
     <string name="devices_toast_no_gcode">No .gcode found</string>
@@ -261,8 +300,6 @@
     <string name="viewer_button_print">Print</string>
     <string name="viewer_button_undo">Undo</string>
     <string name="viewer_button_redo">Redo</string>
-
-
     
     <string name="choose_file">Choose File</string> 
 	<string name="open">Open</string>  
