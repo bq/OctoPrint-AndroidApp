@@ -1,6 +1,7 @@
 package android.app.printerapp.viewer;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.printview.PrintViewFragment;
@@ -11,6 +12,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.LinearLayout;
+
+import com.alertdialogpro.ProgressDialogPro;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +27,7 @@ public class GcodeFile  {
 	private static File mFile;
 	private static DataStorage mData;
 	
-	private static ProgressDialog mProgressDialog;
+	private static ProgressDialogPro mProgressDialog;
 	private static Thread mThread;
 	
 	private static String [] mSplitLine;
@@ -89,31 +93,37 @@ public class GcodeFile  {
 		mData.setPathFile(mFile.getName().replace(".", "-"));
 	}
 	
-	private static ProgressDialog prepareProgressDialog(Context context) {
-		ProgressDialog progressDialog = new ProgressDialog(context);
-		progressDialog.setTitle(R.string.loading_gcode);
-		progressDialog.setMax(0);
-		progressDialog.setMessage(context.getResources().getString(R.string.be_patient));
-		progressDialog.setIndeterminate(false);
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		progressDialog.setCancelable(false);
-		
-		progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialog, int which) {
-		    	mContinueThread = false;
-		    	try {
-					mThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-		    	ViewerMainFragment.resetWhenCancel();
-		    }
-		});
-		
-		progressDialog.show();
-		
-		return progressDialog;
+	private static ProgressDialogPro prepareProgressDialog(Context context) {
+
+        AlertDialog dialog = new ProgressDialogPro(context, R.style.Theme_AlertDialogPro_Material_Light_Green);
+        dialog.setTitle(R.string.loading_gcode);
+        dialog.setMessage(context.getResources().getString(R.string.be_patient));
+
+        ProgressDialogPro progressDialog = (ProgressDialogPro) dialog;
+        progressDialog.setProgressStyle(ProgressDialogPro.STYLE_HORIZONTAL);
+        progressDialog.setIndeterminate(false);
+
+        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mContinueThread = false;
+                try {
+                    mThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ViewerMainFragment.resetWhenCancel();
+            }
+        });
+
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        if (mMode!= ViewerMainFragment.DO_SNAPSHOT) {
+            dialog.show();
+            dialog.getWindow().setLayout(500, LinearLayout.LayoutParams.WRAP_CONTENT);
+        }
+
+        return progressDialog;
 	}
 	
 	@SuppressLint("DefaultLocale")

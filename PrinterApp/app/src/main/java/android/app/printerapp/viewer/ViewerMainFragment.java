@@ -120,8 +120,10 @@ public class ViewerMainFragment extends Fragment {
     private static SlicingHandler mSlicingHandler;
     private static SidePanelHandler mSidePanelHandler;
 
-    private static int mCurrentType =  WitboxFaces.TYPE_WITBOX;;
-    private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT}; ;
+    private static int mCurrentType = WitboxFaces.TYPE_WITBOX;
+    ;
+    private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
+    ;
 
     private static TextView mRotationText;
     private static TextView mAxisText;
@@ -151,7 +153,7 @@ public class ViewerMainFragment extends Fragment {
         //If is not new
         if (savedInstanceState == null) {
 
-            Log.i("Restore","Creating new Fragmento");
+            Log.i("Restore", "Creating new Fragmento");
 
             //Show custom option menu
             setHasOptionsMenu(true);
@@ -312,7 +314,7 @@ public class ViewerMainFragment extends Fragment {
 
                     mSurface.requestRender();
 
-                } catch (ArrayIndexOutOfBoundsException e){
+                } catch (ArrayIndexOutOfBoundsException e) {
 
                     e.printStackTrace();
                 }
@@ -452,7 +454,6 @@ public class ViewerMainFragment extends Fragment {
     }
 
 
-
     /**
      * ********************** FILE MANAGEMENT *******************************
      */
@@ -493,13 +494,14 @@ public class ViewerMainFragment extends Fragment {
 
     /**
      * Open a dialog if it's a GCODE to warn the user about unsaved data loss
+     *
      * @param filePath
      */
-    public static void openFileDialog(final String filePath){
+    public static void openFileDialog(final String filePath) {
 
-        if (LibraryController.hasExtension(0, filePath)){
+        if (LibraryController.hasExtension(0, filePath)) {
 
-            if (!StlFile.checkFileSize(new File(filePath), mContext)){
+            if (!StlFile.checkFileSize(new File(filePath), mContext)) {
                 new MaterialDialog.Builder(mContext)
                         .title(R.string.warning)
                         .content(R.string.viewer_file_size)
@@ -520,7 +522,7 @@ public class ViewerMainFragment extends Fragment {
             } else {
                 openFile(filePath);
             }
-        } else if (LibraryController.hasExtension(1, filePath)){
+        } else if (LibraryController.hasExtension(1, filePath)) {
 
             new MaterialDialog.Builder(mContext)
                     .title(R.string.warning)
@@ -538,7 +540,6 @@ public class ViewerMainFragment extends Fragment {
                     .build()
                     .show();
         }
-
 
 
     }
@@ -559,7 +560,7 @@ public class ViewerMainFragment extends Fragment {
 
             data = new DataStorage();
 
-            mVisibilityModeButton.setVisibility(View.VISIBLE );
+            mVisibilityModeButton.setVisibility(View.VISIBLE);
 
             mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
@@ -570,7 +571,7 @@ public class ViewerMainFragment extends Fragment {
 
             data = new DataStorage();
             if (!filePath.contains("/temp")) {
-                mVisibilityModeButton.setVisibility(View.GONE );
+                mVisibilityModeButton.setVisibility(View.GONE);
                 optionClean();
             }
             mFile = new File(filePath);
@@ -585,10 +586,9 @@ public class ViewerMainFragment extends Fragment {
 
 
         //Adding original project //TODO elsewhere?
-    if (mSlicingHandler != null)
-        if (mSlicingHandler.getOriginalProject() == null)
-            mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
-
+        if (mSlicingHandler != null)
+            if (mSlicingHandler.getOriginalProject() == null)
+                mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
 
 
     }
@@ -626,15 +626,13 @@ public class ViewerMainFragment extends Fragment {
 
                         mCurrentViewMode = state;
 
-                    };
-                }else {
+                    }
+                    ;
+                } else {
 
                     mSurface.configViewMode(state);
                     mCurrentViewMode = state;
                 }
-
-
-
 
 
             } else {
@@ -720,8 +718,8 @@ public class ViewerMainFragment extends Fragment {
      * ********************** SAVE FILE *******************************
      */
     private void saveNewProject() {
-        View createProjectDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_create_project, null);
-        final EditText proyectNameText = (EditText) createProjectDialog.findViewById(R.id.proyect_name);
+        View createProjectDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_save_model, null);
+        final EditText proyectNameText = (EditText) createProjectDialog.findViewById(R.id.model_name_textview);
 
         proyectNameText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -740,19 +738,25 @@ public class ViewerMainFragment extends Fragment {
             }
         });
 
+        String dialogTitle;
+
+        if (mFile != null)
+            dialogTitle = getString(R.string.save) + " - " + mFile.getName();
+        else
+            dialogTitle = getString(R.string.save);
 
         final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(getActivity());
-        createFolderDialog.title(R.string.project_name_title)
+        createFolderDialog.title(dialogTitle)
                 .customView(createProjectDialog, true)
                 .positiveColorRes(R.color.theme_accent_1)
-                .positiveText(R.string.ok)
+                .positiveText(R.string.save)
                 .negativeColorRes(R.color.body_text_2)
-                .negativeText(R.string.cancel)
+                .negativeText(R.string.discard)
                 .autoDismiss(false)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        if (mFile!=null){
+                        if (mFile != null) {
                             if (LibraryController.hasExtension(0, mFile.getName())) {
                                 if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
                                     proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
@@ -770,6 +774,7 @@ public class ViewerMainFragment extends Fragment {
                             }
                         } else dialog.dismiss();
                     }
+
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
@@ -813,7 +818,7 @@ public class ViewerMainFragment extends Fragment {
                 public void onClick(DialogInterface dialogInterface, int i) {
 
                     //Save gcode
-                    File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString().replace(" ","_") + ".gcode");
+                    File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString().replace(" ", "_") + ".gcode");
 
                     //Delete file if success
                     if (!fileFrom.renameTo(fileTo)) {
@@ -932,7 +937,7 @@ public class ViewerMainFragment extends Fragment {
         }
 
         //Hide size text
-        if (mSizeText!=null)
+        if (mSizeText != null)
             if (mSizeText.getVisibility() == View.VISIBLE) mSizeText.setVisibility(View.INVISIBLE);
 
         hideCurrentActionPopUpWindow();
@@ -977,16 +982,16 @@ public class ViewerMainFragment extends Fragment {
                     final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.rotate_model_icons);
                     showHorizontalMenuPopUpWindow(item, actionButtonsValues, actionButtonsIcons,
                             null, new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
-                            mRotationLayout.setVisibility(View.VISIBLE);
-                            mStatusBottomBar.setVisibility(View.INVISIBLE);
-                            mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
-                            hideCurrentActionPopUpWindow();
-                            item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
-                        }
-                    });
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
+                                    mRotationLayout.setVisibility(View.VISIBLE);
+                                    mStatusBottomBar.setVisibility(View.INVISIBLE);
+                                    mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
+                                    hideCurrentActionPopUpWindow();
+                                    item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
+                                }
+                            });
                 } else {
                     hideCurrentActionPopUpWindow();
                 }
@@ -1049,21 +1054,20 @@ public class ViewerMainFragment extends Fragment {
         hideActionModePopUpWindow();
 
 
-
         //Show a menu with the visibility options
         if (mCurrentActionPopupWindow == null) {
             final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.models_visibility_values);
             final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.models_visibility_icons);
             showHorizontalMenuPopUpWindow(mVisibilityModeButton, actionButtonsValues, actionButtonsIcons,
                     Integer.toString(mCurrentViewMode), new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    //Change the view mode of the model
-                    changeStlViews(Integer.parseInt(actionButtonsValues[position]));
-                    hideCurrentActionPopUpWindow();
-                }
-            });
+                            //Change the view mode of the model
+                            changeStlViews(Integer.parseInt(actionButtonsValues[position]));
+                            hideCurrentActionPopUpWindow();
+                        }
+                    });
         } else {
             hideCurrentActionPopUpWindow();
         }
@@ -1120,15 +1124,15 @@ public class ViewerMainFragment extends Fragment {
         numPicker.setMinValue(0);
 
         final int count = numPicker.getChildCount();
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             View child = numPicker.getChildAt(i);
-            if(child instanceof EditText){
-                try{
+            if (child instanceof EditText) {
+                try {
                     Field selectorWheelPaintField = numPicker.getClass()
                             .getDeclaredField("mSelectorWheelPaint");
                     selectorWheelPaintField.setAccessible(true);
-                    ((Paint)selectorWheelPaintField.get(numPicker)).setColor(mContext.getResources().getColor(R.color.theme_primary_dark));
-                    ((EditText)child).setTextColor(mContext.getResources().getColor(R.color.theme_primary_dark));
+                    ((Paint) selectorWheelPaintField.get(numPicker)).setColor(mContext.getResources().getColor(R.color.theme_primary_dark));
+                    ((EditText) child).setTextColor(mContext.getResources().getColor(R.color.theme_primary_dark));
 
                     Field[] pickerFields = NumberPicker.class.getDeclaredFields();
                     for (Field pf : pickerFields) {
@@ -1148,14 +1152,11 @@ public class ViewerMainFragment extends Fragment {
                     }
 
                     numPicker.invalidate();
-                }
-                catch(NoSuchFieldException e){
+                } catch (NoSuchFieldException e) {
                     Log.w("setNumberPickerTextColor", e);
-                }
-                catch(IllegalAccessException e){
+                } catch (IllegalAccessException e) {
                     Log.w("setNumberPickerTextColor", e);
-                }
-                catch(IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     Log.w("setNumberPickerTextColor", e);
                 }
             }
@@ -1191,7 +1192,7 @@ public class ViewerMainFragment extends Fragment {
             newData.copyData(mDataList.get(model));
             mDataList.add(newData);
 
-            Log.i("Multiply","Adding piece nº " + num);
+            Log.i("Multiply", "Adding piece nº " + num);
 
             /**
              * Check if the piece is out of the plate and stop multiplying
@@ -1238,11 +1239,11 @@ public class ViewerMainFragment extends Fragment {
 
                 case StateUtils.SLICER_HIDE:
 
-                    if (i<0){
+                    if (i < 0) {
 
                         tv.setText(R.string.error);
 
-                    }else {
+                    } else {
                         tv.setText(R.string.viewer_text_downloaded);
                     }
 
@@ -1304,7 +1305,7 @@ public class ViewerMainFragment extends Fragment {
                 case StateUtils.SLICER_DOWNLOAD:
 
 
-                    if (i>0) {
+                    if (i > 0) {
                         tve.setText(OctoprintConnection.ConvertSecondToHHMMString(String.valueOf(i)));
                     }
                     tv.setText(R.string.viewer_text_downloading);
@@ -1322,13 +1323,12 @@ public class ViewerMainFragment extends Fragment {
         }
 
 
-
     }
 
     /**
      * Display model width, depth and height when touched
      */
-    public static void displayModelSize(int position){
+    public static void displayModelSize(int position) {
         try {
             //TODO RANDOM CRASH ArrayIndexOutOfBoundsException
             DataStorage data = mDataList.get(position);
@@ -1348,7 +1348,7 @@ public class ViewerMainFragment extends Fragment {
             //Display size of the model
             //mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
             mSizeText.setText(String.format(mContext.getResources().getString(R.string.viewer_axis_info), Double.parseDouble(width), Double.parseDouble(depth), Double.parseDouble(height)));
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
 
             e.printStackTrace();
         }
@@ -1384,12 +1384,13 @@ public class ViewerMainFragment extends Fragment {
      */
     public void notifyAdapter() {
 
-        Log.i("Profile","I was notified senpai");
+        Log.i("Profile", "I was notified senpai");
 
         try {
-            if (mSidePanelHandler.profileAdapter!=null)mSidePanelHandler.profileAdapter.notifyDataSetChanged();
+            if (mSidePanelHandler.profileAdapter != null)
+                mSidePanelHandler.profileAdapter.notifyDataSetChanged();
 
-            Log.i("Profile","I also can do stuff");
+            Log.i("Profile", "I also can do stuff");
 
             mSidePanelHandler.reloadProfileAdapter();
 
@@ -1440,7 +1441,7 @@ public class ViewerMainFragment extends Fragment {
             if ((mSlicingHandler != null) && (mFile != null)) {
 
                 if (LibraryController.hasExtension(0, mFile.getName())) {
-                   // StlFile.saveModel(newList, null, mSlicingHandler);
+                    // StlFile.saveModel(newList, null, mSlicingHandler);
                     mSlicingHandler.sendTimer(mDataList);
                 }
 
@@ -1478,7 +1479,7 @@ public class ViewerMainFragment extends Fragment {
 
         try {
             JSONObject volume = profile.getJSONObject("volume");
-            mCurrentPlate = new int[]{volume.getInt("width") / 2, volume.getInt("depth") / 2,volume.getInt("height")};
+            mCurrentPlate = new int[]{volume.getInt("width") / 2, volume.getInt("depth") / 2, volume.getInt("height")};
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1508,42 +1509,42 @@ public class ViewerMainFragment extends Fragment {
     /**
      * check if there is a reference to restore the last panel and open it
      */
-    private void restoreLastPanel(){
+    private void restoreLastPanel() {
 
-        Log.i("Restore","Restoirinan");
+        Log.i("Restore", "Restoirinan");
 
-       if (mSlicingHandler.getLastReference()==null) //Only if there is no last reference
-       if (DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last")!=null){
+        if (mSlicingHandler.getLastReference() == null) //Only if there is no last reference
+            if (DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last") != null) {
 
-            final String file = DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last");
+                final String file = DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last");
 
-            AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-            adb.setTitle(R.string.viewer_restore_session);
+                AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
+                adb.setTitle(R.string.viewer_restore_session);
 
-            adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                    openFileDialog(file);
-                    mSlicingHandler.setLastReference(file);
+                        openFileDialog(file);
+                        mSlicingHandler.setLastReference(file);
 
-                }
-            });
+                    }
+                });
 
-            adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    DatabaseController.handlePreference(DatabaseController.TAG_RESTORE, "Last", null, false);
-                }
-            });
+                adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DatabaseController.handlePreference(DatabaseController.TAG_RESTORE, "Last", null, false);
+                    }
+                });
 
-            adb.show();
+                adb.show();
 
-        } else {
+            } else {
 
-           Toast.makeText(mContext,"No last session",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "No last session", Toast.LENGTH_SHORT).show();
 
-       }
+            }
 
     }
 

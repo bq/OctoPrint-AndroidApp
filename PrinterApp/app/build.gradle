@@ -67,6 +67,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:21.0.+"
     compile 'com.android.support:cardview-v7:21.+'
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+    compile 'com.github.fengdai:alertdialogpro-theme-material:0.2.1'
     compile project(':materialdesignlibrary')
     compile 'com.afollestad:material-dialogs:0.6.1.6' //Material design dialogs
     compile 'com.pnikosis:materialish-progress:1.4'

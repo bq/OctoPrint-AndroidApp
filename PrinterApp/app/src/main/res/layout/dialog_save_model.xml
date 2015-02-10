@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="@dimen/content_padding_xsmall">
+
+    <ImageView
+        android:id="@+id/save_model_icon"
+        android:layout_width="85dp"
+        android:layout_height="65dp"
+        android:layout_marginRight="@dimen/content_margin_small"
+        android:src="@drawable/random"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/new_project_title_textview"
+            style="@style/DialogContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:text="@string/viewer_save_model"
+            android:paddingBottom="@dimen/content_margin_small"
+            android:paddingLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/new_project_name_textview"
+            style="@style/DialogContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:paddingLeft="5dp"
+            android:text="@string/viewer_save_model_name"
+            android:textStyle="bold" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/model_name_textview"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium"
+            app:baseColor="@color/theme_accent_1"
+            app:errorColor="@color/theme_error"
+            app:primaryColor="@color/theme_accent_1"
+            android:layout_marginBottom="@dimen/content_margin_small"
+            android:layout_marginLeft="5dp">
+
+            <requestFocus />
+        </com.rengwuxian.materialedittext.MaterialEditText>
+
+        <CheckBox
+            style="@style/DialogContent"
+            android:id="@+id/save_model_stl_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/viewer_save_model_stl" />
+
+        <CheckBox
+            style="@style/DialogContent"
+            android:id="@+id/save_model_gcode_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/viewer_save_model_gcode" />
+
+        <CheckBox
+            style="@style/DialogContent"
+            android:id="@+id/save_model_overwrite_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/viewer_save_model_override" />
+
+    </LinearLayout>
+
+</LinearLayout>
