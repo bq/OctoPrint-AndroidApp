@@ -199,6 +199,7 @@ public class StlFile {
     		//Finish
 			if (mMode== ViewerMainFragment.DONT_SNAPSHOT) {
 				ViewerMainFragment.draw();
+                ViewerMainFragment.doPress();
 				mProgressDialog.dismiss();
 
                 //TODO better filtering

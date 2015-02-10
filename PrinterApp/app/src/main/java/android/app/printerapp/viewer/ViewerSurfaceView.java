@@ -328,6 +328,20 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
     }
 
+    public void doPress(int i){
+
+
+
+        mRenderer.setObjectPressed(i);
+        mRenderer.changeTouchedState();
+        mEdition = true;
+        mObjectPressed=i;
+        ViewerMainFragment.showActionModePopUpWindow();
+        ViewerMainFragment.displayModelSize(mObjectPressed);
+
+        touchMode = TOUCH_DRAG;
+    }
+
 	/**
 	 * On touch events
 	 */
@@ -371,7 +385,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 				}
 				break;
 			case MotionEvent.ACTION_DOWN:
-
 
                 mPreviousX = event.getX();
                 mPreviousY = event.getY();
