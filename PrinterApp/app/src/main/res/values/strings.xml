@@ -352,5 +352,9 @@
     <string name="dialog_finish_save_title">Do you want to save the printed model?</string>
     <string name="dialog_finish_model_name">Model name</string>
 
+    <string name="shared_preferences_save" translatable="false">save</string>
+    <string name="shared_preferences_slice" translatable="false">slice</string>
+    <string name="shared_preferences_print" translatable="false">print</string>
+
 
 </resources>
