@@ -85,6 +85,8 @@ public class SettingsFragment extends Fragment {
             SettingsGeneralFragment generalSettings = new SettingsGeneralFragment();
             fragmentTransaction.replace(R.id.settings_fragment_container, generalSettings).commit();
 
+
+
         }
         return mRootView;
     }

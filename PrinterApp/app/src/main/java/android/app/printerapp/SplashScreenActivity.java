@@ -6,6 +6,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.Timer;
@@ -26,6 +27,7 @@ public class SplashScreenActivity extends Activity {
 
     Context mContext;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,9 @@ public class SplashScreenActivity extends Activity {
         //Initialize db and lists
         new DatabaseController(this);
         DevicesListController.loadList(this);
+
+        //Initialize default settings
+        PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
 
         if (isTaskRoot()){

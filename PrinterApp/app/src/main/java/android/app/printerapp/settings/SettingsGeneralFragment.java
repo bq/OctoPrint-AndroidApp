@@ -2,17 +2,19 @@ package android.app.printerapp.settings;
 
 import android.app.Fragment;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.DevicesListController;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -45,6 +47,43 @@ public class SettingsGeneralFragment extends Fragment {
 
             //Inflate the fragment
             rootView = inflater.inflate(R.layout.settings_general_fragment, container, false);
+
+            final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            CheckBox checkBox_slice = (CheckBox) rootView.findViewById(R.id.settings_slicing_checkbox);
+            checkBox_slice.setChecked(sharedPref.getBoolean(getString(R.string.shared_preferences_slice), false));
+            checkBox_slice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                    sharedPref.edit().putBoolean(getString(R.string.shared_preferences_slice), b).apply();
+
+
+                }
+            });
+            CheckBox checkBox_print = (CheckBox) rootView.findViewById(R.id.settings_printing_checkbox);
+            checkBox_print.setChecked(sharedPref.getBoolean(getString(R.string.shared_preferences_print), false));
+            checkBox_print.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                    sharedPref.edit().putBoolean(getString(R.string.shared_preferences_print), b).apply();
+
+
+                }
+            });
+            CheckBox checkBox_save = (CheckBox) rootView.findViewById(R.id.settings_save_files_checkbox);
+            checkBox_save.setChecked(sharedPref.getBoolean(getString(R.string.shared_preferences_save), false));
+            checkBox_save.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                    sharedPref.edit().putBoolean(getString(R.string.shared_preferences_save), b).apply();
+
+
+                }
+            });
+
 
             /*********************************************************/
 

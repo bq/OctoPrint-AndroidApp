@@ -18,9 +18,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.DragEvent;
@@ -459,8 +461,28 @@ import java.io.File;
                     File file = new File(m.getJobPath());
 
                     if (file.getParentFile().getAbsolutePath().contains(STRING_TEMP)) {
-                        Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs to be saved. Hello: " + DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, m.getName()));
-                        createFinishDialogSave(m,file);
+
+
+                        //Auto-save
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                        if (sharedPref.getBoolean(getString(R.string.shared_preferences_save), true)){
+
+                            //Select the same file again to reset progress
+                            OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false, false);
+
+                            File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + file.getName());
+                            file.renameTo(to);
+
+                            LibraryController.deleteFiles(file.getParentFile());
+
+
+
+                        } else {
+                            Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs to be saved. Hello: " + DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, m.getName()));
+                            createFinishDialogSave(m,file);
+
+                        }
+
 
                     } else {
                         Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs NO SAVING CUZ ITS MINE.");
@@ -474,7 +496,7 @@ import java.io.File;
                 else {
 
                     Log.i("FinishDialog","No jobpath");
-
+                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
 
 
                 }
