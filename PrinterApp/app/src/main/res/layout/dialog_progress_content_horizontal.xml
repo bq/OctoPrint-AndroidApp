@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!-- Util UI for progress dialogs. Include a progress bar and a textview -->
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_gravity="center"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginRight="@dimen/content_margin_small"
+        app:matProg_barColor="@color/theme_accent_1"
+        app:matProg_progressIndeterminate="true"/>
+
+    <TextView
+        style="@style/DialogContent"
+        android:id="@+id/progress_dialog_text"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"/>
+
+</LinearLayout>

@@ -8,7 +8,7 @@
     android:background="@drawable/actionbar_item_selector">
 
     <ImageView
-        android:id="@+id/browser_file_icon_imageview"
+        android:id="@+id/wifi_signal_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true" />

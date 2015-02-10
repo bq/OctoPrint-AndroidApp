@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.material.widget.PaperButton;
+
 /**
  * This fragment will contain the initial screen before any printer is added
  *
@@ -17,7 +19,7 @@ import android.widget.Button;
  */
 public class InitialFragment extends Fragment{
 
-    private Button mScanButton;
+    private PaperButton mScanButton;
 
 
     @Override
@@ -49,10 +51,10 @@ public class InitialFragment extends Fragment{
             //Show custom option menu
             setHasOptionsMenu(false);
 
-            rootView = inflater.inflate(R.layout.initial_fragment_layout,
+            rootView = inflater.inflate(R.layout.printview_tab_initial_layout,
                     container, false);
 
-            mScanButton = (Button) rootView.findViewById(R.id.initial_scan_button);
+            mScanButton = (PaperButton) rootView.findViewById(R.id.initial_scan_button);
             mScanButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view){

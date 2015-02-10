@@ -15,8 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.GridView;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -29,48 +29,56 @@ public class DiscoveryController {
 
 
     private ArrayList<ModelPrinter> mServiceList;
-    private ArrayAdapter<String> mAdapter;
-    private ListView mListView;
+    private DiscoveryDevicesGridAdapter mAdapter;
+    private GridView mPrintersGridView;
 
     private Context mContext;
     private PrintNetworkManager mNetworkManager;
     private JmdnsServiceListener mServiceListener;
 
-    private ProgressDialog mWaitProgressDialog;
+    private Dialog mWaitProgressDialog;
 
     private ModelPrinter mFinalPrinter;
 
-    public DiscoveryController(Context context){
+    public DiscoveryController(Context context) {
 
         mContext = context;
         mServiceList = new ArrayList<ModelPrinter>();
 
-
         scanDelayDialog();
-
 
     }
 
-    private void scanDelayDialog(){
+    private void scanDelayDialog() {
 
         mServiceList.clear();
+
         if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
         else mNetworkManager.reloadNetworks();
         if (mServiceListener==null) mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
         else mServiceListener.reloadListening();
 
-        final ProgressDialog pd = new ProgressDialog(mContext);
-        pd.setIndeterminate(true);
-        pd.setTitle("Add printer");
-        pd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        //Get progress dialog UI
+        View scanDelayDialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_progress_content_vertical, null);
+        ((TextView) scanDelayDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.printview_searching_networks_dialog_content);
+
+        //Build progress dialog
+        final MaterialDialog.Builder scanDelayDialogBuilder = new MaterialDialog.Builder(mContext);
+        scanDelayDialogBuilder.title(R.string.printview_searching_networks_dialog_title)
+                .customView(scanDelayDialogView, true)
+                .cancelable(false)
+                .autoDismiss(false);
+
+        scanDelayDialogBuilder.dismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onDismiss(DialogInterface dialogInterface) {
+            public void onDismiss(DialogInterface dialog) {
                 scanNetwork();
             }
         });
 
-        pd.setCancelable(false);
-        pd.show();
+        //Show dialog
+        final Dialog scanDelayDialog = scanDelayDialogBuilder.build();
+        scanDelayDialog.show();
 
         Handler handler = new Handler();
 
@@ -78,7 +86,7 @@ public class DiscoveryController {
             @Override
             public void run() {
 
-                pd.dismiss();
+                scanDelayDialog.dismiss();
 
             }
         }, 3000);
@@ -86,14 +94,13 @@ public class DiscoveryController {
     }
 
 
+    private void scanNetwork() {
 
-    private void scanNetwork(){
-
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.discovery_list_view, null);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View discoveryPrintersDialogView = inflater.inflate(R.layout.dialog_discovery_printers, null);
 
         final String[] mServiceNames = new String[mServiceList.size()];
-        for (int i = 0; i < mServiceList.size(); i ++){
+        for (int i = 0; i < mServiceList.size(); i++) {
 
             ModelPrinter p = mServiceList.get(i);
 
@@ -104,40 +111,38 @@ public class DiscoveryController {
         MaterialDialog.Builder adb;
         final Dialog dialog;
 
-
-
         adb = new MaterialDialog.Builder(mContext)
-                .title("Stuff")
-                .customView(v, false)
-                .positiveText("Retry")
+                .title(R.string.printview_searching_networks_dialog_title)
+                .customView(discoveryPrintersDialogView, false)
+                .positiveText(R.string.retry)
+                .positiveColorRes(R.color.theme_accent_1)
+                .negativeText(R.string.cancel)
+                .negativeColorRes(R.color.body_text_2)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-
                         scanDelayDialog();
-
-
-
                     }
                 });
 
+        dialog = adb.build();
 
+        mAdapter = new DiscoveryDevicesGridAdapter(mContext, mServiceList);
 
-        dialog  = adb.build();
-
-
-        mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, android.R.id.text1,mServiceNames);
-        mListView = (ListView) v.findViewById(R.id.discovery_listview);
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mPrintersGridView = (GridView) discoveryPrintersDialogView.findViewById(R.id.discovery_gridview);
+        mPrintersGridView.setAdapter(mAdapter);
+        mPrintersGridView.setEmptyView(discoveryPrintersDialogView.findViewById(R.id.wifi_networks_noresults_container));
+        mPrintersGridView.setSelector(R.drawable.selectable_rect_background_green);
+        mPrintersGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                for (ModelPrinter p : mServiceList){
+                for (ModelPrinter p : mServiceList) {
 
                     Log.i("Discovery", "Searching " + p.getName());
 
-                    if (mServiceNames[i].equals(p.getName() + " " + p.getAddress() )){
+
+                    if (mServiceNames[i].equals(p.getName() + " " + p.getAddress())) {
 
                         DevicesListController.addToList(p);
 
@@ -152,21 +157,11 @@ public class DiscoveryController {
                             DevicesListController.addToList(p);
                             mNetworkManager.setupNetwork(p, p.getPosition());
                         }
-
-
-
-
                     }
-
-
-
                 }
 
                 dialog.dismiss();
                 //mServiceListener.unregister();
-
-
-
             }
         });
 
@@ -175,22 +170,32 @@ public class DiscoveryController {
     }
 
 
-    public void waitServiceDialog(){
+    public void waitServiceDialog() {
 
-        mWaitProgressDialog = new ProgressDialog(mContext);
-        mWaitProgressDialog.setIndeterminate(true);
-        mWaitProgressDialog.setTitle("Waiting for service");
+        //Get progress dialog UI
+        View waitingForServiceDialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_progress_content_horizontal, null);
+        ((TextView) waitingForServiceDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.devices_configure_waiting);
+
+        //Show progress dialog
+        final MaterialDialog.Builder configurePrinterDialogBuilder = new MaterialDialog.Builder(mContext);
+        configurePrinterDialogBuilder.title(R.string.devices_configure_wifi_title)
+                .customView(waitingForServiceDialogView, true)
+                .cancelable(false)
+                .autoDismiss(false);
+
+        //Progress dialog to notify command events
+        mWaitProgressDialog = configurePrinterDialogBuilder.build();
         mWaitProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-               if (mFinalPrinter!=null) {
+                if (mFinalPrinter != null) {
 
-                   OctoprintConnection.getNewConnection(mContext,mFinalPrinter);
-                   mFinalPrinter = null;
-                   mWaitProgressDialog = null;
+                    OctoprintConnection.getNewConnection(mContext, mFinalPrinter);
+                    mFinalPrinter = null;
+                    mWaitProgressDialog = null;
 
 
-               }
+                }
 
             }
         });
@@ -198,53 +203,47 @@ public class DiscoveryController {
 
         mServiceListener.reloadListening();
 
-
         Handler timeOut = new Handler();
-
         timeOut.postDelayed(new Runnable() {
             @Override
             public void run() {
 
-
-
-                if (mWaitProgressDialog!=null) {
-
+                if (mWaitProgressDialog != null) {
                     mWaitProgressDialog.dismiss();
                     errorDialog();
-
                 }
 
             }
         }, 30000);
 
-
-
     }
 
-    private void errorDialog(){
+    private void errorDialog() {
 
-        new AlertDialog.Builder(mContext)
-                .setTitle("Error")
-                .setMessage("Error configuring the printer try again.")
-                .setPositiveButton(R.string.confirm,new DialogInterface.OnClickListener() {
+        new MaterialDialog.Builder(mContext)
+                .title(R.string.error)
+                .content(R.string.devices_configure_wifi_error)
+                .positiveText(R.string.retry)
+                .positiveColorRes(R.color.theme_accent_1)
+                .negativeText(R.string.cancel)
+                .negativeColorRes(R.color.body_text_2)
+                .callback(new MaterialDialog.ButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
+                    public void onPositive(MaterialDialog dialog) {
                         scanDelayDialog();
-
                     }
                 })
                 .show();
 
     }
 
-    public boolean checkExisting(ModelPrinter m){
+    public boolean checkExisting(ModelPrinter m) {
 
         boolean exists = false;
 
-        for (ModelPrinter p : mServiceList){
+        for (ModelPrinter p : mServiceList) {
 
-            if ((m.getName().equals(p.getName()))||(m.getName().contains(PrintNetworkManager.getNetworkId(p.getName())))){
+            if ((m.getName().equals(p.getName())) || (m.getName().contains(PrintNetworkManager.getNetworkId(p.getName())))) {
 
                 exists = true;
 
@@ -256,45 +255,43 @@ public class DiscoveryController {
 
     }
 
-    public void addElement(ModelPrinter printer){
+    public void addElement(ModelPrinter printer) {
 
-        if (mWaitProgressDialog!=null){
+        if (mWaitProgressDialog != null) {
 
 
             if (printer.getStatus() == StateUtils.STATE_NEW)
-            if (mNetworkManager.checkNetworkId(printer.getName(), true)){
+                if (mNetworkManager.checkNetworkId(printer.getName(), true)) {
 
-                mServiceList.add(printer);
+                    mServiceList.add(printer);
 
-                DevicesListController.addToList(printer);
+                    DevicesListController.addToList(printer);
 
-                mServiceListener.unregister();
+                    mServiceListener.unregister();
 
-                mFinalPrinter = printer;
+                    mFinalPrinter = printer;
 
+                    mWaitProgressDialog.dismiss();
 
-                mWaitProgressDialog.dismiss();
-
-            }
-
+                }
 
 
         } else {
 
 
             if (!DevicesListController.checkExisting(printer.getAddress()))
-            if (!checkExisting(printer)){
+                if (!checkExisting(printer)) {
 
-                mServiceList.add(printer);
-                if (mAdapter!=null)
-                    mAdapter.notifyDataSetChanged();
-            }
+                    mServiceList.add(printer);
+                    if (mAdapter != null)
+                        mAdapter.notifyDataSetChanged();
+                }
         }
 
     }
 
 
-    public Context getActivity(){
+    public Context getActivity() {
 
         return mContext;
     }

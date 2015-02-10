@@ -1,6 +1,6 @@
 package android.app.printerapp.octoprint;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -16,8 +16,11 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.WindowManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -171,24 +174,29 @@ public class OctoprintConnection {
 	 * @param p printer
 	 */
 	public static void getNewConnection(final Context context, final ModelPrinter p){
-        //Progress dialog to notify command events
-        final ProgressDialog pd = new ProgressDialog(context);
 
-        //Display a dialog to connect to the server
+        //Get progress dialog UI
+        View configurePrinterDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_progress_content_horizontal, null);
+        ((TextView) configurePrinterDialogView.findViewById (R.id.progress_dialog_text)).setText(R.string.devices_discovery_connect);
 
-        try{
-
-            pd.setMessage(context.getString(R.string.devices_command_waiting) + p.getAddress().replace("/"," "));
-            pd.show();
-        } catch (WindowManager.BadTokenException e){
-
-            e.printStackTrace();
-        }
+//        try{
+            //Show progress dialog
+            final MaterialDialog.Builder configurePrinterDialogBuilder = new MaterialDialog.Builder(context);
+            configurePrinterDialogBuilder.title(R.string.devices_discovery_title)
+                    .customView(configurePrinterDialogView, true)
+                    .cancelable(false)
+                    .autoDismiss(false);
+            //Progress dialog to notify command events
+            final Dialog progressDialog = configurePrinterDialogBuilder.build();
+            progressDialog.show();
+//        } catch (WindowManager.BadTokenException e){
+//            e.printStackTrace();
+//        }
 
 
         //Get connection status
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
-						
+
 			@Override
 			public void onSuccess(int statusCode, Header[] headers,
 					JSONObject response) {
@@ -197,7 +205,7 @@ public class OctoprintConnection {
 
                 //TODO Random crash
                 try{
-                    pd.dismiss();
+                    progressDialog.dismiss();
                 } catch (ArrayIndexOutOfBoundsException e){
 
                     e.printStackTrace();
@@ -255,7 +263,7 @@ public class OctoprintConnection {
                     e.printStackTrace();
                 }
 			}
-			
+
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
@@ -264,7 +272,7 @@ public class OctoprintConnection {
 
                 Log.i("OUT","STATE WHEN FAILURE " + p.getStatus());
 
-                pd.dismiss();
+                progressDialog.dismiss();
                 OctoprintAuthentication.getAuth(context, p, true);
 			}
 

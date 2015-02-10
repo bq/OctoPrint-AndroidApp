@@ -86,13 +86,13 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter> {
             switch (m.getType()) {
 
                 case StateUtils.TYPE_WITBOX:
-                    iv.setImageResource(R.drawable.icon_witbox);
+                    iv.setImageResource(R.drawable.printer_witbox_default);
                     break;
                 case StateUtils.TYPE_PRUSA:
-                    iv.setImageResource(R.drawable.icon_prusa);
+                    iv.setImageResource(R.drawable.printer_prusa_default);
                     break;
                 case StateUtils.TYPE_CUSTOM:
-                    iv.setImageResource(R.drawable.icon_custom_generic);
+                    iv.setImageResource(R.drawable.printer_custom_default);
                     break;
 
             }
