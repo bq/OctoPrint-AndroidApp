@@ -357,7 +357,8 @@ public class MainActivity extends ActionBarActivity {
             else super.onBackPressed();
 
             //Basically refresh printer count if all were deleted in Settings mode
-            refreshDevicesCount();
+            if (mCurrent == mDevicesFragment)
+                refreshDevicesCount();
 
         } else {
 
