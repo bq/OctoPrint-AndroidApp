@@ -485,10 +485,15 @@ public class ViewerMainFragment extends Fragment {
 
         mDataList.clear();
         mFile = null;
-        mSlicingHandler.setOriginalProject(null);
-        mSlicingHandler.setLastReference(null);
-        mSeekBar.setVisibility(View.INVISIBLE);
-        mSurface.requestRender();
+        
+        if (mSlicingHandler!=null){
+
+            mSlicingHandler.setOriginalProject(null);
+            mSlicingHandler.setLastReference(null);
+            mSeekBar.setVisibility(View.INVISIBLE);
+            mSurface.requestRender();
+        }
+
 
     }
 
