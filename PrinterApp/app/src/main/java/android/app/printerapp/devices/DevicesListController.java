@@ -1,28 +1,23 @@
 package android.app.printerapp.devices;
 
-import android.app.AlertDialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.viewer.SlicingHandler;
+import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -273,6 +268,11 @@ public class DevicesListController {
                         MainActivity.showExtraFragment(1, m.getId());
 
                         dialog.dismiss();
+
+                        ViewerMainFragment.optionClean();
+
+
+
                     }
 
                     @Override
