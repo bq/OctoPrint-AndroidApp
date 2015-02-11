@@ -243,6 +243,8 @@ public class ViewerMainFragment extends Fragment {
         mVisibilityModeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 showVisibilityPopUpMenu();
             }
         });
@@ -442,6 +444,8 @@ public class ViewerMainFragment extends Fragment {
                 return true;
 
             case R.id.library_settings:
+                hideActionModePopUpWindow();
+                hideCurrentActionPopUpWindow();
                 MainActivity.showExtraFragment(0, 0);
                 return true;
 
@@ -952,7 +956,7 @@ public class ViewerMainFragment extends Fragment {
         if (mSizeText != null)
             if (mSizeText.getVisibility() == View.VISIBLE) mSizeText.setVisibility(View.INVISIBLE);
 
-        hideCurrentActionPopUpWindow();
+        //hideCurrentActionPopUpWindow();
     }
 
     /**

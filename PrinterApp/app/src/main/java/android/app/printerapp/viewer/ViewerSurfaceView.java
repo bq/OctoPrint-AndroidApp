@@ -412,7 +412,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                         }
                         else {
                             ViewerMainFragment.hideActionModePopUpWindow();
-
+                            ViewerMainFragment.hideCurrentActionPopUpWindow();
                         }
 
                     }
