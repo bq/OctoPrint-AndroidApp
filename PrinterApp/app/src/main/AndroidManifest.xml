@@ -46,25 +46,6 @@
             android:configChanges="locale">
         </activity>
 
-        <activity
-            android:name="android.app.printerapp.ItemListActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="locale">
-        </activity>
-        <activity
-            android:name="android.app.printerapp.ItemDetailActivity"
-            android:label="@string/title_item_detail"
-            android:parentActivityName=".ItemListActivity"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ItemListActivity" />
-        </activity>
-
         <receiver android:name=".NotificationReceiver">
             <intent-filter>
                 <action android:name="android.app.printerapp.NotificationReceiver" />
