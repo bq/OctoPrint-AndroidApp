@@ -230,7 +230,7 @@
     <string name="viewer_save_model">Do you want to save this model?</string>
     <string name="viewer_save_model_name">Model name</string>
     <string name="viewer_save_model_stl">Save as stl</string>
-    <string name="viewer_save_model_gcode">Save ad gcode</string>
+    <string name="viewer_save_model_gcode">Save as gcode</string>
     <string name="viewer_save_model_override">Overwrite original</string>
 
     <string name="settings_general">General</string>
@@ -363,6 +363,7 @@
     <string name="shared_preferences_save" translatable="false">save</string>
     <string name="shared_preferences_slice" translatable="false">slice</string>
     <string name="shared_preferences_print" translatable="false">print</string>
+    <string name="option_unavailable">Option unavailable</string>
 
 
 </resources>

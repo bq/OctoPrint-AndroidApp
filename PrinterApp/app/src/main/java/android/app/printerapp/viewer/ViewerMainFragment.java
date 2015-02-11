@@ -45,6 +45,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -430,10 +431,6 @@ public class ViewerMainFragment extends Fragment {
                 saveNewProject();
                 return true;
 
-            case R.id.viewer_save_gcode:
-                saveGcodeDialog();
-                return true;
-
             case R.id.viewer_restore:
                 optionRestoreView();
                 return true;
@@ -726,6 +723,8 @@ public class ViewerMainFragment extends Fragment {
         View createProjectDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_save_model, null);
         final EditText proyectNameText = (EditText) createProjectDialog.findViewById(R.id.model_name_textview);
 
+        final RadioGroup radioGroup = (RadioGroup) createProjectDialog.findViewById(R.id.save_mode_radiogroup);
+
         proyectNameText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -761,23 +760,92 @@ public class ViewerMainFragment extends Fragment {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        if (mFile != null) {
-                            if (LibraryController.hasExtension(0, mFile.getName())) {
-                                if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
-                                    proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
-                                else {
-                                    if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null))
-                                        dialog.dismiss();
-                                    else {
-                                        Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+
+                        int selected = radioGroup.getCheckedRadioButtonId();
+
+                        switch (selected) {
+
+                            case R.id.save_model_stl_checkbox:
+
+                                if (mFile != null) {
+                                    if (LibraryController.hasExtension(0, mFile.getName())) {
+                                        if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
+                                            proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
+                                        else {
+                                            if (StlFile.saveModel(mDataList, proyectNameText.getText().toString(), null))
+                                                dialog.dismiss();
+                                            else {
+                                                Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                            }
+                                        }
+                                    } else {
+                                        Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
                                         dialog.dismiss();
                                     }
+                                } else {
+
+                                    Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
                                 }
-                            } else {
-                                Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
+
+                                break;
+
+                            case R.id.save_model_gcode_checkbox:
+
+                                final File fileFrom = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
+
+
+                                //if there is a temporary sliced gcode
+                                if (fileFrom.exists()) {
+
+                                    //Get original project
+                                    final File actualFile = new File(mSlicingHandler.getOriginalProject());
+
+                                    //Save gcode
+                                    File fileTo = new File(actualFile + "/_gcode/" + proyectNameText.getText().toString().replace(" ", "_") + ".gcode");
+
+                                    //Delete file if success
+                                    if (!fileFrom.renameTo(fileTo)) {
+
+                                        openFile(fileTo.getAbsolutePath());
+
+                                        if (fileFrom.delete()) {
+                                            Log.i("OUT", "File deletedillo");
+                                        }
+                                    }
+
+                                    /**
+                                     * Use an intent because it's an asynchronous static method without any reference (yet)
+                                     */
+                                    Intent intent = new Intent("notify");
+                                    intent.putExtra("message", "Files");
+                                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+
+                                } else {
+                                    Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
+                                }
+
                                 dialog.dismiss();
-                            }
-                        } else dialog.dismiss();
+
+                                break;
+
+                            case R.id.save_model_overwrite_checkbox:
+
+                                Toast.makeText(getActivity(), R.string.option_unavailable, Toast.LENGTH_SHORT).show();
+
+                                dialog.dismiss();
+
+                                break;
+
+                            default:
+
+                                dialog.dismiss();
+
+                                break;
+
+                        }
+
                     }
 
                     @Override
@@ -789,67 +857,6 @@ public class ViewerMainFragment extends Fragment {
                 })
                 .show();
 
-    }
-
-
-    /**
-     * ************************ SAVE GCODE ************************************ by Alberto
-     */
-
-    public void saveGcodeDialog() {
-
-        //Original file to save
-        final File fileFrom = new File(LibraryController.getParentFolder() + "/temp/temp.gco");
-
-
-        //if there is a temporary sliced gcode
-        if (fileFrom.exists()) {
-
-            //Get original project
-            final File actualFile = new File(mSlicingHandler.getOriginalProject());
-
-            AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-            adb.setTitle(R.string.viewer_menu_save_gcode);
-
-
-            //Select new name for the gcode
-            final EditText et = new EditText(mContext);
-            et.setText(actualFile.getName());
-
-            adb.setView(et);
-
-            adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                    //Save gcode
-                    File fileTo = new File(actualFile + "/_gcode/" + et.getText().toString().replace(" ", "_") + ".gcode");
-
-                    //Delete file if success
-                    if (!fileFrom.renameTo(fileTo)) {
-
-                        openFile(fileTo.getAbsolutePath());
-
-                        if (fileFrom.delete()) {
-                            Log.i("OUT", "File deletedillo");
-                        }
-                    }
-
-                    /**
-                     * Use an intent because it's an asynchronous static method without any reference (yet)
-                     */
-                    Intent intent = new Intent("notify");
-                    intent.putExtra("message", "Files");
-                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-
-                }
-            });
-
-            adb.show();
-
-        } else {
-            Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-        }
     }
 
     /**
