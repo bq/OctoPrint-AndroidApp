@@ -223,6 +223,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		if (!mDataList.isEmpty()) {
 			mStlObjectList.remove(i);
 			mDataList.remove(i);
+            mObjectPressed = -1;
+            changeTouchedState();
+
             Log.i("Multiply","Object deleted: " + i); //TODO DELETYE
 		}
 

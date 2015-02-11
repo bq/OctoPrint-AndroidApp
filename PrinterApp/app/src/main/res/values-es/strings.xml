@@ -347,5 +347,6 @@
     <string name="dialog_finish_message">Retira la pieza del plato y pulsa el botón de confirmar para que la impresora esté disponible de nuevo.</string>
     <string name="dialog_finish_save_title">¿Quieres guardar el modelo impreso?</string>
     <string name="dialog_finish_model_name">Nombre del modelo</string>
+    <string name="option_unavailable">Opción no disponible</string>
 
 </resources>

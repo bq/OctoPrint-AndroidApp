@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="@dimen/content_padding_xsmall">
+    android:padding="@dimen/content_padding_xsmall"
+    >
 
     <ImageView
         android:id="@+id/save_model_icon"
@@ -53,26 +54,36 @@
             <requestFocus />
         </com.rengwuxian.materialedittext.MaterialEditText>
 
-        <CheckBox
-            style="@style/DialogContent"
-            android:id="@+id/save_model_stl_checkbox"
+        <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/viewer_save_model_stl" />
+            android:id="@+id/save_mode_radiogroup"
 
-        <CheckBox
-            style="@style/DialogContent"
-            android:id="@+id/save_model_gcode_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewer_save_model_gcode" />
+            android:descendantFocusability="blocksDescendants">
 
-        <CheckBox
-            style="@style/DialogContent"
-            android:id="@+id/save_model_overwrite_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewer_save_model_override" />
+            <RadioButton
+                style="@style/DialogContent"
+                android:id="@+id/save_model_stl_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/viewer_save_model_stl" />
+
+            <RadioButton
+                style="@style/DialogContent"
+                android:id="@+id/save_model_gcode_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/viewer_save_model_gcode" />
+
+            <RadioButton
+                style="@style/DialogContent"
+                android:id="@+id/save_model_overwrite_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/viewer_save_model_override" />
+
+        </RadioGroup>
 
     </LinearLayout>
 
