@@ -1,14 +1,16 @@
 package android.app.printerapp.devices.camera;
 
+import android.app.printerapp.R;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.FrameLayout;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
@@ -26,6 +28,8 @@ public class CameraHandler {
 	
    //UI reference to the video view
 	private MjpegView mv = null;
+    private Context mContext;
+    private FrameLayout mRootView;
 	
 	//Boolean to check if the stream was already started
 	public boolean isRunning = false;
@@ -33,11 +37,13 @@ public class CameraHandler {
    //sample public cam
    private String URL;
 	
-	public CameraHandler(final Context context, String address){
+	public CameraHandler(final Context context, String address, FrameLayout rootView){
 
-		
-        mv = new MjpegView(context);  
-        
+		mContext = context;
+        mRootView = rootView;
+        mv = new MjpegView(mContext);
+
+
         /**
          * This method handles the stream connection / reconnection.
          * We need to check if the stream alredy started to reconnect in case
@@ -104,10 +110,11 @@ public class CameraHandler {
 	                if(res.getStatusLine().getStatusCode()==401){
 	                    return null;
 	                }
-	                return new MjpegInputStream(res.getEntity().getContent());  
-	            } catch (ClientProtocolException e) {
-	                e.printStackTrace();
+	                return new MjpegInputStream(res.getEntity().getContent());
+
+	            } catch (HttpHostConnectException e) {
 	                //Error connecting to camera
+                    e.printStackTrace();
 	            } catch (IOException e) {
 	                e.printStackTrace();
 	                //Error connecting to camera
@@ -117,15 +124,23 @@ public class CameraHandler {
 	        }
 
 	        protected void onPostExecute(MjpegInputStream result) {
+
+                if (result != null){
+                    //Returns an input stream
+                    mv.setSource(result);
+
+
+                    //Display options
+                    mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+
+                    mv.showFps(true);
+
+                } else {
+                    if (mRootView!=null)
+                        mRootView.findViewById(R.id.videocam_off_icon).bringToFront();
+                }
 	        	
-	        	//Returns an input stream
-	            mv.setSource(result);
-	            
-	            
-	            //Display options
-	            mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
-          
-	            mv.showFps(true);
+
 
 	        }
 	    }
