@@ -27,17 +27,23 @@ public class ModelProfile {
     public static final String PRUSA_PROFILE = "bq_hephestos";
     public static final String DEFAULT_PROFILE = "CUSTOM";
 
+    public static final String TYPE_P = ".profile";
+    public static final String TYPE_Q = ".quality";
+
     //Quality profiles
     public static final String LOW_PROFILE = "low_bq";
     public static final String MEDIUM_PROFILE = "medium_bq";
     public static final String HIGH_PROFILE = "high_bq";
 
     private static final String[] PRINTER_TYPE = {"Witbox", "Hephestos"};
+    private static final String[] PROFILE_OPTIONS = {HIGH_PROFILE, MEDIUM_PROFILE, LOW_PROFILE};
+
 
     private static ArrayList<String> mProfileList;
+    private static ArrayList<String> mQualityList;
 
     //Retrieve a profile in JSON format
-    public static JSONObject retrieveProfile(Context context, String resource){
+    public static JSONObject retrieveProfile(Context context, String resource, String type){
 
         int id = 0;
 
@@ -56,7 +62,7 @@ public class ModelProfile {
 
             try {
                 Log.i("PROFILE","Looking for " + resource);
-                fis = context.openFileInput(resource + ".profile");
+                fis = context.openFileInput(resource + type);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -101,9 +107,9 @@ public class ModelProfile {
 
 
     //Save a new custom profile
-    public static boolean saveProfile(Context context, String name, JSONObject json){
+    public static boolean saveProfile(Context context, String name, JSONObject json, String type){
 
-        String filename = name + ".profile";
+        String filename = name + type;
         FileOutputStream outputStream;
 
           try {
@@ -124,12 +130,45 @@ public class ModelProfile {
     }
 
     //Delete profile file from internal storage
-    public static boolean deleteProfile(Context context, String name) {
+    public static boolean deleteProfile(Context context, String name, String type) {
 
-        File file = new File(context.getFilesDir(), name + ".profile");
+        File file = new File(context.getFilesDir(), name + type);
         if (file.delete()) return true;
 
         return false;
+
+    }
+
+    public static void reloadQualityList(Context context){
+
+        //Add default types plus custom types from internal storage
+        mQualityList = new ArrayList<String>();
+        mQualityList.clear();
+        for (String s : PROFILE_OPTIONS) {
+
+            Log.i("Profile","Putin " + s);
+            mQualityList.add(s);
+        }
+
+        //Add internal storage types
+        for (File file : context.getApplicationContext().getFilesDir().listFiles()) {
+
+            Log.i("Profile","Putin " + file.getAbsolutePath());
+
+            //Only files with the .profile extension
+            if (file.getAbsolutePath().contains(TYPE_Q)) {
+
+                Log.i("Profile","Putin " + file.getAbsolutePath());
+
+                int pos = file.getName().lastIndexOf(".");
+                String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
+
+                //Add only the name
+                mQualityList.add(name);
+            }
+
+        }
+
 
     }
 
@@ -147,7 +186,7 @@ public class ModelProfile {
         for (File file : context.getApplicationContext().getFilesDir().listFiles()) {
 
             //Only files with the .profile extension
-            if (file.getAbsolutePath().contains(".profile")) {
+            if (file.getAbsolutePath().contains(TYPE_P)) {
 
                 Log.i("Profile","Putin " + file.getAbsolutePath());
 
@@ -164,6 +203,9 @@ public class ModelProfile {
 
     public static ArrayList<String> getProfileList(){
         return mProfileList;
+    }
+    public static ArrayList<String> getQualityList(){
+        return mQualityList;
     }
 
 }

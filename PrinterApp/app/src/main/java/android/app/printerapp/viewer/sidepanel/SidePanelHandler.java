@@ -53,7 +53,6 @@ import java.io.File;
 public class SidePanelHandler {
 
     //static parameters
-    private static final String[] PROFILE_OPTIONS = {ModelProfile.HIGH_PROFILE, ModelProfile.MEDIUM_PROFILE, ModelProfile.LOW_PROFILE}; //support options
     private static final String[] SUPPORT_OPTIONS = {"None", "Buildplate", "Everywhere"}; //support options
     private static final String[] ADHESION_OPTIONS = {"None", "Brim", "Raft"}; //adhesion options
     private static final String[] PRINTER_TYPE = {"Witbox", "Hephestos"};
@@ -267,8 +266,19 @@ public class SidePanelHandler {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                            parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString()));
-                            mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
+                            parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString(), ModelProfile.TYPE_Q));
+                            //mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
+
+                            if (i > 2){
+
+                                refreshProfileExtras();
+
+                            } else {
+                                reloadBasicExtras();
+                                mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
+
+
+                            }
 
                         }
 
@@ -278,10 +288,7 @@ public class SidePanelHandler {
                         }
                     });
 
-                    ArrayAdapter<String> profile_adapter = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, PROFILE_OPTIONS);
-                    profile_adapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
-                    s_profile.setAdapter(profile_adapter);
+                    reloadQualityAdapter();
 
 
                     //Adhesion type
@@ -316,9 +323,6 @@ public class SidePanelHandler {
                     });
 
 
-                    ArrayAdapter<String> adapter_profile = new ArrayAdapter<String>(mActivity,
-                            R.layout.print_panel_spinner_item, PROFILE_OPTIONS);
-                    adapter_profile.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
                     ArrayAdapter<String> adapter_adhesion = new ArrayAdapter<String>(mActivity,
                             R.layout.print_panel_spinner_item, ADHESION_OPTIONS);
                     adapter_adhesion.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
@@ -364,7 +368,7 @@ public class SidePanelHandler {
                         @Override
                         public void onClick(View view) {
                             //parseJson(s_profile.getSelectedItemPosition());
-                            parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString()));
+                            parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString(), ModelProfile.TYPE_Q));
                         }
                     });
 
@@ -682,7 +686,7 @@ public class SidePanelHandler {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mCurrentInfill = infillSeekBar.getProgress();
-                mSlicingHandler.setExtras("profile.fill_density", infillSeekBar.getProgress());
+                mSlicingHandler.setExtras("profile.fill_density", mCurrentInfill);
 
             }
         });
@@ -787,11 +791,12 @@ public class SidePanelHandler {
 
                 if (profile != null) {
 
+
                     //check if name already exists to avoid overwriting
-                    for (JSONObject o : mPrinter.getProfiles()) {
+                    for (String s : ModelProfile.getQualityList()) {
 
                         try {
-                            if (profile.get("displayName").equals(o.get("displayName"))) {
+                            if (profile.get("displayName").equals(s)) {
 
                                 //TODO hardcoded
                                 Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
@@ -810,13 +815,11 @@ public class SidePanelHandler {
 
                 }
 
-                //Send profile to server
-                OctoprintSlicing.sendProfile(mActivity, mPrinter, profile);
+                if(ModelProfile.saveProfile(mActivity, et.getText().toString(), profile, ModelProfile.TYPE_Q)) {
 
-                //TODO hardcoded
-                Toast.makeText(mActivity, "Profile saved successfully", Toast.LENGTH_LONG).show();
+                   reloadQualityAdapter();
 
-
+                }
             }
         });
 
@@ -884,5 +887,70 @@ public class SidePanelHandler {
 
 
     }
+
+    public void reloadQualityAdapter(){
+
+
+        ModelProfile.reloadQualityList(mActivity);
+
+        ArrayAdapter mProfileAdapter = new ArrayAdapter<String>(mActivity,
+                R.layout.print_panel_spinner_item, ModelProfile.getQualityList());
+        mProfileAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
+        s_profile.setAdapter(mProfileAdapter);
+
+        if (mProfileAdapter!=null){
+            mProfileAdapter.notifyDataSetChanged();
+            s_profile.postInvalidate();
+        }
+
+    }
+
+    /**********************************************************************************************/
+
+
+    //TODO Temporary
+    public void refreshProfileExtras(){
+
+        if (s_profile.getSelectedItemPosition() > 2){
+
+
+            mSlicingHandler.setExtras("profile.layer_height", getFloatValue(layerHeight.getText().toString()));
+            mSlicingHandler.setExtras("profile.wall_thickness", getFloatValue(shellThickness.getText().toString()));
+            mSlicingHandler.setExtras("profile.solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
+
+            mSlicingHandler.setExtras("profile.print_speed", getFloatValue(printSpeed.getText().toString()));
+            mSlicingHandler.setExtras("profile.print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
+            mSlicingHandler.setExtras("profile.filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
+            mSlicingHandler.setExtras("profile.filament_flow", getFloatValue(filamentFlow.getText().toString()));
+            mSlicingHandler.setExtras("profile.retraction_enabled", enableRetraction.isChecked());
+
+            mSlicingHandler.setExtras("profile.travel_speed", getFloatValue(travelSpeed.getText().toString()));
+            mSlicingHandler.setExtras("profile.bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
+            mSlicingHandler.setExtras("profile.infill_speed", getFloatValue(infillSpeed.getText().toString()));
+            mSlicingHandler.setExtras("profile.outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
+            mSlicingHandler.setExtras("profile.inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+
+            mSlicingHandler.setExtras("profile.cool_min_layer_time", getFloatValue(minimalLayerTime.getText().toString()));
+            mSlicingHandler.setExtras("profile.fan_enabled", enableCoolingFan.isChecked());
+
+
+        }
+
+
+
+
+
+    }
+
+    public void reloadBasicExtras(){
+
+        mSlicingHandler.clearExtras();
+        mSlicingHandler.setExtras("profile.fill_density", mCurrentInfill);
+        mSlicingHandler.setExtras("profile.support", s_support.getSelectedItem());
+        mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
+
+    }
+
+
 
 }

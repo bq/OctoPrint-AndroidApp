@@ -68,6 +68,11 @@ public class SlicingHandler {
 
     }
 
+    public void clearExtras(){
+
+        mExtras = new JSONObject();
+    }
+
     public void setExtras(String tag, Object value){
 
         //mProfile = profile;
