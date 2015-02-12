@@ -418,7 +418,7 @@ public class LibraryFragment extends Fragment {
                         }
                         else {
                             LibraryController.createFolder(name);
-                            notifyAdapter();
+                            refreshFiles();
                             dialog.dismiss();
                         }
                     }
@@ -445,6 +445,8 @@ public class LibraryFragment extends Fragment {
         sortAdapter();
 
         setMoveFile(null);
+
+        refreshFiles();
     }
 
     /**
