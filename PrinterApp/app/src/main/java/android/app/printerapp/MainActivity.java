@@ -247,8 +247,11 @@ public class MainActivity extends ActionBarActivity {
 
     public static void refreshDevicesCount(){
 
+        mCurrent.setMenuVisibility(false);
+
         Cursor c = DatabaseController.retrieveDeviceList();
         if (c.getCount() == 0) {
+
 
             mManager.popBackStack();
             showExtraFragment(2, 0);
@@ -266,6 +269,7 @@ public class MainActivity extends ActionBarActivity {
 
                 } else {
 
+                 mCurrent.setMenuVisibility(true);
                  mManager.popBackStack();
                  closePrintView();
                  closeInitialFragment();
@@ -288,7 +292,7 @@ public class MainActivity extends ActionBarActivity {
 
         //New transaction
         FragmentTransaction mTransaction = mManager.beginTransaction();
-        //mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
+        mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
 
         //Add current fragment to the backstack and hide it (will show again later)
         mTransaction.addToBackStack(mCurrent.getTag());
@@ -300,6 +304,8 @@ public class MainActivity extends ActionBarActivity {
 
             case 0:
 
+                closePrintView();
+                mManager.popBackStack();
                 SettingsFragment settings = new SettingsFragment();
                 mTransaction.replace(R.id.container_layout, settings, ListContent.ID_SETTINGS).commit();
                 Log.i("OUT", "Gotten " + mCurrent.getTag());

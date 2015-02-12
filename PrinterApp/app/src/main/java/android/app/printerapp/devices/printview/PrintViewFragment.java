@@ -118,119 +118,125 @@ public class PrintViewFragment extends Fragment {
             mPrinter = DevicesListController.getPrinter(args.getLong("id"));
             //getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
 
-            if (mPrinter==null) getActivity().onBackPressed();
-
-            try { //TODO CRASH
-                //Check printing status
-                if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING)||
-                        (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) isPrinting = true;
-                else {
-
-                    mActualProgress = 100;
-                    isPrinting = false;
-                }
-            } catch (NullPointerException e){
-
+            if (mPrinter==null) {
                 getActivity().onBackPressed();
-            }
+            }else {
+
+                try { //TODO CRASH
+                    //Check printing status
+                    if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING)||
+                            (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) isPrinting = true;
+                    else {
+
+                        mActualProgress = 100;
+                        isPrinting = false;
+                    }
+                } catch (NullPointerException e){
+
+                    getActivity().onBackPressed();
+                }
 
 
 
 
-            //Update the actionbar to show the up carat/affordance
-            if (DatabaseController.count()>1){
+                //Update the actionbar to show the up carat/affordance
+                if (DatabaseController.count()>1){
 
-                ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            }
-
-
-            //Inflate the fragment
-            mRootView = inflater.inflate(R.layout.printview_layout,
-                    container, false);
-
-            /************************************************************************/
+                }
 
 
+                //Inflate the fragment
+                mRootView = inflater.inflate(R.layout.printview_layout,
+                        container, false);
 
-
-            //Get video
-            mLayoutVideo = (FrameLayout) mRootView.findViewById(R.id.printview_video);
-
-            //TODO CAMERA DISABLED
-            mCamera = new CameraHandler(mContext, mPrinter.getAddress(), mLayoutVideo);
+                /************************************************************************/
 
 
 
 
-            mVideoSurface = mCamera.getView();
-            mLayoutVideo.addView(mVideoSurface);
+                //Get video
+                mLayoutVideo = (FrameLayout) mRootView.findViewById(R.id.printview_video);
 
-            mCamera.startVideo();
-
-            //Get tabHost from the xml
-            TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
-            tabHost.setup();
-
-            //Create VIDEO tab
-            TabHost.TabSpec settingsTab = tabHost.newTabSpec("Video");
-            settingsTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_video_text), R.drawable.ic_videocam));
-            settingsTab.setContent(R.id.printview_video);
-            tabHost.addTab(settingsTab);
-
-            //Create 3D RENDER tab
-            TabHost.TabSpec featuresTab = tabHost.newTabSpec("3D Render");
-            featuresTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_3d_text), R.drawable.visual_normal_24dp));
-            featuresTab.setContent(R.id.view_gcode);
-            tabHost.addTab(featuresTab);
-
-            tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-                @Override
-                public void onTabChanged(String s) {
+                //TODO CAMERA DISABLED
+                mCamera = new CameraHandler(mContext, mPrinter.getAddress(), mLayoutVideo);
 
 
-                    if (s.equals("Video")){
 
-                        if (mSurface!=null)
-                            mLayout.removeAllViews();
 
-                    } else {    //Redraw the gcode
+                mVideoSurface = mCamera.getView();
+                mLayoutVideo.addView(mVideoSurface);
 
-                        if (!isGcodeLoaded){
-                            //Show gcode tracking if there's a current path in the printer/preferences
-                            if (mPrinter.getJob().getFilename()!=null){
-                                retrieveGcode();
+                mCamera.startVideo();
+
+                //Get tabHost from the xml
+                TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
+                tabHost.setup();
+
+                //Create VIDEO tab
+                TabHost.TabSpec settingsTab = tabHost.newTabSpec("Video");
+                settingsTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_video_text), R.drawable.ic_videocam));
+                settingsTab.setContent(R.id.printview_video);
+                tabHost.addTab(settingsTab);
+
+                //Create 3D RENDER tab
+                TabHost.TabSpec featuresTab = tabHost.newTabSpec("3D Render");
+                featuresTab.setIndicator(getTabIndicator(mContext.getResources().getString(R.string.printview_3d_text), R.drawable.visual_normal_24dp));
+                featuresTab.setContent(R.id.view_gcode);
+                tabHost.addTab(featuresTab);
+
+                tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+                    @Override
+                    public void onTabChanged(String s) {
+
+
+                        if (s.equals("Video")){
+
+                            if (mSurface!=null)
+                                mLayout.removeAllViews();
+
+                        } else {    //Redraw the gcode
+
+                            if (!isGcodeLoaded){
+                                //Show gcode tracking if there's a current path in the printer/preferences
+                                if (mPrinter.getJob().getFilename()!=null){
+                                    retrieveGcode();
+                                }
+                            } else {
+                                if (mSurface!=null){
+                                    drawPrintView();
+                                    mSurface.setZOrderOnTop(true);
+                                }
+
+
                             }
-                        } else {
-                            if (mSurface!=null){
-                                drawPrintView();
-                                mSurface.setZOrderOnTop(true);
-                            }
-
 
                         }
 
+                        //TODO CAMERA DISABLED
+                        mLayoutVideo.invalidate();
+
+
+                        Log.i(TAG,"Now showing: " + s);
                     }
+                });
 
-                    //TODO CAMERA DISABLED
-                    mLayoutVideo.invalidate();
-
-
-                    Log.i(TAG,"Now showing: " + s);
-                }
-            });
-
-            /***************************************************************************/
+                /***************************************************************************/
 
 
-        initUiElements();
+                initUiElements();
 
 
 
-            refreshData();
+                refreshData();
 
-            //Register receiver
-            mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                //Register receiver
+                mContext.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+            }
+
+
 
         }
         return mRootView;

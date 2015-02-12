@@ -84,12 +84,7 @@
                                     android:id="@+id/videocam_off_icon"
                                     android:src="@drawable/ic_videocam_off_gray"/>
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@color/almost_white"
-                                    android:text="Video disabled for the current implementation"/>
-                                </FrameLayout>
+                                 </FrameLayout>
 
                             <!-- 3D RENDER VIEW -->
                             <FrameLayout
