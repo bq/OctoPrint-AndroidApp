@@ -142,7 +142,7 @@
     
     <string name="slicing_title">Slicing done in </string>
     <string name="slicing_download">Download file into project folder?</string>
-    <string name="finish_dialog_title">Print finished:</string>
+    <string name="finish_dialog_title">Print finished</string>
     <string name="notification_slicing_progress">Slicing</string>
     <string name="notification_printing_progress">Print progress</string>
     <string name="finish_dialog_option_1">Keep gcode in server</string>
@@ -364,6 +364,7 @@
     <string name="shared_preferences_slice" translatable="false">slice</string>
     <string name="shared_preferences_print" translatable="false">print</string>
     <string name="option_unavailable">Option unavailable</string>
+    <string name="printview_finish_button">FINISH</string>
 
 
 </resources>

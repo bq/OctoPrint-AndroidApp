@@ -1,11 +1,15 @@
 package android.app.printerapp.octoprint;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -47,11 +51,18 @@ public class OctoprintControl {
 		} catch (JSONException e) {		e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {	e.printStackTrace();
 		}
-				
-		//Progress dialog to notify command events
-		final ProgressDialog pd = new ProgressDialog(context);
-		pd.setMessage(context.getString(R.string.devices_command_waiting));
-		pd.show();
+
+        //Get progress dialog UI
+        View waitingForServiceDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_progress_content_horizontal, null);
+        ((TextView) waitingForServiceDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.devices_configure_waiting);
+
+        //Show progress dialog
+        MaterialDialog.Builder connectionDialogBuilder = new MaterialDialog.Builder(context);
+        connectionDialogBuilder.customView(waitingForServiceDialogView, true)
+                .autoDismiss(false);
+
+        final Dialog connectionDialog = connectionDialogBuilder.build();
+        connectionDialog.show();
 
 		
 		HttpClientHandler.post(context,url + HttpUtils.URL_CONTROL, 
@@ -67,7 +78,7 @@ public class OctoprintControl {
 						super.onSuccess(statusCode, headers, response);
 						
 						//Dismiss progress dialog
-						pd.dismiss();
+                connectionDialog.dismiss();
 					}
 			
 			@Override
@@ -77,7 +88,7 @@ public class OctoprintControl {
 				super.onFailure(statusCode, headers, responseString, throwable);
 
 				//Dismiss progress dialog
-				pd.dismiss();
+                connectionDialog.dismiss();
                 MainActivity.showDialog(responseString);
 			}
 		});

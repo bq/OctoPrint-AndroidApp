@@ -1,7 +1,8 @@
 package android.app.printerapp;
 
-import android.app.AlertDialog;
 import android.content.Context;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 
 /**
@@ -24,12 +25,14 @@ public class DialogController {
 	 * @param msg the message shown
 	 */
 	public void displayDialog(String msg){
-		
-		AlertDialog.Builder adb = new AlertDialog.Builder(mContext);
-		adb.setTitle(R.string.error);
-		adb.setIcon(android.R.drawable.stat_sys_warning);
-		adb.setMessage(msg);
-		adb.show();
+
+        MaterialDialog.Builder madb = new MaterialDialog.Builder(mContext);
+		madb.title(R.string.error);
+		madb.icon(mContext.getResources().getDrawable(R.drawable.ic_warning_grey600_24dp));
+		madb.content(msg);
+        madb.positiveColor(R.color.theme_primary);
+        madb.positiveText(R.string.ok);
+		madb.show();
 
 	}
 

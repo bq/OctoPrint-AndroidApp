@@ -149,22 +149,30 @@ public class DatabaseController {
 		//TODO Database deletion for testing
 		mContext.deleteDatabase("Devices.db");
 	}
-	
-	
-	
-	
-	
-	
+
+    public static int count(){
+
+        Cursor c = retrieveDeviceList();
+        int count = c.getCount();
+        closeDb();
+        return count;
+    }
+
+
+
+
+
+
 	/*****************************************************************************************
 	 * 					SHARED PREFERENCES HANDLER
 	 *****************************************************************************************/
-	
+
 	/**
 	 * Check if a file is favorite
 	 * @return
 	 */
 	public static boolean isPreference(String where, String key){
-		
+
 		SharedPreferences prefs = mContext.getSharedPreferences(where, Context.MODE_PRIVATE);
 
         /*

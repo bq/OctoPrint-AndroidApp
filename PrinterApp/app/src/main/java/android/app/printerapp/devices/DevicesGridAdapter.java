@@ -59,7 +59,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
         return super.isEnabled(position);
     }
 
-    //TODO implement view holder
     //Overriding our view to show the grid on screen
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
