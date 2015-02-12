@@ -250,18 +250,31 @@ public class MainActivity extends ActionBarActivity {
         Cursor c = DatabaseController.retrieveDeviceList();
         if (c.getCount() == 0) {
 
+            mManager.popBackStack();
             showExtraFragment(2, 0);
 
-
         } else {
-            closeInitialFragment();
-         /*if (c.getCount() == 1) {
 
-            c.moveToFirst();
-            showExtraFragment(1,c.getInt(0));
+             if (c.getCount() == 1) {
 
-        }*/
+                c.moveToFirst();
+
+                Log.i("Extra","Opening " + c.getInt(0));
+
+                showExtraFragment(1, c.getInt(0));
+
+
+                } else {
+
+                 mManager.popBackStack();
+                 closePrintView();
+                 closeInitialFragment();
+
+
+             }
         }
+
+        DatabaseController.closeDb();
 
     }
 
@@ -275,11 +288,13 @@ public class MainActivity extends ActionBarActivity {
 
         //New transaction
         FragmentTransaction mTransaction = mManager.beginTransaction();
-        mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
+        //mTransaction.setCustomAnimations(0, 0 , 0, R.anim.fragment_slide_out_left);
 
         //Add current fragment to the backstack and hide it (will show again later)
         mTransaction.addToBackStack(mCurrent.getTag());
         mTransaction.hide(mCurrent);
+
+        Log.i("Extra","Received ID " + id);
 
         switch (type) {
 
@@ -293,12 +308,15 @@ public class MainActivity extends ActionBarActivity {
 
             case 1:
 
+                mCurrent.setMenuVisibility(false);
                 //New detailview with the printer name as extra
                 PrintViewFragment detailp = new PrintViewFragment();
                 Bundle argsp = new Bundle();
                 argsp.putLong("id", id);
                 detailp.setArguments(argsp);
                 //Transition is made by replacing instead of hiding to allow backstack navigation
+
+                Log.i("Extra","PUT ID " + id);
 
                 //TODO: Use resource for id tag;
                 mTransaction.replace(R.id.maintab3, detailp, ListContent.ID_PRINTVIEW).commit();
@@ -326,10 +344,12 @@ public class MainActivity extends ActionBarActivity {
         if (fragment != null) refreshDevicesCount();
     }
 
-    private void closePrintView(){
+    private static void closePrintView(){
         //Refresh printview fragment if exists
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_PRINTVIEW);
         if (fragment != null) ((PrintViewFragment) fragment).stopCameraPlayback();
+
+        if (mCurrent!=null) mCurrent.setMenuVisibility(true);
     }
 
     private void closeDetailView(){
@@ -351,14 +371,24 @@ public class MainActivity extends ActionBarActivity {
 
             Log.i("FRAGMENT","Current not null");
 
-            closePrintView();
 
-            if (mManager.popBackStackImmediate());
-            else super.onBackPressed();
 
-            //Basically refresh printer count if all were deleted in Settings mode
-            if (mCurrent == mDevicesFragment)
-                refreshDevicesCount();
+            Fragment fragment = mManager.findFragmentByTag(ListContent.ID_SETTINGS);
+            Cursor c = DatabaseController.retrieveDeviceList();
+
+            if ((fragment != null) || (c.getCount() > 1)){
+
+                closePrintView();
+
+                if (mManager.popBackStackImmediate()){
+
+                    //Basically refresh printer count if all were deleted in Settings mode
+                    if (mCurrent == mDevicesFragment)
+                        refreshDevicesCount();
+
+                }else super.onBackPressed();
+            } else super.onBackPressed();
+
 
         } else {
 

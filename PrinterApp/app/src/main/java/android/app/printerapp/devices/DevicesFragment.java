@@ -6,23 +6,15 @@ import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.DiscoveryController;
-import android.app.printerapp.devices.printview.GcodeCache;
-import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
-import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.content.ClipData;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.DragEvent;
@@ -36,16 +28,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialogCompat;
-
-import java.io.File;
 
 /**
  * This is the fragment that will contain the Device Grid and functionality
@@ -79,8 +65,6 @@ import java.io.File;
 
         super.onCreate(savedInstanceState);
 
-        Log.i("Devices","CREATE TOTAL");
-
         //Retain instance to keep the Fragment from destroying itself
         setRetainInstance(true);
 
@@ -97,8 +81,6 @@ import java.io.File;
         //If is not new
         if (savedInstanceState == null) {
 
-            Log.i("Devices","CREATE VIEW");
-
             //Show custom option menu
             setHasOptionsMenu(true);
 
@@ -110,6 +92,8 @@ import java.io.File;
             //------------------------------- View references -----------------//
 
             //Grid
+
+
 
             mGridAdapter = new DevicesGridAdapter(getActivity(),
                     R.layout.grid_item_printer, DevicesListController.getList());
@@ -146,9 +130,7 @@ import java.io.File;
         switch (item.getItemId()) {
 
             case R.id.devices_add:
-
                 new DiscoveryController(getActivity());
-
                 return true;
 
             case R.id.settings:
@@ -259,7 +241,7 @@ import java.io.File;
 
                             //if job finished, create dialog
                             if (m.getJob().getFinished()) {
-                                createFinishDialog(m);
+                                new FinishDialog(getActivity(),m);
 
                                 //if not finished, normal behavior
                             } else {
@@ -440,147 +422,9 @@ import java.io.File;
      * ******************************************
      */
 
-    private static final String STRING_TEMP = "/_tmp";
-
-    public void createFinishDialog(final ModelPrinter m){
-
-        //Constructor
-        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(getActivity());
-        adb.setTitle(getActivity().getString(R.string.finish_dialog_title) + " " + m.getJob().getFilename());
-
-        //Inflate the view
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.dialog_finish_printing, null, false);
-
-        adb.setView(v);
-        adb.setPositiveButton(R.string.confirm, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                if (m.getJobPath()!=null){
-                    File file = new File(m.getJobPath());
-
-                    if (file.getParentFile().getAbsolutePath().contains(STRING_TEMP)) {
-
-
-                        //Auto-save
-                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        if (sharedPref.getBoolean(getString(R.string.shared_preferences_save), true)){
-
-                            //Select the same file again to reset progress
-                            OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false, false);
-
-                            File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + file.getName());
-                            file.renameTo(to);
-
-                            LibraryController.deleteFiles(file.getParentFile());
 
 
 
-                        } else {
-                            Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs to be saved. Hello: " + DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, m.getName()));
-                            createFinishDialogSave(m,file);
-
-                        }
-
-
-                    } else {
-                        Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs NO SAVING CUZ ITS MINE.");
-                        OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
-                    }
-
-                    GcodeCache.removeGcodeFromCache(m.getJobPath());
-                    m.setJobPath(null);
-                    DatabaseController.handlePreference(DatabaseController.TAG_REFERENCES,m.getName(),null,false);
-                }
-                else {
-
-                    Log.i("FinishDialog","No jobpath");
-                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
-
-
-                }
-
-            }
-        });
-
-        adb.show();
-
-    }
-
-    public void createFinishDialogSave(final ModelPrinter m, final File file) {
-
-        //Constructor
-        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(getActivity());
-        adb.setTitle(m.getDisplayName() + " (100%) - " +file.getName());
-
-        //Inflate the view
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.print_finished_dialog, null, false);
-
-        final CheckBox cb_server = (CheckBox) v.findViewById(R.id.checkbox_keep_server);
-        final CheckBox cb_local = (CheckBox) v.findViewById(R.id.checkbox_keep_local);
-        final EditText et_name = (EditText) v.findViewById(R.id.et_name_model);
-
-        et_name.setText(file.getName());
-
-        adb.setView(v);
-
-        adb.setPositiveButton(R.string.ok, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                if (cb_server.isChecked()){
-
-                    //Select the same file again to reset progress
-                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", false, false);
-
-                } else {
-
-                    //Remove file from server
-                    OctoprintFiles.fileCommand(getActivity(), m.getAddress(), m.getJob().getFilename(), "/local/", true, false);
-
-
-                }
-
-                if (cb_local.isChecked()){
-
-                    File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + et_name.getText().toString());
-                    file.renameTo(to);
-
-
-                } else {
-
-                    try{
-                        //Delete file locally
-                        if (file.delete()){
-
-                            Log.i("OUT","File deleted!");
-
-                        }
-
-                    } catch (NullPointerException e){
-
-                        Log.i("OUT","Error deleting the file");
-
-                    }
-
-
-
-                }
-
-                LibraryController.deleteFiles(file.getParentFile());
-
-
-            }
-
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.show();
-    }
 
 
 

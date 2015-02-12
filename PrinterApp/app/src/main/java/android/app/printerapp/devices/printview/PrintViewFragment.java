@@ -1,14 +1,16 @@
 package android.app.printerapp.devices.printview;
 
 
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.FinishDialog;
 import android.app.printerapp.devices.camera.CameraHandler;
 import android.app.printerapp.devices.database.DatabaseController;
+import android.app.printerapp.devices.discovery.DiscoveryController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.HttpUtils;
@@ -45,6 +47,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.material.widget.PaperButton;
 
 import java.io.File;
@@ -65,6 +68,7 @@ public class PrintViewFragment extends Fragment {
     private static ModelPrinter mPrinter;
     private CameraHandler mCamera;
     private boolean isPrinting = false;
+    private boolean isGcodeLoaded = false;
 
     //View references
     private TextView tv_printer;
@@ -92,7 +96,7 @@ public class PrintViewFragment extends Fragment {
     private static Context mContext;
     private static int mActualProgress = 0;
 
-    private ProgressDialog mDownloadDialog;
+    private Dialog mDownloadDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,25 +110,40 @@ public class PrintViewFragment extends Fragment {
             //Necessary for gcode tracking
             mContext = getActivity();
 
+            //Show custom option menu
+            setHasOptionsMenu(true);
+
             //Get the printer from the list
             Bundle args = getArguments();
             mPrinter = DevicesListController.getPrinter(args.getLong("id"));
             //getActivity().getActionBar().setTitle(mPrinter.getAddress().replace("/", ""));
 
-            //Check printing status
-            if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING)||
-            (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) isPrinting = true;
-            else {
+            if (mPrinter==null) getActivity().onBackPressed();
 
-                mActualProgress = 100;
-                isPrinting = false;
+            try { //TODO CRASH
+                //Check printing status
+                if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING)||
+                        (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) isPrinting = true;
+                else {
+
+                    mActualProgress = 100;
+                    isPrinting = false;
+                }
+            } catch (NullPointerException e){
+
+                getActivity().onBackPressed();
             }
 
-            //Show custom option menu
-            setHasOptionsMenu(true);
+
+
 
             //Update the actionbar to show the up carat/affordance
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (DatabaseController.count()>1){
+
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            }
+
 
             //Inflate the fragment
             mRootView = inflater.inflate(R.layout.printview_layout,
@@ -132,11 +151,7 @@ public class PrintViewFragment extends Fragment {
 
             /************************************************************************/
 
-            //Show gcode tracking if there's a current path in the printer/preferences
 
-            if (mPrinter.getJob().getFilename()!=null){
-                retrieveGcode();
-            }
 
 
             //Get video
@@ -173,15 +188,27 @@ public class PrintViewFragment extends Fragment {
                 @Override
                 public void onTabChanged(String s) {
 
-                    if (mSurface!=null)
+
                     if (s.equals("Video")){
 
-                        mLayout.removeAllViews();
+                        if (mSurface!=null)
+                            mLayout.removeAllViews();
 
                     } else {    //Redraw the gcode
 
-                            drawPrintView();
-                            mSurface.setZOrderOnTop(true);
+                        if (!isGcodeLoaded){
+                            //Show gcode tracking if there's a current path in the printer/preferences
+                            if (mPrinter.getJob().getFilename()!=null){
+                                retrieveGcode();
+                            }
+                        } else {
+                            if (mSurface!=null){
+                                drawPrintView();
+                                mSurface.setZOrderOnTop(true);
+                            }
+
+
+                        }
 
                     }
 
@@ -230,8 +257,12 @@ public class PrintViewFragment extends Fragment {
                 getActivity().onBackPressed();
                 return true;
 
+            case R.id.printview_add:
+                new DiscoveryController(getActivity());
+                return true;
+
             case R.id.printview_settings:
-                getActivity().onBackPressed();
+                //getActivity().onBackPressed();
                 MainActivity.showExtraFragment(0, 0);
                 return true;
             default:
@@ -269,8 +300,17 @@ public class PrintViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (!isPrinting) OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "start");
-                else OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "pause");
+                if (!isPrinting) {
+
+                    if (!mPrinter.getJob().getProgress().equals("null"))
+                        if (mPrinter.getJob().getFinished()){
+
+                            new FinishDialog(mContext,mPrinter);
+
+                        } else {
+                            OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "start");
+                        }
+                }else OctoprintControl.sendCommand(getActivity(), mPrinter.getAddress(), "pause");
 
             }
         });
@@ -518,6 +558,8 @@ public class PrintViewFragment extends Fragment {
                 Double n = Double.valueOf(mPrinter.getJob().getProgress());
                 pb_prog.setProgress(n.intValue());
 
+
+
             }
 
             if (mDataGcode != null)
@@ -525,12 +567,30 @@ public class PrintViewFragment extends Fragment {
 
         } else {
 
+
             if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
-            tv_prog.setText(mPrinter.getMessage() + " - ");
+
+            if (!mPrinter.getJob().getProgress().equals("null"))
+            if (mPrinter.getJob().getFinished()) {
+
+                pb_prog.setProgress(100);
+                tv_file.setText(R.string.devices_text_completed);
+
+                button_pause.setText(getString(R.string.printview_finish_button));
+                icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_done));
+
+            } else {
+
+                tv_prog.setText(mPrinter.getMessage() + " - ");
+
+
+                button_pause.setText(getString(R.string.printview_start_button));
+                icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+
+            }
+
             isPrinting = false;
 
-            button_pause.setText(getString(R.string.printview_start_button));
-            icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
         }
 
         getActivity().invalidateOptionsMenu();
@@ -652,9 +712,20 @@ public class PrintViewFragment extends Fragment {
 
                     Log.i(TAG, "Downloading and adding to preferences");
 
+                    //Get progress dialog UI
+                    View waitingForServiceDialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_progress_content_horizontal, null);
+                    ((TextView) waitingForServiceDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.printview_download_dialog);
+
+                    //Show progress dialog
+                    MaterialDialog.Builder connectionDialogBuilder = new MaterialDialog.Builder(mContext);
+                    connectionDialogBuilder.customView(waitingForServiceDialogView, true)
+                            .autoDismiss(false);
+
                     //Progress dialog to notify command events
-                    mDownloadDialog = new ProgressDialog(getActivity());
-                    mDownloadDialog.setMessage(getActivity().getString(R.string.printview_download_dialog) + "...");
+                    mDownloadDialog = new MaterialDialog.Builder(mContext)
+                    .customView(waitingForServiceDialogView, true)
+                    .autoDismiss(false)
+                    .build();
                     mDownloadDialog.show();
 
                     //File changed, remove jobpath
@@ -663,6 +734,8 @@ public class PrintViewFragment extends Fragment {
 
 
             }
+
+        isGcodeLoaded = true;
     }
 
 
@@ -701,6 +774,7 @@ public class PrintViewFragment extends Fragment {
         gcodeList.add(mDataGcode);
 
         mSurface = new ViewerSurfaceView(mContext, gcodeList, ViewerSurfaceView.LAYERS, ViewerMainFragment.PRINT_PREVIEW, null);
+
         mLayout.removeAllViews();
         mLayout.addView(mSurface, 0);
 

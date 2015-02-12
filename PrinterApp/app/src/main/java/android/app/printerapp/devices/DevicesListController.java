@@ -40,6 +40,8 @@ public class DevicesListController {
     public static void addToList(ModelPrinter m) {
         mList.add(m);
 
+        Log.i("Extra","Added " + m.getId());
+
     }
 
     //Return the list
