@@ -6,7 +6,9 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelFile;
+import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -59,7 +61,17 @@ public class DetailViewFragment extends Fragment {
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO Add the behavior of share button
+
+                    //Sharing intent
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBody = getString(R.string.share_content_text);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_subject_text));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                    sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mFile.getStl())));
+                    startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via_text)));
+
+
                 }
             });
 
@@ -122,7 +134,7 @@ public class DetailViewFragment extends Fragment {
             //FIXME Uncomment this in the final version
 //            View lfooter = View.inflate(getActivity(), R.layout.detailview_list_footer, null);
 //            TextView footertv = (TextView) lfooter.findViewById(R.id.detail_tv_description);
-//            footertv.setText(getResources().getString(R.string.lorem_ipsum)); //TODO Set the correct text
+//            footertv.setText(getResources().getString(R.string.lorem_ipsum));
 //            lv.addFooterView(lfooter);
 
             lv.setAdapter(adapter);
