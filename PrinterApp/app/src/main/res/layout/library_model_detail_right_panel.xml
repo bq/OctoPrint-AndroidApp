@@ -43,7 +43,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/content_padding_xsmall"
                 android:background="@drawable/selectable_rect_background_gray"
-                android:src="@drawable/ic_action_share" />
+                android:src="@drawable/ic_action_share"
+                android:actionProviderClass=
+                    "android.widget.ShareActionProvider"/>
 
             <ImageButton
                 android:id="@+id/detail_fav_button"

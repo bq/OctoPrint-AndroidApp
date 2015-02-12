@@ -365,6 +365,9 @@
     <string name="shared_preferences_print" translatable="false">print</string>
     <string name="option_unavailable">Option unavailable</string>
     <string name="printview_finish_button">FINISH</string>
+    <string name="share_subject_text">Shared model</string>
+    <string name="share_content_text">I want to share this model with you!</string>
+    <string name="share_via_text">Share via</string>
 
 
 </resources>

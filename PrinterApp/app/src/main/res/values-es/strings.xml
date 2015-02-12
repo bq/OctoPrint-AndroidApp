@@ -349,5 +349,8 @@
     <string name="dialog_finish_model_name">Nombre del modelo</string>
     <string name="option_unavailable">Opción no disponible</string>
     <string name="printview_finish_button">FINALIZAR</string>
+    <string name="share_subject_text">Modelo compartido</string>
+    <string name="share_content_text">¡Quiero compartir este modelo contigo!</string>
+    <string name="share_via_text">Compartir por</string>
 
 </resources>
