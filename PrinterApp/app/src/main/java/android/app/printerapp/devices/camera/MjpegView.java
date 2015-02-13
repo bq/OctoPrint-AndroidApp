@@ -175,7 +175,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         holder.addCallback(this);
         thread = new MjpegViewThread(holder, context);
         setFocusable(true);
-        //setZOrderOnTop(true);
         overlayPaint = new Paint();
         overlayPaint.setTextAlign(Paint.Align.LEFT);
         overlayPaint.setTextSize(12);
@@ -186,8 +185,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         displayMode = MjpegView.SIZE_BEST_FIT;
         dispWidth = getWidth();
         dispHeight = getHeight();
-        
-        Log.i("MEMORY", "Size: " + dispWidth + "x" + dispHeight);
     }
     
     

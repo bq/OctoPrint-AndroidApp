@@ -171,7 +171,7 @@ public class PrintViewFragment extends Fragment {
                 mCamera.startVideo();
 
                 //Get tabHost from the xml
-                TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
+                final TabHost tabHost = (TabHost) mRootView.findViewById(R.id.printviews_tabhost);
                 tabHost.setup();
 
                 //Create VIDEO tab
@@ -199,14 +199,15 @@ public class PrintViewFragment extends Fragment {
                         } else {    //Redraw the gcode
 
                             if (!isGcodeLoaded){
+
                                 //Show gcode tracking if there's a current path in the printer/preferences
                                 if (mPrinter.getJob().getFilename()!=null){
                                     retrieveGcode();
                                 }
+
                             } else {
                                 if (mSurface!=null){
                                     drawPrintView();
-                                    mSurface.setZOrderOnTop(true);
                                 }
 
 
@@ -655,6 +656,9 @@ public class PrintViewFragment extends Fragment {
                     if (LibraryController.hasExtension(1, currentFile.getName()))
                         openGcodePrintView(getActivity(), mPrinter.getJobPath(), mRootView, R.id.view_gcode);
                     else Log.i(TAG, "Das not gcode");
+
+                    isGcodeLoaded = true;
+
                     //end process
                     return;
 
@@ -786,6 +790,8 @@ public class PrintViewFragment extends Fragment {
         mLayout.addView(mSurface, 0);
 
         changeProgress(mActualProgress);
+
+        mSurface.setZOrderOnTop(true);
 
 
         return true;
