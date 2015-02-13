@@ -117,6 +117,22 @@ public class LibraryFragment extends Fragment {
 
             mListView = (ListView) mRootView.findViewById(R.id.list_storage);
 
+            LinearLayout emptyView = (LinearLayout) mRootView.findViewById(R.id.library_empty_view);
+            mListView.setEmptyView(emptyView);
+            emptyView.findViewById(R.id.obtain_models_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    optionGetModelsDialog();
+                }
+            });
+
+            emptyView.findViewById(R.id.scan_device_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    optionSearchSystem();
+                }
+            });
+
             LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
             mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
             mListView.setOnItemClickListener(clickListener);

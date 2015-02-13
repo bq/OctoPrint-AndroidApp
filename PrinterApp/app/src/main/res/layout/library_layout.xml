@@ -61,8 +61,59 @@
                 android:paddingTop="@dimen/content_padding_small"
                 app:edgeeffect_color="@color/theme_accent_1"/>
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/library_empty_view"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center">
 
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/visual_normal_24dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/content_margin_large"/>
+
+                <TextView
+                    android:layout_width="400dp"
+                    android:textSize="15sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/library_empty_text"
+                    android:gravity="center"
+                    android:layout_gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/content_margin_normal">
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/obtain_models_button"
+                        style="@style/MaterialDesignButton.Raised"
+                        android:layout_gravity="center"
+                        android:layout_width="250dp"
+                        android:layout_margin="@dimen/content_margin_normal"
+                        app:paper_text="@string/library_menu_models"
+                        app:paper_text_color="@color/body_text_2" />
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/scan_device_button"
+                        style="@style/MaterialDesignButton.Raised"
+                        android:layout_gravity="center"
+                        android:layout_width="250dp"
+                        android:layout_margin="@dimen/content_margin_normal"
+                        app:paper_text="@string/library_menu_scan"
+                        app:paper_text_color="@color/body_text_2" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
