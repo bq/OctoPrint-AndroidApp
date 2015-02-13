@@ -18,7 +18,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +25,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -238,27 +236,27 @@ public class EditPrinterDialog {
 
                     case 0: //witbox (locked)
 
-                        profile = ModelProfile.retrieveProfile(mContext, ModelProfile.WITBOX_PROFILE);
+                        profile = ModelProfile.retrieveProfile(mContext, ModelProfile.WITBOX_PROFILE, ModelProfile.TYPE_P);
                         icon_printer.setImageResource(R.drawable.printer_witbox_default);
 
                         break;
                     case 1: //prusa (locked)
 
-                        profile = ModelProfile.retrieveProfile(mContext, ModelProfile.PRUSA_PROFILE);
+                        profile = ModelProfile.retrieveProfile(mContext, ModelProfile.PRUSA_PROFILE, ModelProfile.TYPE_P);
                         icon_printer.setImageResource(R.drawable.printer_prusa_default);
 
                         break;
 
                     case 2: //custom (editable)
 
-                        profile = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE);
+                        profile = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE, ModelProfile.TYPE_P);
                         icon_printer.setImageResource(R.drawable.printer_custom_default);
                         editable = true;
                         break;
 
                     default: //any other user-defined profile (locked)
 
-                        profile = ModelProfile.retrieveProfile(mContext, profileArray.get(i));
+                        profile = ModelProfile.retrieveProfile(mContext, profileArray.get(i), ModelProfile.TYPE_P);
                         icon_printer.setImageResource(R.drawable.printer_custom_default);
                         editable = false;
                         button_delete.setVisibility(View.VISIBLE);
@@ -342,7 +340,7 @@ public class EditPrinterDialog {
                                 default: {
 
                                     //Upload profile, connect if successful
-                                    OctoprintProfiles.uploadProfile(mContext, mPrinter.getAddress(), ModelProfile.retrieveProfile(mContext, spinner_printer.getSelectedItem().toString()),
+                                    OctoprintProfiles.uploadProfile(mContext, mPrinter.getAddress(), ModelProfile.retrieveProfile(mContext, spinner_printer.getSelectedItem().toString(), ModelProfile.TYPE_P),
                                             spinner_port.getSelectedItem().toString());
 
 
@@ -464,7 +462,7 @@ public class EditPrinterDialog {
 
                     String nameFormat = name.getText().toString().replace(" ", "_");
 
-                    JSONObject json = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE);
+                    JSONObject json = ModelProfile.retrieveProfile(mContext, ModelProfile.DEFAULT_PROFILE, ModelProfile.TYPE_P);
 
                     json.put("name", name.getText().toString());
                     json.put("id", name.getText().toString().replace(" ", "_"));
@@ -502,7 +500,7 @@ public class EditPrinterDialog {
 
                     Log.i("OUT", json.toString());
 
-                    if (ModelProfile.saveProfile(mContext, name.getText().toString(), json)) {
+                    if (ModelProfile.saveProfile(mContext, name.getText().toString(), json, ModelProfile.TYPE_P)) {
 
                         mPrinter.setType(3, name.getText().toString());
                         DatabaseController.updateDB(DeviceInfo.FeedEntry.DEVICES_PROFILE, mPrinter.getId(), name.getText().toString());
@@ -541,7 +539,7 @@ public class EditPrinterDialog {
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 //Delete profile first
-                if (ModelProfile.deleteProfile(mContext, name)) {
+                if (ModelProfile.deleteProfile(mContext, name, ModelProfile.TYPE_P)) {
 
                     profileArray.remove(spinner_printer.getSelectedItemPosition());
                     type_adapter.notifyDataSetChanged();

@@ -1491,7 +1491,7 @@ public class ViewerMainFragment extends Fragment {
 
     public static void changePlate(String resource) throws NullPointerException {
 
-        JSONObject profile = ModelProfile.retrieveProfile(mContext, resource);
+        JSONObject profile = ModelProfile.retrieveProfile(mContext, resource, ModelProfile.TYPE_P);
 
         try {
             JSONObject volume = profile.getJSONObject("volume");
