@@ -14,7 +14,6 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.DragEvent;
@@ -53,15 +52,7 @@ import android.widget.Toast;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        /**
-         * Since API level 11, thread policy has changed and now does not allow network operation to
-         * be executed on UI thread (NetworkOnMainThreadException), so we have to add these lines to
-         * permit it.
-         */
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+
 
         super.onCreate(savedInstanceState);
 

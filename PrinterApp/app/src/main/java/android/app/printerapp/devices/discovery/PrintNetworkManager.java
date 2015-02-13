@@ -1,6 +1,5 @@
 package android.app.printerapp.devices.discovery;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
@@ -8,8 +7,6 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintNetwork;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -17,7 +14,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -366,7 +362,7 @@ public class PrintNetworkManager {
         final MaterialDialog.Builder configurePrinterDialogBuilder = new MaterialDialog.Builder(mController.getActivity());
         configurePrinterDialogBuilder.title(R.string.devices_discovery_title)
                 .customView(configurePrinterDialogView, true)
-                .cancelable(false)
+                .cancelable(true)
                 .autoDismiss(false);
         //Progress dialog to notify command events
         mDialog = configurePrinterDialogBuilder.build();
