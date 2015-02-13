@@ -156,7 +156,7 @@
         
     <string name="library_create_dialog_title">Create new folder</string>
     <string name="library_create_folder_name">New folder name</string>
-    <string name="library_create_folder_name_error">The folder name can\'t be empty</string>
+    <string name="library_create_folder_name_error">The name can\'t be empty</string>
     <string name="library_select_printer_title">Print file: </string>
     <string name="library_select_printer">Select printer</string>
     <string name="library_option_dialog_title">Model options</string>
@@ -371,6 +371,10 @@
     <string name="share_via_text">Share via</string>
     <string name="library_empty_text">You still don\'t have any 3D models added, use the buttons to download new models or to perform a search within your device.</string>
     <string name="viewer_printer_type_text">Select printer type</string>
+    <string name="viewer_create_profile_text">New profile name</string>
+    <string name="viewer_create_profile_default" translatable="false">custom_profile</string>
+    <string name="viewer_delete_profile_error">You can\'t delete this profile</string>
+    <string name="dialog_create_profile_title">Create new profile</string>
 
 
 </resources>

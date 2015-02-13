@@ -355,5 +355,8 @@
     <string name="share_via_text">Compartir por</string>
     <string name="library_empty_text">Todavía no tienes modelos 3D añadidos, utiliza los botones para descargar nuevos modelos o realizar un búsqueda en tu dispositivo.</string>
     <string name="viewer_printer_type_text">Seleccionar tipo de impresora</string>
+    <string name="viewer_create_profile_text">Nombre del perfil nuevo</string>
+    <string name="viewer_delete_profile_error">No puedes borrar este perfil</string>
+    <string name="dialog_create_profile_title">Crear nuevo perfil</string>
 
 </resources>
