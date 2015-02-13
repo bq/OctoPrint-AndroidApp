@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
@@ -92,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
         mManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                Log.i("OUT", "SOMETHING IN BACKSTACK " + mManager.getBackStackEntryCount());
+
             }
         });
 
@@ -317,8 +316,6 @@ public class MainActivity extends ActionBarActivity {
         mTransaction.addToBackStack(mCurrent.getTag());
         mTransaction.hide(mCurrent);
 
-        Log.i("Extra","Received ID " + id);
-
         switch (type) {
 
             case 0:
@@ -327,7 +324,6 @@ public class MainActivity extends ActionBarActivity {
                 mManager.popBackStack();
                 SettingsFragment settings = new SettingsFragment();
                 mTransaction.replace(R.id.container_layout, settings, ListContent.ID_SETTINGS).commit();
-                Log.i("OUT", "Gotten " + mCurrent.getTag());
 
                 break;
 
@@ -340,8 +336,6 @@ public class MainActivity extends ActionBarActivity {
                 argsp.putLong("id", id);
                 detailp.setArguments(argsp);
                 //Transition is made by replacing instead of hiding to allow backstack navigation
-
-                Log.i("Extra","PUT ID " + id);
 
                 //TODO: Use resource for id tag;
                 mTransaction.replace(R.id.maintab3, detailp, ListContent.ID_PRINTVIEW).commit();
@@ -393,11 +387,6 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         if (mCurrent != null) {
-
-            Log.i("FRAGMENT","Current not null");
-
-
-
             Fragment fragment = mManager.findFragmentByTag(ListContent.ID_SETTINGS);
             Cursor c = DatabaseController.retrieveDeviceList();
 
@@ -416,8 +405,6 @@ public class MainActivity extends ActionBarActivity {
 
 
         } else {
-
-            Log.i("FRAGMENT","Current is null");
             super.onBackPressed();
         }
     }

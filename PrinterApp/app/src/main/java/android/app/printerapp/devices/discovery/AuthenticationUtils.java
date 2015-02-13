@@ -3,7 +3,6 @@ package android.app.printerapp.devices.discovery;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import org.spongycastle.asn1.ASN1Integer;
 import org.spongycastle.asn1.ASN1Sequence;
@@ -96,8 +95,6 @@ public class AuthenticationUtils {
                 byte[] signature = instance.sign();
                 signed_key = Base64.encodeToString(signature,Base64.DEFAULT);
 
-                Log.i("Connection", "Input data: " + message_to_sign);
-                Log.i("Connection", "Digest: " + signed_key);
 
             } catch (IOException e2) {
                 throw new IllegalStateException();

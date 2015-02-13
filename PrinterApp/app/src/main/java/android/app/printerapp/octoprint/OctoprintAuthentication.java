@@ -5,7 +5,7 @@ import android.app.printerapp.devices.discovery.AuthenticationUtils;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 

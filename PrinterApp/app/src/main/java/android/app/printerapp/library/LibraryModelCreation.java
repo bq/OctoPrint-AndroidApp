@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -80,7 +80,6 @@ public class LibraryModelCreation {
 					secondaryFolder = new File(root.getAbsolutePath() + "/_gcode");
 					
 				} else {
-					Log.i("OUT","I DONT EVEN " + mFile.getName());
 					mainFolder = new File(root.getAbsolutePath() + "/_gcode");
 					secondaryFolder = new File(root.getAbsolutePath() + "/_stl");
 					

@@ -6,7 +6,7 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -473,11 +473,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
                             if ((mRenderer.getCameraPosY() < MIN_ZOOM) && (pinchScale < 1.0)) {
 
-                                Log.i("OUT","MIN ZOOM REACHED");
 
                             } else if ((mRenderer.getCameraPosY() > MAX_ZOOM) && (pinchScale > 1.0)){
 
-                                Log.i("OUT","MAX ZOOM REACHED");
 
                             } else{
                                 mRenderer.setCameraPosY(pinchStartY / pinchScale);

@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.content.Context;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -199,8 +199,6 @@ public class OctoprintControl {
                     public void onSuccess(int statusCode, Header[] headers,
                                           JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
-
-                        Log.i("TOOL", "Success tool: " + response.toString());
 
                     }
 

@@ -4,7 +4,7 @@ import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 /**
  * Addresses and static fields for the OctoPrint API connection

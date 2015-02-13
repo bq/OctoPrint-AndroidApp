@@ -9,7 +9,7 @@ import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -80,15 +80,13 @@ public class SlicingHandler {
 
             if (mExtras.has(tag))
             if (mExtras.get(tag).equals(value)){
-
-                Log.i("Slicer","No profile change");
                 return;
             }
             mExtras.put(tag,value);
 
 
 
-            Log.i("Slicer","Added extra " + tag + ":" + value + " [" + mExtras.toString()+"]");
+           // Log.i("Slicer","Added extra " + tag + ":" + value + " [" + mExtras.toString()+"]");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -151,16 +149,9 @@ public class SlicingHandler {
 
                 mLastReference = tempFile.getAbsolutePath();
 
-                Log.i("Slicer","Setting new PREFERENCE [Last]: " + tempFile.getName());
-
-                Log.i("Slicer","Setting new Restore [Last]: " + mLastReference);
-
                 DatabaseController.handlePreference(DatabaseController.TAG_RESTORE,"Last",mLastReference, true);
 
                 DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", tempFile.getName(), true);
-
-                Log.i("Slicer","New reference is " + mLastReference);
-
 
 
                 StlFile.saveModel(mDataList,null,SlicingHandler.this);
@@ -171,8 +162,6 @@ public class SlicingHandler {
                 fos.close();
 
             } else {
-
-                Log.i("Slicer","File was deleted when finished saving");
 
             }
 

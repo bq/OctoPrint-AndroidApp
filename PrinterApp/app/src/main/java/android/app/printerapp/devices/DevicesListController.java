@@ -11,7 +11,7 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -112,7 +112,6 @@ public class DevicesListController {
             if (Integer.parseInt(c.getString(5)) == StateUtils.TYPE_CUSTOM) {
 
                 m.setType(StateUtils.TYPE_CUSTOM, c.getString(6));
-                Log.i("OUT", m.getDisplayName() + " SOY " + m.getProfile());
             }
 
             m.setId(c.getInt(0));

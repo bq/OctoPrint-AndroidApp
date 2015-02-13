@@ -17,7 +17,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -163,8 +163,6 @@ public class OctoprintConnection {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.i("OUT","STATE WHEN FAILURE " + p.getStatus() + "REASON " + responseString);
                 OctoprintAuthentication.getAuth(context, p, false);
             }
         });
@@ -225,8 +223,6 @@ public class OctoprintConnection {
                 try {
                     current = response.getJSONObject("current");
 
-                    Log.i("CONNECTION","CURRENT CONNECTION " + response.toString());
-
                         //if closed or error
                         if ((current.getString("state").contains("Closed"))
                                 ||(current.getString("state").contains("Error"))
@@ -271,8 +267,6 @@ public class OctoprintConnection {
 					String responseString, Throwable throwable) {
 				Log.i("Connection","Failure while connecting " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.i("OUT","STATE WHEN FAILURE " + p.getStatus());
 
                 progressDialog.dismiss();
                 OctoprintAuthentication.getAuth(context, p, true);
@@ -353,8 +347,6 @@ public class OctoprintConnection {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.i("Connection","Can't retrieve settings for " + p.getAddress() + ": " + responseString);
             }
         });
 
@@ -570,7 +562,7 @@ public class OctoprintConnection {
                                 if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null)
                                     if ((DatabaseController.getPreference("Slicing","Last")).equals(response.getJSONObject("payload").getString("file"))){
 
-                                        Log.i("Slicer","LETS SLICE " + response.getJSONObject("payload").getString("file"));
+                                        //Log.i("Slicer","LETS SLICE " + response.getJSONObject("payload").getString("file"));
                                         }
 
 		            		}
@@ -624,7 +616,7 @@ public class OctoprintConnection {
                                   if(!DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(null))
                                   if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals( response.getString("source_path"))){
 
-                                      Log.i("Slicer","Progress received for " + response.getString("source_path"));
+                                      //Log.i("Slicer","Progress received for " + response.getString("source_path"));
 
                                       int progress = response.getInt("progress");
 
@@ -648,7 +640,7 @@ public class OctoprintConnection {
                               } catch (NullPointerException e){
 
                                   //e.printStackTrace();
-                                  Log.i("OUT","Null slicing");
+                                  //Log.i("OUT","Null slicing");
                               }
 
 
@@ -726,9 +718,7 @@ public class OctoprintConnection {
     }
 
     public static int createStatus(JSONObject flags){
-		
-		//Log.i("FLAGSSS",flags.toString());
-		
+
 				try {
 					if (flags.getBoolean("paused")) return StateUtils.STATE_PAUSED;
 					if (flags.getBoolean("printing")) return StateUtils.STATE_PRINTING;

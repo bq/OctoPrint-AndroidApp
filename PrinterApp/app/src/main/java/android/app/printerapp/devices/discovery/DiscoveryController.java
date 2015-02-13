@@ -11,7 +11,7 @@ import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;

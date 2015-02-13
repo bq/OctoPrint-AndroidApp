@@ -15,7 +15,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -367,8 +367,6 @@ public class EditPrinterDialog {
                         }
 
                         if (!DatabaseController.checkExisting(mPrinter)) {
-
-                            Log.i("OUT", "ADDING NEW PRINTER! " + mPrinter.getDisplayName());
 
                             mPrinter.setId(DatabaseController.writeDb(mPrinter.getName(), mPrinter.getAddress(), String.valueOf(mPrinter.getPosition()), String.valueOf(mPrinter.getType()),
                                     MainActivity.getCurrentNetwork(mContext)));

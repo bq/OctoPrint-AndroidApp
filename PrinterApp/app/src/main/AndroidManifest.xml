@@ -24,7 +24,7 @@
         android:largeHeap="true"
         android:vmSafeMode="true"
         android:allowClearUserData="true"
-        android:hardwareAccelerated="true" >
+        android:hardwareAccelerated="true">
 
         <activity
             android:name="android.app.printerapp.SplashScreenActivity"

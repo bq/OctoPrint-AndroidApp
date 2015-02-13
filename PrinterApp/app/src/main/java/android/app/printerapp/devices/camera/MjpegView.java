@@ -10,7 +10,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -114,8 +114,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             String fps;
             while (mRun) {
 
-                Log.i(TAG,"Derp");
-
                 if(surfaceDone) {
                     try {
                         c = mSurfaceHolder.lockCanvas();
@@ -147,7 +145,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                                 }
                             } catch (Exception e) {
                                 e.getStackTrace();
-                                Log.i(TAG, "catch IOException hit in run", e);
+                                Log.i(TAG, "catch IOException hit in run");
                                 return;
                                 //stopPlayback();
                             }
@@ -161,7 +159,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
                     try {
                         join();
-                        Log.i("OUT","JOINED ALREADY");
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -207,8 +205,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
         } catch (Exception e){
 
-            Log.i("OUT","CLOSEDITO");
-
         }
         while(retry) {
 
@@ -221,7 +217,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
             } catch (Exception e) {
                 e.getStackTrace();
-                Log.d(TAG, "catch IOException hit in stopPlayback", e);
+                Log.d(TAG, "catch IOException hit in stopPlayback");
             }
         }
     }
@@ -235,7 +231,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.i("OUT","BUM!");
         surfaceDone = false;
         //stopPlayback();
     }

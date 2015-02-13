@@ -28,7 +28,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -153,8 +153,6 @@ public class ViewerMainFragment extends Fragment {
 
         //If is not new
         if (savedInstanceState == null) {
-
-            Log.i("Restore", "Creating new Fragmento");
 
             //Show custom option menu
             setHasOptionsMenu(true);
@@ -668,8 +666,6 @@ public class ViewerMainFragment extends Fragment {
                     mFile.getParentFile().getParent() + "/_stl/";
             File f = new File(pathStl);
 
-            Log.i("OUT", "trying to open " + pathStl);
-
             //Only when it's a project
             if (f.isDirectory() && f.list().length > 0) {
                 openFile(pathStl + f.list()[0]);
@@ -815,7 +811,6 @@ public class ViewerMainFragment extends Fragment {
                                         openFile(fileTo.getAbsolutePath());
 
                                         if (fileFrom.delete()) {
-                                            Log.i("OUT", "File deletedillo");
                                         }
                                     }
 
@@ -1169,11 +1164,11 @@ public class ViewerMainFragment extends Fragment {
 
                     numPicker.invalidate();
                 } catch (NoSuchFieldException e) {
-                    Log.w("setNumberPickerTextColor", e);
+                    Log.w("setNumberPickerTextColor", e.toString());
                 } catch (IllegalAccessException e) {
-                    Log.w("setNumberPickerTextColor", e);
+                    Log.w("setNumberPickerTextColor", e.toString());
                 } catch (IllegalArgumentException e) {
-                    Log.w("setNumberPickerTextColor", e);
+                    Log.w("setNumberPickerTextColor", e.toString());
                 }
             }
         }
@@ -1207,8 +1202,6 @@ public class ViewerMainFragment extends Fragment {
             final DataStorage newData = new DataStorage();
             newData.copyData(mDataList.get(model));
             mDataList.add(newData);
-
-            Log.i("Multiply", "Adding piece nº " + num);
 
             /**
              * Check if the piece is out of the plate and stop multiplying
@@ -1381,14 +1374,12 @@ public class ViewerMainFragment extends Fragment {
             if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last") != null)
                 if ((DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")).equals("temp.gco")) {
 
-                    Log.i("Slicer", "Removing PREFERENCE [Last]");
                     DatabaseController.handlePreference(DatabaseController.TAG_SLICING, "Last", null, false);
 
 
                     showProgressBar(StateUtils.SLICER_HIDE, 0);
                 } else {
 
-                    Log.i("Slicer", "That ain't my file");
                 }
 
 
@@ -1400,13 +1391,9 @@ public class ViewerMainFragment extends Fragment {
      */
     public void notifyAdapter() {
 
-        Log.i("Profile", "I was notified senpai");
-
         try {
             if (mSidePanelHandler.profileAdapter != null)
                 mSidePanelHandler.profileAdapter.notifyDataSetChanged();
-
-            Log.i("Profile", "I also can do stuff");
 
             mSidePanelHandler.reloadProfileAdapter();
 
@@ -1445,8 +1432,6 @@ public class ViewerMainFragment extends Fragment {
             for (int i = 0; i < newList.size(); i++) {
 
                 if (newList.get(i).getVertexArray() == null) {
-
-                    Log.i("OUT", "HAHA!");
                     return null;
                 }
 
@@ -1526,8 +1511,6 @@ public class ViewerMainFragment extends Fragment {
      * check if there is a reference to restore the last panel and open it
      */
     private void restoreLastPanel() {
-
-        Log.i("Restore", "Restoirinan");
 
         if (mSlicingHandler.getLastReference() == null) //Only if there is no last reference
             if (DatabaseController.getPreference(DatabaseController.TAG_RESTORE, "Last") != null) {

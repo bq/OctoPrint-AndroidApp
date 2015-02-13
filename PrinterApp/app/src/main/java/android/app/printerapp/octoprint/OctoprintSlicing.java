@@ -7,7 +7,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -136,8 +136,6 @@ public class OctoprintSlicing {
 					public void onSuccess(int statusCode, Header[] headers,
 							JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-
-                Log.i("PROFILES", response.toString());
 
                 p.getProfiles().clear();
 

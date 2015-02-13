@@ -2,7 +2,7 @@ package android.app.printerapp.viewer;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.library.LibraryModelCreation;
@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.alertdialogpro.ProgressDialogPro;
@@ -256,8 +255,6 @@ public class GcodeFile  {
     			ViewerMainFragment.resetWhenCancel();
     			if(mMode!= ViewerMainFragment.DO_SNAPSHOT) mProgressDialog.dismiss();
 
-
-                Log.i("PrintView", "This BROKE for some rison");
     			return;
     		}
     		

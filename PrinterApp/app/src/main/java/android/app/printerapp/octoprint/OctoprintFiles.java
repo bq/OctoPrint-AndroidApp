@@ -8,7 +8,7 @@ import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -89,13 +89,7 @@ public class OctoprintFiles {
 
                                          if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals(object.getString("name"))){
 
-                                             Log.i("Slicer","Hey that's my file");
-
                                              if (object.has("links")){
-
-                                                 Log.i("Slicer","And it's done!!");
-
-                                                 Log.i("Slicer","Changed PREFERENCE [Last]: " + "temp.gco");
                                                  DatabaseController.handlePreference(DatabaseController.TAG_SLICING,"Last","temp.gco", true);
 
                                                  OctoprintFiles.downloadFile(context, p.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,
@@ -103,8 +97,6 @@ public class OctoprintFiles {
                                                  OctoprintFiles.deleteFile(context,p.getAddress(),object.getString("name"), "/local/");
 
                                              } else {
-
-                                                 Log.i("Slicer","Ah not yet");
 
                                              }
 
@@ -384,8 +376,6 @@ public class OctoprintFiles {
 					JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
 				
-				
-				Log.i("Slicer", "DELETED FROM THE SERVERCITO: " + response.toString());
 
 			}
 			
@@ -394,8 +384,6 @@ public class OctoprintFiles {
 					String responseString, Throwable throwable) {
 				// TODO Auto-generated method stub
 				super.onFailure(statusCode, headers, responseString, throwable);
-				
-				Log.i("RESPONSEFAIL", responseString);
 
 			}
 			

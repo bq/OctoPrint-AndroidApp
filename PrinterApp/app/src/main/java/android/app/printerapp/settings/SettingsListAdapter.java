@@ -10,7 +10,6 @@ import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,8 +100,6 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter> {
 
                 @Override
                 public void onClick(View v) {
-
-                    Log.i("OUT", "Trying to delete " + m.getName());
                     DatabaseController.deleteFromDb(m.getId());
 
                     //TODO change to remove method

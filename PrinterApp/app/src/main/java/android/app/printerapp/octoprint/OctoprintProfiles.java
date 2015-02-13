@@ -1,7 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.content.Context;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -69,9 +69,7 @@ public class OctoprintProfiles {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        Log.i("OUT", "Errorcico " + responseString);
-                    }
+                        super.onFailure(statusCode, headers, responseString, throwable);                    }
                 });
 
 
@@ -94,17 +92,11 @@ public class OctoprintProfiles {
                 super.onSuccess(statusCode, headers, response);
 
 
-
-                Log.i("OUT", "Profile DELETE  successful");
-
-
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.i("OUT", "Profile DELETE  FOESNT EXIST");
             }
         });
 

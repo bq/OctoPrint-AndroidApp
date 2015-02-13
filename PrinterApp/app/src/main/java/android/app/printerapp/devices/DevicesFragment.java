@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -201,8 +200,6 @@ import android.widget.Toast;
                 //search printer by position
                 for (ModelPrinter mp : DevicesListController.getList()) {
                     if (mp.getPosition() == arg2) {
-
-                        Log.i("OUT","Lets " + mp.getName());
                         m = mp;
                     }
                 }

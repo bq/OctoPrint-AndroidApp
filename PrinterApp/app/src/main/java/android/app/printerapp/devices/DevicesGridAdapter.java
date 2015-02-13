@@ -6,7 +6,6 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -318,7 +317,6 @@ public class DevicesGridAdapter extends ArrayAdapter<ModelPrinter> implements Fi
 
                 if (m.getNetwork() != null)
                     if (!m.getNetwork().equals(MainActivity.getCurrentNetwork(getContext()))) {
-                        Log.i("Network", "NOPE Network");
                         holder.imageIcon.clearColorFilter();
                         holder.imageIcon.setImageResource(R.drawable.printer_witbox_nowifi);
                     }

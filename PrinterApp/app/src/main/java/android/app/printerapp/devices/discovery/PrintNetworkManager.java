@@ -11,7 +11,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -388,7 +388,6 @@ public class PrintNetworkManager {
 
                 //TODO HARDCODED ACCESS POINT
                 String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
-                Log.i("OUT", "Numerito_ " + hostaddr);
 
                 if (mPrinter != null) {
                     OctoprintNetwork.getNetworkList(this, mPrinter);
@@ -430,9 +429,7 @@ public class PrintNetworkManager {
 
         List<WifiConfiguration> configs = mManager.getConfiguredNetworks();
         for (WifiConfiguration c : configs) {
-            Log.i("NETWORK", c.SSID + " is clearly not " + ssid);
             if (c.SSID.contains(ssid)) {
-                Log.i("out", "Removed");
                 mManager.removeNetwork(c.networkId);
             }
         }
@@ -516,8 +513,6 @@ public class PrintNetworkManager {
             if (DatabaseController.getPreference(DatabaseController.TAG_NETWORK, "Last").equals(getNetworkId(ssid))) {
 
                 exists = true;
-
-                Log.i("Discovery", "I do exist in the mortal realm");
 
                 DatabaseController.handlePreference(DatabaseController.TAG_NETWORK, "Last", null, false);
 

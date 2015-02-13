@@ -2,7 +2,7 @@ package android.app.printerapp.model;
 
 import android.app.printerapp.R;
 import android.content.Context;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -146,19 +146,16 @@ public class ModelProfile {
         mQualityList.clear();
         for (String s : PROFILE_OPTIONS) {
 
-            Log.i("Profile","Putin " + s);
             mQualityList.add(s);
         }
 
         //Add internal storage types
         for (File file : context.getApplicationContext().getFilesDir().listFiles()) {
 
-            Log.i("Profile","Putin " + file.getAbsolutePath());
 
             //Only files with the .profile extension
             if (file.getAbsolutePath().contains(TYPE_Q)) {
 
-                Log.i("Profile","Putin " + file.getAbsolutePath());
 
                 int pos = file.getName().lastIndexOf(".");
                 String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();
@@ -187,8 +184,6 @@ public class ModelProfile {
 
             //Only files with the .profile extension
             if (file.getAbsolutePath().contains(TYPE_P)) {
-
-                Log.i("Profile","Putin " + file.getAbsolutePath());
 
                 int pos = file.getName().lastIndexOf(".");
                 String name = pos > 0 ? file.getName().substring(0, pos) : file.getName();

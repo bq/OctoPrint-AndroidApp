@@ -8,7 +8,6 @@ import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,7 +223,6 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
 
                     if (!m.isDirectory()) {
                         if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                            Log.i("OUT", "Added a lel " + m.getName());
                             filt.add(m);
                         }
                     } else {
@@ -233,7 +231,6 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
                             filt.add(m);
                         } else {
                             if (m.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                                Log.i("OUT", "Added a lel " + m.getName());
                                 filt.add(m);
                             }
                         }

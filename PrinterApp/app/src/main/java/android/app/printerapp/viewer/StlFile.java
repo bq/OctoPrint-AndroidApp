@@ -1,12 +1,10 @@
 package android.app.printerapp.viewer;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryModelCreation;
-import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.viewer.Geometry.Point;
 import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
@@ -16,17 +14,11 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.alertdialogpro.ProgressDialogPro;
 import com.devsmart.android.IOUtils;
-import com.gc.materialdesign.views.ProgressBarDeterminate;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -435,7 +427,6 @@ public class StlFile {
             coordinateCount += dataList.get(i).getVertexArray().length;
 
         if (coordinateCount == 0) {
-            Log.i("Slicer", "NOPE COORDINATES");
             return false;
         }
 

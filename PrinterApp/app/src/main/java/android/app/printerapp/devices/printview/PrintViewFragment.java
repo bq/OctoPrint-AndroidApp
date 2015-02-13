@@ -31,7 +31,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -217,9 +217,6 @@ public class PrintViewFragment extends Fragment {
 
                         //TODO CAMERA DISABLED
                         mLayoutVideo.invalidate();
-
-
-                        Log.i(TAG,"Now showing: " + s);
                     }
                 });
 
@@ -839,8 +836,6 @@ public class PrintViewFragment extends Fragment {
                 }
             }
 
-            Log.i(TAG, "Received download completed for " + filename);
-
 
             //If we have a stored path
             if (DatabaseController.isPreference(DatabaseController.TAG_REFERENCES, mPrinter.getName())) {
@@ -852,16 +847,12 @@ public class PrintViewFragment extends Fragment {
 
                 if ((file.getName().equals(filename))){
 
-                    Log.i(TAG, "Hey we had a reference for " + path);
-
                     //In case there was a previous cached file with the same path
                     GcodeCache.removeGcodeFromCache(path);
 
 
 
                     if (file.exists()) {
-
-                        Log.i(TAG, "Cool, let's show it");
 
                         openGcodePrintView(mRootView.getContext(), path, mRootView, R.id.view_gcode);
                         mPrinter.setJobPath(path);
@@ -873,16 +864,12 @@ public class PrintViewFragment extends Fragment {
 
                     } else {
 
-                        Log.i(TAG, "But file didn't download ok");
-
                         Toast.makeText(getActivity(), R.string.printview_download_toast_error, Toast.LENGTH_LONG).show();
 
                         //Register receiver
                         mContext.unregisterReceiver(onComplete);
                     }
                 } else {
-
-                    Log.i(TAG, filename + " is NOT my file!");
 
                 }
 

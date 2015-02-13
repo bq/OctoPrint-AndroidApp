@@ -13,7 +13,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -93,7 +93,6 @@ public class LibraryFragment extends Fragment {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        Log.i("OUT", "JHSOTOAIA PUTAO");
                         return true;
                     }
                     return false;
@@ -160,7 +159,6 @@ public class LibraryFragment extends Fragment {
 //                        hideListHeader();
 //                    }
                     if (!LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
-                        Log.i("OUT", "This is " + LibraryController.getCurrentPath());
                         LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
                         sortAdapter();
 

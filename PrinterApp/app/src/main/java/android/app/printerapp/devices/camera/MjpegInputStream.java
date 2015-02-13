@@ -2,7 +2,7 @@ package android.app.printerapp.devices.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -71,7 +71,7 @@ public class MjpegInputStream extends DataInputStream {
             mContentLength = parseContentLength(header);
         } catch (NumberFormatException nfe) { 
             nfe.getStackTrace();
-            Log.d(TAG, "catch NumberFormatException hit", nfe);
+            Log.d(TAG, "catch NumberFormatException hit");
             mContentLength = getEndOfSeqeunce(this, EOF_MARKER); 
         }
         reset();

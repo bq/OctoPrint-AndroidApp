@@ -2,7 +2,6 @@ package android.app.printerapp;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +52,6 @@ public class DrawerListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Log.d(TAG, "getView");
-
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -89,7 +86,6 @@ public class DrawerListAdapter extends BaseAdapter {
     }
 
     public void setActivatedPosition(int activatedPosition) {
-        Log.d(TAG, "New activated position [" + activatedPosition + "]");
         this.mActivatedPosition = activatedPosition;
     }
 

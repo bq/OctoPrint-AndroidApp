@@ -14,7 +14,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -285,6 +285,8 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+        if (mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER)) return false;
+
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mListView.setSelector(mContext.getResources().getDrawable(R.drawable.list_selector));
 
@@ -299,7 +301,6 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         mActionMode = ((ActionBarActivity)mContext.getActivity()).startSupportActionMode(mActionModeCallback);
 //        view.setSelected(true);
 
-        Log.i("OUT","LongCLICK");
         return false;
     }
 

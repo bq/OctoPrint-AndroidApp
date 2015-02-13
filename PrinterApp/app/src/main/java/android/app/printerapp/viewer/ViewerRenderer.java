@@ -10,7 +10,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.View;
 
 import java.nio.ByteBuffer;
@@ -216,7 +216,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 	
 	public void setObjectPressed (int i) {
 		mObjectPressed = i;
-        Log.i("Multiply","Object pressed: " + i); //TODO PRESS
 	}
 
 	public void deleteObject (int i) {
@@ -226,7 +225,6 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
             mObjectPressed = -1;
             changeTouchedState();
 
-            Log.i("Multiply","Object deleted: " + i); //TODO DELETYE
 		}
 
 	}

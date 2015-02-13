@@ -7,7 +7,6 @@ import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -363,7 +362,6 @@ public class LibraryController {
                 sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
             }
 
-            Log.i("Slicer", "Digest(in hex format):: " + sb.toString());
 
             hash = sb.toString();
 

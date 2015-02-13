@@ -3,7 +3,7 @@ package android.app.printerapp.devices.camera;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -65,7 +65,7 @@ public class CameraHandler {
 					
 					
 					
-				} else Log.i("CAMERA","Is running already!");
+				}
 				
 				
 			}
@@ -88,7 +88,7 @@ public class CameraHandler {
                 isRunning = true;
             }
 
-        } else Log.i("CAMERA","Is running already!");
+        }
     }
 
 	/**

@@ -6,7 +6,7 @@ import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -91,7 +91,7 @@ public class OctoprintNetwork {
                                 try {
 
                                     DatabaseController.handlePreference(DatabaseController.TAG_KEYS, PrintNetworkManager.getNetworkId(p.getName()), response.getString("key"), true);
-                                    Log.i("Connection","Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
+                                    //Log.i("Connection","Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
 
                                     HttpClientHandler.get(p.getAddress() + HttpUtils.URL_NETWORK, null, new JsonHttpResponseHandler(){
 
@@ -107,8 +107,6 @@ public class OctoprintNetwork {
 
                                             //Send the network list to the Network manager
                                             controller.selectNetworkPrinter(response,p.getAddress());
-
-                                            Log.i("Connection","Success netwo " + response.toString());
 
                                         }
 

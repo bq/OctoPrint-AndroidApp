@@ -10,7 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -74,14 +74,12 @@ public class FinishDialog {
 
 
                         } else {
-                            Log.i("FinishDialog", "File: " + file.getAbsolutePath() + " needs to be saved. Hello: " + DatabaseController.getPreference(DatabaseController.TAG_REFERENCES, mPrinter.getName()));
                             createFinishDialogSave(mPrinter,file);
 
                         }
 
 
                     } else {
-                        Log.i("FinishDialog","File: " + file.getAbsolutePath() + " needs NO SAVING CUZ ITS MINE.");
                         OctoprintFiles.fileCommand(mContext, mPrinter.getAddress(), mPrinter.getJob().getFilename(), "/local/", true, false);
                     }
 
@@ -91,7 +89,6 @@ public class FinishDialog {
                 }
                 else {
 
-                    Log.i("FinishDialog","No jobpath");
                     OctoprintFiles.fileCommand(mContext, mPrinter.getAddress(), mPrinter.getJob().getFilename(), "/local/", true, false);
 
 

@@ -17,7 +17,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -253,7 +253,6 @@ public class SidePanelHandler {
 
                                     } catch (NullPointerException e) {
 
-                                        Log.i("Profile", "Profile dead!");
 
                                     }
 

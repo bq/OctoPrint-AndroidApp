@@ -6,7 +6,7 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.util.Log;
+import android.app.printerapp.Log;
 
 import java.io.IOException;
 import java.net.InetAddress;

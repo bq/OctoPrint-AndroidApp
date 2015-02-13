@@ -11,7 +11,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
-import android.util.Log;
+import android.app.printerapp.Log;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
@@ -170,7 +170,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 
         } catch (IllegalArgumentException e){
 
-            Log.i("NETWORK","Register not registered");
+
         }
 
 	}
