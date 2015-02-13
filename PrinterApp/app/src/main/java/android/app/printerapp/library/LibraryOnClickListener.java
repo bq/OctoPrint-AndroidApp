@@ -285,7 +285,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        if (mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER)) return false;
+        if ((mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER)) || (mContext.getCurrentTab().equals(LibraryController.TAB_FAVORITES))) return false;
 
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mListView.setSelector(mContext.getResources().getDrawable(R.drawable.list_selector));
