@@ -229,61 +229,85 @@ public class DevicesListController {
             i++;
         }
 
-        //Get the dialog view
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View selectPrinterView = inflater.inflate(R.layout.dialog_select_printer, null);
-        final Spinner selectPrinterSpinner = (Spinner) selectPrinterView.findViewById(R.id.select_printer_spinner);
+        if (printersList.length > 1){
+            //Get the dialog view
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View selectPrinterView = inflater.inflate(R.layout.dialog_select_printer, null);
+            final Spinner selectPrinterSpinner = (Spinner) selectPrinterView.findViewById(R.id.select_printer_spinner);
 
-        //Set the list of printers into the spinner
-        ArrayAdapter<String> printerAdapter = new ArrayAdapter<String>(context,
-                R.layout.print_panel_spinner_item, printersList);
-        printerAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
-        selectPrinterSpinner.setAdapter(printerAdapter);
+            //Set the list of printers into the spinner
+            ArrayAdapter<String> printerAdapter = new ArrayAdapter<String>(context,
+                    R.layout.print_panel_spinner_item, printersList);
+            printerAdapter.setDropDownViewResource(R.layout.print_panel_spinner_dropdown_item);
+            selectPrinterSpinner.setAdapter(printerAdapter);
 
-        //Show the dialog
-        final MaterialDialog.Builder selectPrinterDialog = new MaterialDialog.Builder(context);
-        selectPrinterDialog.title(dialogTitle)
-                .customView(selectPrinterView, true)
-                .positiveColorRes(R.color.theme_accent_1)
-                .positiveText(R.string.library_print_model)
-                .negativeColorRes(R.color.body_text_2)
-                .negativeText(R.string.cancel)
-                .autoDismiss(false)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
+            //Show the dialog
+            final MaterialDialog.Builder selectPrinterDialog = new MaterialDialog.Builder(context);
+            selectPrinterDialog.title(dialogTitle)
+                    .customView(selectPrinterView, true)
+                    .positiveColorRes(R.color.theme_accent_1)
+                    .positiveText(R.string.library_print_model)
+                    .negativeColorRes(R.color.body_text_2)
+                    .negativeText(R.string.cancel)
+                    .autoDismiss(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
 
-                        ModelPrinter m = tempList.get(selectPrinterSpinner.getSelectedItemPosition());
+                            ModelPrinter m = tempList.get(selectPrinterSpinner.getSelectedItemPosition());
 
-                        if (slicer != null) {
+                            if (slicer != null) {
 
-                            slicer.setPrinter(m);
-                            slicer.setExtras("print", true);
+                                slicer.setPrinter(m);
+                                slicer.setExtras("print", true);
 
-                            m.setLoaded(false);
+                                m.setLoaded(false);
 
-                        } else {
-                            OctoprintFiles.getFiles(context, m, file);
-                            //OctoprintFiles.uploadFile(context, file, m);
+                            } else {
+                                OctoprintFiles.getFiles(context, m, file);
+                                //OctoprintFiles.uploadFile(context, file, m);
+                            }
+                            MainActivity.performClick(2);
+                            MainActivity.showExtraFragment(1, m.getId());
+
+                            dialog.dismiss();
+
+                            ViewerMainFragment.optionClean();
+
+
+
                         }
-                        MainActivity.performClick(2);
-                        MainActivity.showExtraFragment(1, m.getId());
 
-                        dialog.dismiss();
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            dialog.dismiss();
+                        }
 
-                        ViewerMainFragment.optionClean();
+                    })
+                    .show();
+        } else {
+
+            ModelPrinter m = tempList.get(0);
+
+            if (slicer != null) {
+
+                slicer.setPrinter(m);
+                slicer.setExtras("print", true);
+
+                m.setLoaded(false);
+
+            } else {
+                OctoprintFiles.getFiles(context, m, file);
+                //OctoprintFiles.uploadFile(context, file, m);
+            }
+            MainActivity.performClick(2);
+            MainActivity.showExtraFragment(1, m.getId());
+
+            ViewerMainFragment.optionClean();
+
+        }
 
 
-
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-
-                })
-                .show();
 
     }
 
