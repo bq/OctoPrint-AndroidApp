@@ -8,7 +8,6 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
-import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.viewer.SlicingHandler;
@@ -404,7 +403,10 @@ public class SidePanelHandler {
                     deleteButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            deleteProfile();
+                            if (s_profile.getSelectedItemPosition() > 2) deleteProfile(s_profile.getSelectedItem().toString());
+                            else {
+                                Toast.makeText(mActivity,"You can't delete this profile",Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -603,7 +605,7 @@ public class SidePanelHandler {
      *
      * @i printer index in the list
      */
-    public void parseJson/*(int i)*/(JSONObject profile) {
+    public void parseJson(JSONObject profile) {
 
         //Parse the JSON element
         try {
@@ -627,7 +629,7 @@ public class SidePanelHandler {
             minimalLayerTime.setText(data.getString("cool_min_layer_time"));
 
             if (data.has("retraction_enable"))
-                if (data.getString("retraction_enable").equals("true")) {
+                if (data.getString("retraction_enabled").equals("true")) {
                     enableRetraction.setChecked(true);
                     Log.i("OUT", "Checked true");
                 } else {
@@ -860,44 +862,17 @@ public class SidePanelHandler {
 
     }
 
-    //Delete a profile that it's not restricted by a constant
-    public void deleteProfile() {
+    public void deleteProfile(String name) {
 
-        try {
-            final String profile = mPrinter.getProfiles().get(s_profile.getSelectedItemPosition()).getString("key");
+        //Delete profile first
+        if (ModelProfile.deleteProfile(mActivity, name, ModelProfile.TYPE_Q)) {
 
+           reloadQualityAdapter();
 
-            AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
-            adb.setTitle(R.string.viewer_profile_delete);
-            adb.setMessage(mPrinter.getProfiles().get(s_profile.getSelectedItemPosition()).getString("displayName"));
-            adb.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                    //Check if the profile is part of the predefined constants
-                    for (String s : PREDEFINED_PROFILES) {
-
-                        if (profile.contains(s)) {
-
-                            Toast.makeText(mActivity, R.string.viewer_profile_delete_error, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    OctoprintSlicing.deleteProfile(mActivity, mPrinter, profile);
-
-                }
-            });
-
-            adb.setNegativeButton(R.string.cancel, null);
-            adb.show();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-
     }
+
+
 
 
     /*******************************************
@@ -1016,7 +991,14 @@ public class SidePanelHandler {
         @Override
         public void afterTextChanged(Editable editable) {
 
-            mSlicingHandler.setExtras(mValue, getFloatValue(editable.toString()));
+            try{
+                mSlicingHandler.setExtras(mValue, getFloatValue(editable.toString()));
+            } catch (NumberFormatException e){
+
+                Log.i("Slicer","Invalid value " + editable.toString());
+
+            }
+
         }
 
 

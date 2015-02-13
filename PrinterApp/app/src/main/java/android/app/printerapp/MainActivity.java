@@ -120,8 +120,15 @@ public class MainActivity extends ActionBarActivity {
         spec.setContent(R.id.maintab3);
         mTabHost.addTab(spec);
 
-        mTabHost.setCurrentTab(0);
-        onItemSelected(0);
+        if (DatabaseController.count() > 0){
+            mTabHost.setCurrentTab(0);
+            onItemSelected(0);
+        } else {
+            mTabHost.setCurrentTab(2);
+            onItemSelected(2);
+
+        }
+
 
         mTabHost.getTabWidget().setDividerDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
 
