@@ -183,7 +183,7 @@ public class SidePanelHandler {
 
         layerHeight.addTextChangedListener(new GenericTextWatcher("profile.layer_height"));
         shellThickness.addTextChangedListener(new GenericTextWatcher("profile.wall_thickness"));
-        enableRetraction.setOnCheckedChangeListener(new GenericTextWatcher("profile.retraction_enabled"));
+        enableRetraction.setOnCheckedChangeListener(new GenericTextWatcher("profile.retraction_enable"));
         bottomTopThickness.addTextChangedListener(new GenericTextWatcher("profile.solid_layer_thickness"));
         printSpeed.addTextChangedListener(new GenericTextWatcher("profile.print_speed"));
         printTemperature.addTextChangedListener(new GenericTextWatcher("profile.print_temperature"));
@@ -629,7 +629,7 @@ public class SidePanelHandler {
             minimalLayerTime.setText(data.getString("cool_min_layer_time"));
 
             if (data.has("retraction_enable"))
-                if (data.getString("retraction_enabled").equals("true")) {
+                if (data.getString("retraction_enable").equals("true")) {
                     enableRetraction.setChecked(true);
                     Log.i("OUT", "Checked true");
                 } else {
@@ -791,7 +791,7 @@ public class SidePanelHandler {
                     data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
                     data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
                     data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
-                    data.put("retraction_enabled", enableRetraction.isChecked());
+                    data.put("retraction_enable", enableRetraction.isChecked());
 
                     data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
                     data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
@@ -934,7 +934,7 @@ public class SidePanelHandler {
             mSlicingHandler.setExtras("profile.print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
             mSlicingHandler.setExtras("profile.filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
             mSlicingHandler.setExtras("profile.filament_flow", getFloatValue(filamentFlow.getText().toString()));
-            mSlicingHandler.setExtras("profile.retraction_enabled", enableRetraction.isChecked());
+            mSlicingHandler.setExtras("profile.retraction_enable", enableRetraction.isChecked());
 
             mSlicingHandler.setExtras("profile.travel_speed", getFloatValue(travelSpeed.getText().toString()));
             mSlicingHandler.setExtras("profile.bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));

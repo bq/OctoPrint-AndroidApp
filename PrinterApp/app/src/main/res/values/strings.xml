@@ -172,6 +172,7 @@
 
     <string name="library_menu_refresh">Refresh models</string>
     <string name="library_menu_search">Search model</string>
+    <string name="library_menu_scan">Escanear dispositivo</string>
     <string name="library_menu_sort">Sort models</string>
     <string name="library_menu_filter">Filter models</string>
     <string name="library_menu_list">View as list</string>
@@ -368,6 +369,7 @@
     <string name="share_subject_text">Shared model</string>
     <string name="share_content_text">I want to share this model with you!</string>
     <string name="share_via_text">Share via</string>
+    <string name="library_empty_text">You still don\'t have any 3D models added, use the buttons to download new models or to perform a search within your device.</string>
 
 
 </resources>
