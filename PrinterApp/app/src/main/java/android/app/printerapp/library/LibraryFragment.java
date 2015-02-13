@@ -531,4 +531,8 @@ public class LibraryFragment extends Fragment {
         getActivity().invalidateOptionsMenu();
     }
 
+    public String getCurrentTab(){
+        return mCurrentTab;
+    }
+
 }

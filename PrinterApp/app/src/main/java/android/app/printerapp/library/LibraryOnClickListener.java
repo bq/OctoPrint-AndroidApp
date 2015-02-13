@@ -200,9 +200,21 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                 if (!LibraryController.isProject(f)){
                     popup.getMenu().findItem(R.id.library_model_print).setVisible(false);
                     popup.getMenu().findItem(R.id.library_model_edit).setVisible(false);
+
+                } else {
+
+                    if (mContext.getCurrentTab().equals(LibraryController.TAB_FAVORITES)){
+
+                        popup.getMenu().findItem(R.id.library_model_delete).setVisible(false);
+                        popup.getMenu().findItem(R.id.library_model_move).setVisible(false);
+
+                    }
+
                 }
 
             }else {
+
+
 
             }
 

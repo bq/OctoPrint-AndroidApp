@@ -749,7 +749,7 @@ public class SidePanelHandler {
 
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View getModelsDialogView = inflater.inflate(R.layout.dialog_create_profile, null);
-        final MaterialEditText nameEditText = (MaterialEditText) getModelsDialogView.findViewById(R.id.new_folder_name_edittext);
+        final MaterialEditText nameEditText = (MaterialEditText) getModelsDialogView.findViewById(R.id.new_profile_name_edittext);
 
         final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(mActivity);
         createFolderDialog.title(R.string.dialog_create_profile_title)
@@ -854,6 +854,8 @@ public class SidePanelHandler {
 
                             }
                         }
+
+                        dialog.dismiss();
                     }
                     @Override
                     public void onNegative(MaterialDialog dialog) {

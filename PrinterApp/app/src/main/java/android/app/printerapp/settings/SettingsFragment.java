@@ -61,7 +61,7 @@ public class SettingsFragment extends Fragment {
         if (savedInstanceState == null) {
 
             //Show custom option menu
-            setHasOptionsMenu(false);
+            setHasOptionsMenu(true);
 
             //Update the actionbar to show the up carat/affordance
             ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
