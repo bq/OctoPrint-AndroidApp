@@ -18,6 +18,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -171,6 +174,31 @@ public class SidePanelHandler {
                 return false;
             }
         });
+
+
+        initTextWatchers();
+
+    }
+
+    public void initTextWatchers(){
+
+        layerHeight.addTextChangedListener(new GenericTextWatcher("profile.layer_height"));
+        shellThickness.addTextChangedListener(new GenericTextWatcher("profile.wall_thickness"));
+        enableRetraction.setOnCheckedChangeListener(new GenericTextWatcher("profile.retraction_enabled"));
+        bottomTopThickness.addTextChangedListener(new GenericTextWatcher("profile.solid_layer_thickness"));
+        printSpeed.addTextChangedListener(new GenericTextWatcher("profile.print_speed"));
+        printTemperature.addTextChangedListener(new GenericTextWatcher("profile.print_temperature"));
+        filamentDiamenter.addTextChangedListener(new GenericTextWatcher("profile.filament_diameter"));
+        filamentFlow.addTextChangedListener(new GenericTextWatcher("profile.filament_flow"));
+        travelSpeed.addTextChangedListener(new GenericTextWatcher("profile.travel_speed"));
+        bottomLayerSpeed.addTextChangedListener(new GenericTextWatcher("profile.bottom_layer_speed"));
+        infillSpeed.addTextChangedListener(new GenericTextWatcher("profile.infill_speed"));
+        outerShellSpeed.addTextChangedListener(new GenericTextWatcher("profile.outer_shell_speed"));
+        innerShellSpeed.addTextChangedListener(new GenericTextWatcher("profile.inner_shell_speed"));
+        minimalLayerTime.addTextChangedListener(new GenericTextWatcher("profile.cool_min_layer_time"));
+        enableCoolingFan.setOnCheckedChangeListener(new GenericTextWatcher("profile.fan_enabled"));
+
+
 
     }
 
@@ -369,6 +397,7 @@ public class SidePanelHandler {
                         public void onClick(View view) {
                             //parseJson(s_profile.getSelectedItemPosition());
                             parseJson(ModelProfile.retrieveProfile(mActivity, s_profile.getSelectedItem().toString(), ModelProfile.TYPE_Q));
+                            if (s_profile.getSelectedItemPosition() <= 2) reloadBasicExtras();
                         }
                     });
 
@@ -870,6 +899,11 @@ public class SidePanelHandler {
 
     }
 
+
+    /*******************************************
+     * ADAPTERS
+     ******************************************/
+
     public void reloadProfileAdapter(){
 
         ModelProfile.reloadList(mActivity);
@@ -908,6 +942,9 @@ public class SidePanelHandler {
     /**********************************************************************************************/
 
 
+    /**
+     * Only works for "extra" profiles, add a new value per field since we can't upload them yet
+     */
     //TODO Temporary
     public void refreshProfileExtras(){
 
@@ -942,6 +979,9 @@ public class SidePanelHandler {
 
     }
 
+    /**
+     * Clear the extra parameter list and reload basic parameters
+     */
     public void reloadBasicExtras(){
 
         mSlicingHandler.clearExtras();
@@ -949,6 +989,43 @@ public class SidePanelHandler {
         mSlicingHandler.setExtras("profile.support", s_support.getSelectedItem());
         mSlicingHandler.setExtras("profile", s_profile.getSelectedItem().toString());
 
+    }
+
+    /**
+     * Generic text watcher to add new printing parameters
+     */
+    private class GenericTextWatcher implements TextWatcher, CompoundButton.OnCheckedChangeListener {
+
+        private String mValue;
+
+        private GenericTextWatcher(String v) {
+
+            mValue = v;
+
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+            mSlicingHandler.setExtras(mValue, getFloatValue(editable.toString()));
+        }
+
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+            mSlicingHandler.setExtras(mValue, b);
+
+        }
     }
 
 
