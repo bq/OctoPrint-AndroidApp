@@ -370,6 +370,7 @@
     <string name="share_content_text">I want to share this model with you!</string>
     <string name="share_via_text">Share via</string>
     <string name="library_empty_text">You still don\'t have any 3D models added, use the buttons to download new models or to perform a search within your device.</string>
+    <string name="viewer_printer_type_text">Select printer type</string>
 
 
 </resources>

@@ -114,6 +114,8 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             String fps;
             while (mRun) {
 
+                Log.i(TAG,"Derp");
+
                 if(surfaceDone) {
                     try {
                         c = mSurfaceHolder.lockCanvas();
