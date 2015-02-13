@@ -61,7 +61,7 @@ public class SettingsFragment extends Fragment {
         if (savedInstanceState == null) {
 
             //Show custom option menu
-            setHasOptionsMenu(true);
+            setHasOptionsMenu(false);
 
             //Update the actionbar to show the up carat/affordance
             ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -179,7 +179,8 @@ public class SettingsFragment extends Fragment {
                 return true;
 
             case R.id.settings_menu_add: //Add a new printer
-                optionAddPrinter();
+                //optionAddPrinter();
+                //new DiscoveryController(getActivity());
                 return true;
 
             default:

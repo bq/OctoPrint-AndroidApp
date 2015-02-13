@@ -17,6 +17,7 @@
         android:id="@+id/library_filter_list"
         android:icon="@drawable/ic_filter_list"
         android:title="@string/library_menu_filter"
+        android:visible="false"
         app:showAsAction="ifRoom" />
 
     <item

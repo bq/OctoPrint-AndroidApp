@@ -270,7 +270,7 @@ import android.widget.Toast;
 
                 ModelPrinter m = null;
 
-                createFloatingIcon();
+                //createFloatingIcon();
 
                 for (ModelPrinter mp : DevicesListController.getList()) {
                     if (mp.getPosition() == arg2) m = mp;

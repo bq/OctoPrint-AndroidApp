@@ -12,16 +12,19 @@
         android:id="@+id/printview_refresh"
         android:icon="@drawable/ic_refresh"
         app:showAsAction="ifRoom"
+        android:visible="false"
         android:title="@string/printview_menu_refresh"/>
 
     <item
         android:id="@+id/printview_auto_adjust"
         app:showAsAction="never"
+        android:visible="false"
         android:title="@string/printview_menu_auto_adjust"/>
 
     <item
         android:id="@+id/printview_clean_panel"
         app:showAsAction="never"
+        android:visible="false"
         android:title="@string/printview_menu_clean"/>
 
     <item

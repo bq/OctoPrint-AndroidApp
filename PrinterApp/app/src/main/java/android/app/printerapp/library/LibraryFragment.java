@@ -323,12 +323,6 @@ public class LibraryFragment extends Fragment {
         sortAdapter();
     }
 
-
-   public void addEmptyView(boolean b){
-
-
-   }
-
     //Search an item within the library applying a filter to the adapter
     public void optionSearchLibrary() {
 
@@ -343,6 +337,7 @@ public class LibraryFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mCurrentFilter = et.getText().toString();
+                refreshFiles();
             }
         });
 
