@@ -1,7 +1,6 @@
 package android.app.printerapp.viewer.sidepanel;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -13,7 +12,6 @@ import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -40,7 +38,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.material.widget.PaperButton;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -747,118 +747,124 @@ public class SidePanelHandler {
      */
     public void saveProfile() {
 
-
-        AlertDialog.Builder adb = new AlertDialog.Builder(mActivity);
-        adb.setTitle(R.string.devices_setup_title);
-
-        //Inflate the view
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View v = inflater.inflate(R.layout.setup_dialog, null, false);
+        View getModelsDialogView = inflater.inflate(R.layout.dialog_create_profile, null);
+        final MaterialEditText nameEditText = (MaterialEditText) getModelsDialogView.findViewById(R.id.new_folder_name_edittext);
 
-        final EditText et = (EditText) v.findViewById(R.id.et_setup);
-        et.setText("Custom");
+        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(mActivity);
+        createFolderDialog.title(R.string.dialog_create_profile_title)
+                .customView(getModelsDialogView, true)
+                .positiveColorRes(R.color.theme_accent_1)
+                .positiveText(R.string.create)
+                .negativeColorRes(R.color.body_text_2)
+                .negativeText(R.string.cancel)
+                .autoDismiss(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        String name = nameEditText.getText().toString().trim();
+                        if (name == null || name.equals("")) {
+                            nameEditText.setError(mActivity.getString(R.string.library_create_folder_name_error));
+                        }
+                        else {
+                            //Init UI elements
 
-
-        //On insertion write the printer onto the database and start updating the socket
-        adb.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //Init UI elements
-
-                JSONObject profile = null;
-
-
-                //Parse the JSON element
-                try {
-
-                    //Profile info
-                    profile = new JSONObject();
-
-                    profile.put("displayName", et.getText().toString());
-                    profile.put("description", "Test profile created from App"); //TODO
-                    profile.put("key", et.getText().toString().replace(" ", "_").toLowerCase());
-
-                    //Data info
-                    JSONObject data = new JSONObject();
-
-                    data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
-                    data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
-                    data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
-
-                    data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
-                    data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
-                    data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
-                    data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
-                    data.put("retraction_enable", enableRetraction.isChecked());
-
-                    data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
-                    data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
-                    data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
-                    data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
-                    data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
-
-                    data.put("cool_min_layer_time", getFloatValue(minimalLayerTime.getText().toString()));
-                    data.put("fan_enabled", enableCoolingFan.isChecked());
-
-                    profile.put("data", data);
+                            JSONObject profile = null;
 
 
-                    Log.i("OUT", profile.toString());
+                            //Parse the JSON element
+                            try {
+
+                                //Profile info
+                                profile = new JSONObject();
+
+                                profile.put("displayName", nameEditText.getText().toString());
+                                profile.put("description", "Test profile created from App"); //TODO
+                                profile.put("key", nameEditText.getText().toString().replace(" ", "_").toLowerCase());
+
+                                //Data info
+                                JSONObject data = new JSONObject();
+
+                                data.put("layer_height", getFloatValue(layerHeight.getText().toString()));
+                                data.put("wall_thickness", getFloatValue(shellThickness.getText().toString()));
+                                data.put("solid_layer_thickness", getFloatValue(bottomTopThickness.getText().toString()));
+
+                                data.put("print_speed", getFloatValue(printSpeed.getText().toString()));
+                                data.put("print_temperature", new JSONArray().put(getFloatValue(printTemperature.getText().toString())));
+                                data.put("filament_diameter", new JSONArray().put(getFloatValue(filamentDiamenter.getText().toString())));
+                                data.put("filament_flow", getFloatValue(filamentFlow.getText().toString()));
+                                data.put("retraction_enable", enableRetraction.isChecked());
+
+                                data.put("travel_speed", getFloatValue(travelSpeed.getText().toString()));
+                                data.put("bottom_layer_speed", getFloatValue(bottomLayerSpeed.getText().toString()));
+                                data.put("infill_speed", getFloatValue(infillSpeed.getText().toString()));
+                                data.put("outer_shell_speed", getFloatValue(outerShellSpeed.getText().toString()));
+                                data.put("inner_shell_speed", getFloatValue(innerShellSpeed.getText().toString()));
+
+                                data.put("cool_min_layer_time", getFloatValue(minimalLayerTime.getText().toString()));
+                                data.put("fan_enabled", enableCoolingFan.isChecked());
+
+                                profile.put("data", data);
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-
-                } catch (NumberFormatException e) {
-
-                    //Check if there was an invalid numner
-                    e.printStackTrace();
-                    Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_LONG).show();
-                    profile = null;
-
-                }
-
-                if (profile != null) {
+                                Log.i("OUT", profile.toString());
 
 
-                    //check if name already exists to avoid overwriting
-                    for (String s : ModelProfile.getQualityList()) {
+                            } catch (JSONException e) {
+                                e.printStackTrace();
 
-                        try {
-                            if (profile.get("displayName").equals(s)) {
+                            } catch (NumberFormatException e) {
 
-                                //TODO hardcoded
-                                Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
-
-                                return;
+                                //Check if there was an invalid numner
+                                e.printStackTrace();
+                                Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_LONG).show();
+                                profile = null;
 
                             }
 
+                            if (profile != null) {
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+
+                                //check if name already exists to avoid overwriting
+                                for (String s : ModelProfile.getQualityList()) {
+
+                                    try {
+                                        if (profile.get("displayName").equals(s)) {
+
+                                            //TODO hardcoded
+                                            Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
+
+                                            return;
+
+                                        }
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+
+                            }
+
+                            if(ModelProfile.saveProfile(mActivity, nameEditText.getText().toString(), profile, ModelProfile.TYPE_Q)) {
+
+                                reloadQualityAdapter();
+
+                            }
                         }
-
+                    }
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
                     }
 
+                })
+                .show();
 
-                }
 
-                if(ModelProfile.saveProfile(mActivity, et.getText().toString(), profile, ModelProfile.TYPE_Q)) {
 
-                   reloadQualityAdapter();
-
-                }
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.setView(v);
-
-        adb.show();
 
     }
 
