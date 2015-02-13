@@ -117,21 +117,28 @@ public class LibraryFragment extends Fragment {
 
             mListView = (ListView) mRootView.findViewById(R.id.list_storage);
 
-            LinearLayout emptyView = (LinearLayout) mRootView.findViewById(R.id.library_empty_view);
-            mListView.setEmptyView(emptyView);
-            emptyView.findViewById(R.id.obtain_models_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    optionGetModelsDialog();
-                }
-            });
+            if (LibraryController.getFileList().size() == 0){
 
-            emptyView.findViewById(R.id.scan_device_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    optionSearchSystem();
-                }
-            });
+                LinearLayout emptyView = (LinearLayout) mRootView.findViewById(R.id.library_empty_view);
+
+                mListView.setEmptyView(emptyView);
+                emptyView.findViewById(R.id.obtain_models_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        optionGetModelsDialog();
+                    }
+                });
+
+                emptyView.findViewById(R.id.scan_device_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        optionSearchSystem();
+                    }
+                });
+            }
+
+
+
 
             LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
             mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
@@ -183,10 +190,16 @@ public class LibraryFragment extends Fragment {
 
         inflater.inflate(R.menu.library_menu, menu);
 
-        if (mMoveFile != null) {
+        if ((mMoveFile != null) && ((mCurrentTab.equals(LibraryController.TAB_ALL))
+            || (mCurrentTab.equals(LibraryController.TAB_CURRENT)))){
 
             menu.findItem(R.id.library_paste).setVisible(true);
+
         } else menu.findItem(R.id.library_paste).setVisible(false);
+
+        if ((mCurrentTab.equals(LibraryController.TAB_FAVORITES)) || mCurrentTab.equals(LibraryController.TAB_PRINTER)){
+            menu.findItem(R.id.library_create).setVisible(false);
+        } else menu.findItem(R.id.library_create).setVisible(true);
     }
 
     //Option menu
@@ -267,11 +280,13 @@ public class LibraryFragment extends Fragment {
                 }
                 refreshFiles();
                 hideListHeader();
+                getActivity().invalidateOptionsMenu();
             }
         };
 
         return mOnNavTextViewClick;
     }
+
 
     /**
      * Set the state of the selected nav item
@@ -309,56 +324,10 @@ public class LibraryFragment extends Fragment {
     }
 
 
-    //Filter elements in the current tab from the menu option
-    /*public void optionFilterLibrary() {
+   public void addEmptyView(boolean b){
 
-        //Dialog to filter
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle(R.string.filter);
 
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.menu_filter_library_dialog, null, false);
-
-        final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup_library);
-
-        adb.setView(v);
-
-        adb.setPositiveButton(R.string.filter, new OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                switch (rg.getCheckedRadioButtonId()) {
-
-                    case R.id.lb_radio3: //remove All filters and reload the whole list
-                        mCurrentFilter = null;
-                        refreshFiles();
-                        break;
-                    case R.id.lb_radio1: //Show gcodes only
-                        mCurrentFilter = "gcode";
-                        break;
-                    case R.id.lb_radio2: //Show stl only
-                        mCurrentFilter = "stl";
-                        break;
-                }
-
-                //Apply current filter
-                if (mCurrentFilter != null) {
-                    mGridAdapter.getFilter().filter(mCurrentFilter);
-                    mListAdapter.getFilter().filter(mCurrentFilter);
-                } else {
-                    mGridAdapter.removeFilter();
-                    mListAdapter.removeFilter();
-                }
-
-                sortAdapter();
-
-            }
-        });
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.show();
-    }*/
+   }
 
     //Search an item within the library applying a filter to the adapter
     public void optionSearchLibrary() {

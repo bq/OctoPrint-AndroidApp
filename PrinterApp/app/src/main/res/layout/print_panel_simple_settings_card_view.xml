@@ -42,7 +42,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="Selecciona tipo de impresora" />
+                        android:text="@string/viewer_printer_type_text" />
 
                     <Spinner
                         android:id="@+id/type_spinner"

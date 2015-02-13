@@ -334,7 +334,7 @@ public class PrintViewFragment extends Fragment {
 
 
         final SeekBar seekBarHead = (SeekBar) mRootView.findViewById(R.id.seekbar_head_movement_amount);
-        seekBarHead.setProgress(1);
+        seekBarHead.setProgress(2);
 
 
         mRootView.findViewById(R.id.button_xy_down).setOnClickListener(new View.OnClickListener() {

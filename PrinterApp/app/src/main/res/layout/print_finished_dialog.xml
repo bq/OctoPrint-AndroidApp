@@ -8,7 +8,7 @@
         android:layout_width="80dp"
         android:layout_height="60dp"
         android:layout_margin="10dp"
-        android:src="@drawable/random"
+        android:src="@drawable/icon_empty_models"
         android:id="@+id/iv_save_model"/>
 
 

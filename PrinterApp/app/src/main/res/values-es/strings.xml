@@ -354,5 +354,6 @@
     <string name="share_content_text">¡Quiero compartir este modelo contigo!</string>
     <string name="share_via_text">Compartir por</string>
     <string name="library_empty_text">Todavía no tienes modelos 3D añadidos, utiliza los botones para descargar nuevos modelos o realizar un búsqueda en tu dispositivo.</string>
+    <string name="viewer_printer_type_text">Seleccionar tipo de impresora</string>
 
 </resources>

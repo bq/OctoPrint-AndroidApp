@@ -192,7 +192,20 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         if (f.getParent().equals("sd") || f.getParent().equals("local")) {
             popup.getMenuInflater().inflate(R.menu.library_model_menu_local, popup.getMenu());
         } else {
+
             popup.getMenuInflater().inflate(R.menu.library_model_menu, popup.getMenu());
+
+            if (f.isDirectory()){
+
+                if (!LibraryController.isProject(f)){
+                    popup.getMenu().findItem(R.id.library_model_print).setVisible(false);
+                    popup.getMenu().findItem(R.id.library_model_edit).setVisible(false);
+                }
+
+            }else {
+
+            }
+
         }
 
 
