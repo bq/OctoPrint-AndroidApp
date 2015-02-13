@@ -308,8 +308,8 @@ public class PrintViewFragment extends Fragment {
 
                 if (!isPrinting) {
 
-                    if (!mPrinter.getJob().getProgress().equals("null"))
-                        if (mPrinter.getJob().getFinished()){
+                    if ((!mPrinter.getJob().getProgress().equals("null")) && (mPrinter.getJob().getFinished()))
+                    {
 
                             new FinishDialog(mContext,mPrinter);
 
@@ -334,6 +334,7 @@ public class PrintViewFragment extends Fragment {
 
 
         final SeekBar seekBarHead = (SeekBar) mRootView.findViewById(R.id.seekbar_head_movement_amount);
+        seekBarHead.setProgress(1);
 
 
         mRootView.findViewById(R.id.button_xy_down).setOnClickListener(new View.OnClickListener() {
@@ -576,8 +577,8 @@ public class PrintViewFragment extends Fragment {
 
             if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
 
-            if (!mPrinter.getJob().getProgress().equals("null"))
-            if (mPrinter.getJob().getFinished()) {
+            if ((!mPrinter.getJob().getProgress().equals("null")) && (mPrinter.getJob().getFinished()))
+            {
 
                 pb_prog.setProgress(100);
                 tv_file.setText(R.string.devices_text_completed);
