@@ -70,7 +70,7 @@ public class GcodeFile  {
 					}
 					countReader.close();
 
-                    Log.i(TAG,"GCODE Read in: " + (SystemClock.currentThreadTimeMillis() - milis));
+                    Log.i(TAG, "GCODE Read in: " + (SystemClock.currentThreadTimeMillis() - milis));
 					
 
 					if(mMode== ViewerMainFragment.PRINT_PREVIEW) mData.setMaxLinesFile(maxLines);
@@ -238,7 +238,7 @@ public class GcodeFile  {
 			 if (mMode!= ViewerMainFragment.DO_SNAPSHOT && lines % (maxLines/10) == 0)mProgressDialog.setProgress(lines);
 		}
 
-        Log.i(TAG,"GCODE Processed in: " + (SystemClock.currentThreadTimeMillis() - milis));
+        Log.i(TAG, "GCODE Processed in: " + (SystemClock.currentThreadTimeMillis() - milis));
 	}
 	
     private static Handler mHandler = new Handler() {

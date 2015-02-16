@@ -1,7 +1,7 @@
 package android.app.printerapp.octoprint;
 
-import android.content.Context;
 import android.app.printerapp.Log;
+import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 

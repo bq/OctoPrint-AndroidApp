@@ -1,5 +1,6 @@
 package android.app.printerapp.devices;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -11,7 +12,6 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -40,7 +40,7 @@ public class DevicesListController {
     public static void addToList(ModelPrinter m) {
         mList.add(m);
 
-        Log.i("Extra","Added " + m.getId());
+        Log.i("Extra", "Added " + m.getId());
 
     }
 

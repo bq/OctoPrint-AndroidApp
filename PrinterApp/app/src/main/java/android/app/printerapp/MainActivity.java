@@ -181,7 +181,7 @@ public class MainActivity extends ActionBarActivity {
             ViewerMainFragment.hideCurrentActionPopUpWindow();
         }
 
-        Log.i("OUT","Pressed " + id);
+        Log.i("OUT", "Pressed " + id);
         //start transaction
         FragmentTransaction fragmentTransaction = mManager.beginTransaction();
 
@@ -255,7 +255,7 @@ public class MainActivity extends ActionBarActivity {
 
         //Show current fragment
         if (mCurrent != null) {
-            Log.i("OUT","Changing " + mCurrent.getTag());
+            Log.i("OUT", "Changing " + mCurrent.getTag());
             fragmentTransaction.show(mCurrent).commit();
            // getSupportActionBar().setTitle(ListContent.ITEMS.get(id).content);
         }
@@ -280,7 +280,7 @@ public class MainActivity extends ActionBarActivity {
 
                 c.moveToFirst();
 
-                Log.i("Extra","Opening " + c.getInt(0));
+                Log.i("Extra", "Opening " + c.getInt(0));
 
                 showExtraFragment(1, c.getInt(0));
 
@@ -491,7 +491,7 @@ Close app on locale change
     private BroadcastReceiver mLocaleChange = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("OUT","Exiting app");
+            Log.i("OUT", "Exiting app");
             finish();
             System.exit(0);
 

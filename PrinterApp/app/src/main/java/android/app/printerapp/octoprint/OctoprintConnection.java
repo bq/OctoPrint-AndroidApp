@@ -1,6 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.Dialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -17,7 +18,6 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -75,7 +75,7 @@ public class OctoprintConnection {
 			e.printStackTrace();
 		}
 
-        Log.i("Profile","Start connection on " + profile);
+        Log.i("Profile", "Start connection on " + profile);
 		
 		HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION, 
 				entity, "application/json", new JsonHttpResponseHandler(){
@@ -90,7 +90,7 @@ public class OctoprintConnection {
 					String responseString, Throwable throwable) {
 				
 				
-				Log.i("CONNECTION","Failure because: " + responseString);
+				Log.i("CONNECTION", "Failure because: " + responseString);
 				
 				super.onFailure(statusCode, headers, responseString, throwable);
 			}
@@ -151,7 +151,7 @@ public class OctoprintConnection {
                     intent.putExtra("message", "Devices");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
-                    Log.i("Connection","Printer already connected to " + p.getPort());
+                    Log.i("Connection", "Printer already connected to " + p.getPort());
                     //p.startUpdate(context);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -242,7 +242,7 @@ public class OctoprintConnection {
                                 convertType(p, current.getString("printerProfile"));
                                 //getUpdatedSettings(p,current.getString("printerProfile"));
                                 getSettings(p);
-                                Log.i("Connection","Printer already connected to " + p.getPort());
+                                Log.i("Connection", "Printer already connected to " + p.getPort());
 
                                 String network = MainActivity.getCurrentNetwork(context);
                                 p.setNetwork(network);
@@ -265,7 +265,7 @@ public class OctoprintConnection {
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
-				Log.i("Connection","Failure while connecting " + responseString);
+				Log.i("Connection", "Failure while connecting " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
 
                 progressDialog.dismiss();
@@ -320,7 +320,7 @@ public class OctoprintConnection {
                 super.onSuccess(statusCode, headers, response);
 
 
-                Log.i("Connection",response.toString());
+                Log.i("Connection", response.toString());
 
                 try {
                     String name = response.getString("name");
@@ -369,7 +369,7 @@ public class OctoprintConnection {
                 try {
                     JSONObject appearance = response.getJSONObject("appearance");
 
-                    Log.i("Connection",appearance.toString());
+                    Log.i("Connection", appearance.toString());
 
                     String newName = appearance.getString("name");
                     if(!newName.equals("")) {
@@ -398,7 +398,7 @@ public class OctoprintConnection {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
 
-                Log.i("Connection","Settings failure: " + responseString);
+                Log.i("Connection", "Settings failure: " + responseString);
             }
         });
 
@@ -442,7 +442,7 @@ public class OctoprintConnection {
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         super.onFailure(statusCode, headers, responseString, throwable);
 
-                        Log.i("Connection","Settings failure: " + responseString);
+                        Log.i("Connection", "Settings failure: " + responseString);
                     }
                 });
 
@@ -479,7 +479,7 @@ public class OctoprintConnection {
 
                      //TODO unify this method
 		            Log.i("Connection", "Status: Connected to " + wsuri);
-                     Log.i("CONNECTION","Connection from: SOCKET");
+                     Log.i("CONNECTION", "Connection from: SOCKET");
                     doConnection(context,p);
 
 		         }
@@ -572,7 +572,7 @@ public class OctoprintConnection {
 
                             if (response.getString("type").equals("Connected")){
                                 p.setPort(response.getJSONObject("payload").getString("port"));
-                                Log.i("OUT","UPDATED PORT " + p.getPort());
+                                Log.i("OUT", "UPDATED PORT " + p.getPort());
                             }
 
                             if (response.getString("type").equals("PrintDone")){
@@ -654,7 +654,7 @@ public class OctoprintConnection {
 
 		            } catch (JSONException e) {
 						e.printStackTrace();
-						Log.i("CONNECTION","Invalid JSON");
+						Log.i("CONNECTION", "Invalid JSON");
 
 					}
 
@@ -679,7 +679,7 @@ public class OctoprintConnection {
 							@Override
 							public void run() {
 
-                                Log.i("OUT","Timeout expired, reconnecting to " + p.getAddress());
+                                Log.i("OUT", "Timeout expired, reconnecting to " + p.getAddress());
 
 								 p.startUpdate(context);
 
@@ -745,14 +745,14 @@ public class OctoprintConnection {
 
 		try {
 
-            Log.i("Slicer","Slice done received for " + payload.getString("stl"));
+            Log.i("Slicer", "Slice done received for " + payload.getString("stl"));
 
             //Search for files waiting for slice
             if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null)
             if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last").equals( payload.getString("stl")))
             {
 
-                Log.i("Slicer","Changed PREFERENCE [Last]: " + payload.getString("gcode"));
+                Log.i("Slicer", "Changed PREFERENCE [Last]: " + payload.getString("gcode"));
                 DatabaseController.handlePreference(DatabaseController.TAG_SLICING,"Last",payload.getString("gcode"), true);
 
                 ViewerMainFragment.showProgressBar(StateUtils.SLICER_DOWNLOAD, 0);
@@ -764,7 +764,7 @@ public class OctoprintConnection {
 
             }else {
 
-                Log.i("Slicer","Slicing NOPE for me!");
+                Log.i("Slicer", "Slicing NOPE for me!");
 
             }
 

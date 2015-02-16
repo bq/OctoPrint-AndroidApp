@@ -1,12 +1,12 @@
 package android.app.printerapp.octoprint;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.AuthenticationUtils;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.devices.discovery.PrintNetworkReceiver;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -48,7 +48,7 @@ public class OctoprintNetwork {
                 super.onSuccess(statusCode, headers, response);
 
 
-                Log.i("OUT","Posting auth");
+                Log.i("OUT", "Posting auth");
 
                 JSONObject object = new JSONObject();
                 StringEntity entity = null;
@@ -118,7 +118,7 @@ public class OctoprintNetwork {
 
                                             super.onFailure(statusCode, headers, throwable, errorResponse);
 
-                                            Log.i("Connection","Failure while connecting " + statusCode);
+                                            Log.i("Connection", "Failure while connecting " + statusCode);
                                         }
 
                                     });
@@ -151,7 +151,7 @@ public class OctoprintNetwork {
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
 
-        Log.i("Discovery","Configure Network for: " + ssid);
+        Log.i("Discovery", "Configure Network for: " + ssid);
 		
 		try {
 			object.put("command", "configure_wifi");

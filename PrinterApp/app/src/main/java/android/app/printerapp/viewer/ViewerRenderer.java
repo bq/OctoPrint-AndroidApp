@@ -1,5 +1,6 @@
 package android.app.printerapp.viewer;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.library.LibraryModelCreation;
 import android.app.printerapp.viewer.Geometry.Box;
 import android.app.printerapp.viewer.Geometry.Point;
@@ -10,7 +11,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.AsyncTask;
-import android.app.printerapp.Log;
 import android.view.View;
 
 import java.nio.ByteBuffer;
@@ -566,7 +566,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
         } catch (NullPointerException e){
 
-            Log.i(TAG,"Surface not yet created");
+            Log.i(TAG, "Surface not yet created");
         }
 
 
@@ -602,7 +602,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                         Log.i("VERTEX", "adding");
                         mStlObjectList.add(new StlObject (mDataList.get(i), mContext, mState));
                     }
-				    else Log.i("VERTEX","ONE NULL " + i);
+				    else Log.i("VERTEX", "ONE NULL " + i);
                 }
 				
 			} else if (mDataList.size()>0) {
@@ -636,7 +636,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		mWidth = width;
 		mHeight = height;
 
-        Log.i("OUT","Width: " + width + " ; Height: " + height);
+        Log.i("OUT", "Width: " + width + " ; Height: " + height);
 
 		// Adjust the viewport based on geometry changes,
         // such as screen rotation
@@ -804,7 +804,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                     DataStorage data = mDataList.get(mObjectPressed);
                     Point center = data.getLastCenter();
 
-                    Log.i("CENTER","Settings center @" + center.x + ";" + center.y + ";" + center.z);
+                    Log.i("CENTER", "Settings center @" + center.x + ";" + center.y + ";" + center.z);
 
                     Matrix.setIdentityM(mTemporaryModel, 0);
                     Matrix.translateM(mTemporaryModel, 0, center.x, center.y, center.z);
@@ -824,7 +824,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                     Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
                 } else {
 
-                    Log.i("Multiply","IndexOutOfBounds " + mDataList.size() + " is smaller than " + mObjectPressed);
+                    Log.i("Multiply", "IndexOutOfBounds " + mDataList.size() + " is smaller than " + mObjectPressed);
 
                 }
 

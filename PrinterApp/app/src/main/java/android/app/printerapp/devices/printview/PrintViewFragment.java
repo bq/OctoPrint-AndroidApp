@@ -4,6 +4,7 @@ package android.app.printerapp.devices.printview;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
@@ -31,7 +32,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -638,7 +638,7 @@ public class PrintViewFragment extends Fragment {
         //If we have a jobpath, we've uploaded the file ourselves
         if (mPrinter.getJobPath() != null) {
 
-            Log.i(TAG,"PATH IS " + mPrinter.getJobPath());
+            Log.i(TAG, "PATH IS " + mPrinter.getJobPath());
 
             //Get filename
             File currentFile = new File(mPrinter.getJobPath());
@@ -710,7 +710,7 @@ public class PrintViewFragment extends Fragment {
                     if (!downloadPath.getParentFile().exists())
                         downloadPath.getParentFile().mkdirs();
 
-                    Log.i(TAG,"Downloadinag " + downloadPath.getParentFile().getAbsolutePath() + " PLUS " + mPrinter.getJob().getFilename());
+                    Log.i(TAG, "Downloadinag " + downloadPath.getParentFile().getAbsolutePath() + " PLUS " + mPrinter.getJob().getFilename());
 
                     //Download file
                     OctoprintFiles.downloadFile(mContext, mPrinter.getAddress() + HttpUtils.URL_DOWNLOAD_FILES,

@@ -59,6 +59,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2">
 
+
+
                 <FrameLayout
                     android:id="@+id/viewer_container_framelayout"
                     android:layout_width="match_parent"
@@ -89,6 +91,18 @@
                             android:drawableRight="@drawable/ic_arrow_forward"
                             android:text="@string/viewer_button_redo" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/axis_info_textview"
+                        style="@style/TextInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/viewer_axis_info"
+                        android:textColor="@android:color/white"
+                        android:visibility="invisible"
+                        android:layout_gravity="top"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="@dimen/text_size_medium" />
 
                     <!-- Seek bar to show/hide layers of the model -->
                     <android.app.printerapp.util.ui.VerticalSeekBar
@@ -140,16 +154,7 @@
                             android:layout_gravity="center_vertical"
                             android:visibility="invisible" />
 
-                        <TextView
-                            android:id="@+id/axis_info_textview"
-                            style="@style/TextInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/viewer_axis_info"
-                            android:textColor="@android:color/white"
-                            android:visibility="invisible"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="@dimen/text_size_medium" />
+
 
                     </LinearLayout>
 

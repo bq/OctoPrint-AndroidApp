@@ -1,12 +1,12 @@
 package android.app.printerapp.devices.discovery;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.app.printerapp.Log;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -104,12 +104,12 @@ public class JmdnsServiceListener implements ServiceListener{
 		public void serviceResolved(ServiceEvent event) {	
 			
 			//Creates a service with info
-			Log.i("Discovery","Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
+			Log.i("Discovery", "Service resolved: " + event.getName() + "@" + event.getInfo().getQualifiedName() + " port:" + event.getInfo().getPort());
 			ServiceInfo service = mJmdns.getServiceInfo(event.getType(), event.getName());
 
             if (!service.getInetAddresses()[0].toString().equals("/10.250.250.1")){
 
-                Log.i("Discovery","Added to list");
+                Log.i("Discovery", "Added to list");
                 mContext.addElement(new ModelPrinter(service.getName(),
                         service.getInetAddresses()[0].toString() /*+ HttpUtils.CUSTOM_PORT*/+ ":" + event.getInfo().getPort(), StateUtils.STATE_NEW));
 

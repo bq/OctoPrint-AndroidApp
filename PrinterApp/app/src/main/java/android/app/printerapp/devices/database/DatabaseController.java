@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.database;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.devices.database.DeviceInfo.FeedEntry;
 import android.app.printerapp.model.ModelPrinter;
@@ -9,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.app.printerapp.Log;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public class DatabaseController {
 		// Gets the data repository in write mode
 		mDb = mDbHelper.getWritableDatabase();
 		
-		Log.i("OUT","Adding: " + name);
+		Log.i("OUT", "Adding: " + name);
 		// Create a new map of values, where column names are the keys
 		ContentValues values = new ContentValues();
 		values.put(FeedEntry.DEVICES_NAME, name);
@@ -220,11 +220,11 @@ public class DatabaseController {
 		Editor editor = prefs.edit();
 		
 		if (!add) {
-			Log.i("OUT","Removing " + key);
+			Log.i("OUT", "Removing " + key);
 			editor.remove(key);
 		}
 		else {
-			Log.i("OUT","Putting favorite " + key);
+			Log.i("OUT", "Putting favorite " + key);
 			editor.putString(key, value);
 		}
 			

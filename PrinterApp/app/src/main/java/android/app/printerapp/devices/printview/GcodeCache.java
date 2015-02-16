@@ -1,7 +1,7 @@
 package android.app.printerapp.devices.printview;
 
-import android.app.printerapp.viewer.DataStorage;
 import android.app.printerapp.Log;
+import android.app.printerapp.viewer.DataStorage;
 
 import java.util.ArrayList;
 

@@ -1,13 +1,13 @@
 package android.app.printerapp.octoprint;
 
 import android.app.ProgressDialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
-import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -63,7 +63,7 @@ public class OctoprintSlicing {
 							JSONObject response) {
 						super.onSuccess(statusCode, headers, response);
 						
-						Log.i("OUT",response.toString());
+						Log.i("OUT", response.toString());
 						//Dismiss progress dialog
 						pd.dismiss();
 
@@ -80,7 +80,7 @@ public class OctoprintSlicing {
 					String responseString, Throwable throwable) {
 
 				super.onFailure(statusCode, headers, responseString, throwable);
-				Log.i("OUT",responseString.toString());
+				Log.i("OUT", responseString.toString());
 				//Dismiss progress dialog
 				pd.dismiss();
                 MainActivity.showDialog(responseString);
@@ -148,7 +148,7 @@ public class OctoprintSlicing {
                     try {
 
                         if (response.getJSONObject(current).getBoolean("default")){
-                            Log.i("OUT","Selected item is " + response.getJSONObject(current).getString("key"));
+                            Log.i("OUT", "Selected item is " + response.getJSONObject(current).getString("key"));
                         }
 
                     } catch (JSONException e) {
@@ -182,7 +182,7 @@ public class OctoprintSlicing {
 
                                 p.getProfiles().add(response);
 
-                                Log.i("OUT","Adding profile");
+                                Log.i("OUT", "Adding profile");
                             }
 
 
@@ -201,7 +201,7 @@ public class OctoprintSlicing {
 					String responseString, Throwable throwable) {
 
 				super.onFailure(statusCode, headers, responseString, throwable);
-				Log.i("OUT",responseString.toString());
+				Log.i("OUT", responseString.toString());
 			}
 		});
 		
@@ -284,7 +284,7 @@ public class OctoprintSlicing {
                         super.onSuccess(statusCode, headers, response);
 
 
-                        Log.i("Slicer","Upload successful"); //TODO
+                        Log.i("Slicer", "Upload successful"); //TODO
 
                         JSONObject object = extras ;
                         StringEntity entity = null;
@@ -299,7 +299,7 @@ public class OctoprintSlicing {
                             object.put("gcode", "temp.gco");
                             entity = new StringEntity(object.toString(), "UTF-8");
 
-                            Log.i("OUT","Uploading " + object.toString());
+                            Log.i("OUT", "Uploading " + object.toString());
 
                         } catch (JSONException e) {		e.printStackTrace();
                         } catch (UnsupportedEncodingException e) {	e.printStackTrace();
@@ -307,7 +307,7 @@ public class OctoprintSlicing {
 
 
 
-                        Log.i("Slicer","Send slice command for " + file.getName());
+                        Log.i("Slicer", "Send slice command for " + file.getName());
 
                         if (DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last")!=null)
                         if ((DatabaseController.getPreference("Slicing","Last")).equals(file.getName()))
@@ -326,7 +326,7 @@ public class OctoprintSlicing {
 
 
                                         ViewerMainFragment.showProgressBar(StateUtils.SLICER_SLICE, 0);
-                                        Log.i("Slicer","Slicing started");
+                                        Log.i("Slicer", "Slicing started");
 
 
                                     }
@@ -338,7 +338,7 @@ public class OctoprintSlicing {
                                                           String responseString, Throwable throwable) {
 
                                         super.onFailure(statusCode, headers, responseString, throwable);
-                                        Log.i("OUT",responseString.toString());
+                                        Log.i("OUT", responseString.toString());
 
                                         ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, -1);
                                     }
@@ -350,7 +350,7 @@ public class OctoprintSlicing {
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         super.onFailure(statusCode, headers, responseString, throwable);
 
-                        Log.i("Slicer","FAILURESLICING");
+                        Log.i("Slicer", "FAILURESLICING");
                         ViewerMainFragment.showProgressBar(StateUtils.SLICER_HIDE, -1);
                     }
                 });

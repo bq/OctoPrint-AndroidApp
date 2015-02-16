@@ -1,8 +1,8 @@
 package android.app.printerapp.devices.camera;
 
+import android.app.printerapp.Log;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.app.printerapp.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

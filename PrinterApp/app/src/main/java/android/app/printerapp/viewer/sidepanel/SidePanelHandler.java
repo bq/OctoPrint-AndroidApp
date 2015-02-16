@@ -1,6 +1,7 @@
 package android.app.printerapp.viewer.sidepanel;
 
 import android.app.Activity;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -17,7 +18,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.app.printerapp.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -501,7 +501,8 @@ public class SidePanelHandler {
 
                                             Log.i("Slicer", "Creating temp " + tempFolder.getAbsolutePath());
 
-                                        }Log.i("Slicer", "Creating temp NOPE " + tempFolder.getAbsolutePath());
+                                        }
+                                        Log.i("Slicer", "Creating temp NOPE " + tempFolder.getAbsolutePath());
                                     }
 
                                     finalFile = new File(tempFolder + "/" + actualFile.getName().replace(" ", "_") + "_tmp.gcode");
@@ -1002,7 +1003,7 @@ public class SidePanelHandler {
                 mSlicingHandler.setExtras(mValue, getFloatValue(editable.toString()));
             } catch (NumberFormatException e){
 
-                Log.i("Slicer","Invalid value " + editable.toString());
+                Log.i("Slicer", "Invalid value " + editable.toString());
 
             }
 

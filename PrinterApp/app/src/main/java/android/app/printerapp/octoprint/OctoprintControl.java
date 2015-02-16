@@ -1,10 +1,10 @@
 package android.app.printerapp.octoprint;
 
 import android.app.Dialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.content.Context;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;

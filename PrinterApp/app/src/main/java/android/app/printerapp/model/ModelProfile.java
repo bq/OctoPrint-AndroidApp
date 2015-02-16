@@ -1,8 +1,8 @@
 package android.app.printerapp.model;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.content.Context;
-import android.app.printerapp.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +61,7 @@ public class ModelProfile {
         else { //Custom profile
 
             try {
-                Log.i("PROFILE","Looking for " + resource);
+                Log.i("PROFILE", "Looking for " + resource);
                 fis = context.openFileInput(resource + type);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -117,7 +117,7 @@ public class ModelProfile {
             outputStream.write(json.toString().getBytes());
             outputStream.close();
 
-              Log.i("OUT","Written " + filename);
+              Log.i("OUT", "Written " + filename);
 
         } catch (Exception e) {
             e.printStackTrace();

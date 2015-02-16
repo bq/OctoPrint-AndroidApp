@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.camera;
 
+import android.app.printerapp.Log;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,7 +11,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.app.printerapp.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -196,7 +196,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void stopPlayback() { 
-    	Log.i("CAMERA","Stopped Playback!!");
+    	Log.i("CAMERA", "Stopped Playback!!");
         mRun = false;
         boolean retry = true;
 
@@ -280,7 +280,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
      * @param context
      */
     public void restartPlayback(Context context){
-    	Log.i("CAMERA","Restarting playback!!")	;
+    	Log.i("CAMERA", "Restarting playback!!")	;
     	init(context);
     	startPlayback();
     }
