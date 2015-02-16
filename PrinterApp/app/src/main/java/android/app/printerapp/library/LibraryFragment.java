@@ -2,6 +2,7 @@ package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.octoprint.HttpUtils;
@@ -13,7 +14,6 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -315,7 +315,7 @@ public class LibraryFragment extends Fragment {
     //Reload file list with the currently selected tab
     public void refreshFiles() {
 
-        Log.i("Files","Refresh for " + mCurrentTab);
+        Log.i("Files", "Refresh for " + mCurrentTab);
 
         if (mCurrentTab != null) LibraryController.reloadFiles(mCurrentTab);
         sortAdapter();

@@ -3,6 +3,7 @@ package android.app.printerapp.library;
 import android.annotation.SuppressLint;
 import android.app.FragmentTransaction;
 import android.app.printerapp.ListContent;
+import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
@@ -14,7 +15,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
-import android.app.printerapp.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -421,7 +421,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                                LibraryController.deleteFiles(file);
 
-                               Log.i("Delete","Deleting " + file.getName());
+                               Log.i("Delete", "Deleting " + file.getName());
 
 
 

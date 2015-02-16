@@ -1,6 +1,7 @@
 package android.app.printerapp.viewer;
 
 import android.app.Activity;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
@@ -9,7 +10,6 @@ import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.os.AsyncTask;
-import android.app.printerapp.Log;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -115,9 +115,9 @@ public class SlicingHandler {
 
         if (tempPath.mkdir()){
 
-            Log.i("Slicer","Creating temporary file " + tempPath);
+            Log.i("Slicer", "Creating temporary file " + tempPath);
 
-        } else Log.i("Slicer","Directory exists " + tempPath);;
+        } else Log.i("Slicer", "Directory exists " + tempPath);;
 
         try {
 
@@ -138,7 +138,7 @@ public class SlicingHandler {
                 }
 
 
-                Log.i("Slicer","Deleted " + mLastReference);
+                Log.i("Slicer", "Deleted " + mLastReference);
             }
             catch (NullPointerException e){
 
@@ -186,7 +186,7 @@ public class SlicingHandler {
         //Reset timer in case it was on progress
         if (isRunning) {
 
-            Log.i("Slicer","Cancelling previous timer");
+            Log.i("Slicer", "Cancelling previous timer");
             mTimer.cancel();
             mTimer.purge();
             isRunning = false;
@@ -209,7 +209,7 @@ public class SlicingHandler {
     public void setOriginalProject(String path) {
 
         mOriginalProject = path;
-        Log.i("OUT","Workspace: " + path);
+        Log.i("OUT", "Workspace: " + path);
 
     }
 
@@ -227,7 +227,7 @@ public class SlicingHandler {
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("Slicer","Starting task" );
+                    Log.i("Slicer", "Starting task");
 
                     if (mPrinter!=null){
 
@@ -239,7 +239,7 @@ public class SlicingHandler {
 
                         } else {
 
-                            Log.i("Slicer","No printer available");
+                            Log.i("Slicer", "No printer available");
 
                             Toast.makeText(mActivity, R.string.viewer_printer_unavailable,Toast.LENGTH_LONG).show();
 
@@ -285,7 +285,7 @@ public class SlicingHandler {
             OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),mFile,mExtras);
             //if (mExtras.has("print")) mExtras.remove("print");
 
-            Log.i("Slicer","Showing progress bar");
+            Log.i("Slicer", "Showing progress bar");
             ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
 
         }

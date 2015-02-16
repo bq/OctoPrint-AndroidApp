@@ -1,6 +1,7 @@
 package android.app.printerapp.library;
 
 import android.app.AlertDialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.viewer.DataStorage;
 import android.app.printerapp.viewer.GcodeFile;
@@ -13,7 +14,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -69,7 +69,7 @@ public class LibraryModelCreation {
 			File mainFolder;
 			File secondaryFolder;
 			
-			Log.i("OUT","File " + root.getAbsolutePath() + " source " + mFile.getName());
+			Log.i("OUT", "File " + root.getAbsolutePath() + " source " + mFile.getName());
 			
 			//root folder
 			if (root.mkdirs()){
@@ -139,7 +139,7 @@ public class LibraryModelCreation {
 		View generatingProjectDialog = LayoutInflater.from(context).inflate(R.layout.dialog_loading_project, null);
 		mSnapshotLayout = (FrameLayout) generatingProjectDialog.findViewById (R.id.framesnapshot);
 
-        Log.i("OUT","Opening to snap " + path);
+        Log.i("OUT", "Opening to snap " + path);
         String count = context.getString(R.string.generating_project);
 
         if (mFileQueue!=null) count += " ("  + (mCount - (mFileQueue.size() - 1)) + "/" + mCount + ")";

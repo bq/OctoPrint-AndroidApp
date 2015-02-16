@@ -6,9 +6,9 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.printerapp.Log;
 import android.content.Context;
 import android.opengl.GLES20;
-import android.app.printerapp.Log;
 
 public class GcodeObject {
 	
@@ -80,7 +80,7 @@ public class GcodeObject {
 		this.mData = data;
 		this.mLayer = data.getActualLayer();
 		
-		Log.i(TAG, "Creating GCode Object");	
+		Log.i(TAG, "Creating GCode Object");
 		
 		mVertexArray = mData.getVertexArray();
 		mLayerArray = mData.getLayerArray();

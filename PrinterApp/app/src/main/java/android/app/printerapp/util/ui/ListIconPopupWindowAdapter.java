@@ -1,11 +1,9 @@
 package android.app.printerapp.util.ui;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

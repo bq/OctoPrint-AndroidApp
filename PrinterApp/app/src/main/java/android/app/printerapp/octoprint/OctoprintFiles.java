@@ -1,6 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.DownloadManager;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
@@ -8,7 +9,6 @@ import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.app.printerapp.Log;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -162,7 +162,7 @@ public class OctoprintFiles {
 				
 				super.onFailure(statusCode, headers, responseString, throwable);
 				
-				Log.i("OUT","PEDAZO DE FAIL " + responseString);
+				Log.i("OUT", "PEDAZO DE FAIL " + responseString);
 			}
 
 		});
@@ -211,7 +211,7 @@ public class OctoprintFiles {
 			public void onSuccess(int statusCode,
 					Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
-				Log.i("OUT","Command successful");
+				Log.i("OUT", "Command successful");
 				
 				if (delete){
 					
@@ -404,7 +404,7 @@ public class OctoprintFiles {
 	 */
 	public static void downloadFile(Context context, String url, String path, String filename){
 
-        Log.i("Slicer","Downloading " + filename);
+        Log.i("Slicer", "Downloading " + filename);
 		
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http:/" + url + filename));
 

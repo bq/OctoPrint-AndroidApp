@@ -1,6 +1,7 @@
 package android.app.printerapp.devices.discovery;
 
 import android.app.Dialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -11,7 +12,6 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.text.method.PasswordTransformationMethod;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;

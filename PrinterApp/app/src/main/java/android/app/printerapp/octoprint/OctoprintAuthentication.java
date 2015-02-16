@@ -1,11 +1,11 @@
 package android.app.printerapp.octoprint;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.AuthenticationUtils;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.Context;
-import android.app.printerapp.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -78,7 +78,7 @@ public class OctoprintAuthentication {
     public static void postAuth(final Context context, String key, final ModelPrinter p, final boolean retry){
 
 
-        Log.i("OUT","Posting auth");
+        Log.i("OUT", "Posting auth");
 
         JSONObject object = new JSONObject();
         StringEntity entity = null;
@@ -125,13 +125,13 @@ public class OctoprintAuthentication {
 
                         try {
                             DatabaseController.handlePreference(DatabaseController.TAG_KEYS, PrintNetworkManager.getNetworkId(p.getName()),response.getString("key"),true);
-                            Log.i("Connection","Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
+                            Log.i("Connection", "Adding API key " + response.getString("key") + " for ID: " + PrintNetworkManager.getNetworkId(p.getName()));
                             //OctoprintConnection.doConnection(context,p);
 
 
                             if (!retry){
 
-                                Log.i("CONNECTION","Connection from: AUTH");
+                                Log.i("CONNECTION", "Connection from: AUTH");
                                 OctoprintConnection.doConnection(context,p);
 
                             } else OctoprintConnection.getNewConnection(context, p);
@@ -144,7 +144,7 @@ public class OctoprintAuthentication {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         super.onFailure(statusCode, headers, responseString, throwable);
-                        Log.i("Connection",responseString + " for " + p.getAddress());
+                        Log.i("Connection", responseString + " for " + p.getAddress());
 
                     }
                 });

@@ -4,7 +4,6 @@ import android.app.printerapp.R;
 import android.app.printerapp.model.ModelPrinter;
 import android.content.ClipData;
 import android.content.res.Resources;
-import android.app.printerapp.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;

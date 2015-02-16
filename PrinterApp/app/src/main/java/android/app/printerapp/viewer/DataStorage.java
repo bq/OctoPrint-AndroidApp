@@ -1,8 +1,8 @@
 package android.app.printerapp.viewer;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.viewer.Geometry.Point;
 import android.opengl.Matrix;
-import android.app.printerapp.Log;
 
 import java.util.ArrayList;
 import java.util.List;

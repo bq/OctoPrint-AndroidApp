@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.discovery;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.BroadcastReceiver;
@@ -11,7 +12,6 @@ import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
-import android.app.printerapp.Log;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 			
 			 if (activeNetwork!=null){
 				 
-				 Log.i("NETWORK","Network connectivity change " + activeNetwork.getState());
+				 Log.i("NETWORK", "Network connectivity change " + activeNetwork.getState());
 				 mController.dismissNetworkDialog();
 				 
 			 }
@@ -131,7 +131,7 @@ public class PrintNetworkReceiver extends BroadcastReceiver{
 	        		//Log.i("Network",s.toString());
 	        		if (s.SSID.contains(NETWORK_NAME)){
 	        			
-	        			Log.i("Network","New printer found! " + s.SSID);
+	        			Log.i("Network", "New printer found! " + s.SSID);
 	        			//unregister();
 	        			
 	        			ModelPrinter m = new ModelPrinter(s.SSID,"/10.250.250.1", StateUtils.STATE_ADHOC);

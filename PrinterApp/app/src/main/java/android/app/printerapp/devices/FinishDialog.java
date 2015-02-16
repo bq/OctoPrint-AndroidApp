@@ -1,5 +1,6 @@
 package android.app.printerapp.devices;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.printview.GcodeCache;
@@ -10,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -149,13 +149,13 @@ public class FinishDialog {
                         //Delete file locally
                         if (file.delete()){
 
-                            Log.i("OUT","File deleted!");
+                            Log.i("OUT", "File deleted!");
 
                         }
 
                     } catch (NullPointerException e){
 
-                        Log.i("OUT","Error deleting the file");
+                        Log.i("OUT", "Error deleting the file");
 
                     }
 

@@ -1,9 +1,9 @@
 package android.app.printerapp.devices.camera;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.app.printerapp.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -75,7 +75,7 @@ public class CameraHandler {
         URL = "http:/" + address.substring(0,address.lastIndexOf(':')) + STREAM_PORT;
 
        //Read stream
-        Log.i("CAMERA","Executing " + URL);
+        Log.i("CAMERA", "Executing " + URL);
 	   
 	}
 

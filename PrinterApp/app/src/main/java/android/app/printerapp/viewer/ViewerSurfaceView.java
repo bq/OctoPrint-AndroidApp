@@ -1,12 +1,12 @@
 package android.app.printerapp.viewer;
 
+import android.app.printerapp.Log;
 import android.app.printerapp.viewer.Geometry.Vector;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.app.printerapp.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -214,6 +214,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 	public void setEditionMode (int mode) {
 		mEditionMode = mode;
 	}
+    public int getEditionMode(){ return mEditionMode; }
 
 	/**
 	 * Delete selected object
@@ -462,6 +463,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                             float fy = pinchStartFactorY*pinchScale;
                             float fz = pinchStartFactorZ*pinchScale;
 
+                            Log.i("Scale", "Scale touch @" + fx + ";" + fy + ";" + fz);
                             mRenderer.scaleObject(fx,fy,fz);
                             ViewerMainFragment.displayModelSize(mObjectPressed);
 
@@ -527,7 +529,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
                     mRenderer.changeTouchedState();
 
-                    Log.i("Slicer","Callback from surface");
+                    Log.i("Slicer", "Callback from surface");
                     ViewerMainFragment.slicingCallback();
                 }
 
@@ -595,6 +597,23 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			break;
 		}
 	}
+
+    public void doScale(float factor){
+        if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
+
+            float factorX = mDataList.get(mObjectPressed).getLastScaleFactorX();
+            float factorY = mDataList.get(mObjectPressed).getLastScaleFactorY();
+            float factorZ = mDataList.get(mObjectPressed).getLastScaleFactorZ();
+
+            float fx = factorX*factor;
+            float fy = factorY*factor;
+            float fz = factorZ*factor;
+
+            mRenderer.scaleObject(fx,fy,fz);
+            ViewerMainFragment.displayModelSize(mObjectPressed);
+            requestRender();
+        }
+    }
 	
 	/**
 	 * Mirror option

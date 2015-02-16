@@ -1,9 +1,9 @@
 package android.app.printerapp.library;
 
 import android.app.AlertDialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.content.Context;
-import android.app.printerapp.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;

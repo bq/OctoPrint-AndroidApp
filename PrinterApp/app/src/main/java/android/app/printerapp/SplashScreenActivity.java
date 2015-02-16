@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.app.printerapp.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;

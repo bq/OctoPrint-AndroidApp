@@ -1,8 +1,7 @@
 package android.app.printerapp.devices.discovery;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
@@ -11,7 +10,6 @@ import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.app.printerapp.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
