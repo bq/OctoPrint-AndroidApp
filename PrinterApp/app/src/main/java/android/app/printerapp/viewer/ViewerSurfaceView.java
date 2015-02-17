@@ -535,7 +535,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 				touchMode = TOUCH_NONE;
 
-				requestRender();
+			    requestRender();
 				break;
 		}
 		return true;

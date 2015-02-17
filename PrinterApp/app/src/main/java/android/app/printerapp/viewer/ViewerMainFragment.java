@@ -1482,13 +1482,9 @@ public class ViewerMainFragment extends Fragment {
     //TODO callback for a slicing request
     public static void slicingCallback() {
 
-        Log.i("Slicer", "Starting thread");
-
         SliceTask task = new SliceTask();
         task.execute();
 
-
-        Log.i("Slicer", "Ending thread");
     }
 
     static class SliceTask extends AsyncTask {
@@ -1509,13 +1505,11 @@ public class ViewerMainFragment extends Fragment {
 
             }
 
-            Log.i("Slicer", "Sending callback");
-
             if ((mSlicingHandler != null) && (mFile != null)) {
 
                 if (LibraryController.hasExtension(0, mFile.getName())) {
                     // StlFile.saveModel(newList, null, mSlicingHandler);
-                    mSlicingHandler.sendTimer(mDataList);
+                    mSlicingHandler.sendTimer(newList);
                 }
 
             }

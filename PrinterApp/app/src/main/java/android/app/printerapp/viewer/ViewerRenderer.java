@@ -708,7 +708,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 
 	@Override
-	public void onDrawFrame(GL10 unused) {
+	public void onDrawFrame(GL10 unused){
 		// Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
@@ -824,7 +824,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                     Matrix.invertM(mTransInvMVMatrix, 0, mTransInvMVMatrix, 0);
                 } else {
 
-                    Log.i("Multiply", "IndexOutOfBounds " + mDataList.size() + " is smaller than " + mObjectPressed);
+                    Log.i("Multiply", "IndexOutOfBounds " + mObjectPressed);
 
                 }
 
@@ -836,11 +836,22 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
                 for (int i=0; i<mStlObjectList.size(); i++) {
                     if (i==mObjectPressed) {
 
-                        mDataList.get(i).setModelMatrix(mObjectModel);
+                        try{
 
-                        mStlObjectList.get(i).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
+                            if (mDataList.size() > 0){
+                                mDataList.get(mObjectPressed).setModelMatrix(mObjectModel);
+                                mStlObjectList.get(mObjectPressed).draw(mMVPObjectMatrix, mTransInvMVMatrix, mLightPosInEyeSpace, mObjectModel);
+                                mCircle.draw(mDataList.get(mObjectPressed ), mMVPMatrix, mAxis);
 
-                        mCircle.draw(mDataList.get(i), mMVPMatrix, mAxis);
+                            }
+
+
+                        } catch (IndexOutOfBoundsException e){
+
+                            Log.i("Slicer", "IndexOutOfBounds " + mObjectPressed);
+
+                        }
+
 
                     } else  {
                         float [] modelMatrix = mDataList.get(i).getModelMatrix();
