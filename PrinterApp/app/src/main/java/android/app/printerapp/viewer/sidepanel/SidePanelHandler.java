@@ -637,8 +637,6 @@ public class SidePanelHandler {
                     Log.i("OUT", "Checked false");
                 }
 
-
-            //TODO Not checked by default
             if (data.getBoolean("fan_enabled")) {
                 enableCoolingFan.setChecked(true);
                 Log.i("OUT", "Checked true");
@@ -648,6 +646,8 @@ public class SidePanelHandler {
             }
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){ //If invalid values
             e.printStackTrace();
         }
 
@@ -815,7 +815,7 @@ public class SidePanelHandler {
 
                             } catch (NumberFormatException e) {
 
-                                //Check if there was an invalid numner
+                                //Check if there was an invalid number
                                 e.printStackTrace();
                                 Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_LONG).show();
                                 profile = null;
@@ -845,14 +845,26 @@ public class SidePanelHandler {
 
                                 }
 
+                                if(ModelProfile.saveProfile(mActivity, nameEditText.getText().toString(), profile, ModelProfile.TYPE_Q)) {
+
+                                    reloadQualityAdapter();
+
+                                    for (int i = 0 ; i < s_profile.getCount() ; i ++){
+
+                                        if (s_profile.getItemAtPosition(i).toString().equals(nameEditText.getText().toString())){
+                                            s_profile.setSelection(i);
+                                            break;
+                                        }
+
+
+                                    }
+
+                                }
+
 
                             }
 
-                            if(ModelProfile.saveProfile(mActivity, nameEditText.getText().toString(), profile, ModelProfile.TYPE_Q)) {
 
-                                reloadQualityAdapter();
-
-                            }
                         }
 
                         dialog.dismiss();
@@ -1001,6 +1013,7 @@ public class SidePanelHandler {
 
             try{
                 mSlicingHandler.setExtras(mValue, getFloatValue(editable.toString()));
+
             } catch (NumberFormatException e){
 
                 Log.i("Slicer", "Invalid value " + editable.toString());
