@@ -266,6 +266,31 @@ public class DatabaseController {
 
         return c;
     }
+
+    public static void updateHistoryPath(String oldPath, String newPath){
+
+        mDb = mDbHelper.getReadableDatabase();
+
+        // New value for one column
+        ContentValues values = new ContentValues();
+        values.put(FeedEntry.HISTORY_PATH, newPath);
+
+        mDb.update(FeedEntry.TABLE_HISTORY_NAME, values,
+                FeedEntry.HISTORY_PATH + " = '" + oldPath + "'", null);
+
+        Log.i("Done", "Updated history: updated with " + oldPath + " where " + newPath);
+
+
+        mDb.close();
+
+    }
+
+    public static void removeFromHistory(String path){
+        mDb = mDbHelper.getWritableDatabase();
+        mDb.delete(FeedEntry.TABLE_HISTORY_NAME, FeedEntry.HISTORY_PATH + " = '" + path + "'", null);
+        mDb.close();
+
+    }
 		
 
 }

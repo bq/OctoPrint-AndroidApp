@@ -144,17 +144,6 @@ public class DevicesListController {
             c.moveToNext();
         }
 
-        Cursor ch = DatabaseController.retrieveHistory();
-        ch.moveToFirst();
-
-        while (!ch.isAfterLast()) {
-            Log.i("Done",ch.getString(0) + ";" + ch.getString(1) + ";" + ch.getString(2) + ";" + ch.getString(3)
-                    + ";" + ch.getString(4));
-            ch.moveToNext();
-        }
-
-
-
         DatabaseController.closeDb();
 
 

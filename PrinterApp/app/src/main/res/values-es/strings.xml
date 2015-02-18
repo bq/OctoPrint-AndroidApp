@@ -358,5 +358,7 @@
     <string name="viewer_create_profile_text">Nombre del perfil nuevo</string>
     <string name="viewer_delete_profile_error">No puedes borrar este perfil</string>
     <string name="dialog_create_profile_title">Crear nuevo perfil</string>
+    <string name="history_drawer_print_time">Tiempo de impresión:\u0020</string>
+    <string name="history_drawer_date">Fecha:\u0020</string>
 
 </resources>

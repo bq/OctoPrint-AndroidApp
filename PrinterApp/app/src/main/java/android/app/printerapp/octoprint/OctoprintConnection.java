@@ -14,7 +14,6 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -582,7 +581,7 @@ public class OctoprintConnection {
 
                                 Log.i("OUT", "PRINT FINISHED! " + response.toString());
 
-                                addToHistory(p,response.getJSONObject("payload"));
+                                if (p.getJobPath()!=null)addToHistory(p,response.getJSONObject("payload"));
 
                                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                                 if (sharedPref.getBoolean(context.getResources().getString(R.string.shared_preferences_print), true)) {
@@ -790,7 +789,8 @@ public class OctoprintConnection {
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String date =  sdf.format(new Date());
-            DatabaseController.writeDBHistory(name, path, time, type, date);
+
+            if (path!=null) DatabaseController.writeDBHistory(name, path, time, type, date);
 
 
         } catch (JSONException e) {
@@ -799,23 +799,11 @@ public class OctoprintConnection {
             e.printStackTrace();
         }
 
-        Cursor c = DatabaseController.retrieveHistory();
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-
-            Log.i("Done",c.getString(0) + ";" + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3)
-             + ";" + c.getString(4));
-            c.moveToNext();
-        }
-
-
     }
 
     //External method to convert seconds to HHmmss
     public static String ConvertSecondToHHMMString(String secondtTime) {
         String time = "--:--:--";
-
-        Log.i("Done","Estimated: " + secondtTime);
 
         if (!secondtTime.equals("null")) {
 

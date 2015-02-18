@@ -17,7 +17,7 @@
     <dimen name="navigation_drawer_width">320dp</dimen>
     <dimen name="navigation_drawer_divider_height">8dp</dimen>
     <dimen name="navigation_drawer_margin">24dp</dimen>
-    <dimen name="navigation_drawer_item_height">64dp</dimen>
+    <dimen name="navigation_drawer_item_height">84dp</dimen>
 
     <!-- Floating action button dimens -->
     <dimen name="fab_diameter_big">70dp</dimen>
