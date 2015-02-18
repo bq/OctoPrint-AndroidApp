@@ -14,19 +14,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
-        "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-        FeedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-        FeedEntry.DEVICES_NAME + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_ADDRESS + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_POSITION + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_DISPLAY + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_TYPE + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_PROFILE + TEXT_TYPE + COMMA_SEP +
-        FeedEntry.DEVICES_NETWORK + TEXT_TYPE +
-        ")";
+            "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
+                    FeedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    FeedEntry.DEVICES_NAME + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.DEVICES_ADDRESS + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.DEVICES_POSITION + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.DEVICES_DISPLAY + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.DEVICES_TYPE + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.DEVICES_PROFILE + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.DEVICES_NETWORK + TEXT_TYPE + ")";
+
+
+    private static final String SQL_CREATE_ENTRIES_HISTORY  =
+            "CREATE TABLE " + FeedEntry.TABLE_HISTORY_NAME + " (" +
+                    FeedEntry.HISTORY_MODEL + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.HISTORY_PATH + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.HISTORY_TIME + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.HISTORY_PRINTER + TEXT_TYPE + COMMA_SEP +
+                    FeedEntry.HISTORY_DATE + TEXT_TYPE + ")";
+
+
+
 
     private static final String SQL_DELETE_ENTRIES =
-        "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
+        "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME + COMMA_SEP + FeedEntry.TABLE_HISTORY_NAME;
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_ENTRIES_HISTORY);
 	}
 
 	@Override

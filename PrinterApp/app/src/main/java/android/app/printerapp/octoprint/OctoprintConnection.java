@@ -14,6 +14,7 @@ import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -579,6 +580,10 @@ public class OctoprintConnection {
 
                                 //SEND NOTIFICATION
 
+                                Log.i("OUT", "PRINT FINISHED! " + response.toString());
+
+                                addToHistory(p,response.getJSONObject("payload"));
+
                                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                                 if (sharedPref.getBoolean(context.getResources().getString(R.string.shared_preferences_print), true)) {
 
@@ -774,16 +779,52 @@ public class OctoprintConnection {
 		
 	}
 
+    public static void addToHistory(ModelPrinter p, JSONObject history){
+
+
+        try {
+            String name = history.getString("filename");
+            String path = p.getJobPath();
+            String time = ConvertSecondToHHMMString(history.getString("time"));
+            String type = p.getProfile();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String date =  sdf.format(new Date());
+            DatabaseController.writeDBHistory(name, path, time, type, date);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
+        Cursor c = DatabaseController.retrieveHistory();
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+
+            Log.i("Done",c.getString(0) + ";" + c.getString(1) + ";" + c.getString(2) + ";" + c.getString(3)
+             + ";" + c.getString(4));
+            c.moveToNext();
+        }
+
+
+    }
+
     //External method to convert seconds to HHmmss
     public static String ConvertSecondToHHMMString(String secondtTime) {
         String time = "--:--:--";
 
+        Log.i("Done","Estimated: " + secondtTime);
+
         if (!secondtTime.equals("null")) {
+
+            int value = (int)Float.parseFloat(secondtTime);
 
             TimeZone tz = TimeZone.getTimeZone("UTC");
             SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.US);
             df.setTimeZone(tz);
-            time = df.format(new Date(Integer.parseInt(secondtTime) * 1000L));
+            time = df.format(new Date(value * 1000L));
         }
 
 

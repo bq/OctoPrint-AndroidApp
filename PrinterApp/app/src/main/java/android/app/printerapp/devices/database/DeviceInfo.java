@@ -18,6 +18,18 @@ public final class DeviceInfo {
         public static final String DEVICES_TYPE = "type";
         public static final String DEVICES_PROFILE = "profile";
         public static final String DEVICES_NETWORK = "network";
+
+        public static final String TABLE_HISTORY_NAME = "History";
+        public static final String HISTORY_MODEL = "model";
+        public static final String HISTORY_PATH = "path";
+        public static final String HISTORY_TIME = "printTime";
+        public static final String HISTORY_PRINTER = "printer";
+        public static final String HISTORY_DATE = "date";
+
+
+
+
+
     }
 
 }
