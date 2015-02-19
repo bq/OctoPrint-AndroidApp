@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +44,6 @@ public class DetailViewFragment extends Fragment {
 
             //Show custom option menu
             setHasOptionsMenu(true);
-
-            //Update the actionbar to show the up carat/affordance
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
             //Inflate the fragment
             rootView = inflater.inflate(R.layout.library_model_detail_right_panel,

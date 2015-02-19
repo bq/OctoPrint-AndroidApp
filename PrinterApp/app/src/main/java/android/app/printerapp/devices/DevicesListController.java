@@ -141,11 +141,12 @@ public class DevicesListController {
                     m.startUpdate(context);
                 }
             });
-
-
             c.moveToNext();
         }
+
         DatabaseController.closeDb();
+
+
 
 
     }
@@ -284,7 +285,7 @@ public class DevicesListController {
 
                     })
                     .show();
-        } else {
+        } else if (printersList.length == 1 ){
 
             ModelPrinter m = tempList.get(0);
 

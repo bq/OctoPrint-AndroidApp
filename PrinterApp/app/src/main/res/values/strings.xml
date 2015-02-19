@@ -375,6 +375,8 @@
     <string name="viewer_create_profile_default" translatable="false">custom_profile</string>
     <string name="viewer_delete_profile_error">You can\'t delete this profile</string>
     <string name="dialog_create_profile_title">Create new profile</string>
+    <string name="history_drawer_print_time">Print time:\u0020</string>
+    <string name="history_drawer_date">Date:\u0020</string>
 
 
 </resources>

@@ -115,8 +115,8 @@ public class GcodeFile  {
             }
         });
 
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         if (mMode!= ViewerMainFragment.DO_SNAPSHOT) {
             dialog.show();
             dialog.getWindow().setLayout(500, LinearLayout.LayoutParams.WRAP_CONTENT);

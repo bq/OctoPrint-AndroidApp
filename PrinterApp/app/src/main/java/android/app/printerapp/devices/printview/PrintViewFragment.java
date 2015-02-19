@@ -258,7 +258,7 @@ public class PrintViewFragment extends Fragment {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().onBackPressed();
+                if (DatabaseController.count()>1) getActivity().onBackPressed();
                 return true;
 
             case R.id.printview_add:

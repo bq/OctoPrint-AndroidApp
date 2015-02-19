@@ -29,7 +29,6 @@ public class DatabaseController {
     public static final String TAG_SLICING = "Slicing";
     public static final String TAG_PROFILE = "ProfilePreferences";
     public static final String TAG_RESTORE = "Restore";
-    public static final String TAG_SETTINGS = "Settings";
 	
 	static DatabaseHelper mDbHelper;
 	static SQLiteDatabase mDb;
@@ -233,9 +232,65 @@ public class DatabaseController {
 	}
 	
 	
-	/*****************************************************************************************************/
-	
+	/***********************************************  HISTORY TABLE  ******************************************************/
 
+	public static void writeDBHistory(String name, String path, String time, String type, String date){
+
+        // Gets the data repository in write mode
+        mDb = mDbHelper.getWritableDatabase();
+
+        Log.i("OUT", "Adding: " + name);
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(FeedEntry.HISTORY_MODEL, name);
+        values.put(FeedEntry.HISTORY_PATH, path);
+        values.put(FeedEntry.HISTORY_TIME, time);
+        values.put(FeedEntry.HISTORY_PRINTER, type);
+        values.put(FeedEntry.HISTORY_DATE, date);
+
+        mDb.insert(FeedEntry.TABLE_HISTORY_NAME, null, values);
+        mDb.close();
+
+    }
+
+    //Retrieve the cursor with the elements from the database
+    public static Cursor retrieveHistory(){
+
+        // Gets the data repository in read mode
+        mDb = mDbHelper.getReadableDatabase();
+
+        String selectQuery ="SELECT * FROM " + FeedEntry.TABLE_HISTORY_NAME;
+
+        Cursor c = mDb.rawQuery(selectQuery, null);
+
+        return c;
+    }
+
+    public static void updateHistoryPath(String oldPath, String newPath){
+
+        mDb = mDbHelper.getReadableDatabase();
+
+        // New value for one column
+        ContentValues values = new ContentValues();
+        values.put(FeedEntry.HISTORY_PATH, newPath);
+
+        mDb.update(FeedEntry.TABLE_HISTORY_NAME, values,
+                FeedEntry.HISTORY_PATH + " = '" + oldPath + "'", null);
+
+        Log.i("Done", "Updated history: updated with " + oldPath + " where " + newPath);
+
+
+        mDb.close();
+
+    }
+
+    public static void removeFromHistory(String path){
+        mDb = mDbHelper.getWritableDatabase();
+        mDb.delete(FeedEntry.TABLE_HISTORY_NAME, FeedEntry.HISTORY_PATH + " = '" + path + "'", null);
+        mDb.close();
+
+    }
 		
 
 }

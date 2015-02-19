@@ -67,6 +67,9 @@ public class FinishDialog {
                             OctoprintFiles.fileCommand(mContext, mPrinter.getAddress(), mPrinter.getJob().getFilename(), "/local/", false, false);
 
                             File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + file.getName());
+
+                            DatabaseController.updateHistoryPath(file.getAbsolutePath(), to.getAbsolutePath());
+
                             file.renameTo(to);
 
                             LibraryController.deleteFiles(file.getParentFile());
@@ -140,7 +143,12 @@ public class FinishDialog {
                 if (cb_local.isChecked()){
 
                     File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + et_name.getText().toString());
+
+
+                    DatabaseController.updateHistoryPath(file.getAbsolutePath(), to.getAbsolutePath());
                     file.renameTo(to);
+
+                    LibraryController.initializeHistoryList();
 
 
                 } else {

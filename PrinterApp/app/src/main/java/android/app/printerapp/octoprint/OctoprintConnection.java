@@ -1,6 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.Dialog;
+import android.app.printerapp.ListContent;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
@@ -579,6 +580,10 @@ public class OctoprintConnection {
 
                                 //SEND NOTIFICATION
 
+                                Log.i("OUT", "PRINT FINISHED! " + response.toString());
+
+                                if (p.getJobPath()!=null)addToHistory(p,response.getJSONObject("payload"));
+
                                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                                 if (sharedPref.getBoolean(context.getResources().getString(R.string.shared_preferences_print), true)) {
 
@@ -774,16 +779,46 @@ public class OctoprintConnection {
 		
 	}
 
+    public static void addToHistory(ModelPrinter p, JSONObject history){
+
+
+        try {
+            String name = history.getString("filename");
+            String path = p.getJobPath();
+            String time = ConvertSecondToHHMMString(history.getString("time"));
+            String type = p.getProfile();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String date =  sdf.format(new Date());
+
+            if (path!=null)
+            if(!path.contains("/temp/")){
+
+                LibraryController.addToHistory(new ListContent.DrawerListItem(type,name,time,date,path));
+                DatabaseController.writeDBHistory(name, path, time, type, date);
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
+    }
+
     //External method to convert seconds to HHmmss
     public static String ConvertSecondToHHMMString(String secondtTime) {
         String time = "--:--:--";
 
         if (!secondtTime.equals("null")) {
 
+            int value = (int)Float.parseFloat(secondtTime);
+
             TimeZone tz = TimeZone.getTimeZone("UTC");
             SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.US);
             df.setTimeZone(tz);
-            time = df.format(new Date(Integer.parseInt(secondtTime) * 1000L));
+            time = df.format(new Date(value * 1000L));
         }
 
 

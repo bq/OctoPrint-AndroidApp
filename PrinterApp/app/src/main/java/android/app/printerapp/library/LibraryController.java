@@ -1,11 +1,13 @@
 package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
+import android.app.printerapp.ListContent;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelFile;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.StateUtils;
+import android.database.Cursor;
 import android.os.Environment;
 
 import java.io.File;
@@ -29,6 +31,7 @@ import java.util.Map;
 public class LibraryController {
 
 	private static ArrayList<File> mFileList = new ArrayList<File>();
+    private static ArrayList<ListContent.DrawerListItem> mHistoryList = new ArrayList<ListContent.DrawerListItem>();
 	private static File mCurrentPath;
 
     public static final String TAB_ALL = "all";
@@ -37,8 +40,6 @@ public class LibraryController {
     public static final String TAB_FAVORITES = "favorites";
 	
 	public LibraryController(){
-
-        //TODO nope
 		mFileList.clear();
 		//Retrieve normal files
 		retrieveFiles( getParentFolder(), false);
@@ -374,6 +375,35 @@ public class LibraryController {
         }
 
         return hash;
+
+    }
+
+    /****************************** HISTORY ****************************************/
+
+    public static ArrayList<ListContent.DrawerListItem> getHistoryList(){ return mHistoryList; }
+
+    public static void initializeHistoryList(){
+
+        mHistoryList.clear();
+
+        Cursor ch = DatabaseController.retrieveHistory();
+        ch.moveToFirst();
+
+
+        while (!ch.isAfterLast()) {
+
+            ListContent.DrawerListItem item = new ListContent.DrawerListItem(ch.getString(3), ch.getString(0), ch.getString(2), ch.getString(4), ch.getString(1));
+
+            addToHistory(item);
+            ch.moveToNext();
+        }
+
+        DatabaseController.closeDb();
+    }
+
+    public static void addToHistory(ListContent.DrawerListItem item){
+
+        mHistoryList.add(0,item);
 
     }
 }
