@@ -10,6 +10,7 @@ import android.app.printerapp.devices.printview.GcodeCache;
 import android.app.printerapp.devices.printview.PrintViewFragment;
 import android.app.printerapp.history.HistoryDrawerAdapter;
 import android.app.printerapp.history.SwipeDismissListViewTouchListener;
+import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.settings.SettingsFragment;
@@ -39,8 +40,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 /**
  * Created by alberto-baeza on 1/21/15.
@@ -157,6 +156,11 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
+
+
+                if (slideOffset == 1.0){
+                    mDrawerAdapter.notifyDataSetChanged();
+                }
                 super.onDrawerSlide(drawerView, slideOffset);
             }
         };
@@ -172,26 +176,7 @@ public class MainActivity extends ActionBarActivity {
 
         LayoutInflater inflater = getLayoutInflater();
         mDrawerList.addHeaderView(inflater.inflate(R.layout.history_drawer_header, null));
-
-
-        final ArrayList<ListContent.DrawerListItem> mHistoryList = new ArrayList<ListContent.DrawerListItem>();
-
-        Cursor ch = DatabaseController.retrieveHistory();
-        ch.moveToFirst();
-
-
-        while (!ch.isAfterLast()) {
-
-            ListContent.DrawerListItem item = new ListContent.DrawerListItem(ch.getString(3), ch.getString(0), ch.getString(2), ch.getString(4), ch.getString(1));
-
-            mHistoryList.add(item);
-            ch.moveToNext();
-        }
-
-        DatabaseController.closeDb();
-
-
-        mDrawerAdapter = new HistoryDrawerAdapter(this, mHistoryList);
+        mDrawerAdapter = new HistoryDrawerAdapter(this, LibraryController.getHistoryList());
 
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -199,7 +184,7 @@ public class MainActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 mDrawerLayout.closeDrawers();
-                requestOpenFile(mHistoryList.get(i - 1).path);
+                requestOpenFile(LibraryController.getHistoryList().get(i - 1).path);
 
             }
         });
@@ -214,12 +199,12 @@ public class MainActivity extends ActionBarActivity {
             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                          for (int position : reverseSortedPositions) {
 
-                                             DatabaseController.removeFromHistory(mHistoryList.get(position - 1).path);
+                                             Toast.makeText(MainActivity.this,getString(R.string.delete) + " " + LibraryController.getHistoryList().get(position - 1).model,Toast.LENGTH_SHORT).show();
+                                             DatabaseController.removeFromHistory(LibraryController.getHistoryList().get(position - 1).path);
                                              mDrawerAdapter.removeItem(position - 1);
-                                             Toast.makeText(MainActivity.this,R.string.delete,Toast.LENGTH_SHORT).show();
+
 
                                              }
-                                     mDrawerAdapter.notifyDataSetChanged();
                                      }
                              }));
 

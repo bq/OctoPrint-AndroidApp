@@ -1,6 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.Dialog;
+import android.app.printerapp.ListContent;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
@@ -790,7 +791,12 @@ public class OctoprintConnection {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String date =  sdf.format(new Date());
 
-            if (path!=null) DatabaseController.writeDBHistory(name, path, time, type, date);
+            if (path!=null)
+            if(!path.contains("/temp/")){
+
+                LibraryController.addToHistory(new ListContent.DrawerListItem(type,name,time,date,path));
+                DatabaseController.writeDBHistory(name, path, time, type, date);
+            }
 
 
         } catch (JSONException e) {

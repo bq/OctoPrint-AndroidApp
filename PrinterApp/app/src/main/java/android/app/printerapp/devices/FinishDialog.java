@@ -144,9 +144,11 @@ public class FinishDialog {
 
                     File to = new File(file.getParentFile().getParentFile().getAbsolutePath() + "/_gcode/" + et_name.getText().toString());
 
-                    DatabaseController.updateHistoryPath(file.getAbsolutePath(), to.getAbsolutePath());
 
+                    DatabaseController.updateHistoryPath(file.getAbsolutePath(), to.getAbsolutePath());
                     file.renameTo(to);
+
+                    LibraryController.initializeHistoryList();
 
 
                 } else {
