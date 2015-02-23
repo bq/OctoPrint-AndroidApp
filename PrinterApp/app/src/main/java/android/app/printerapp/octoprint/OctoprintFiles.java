@@ -199,7 +199,7 @@ public class OctoprintFiles {
 		}
 				
 
-		HttpClientHandler.post(context,url + HttpUtils.URL_FILES + target + filename, 
+		HttpClientHandler.post(context,url + HttpUtils.URL_FILES + target + filename,
 				entity, "application/json", new JsonHttpResponseHandler(){
 			
 			@Override
@@ -255,11 +255,6 @@ public class OctoprintFiles {
                                         super.onSuccess(statusCode, headers, response);
                                         Log.i("OUT", "Command successful");
 
-                                        if (delete) {
-
-                                            deleteFile(context, url, filename, "/sdcard/");
-
-                                        }
                                     }
 
                                 });
