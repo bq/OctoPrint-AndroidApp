@@ -318,7 +318,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 
 	
 	public void scaleObject (float fx, float fy, float fz) {
-		if (Math.abs(fx)>0.1 && Math.abs(fx)<10&& Math.abs(fy)>0.1 && Math.abs(fy)<10 && Math.abs(fz)>0.1 && Math.abs(fz)<10) {	
+		if (/*Math.abs(fx)>0.1 && */Math.abs(fx)<10 && /*Math.abs(fy)>0.1 && */Math.abs(fy)<10 &&/* Math.abs(fz)>0.1 && */Math.abs(fz)<10) {	//Removed min value
 			mScaleFactorX = fx;
 			mScaleFactorY = fy;
 			mScaleFactorZ = fz;

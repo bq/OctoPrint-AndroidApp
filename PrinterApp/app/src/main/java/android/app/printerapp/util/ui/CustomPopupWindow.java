@@ -65,4 +65,10 @@ public class CustomPopupWindow {
         return popupWindow;
     }
 
+    public void hidePopup(){
+
+       getPopupWindow().update(0,0);
+
+    }
+
 }

@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:widget="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/tools"
     android:id="@+id/main_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pager_background"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@android:style/Widget.ProgressBar.Large.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
 
     <!-- MAIN CONTAINER -->
     <LinearLayout
@@ -59,91 +53,325 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2">
 
-
-
-                <FrameLayout
-                    android:id="@+id/viewer_container_framelayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/bottom_bar"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true">
-
-
-                    <!-- Button bar to undo/redo the modifications on the model -->
-                    <LinearLayout
-                        android:id="@+id/model_button_undo_bar_linearlayout"
-                        style="@style/ButtonBar"
-                        android:layout_gravity="bottom"
-                        android:background="#66ffffff"
-                        android:visibility="invisible">
-
-                        <Button
-                            android:id="@+id/undo_button"
-                            style="@style/ButtonBar.NoDefaultButton"
-                            android:drawableLeft="@drawable/ic_arrow_back"
-                            android:text="@string/viewer_button_undo" />
-
-                        <Button
-                            android:id="@+id/redo_button"
-                            style="@style/ButtonBar.NoDefaultButton"
-                            android:drawableRight="@drawable/ic_arrow_forward"
-                            android:text="@string/viewer_button_redo" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/axis_info_textview"
-                        style="@style/TextInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/viewer_axis_info"
-                        android:textColor="@android:color/white"
-                        android:visibility="invisible"
-                        android:layout_gravity="top"
-                        android:layout_marginLeft="10dp"
-                        android:textSize="@dimen/text_size_medium" />
-
-                    <!-- Seek bar to show/hide layers of the model -->
-                    <android.app.printerapp.util.ui.VerticalSeekBar
-                        android:id="@+id/barLayer"
-                        style="@style/TallerSeekBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="350dp"
-                        android:layout_gravity="right|center_vertical"
-                        android:layout_margin="@dimen/content_margin_small"
-                        android:maxHeight="6dp" />
-
-                </FrameLayout>
-
-                <!-- Visibility button-->
-                <ImageButton
-                    android:id="@+id/visibility_button"
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="@android:style/Widget.ProgressBar.Large.Inverse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="@dimen/content_margin_small"
-                    android:background="@drawable/action_button_selector_dark"
-                    android:padding="@dimen/content_padding_small"
-                    android:src="@drawable/ic_viewer_visibility" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true" />
 
-                <FrameLayout
-                    android:id="@id/bottom_bar"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/bottom_container">
+
+                    <FrameLayout
+                        android:id="@+id/viewer_container_framelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true">
+
+
+                        <!-- Button bar to undo/redo the modifications on the model -->
+                        <LinearLayout
+                            android:id="@+id/model_button_undo_bar_linearlayout"
+                            style="@style/ButtonBar"
+                            android:layout_gravity="bottom"
+                            android:background="#66ffffff"
+                            android:visibility="invisible">
+
+                            <Button
+                                android:id="@+id/undo_button"
+                                style="@style/ButtonBar.NoDefaultButton"
+                                android:drawableLeft="@drawable/ic_arrow_back"
+                                android:text="@string/viewer_button_undo" />
+
+                            <Button
+                                android:id="@+id/redo_button"
+                                style="@style/ButtonBar.NoDefaultButton"
+                                android:drawableRight="@drawable/ic_arrow_forward"
+                                android:text="@string/viewer_button_redo" />
+                        </LinearLayout>
+
+
+
+                        <LinearLayout
+                            android:id="@+id/axis_info_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/content_padding_normal"
+                            android:visibility="invisible">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="@string/print_panel_x_axis"
+                                    android:textColor="@android:color/white"
+                                    style="@style/TextHeader"/>
+
+                                <TextView
+                                    android:id="@+id/print_panel_x_size"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="end"
+                                    android:textColor="@android:color/white"
+                                    style="@style/TextHeaderSub"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/print_panel_mm_axis"
+                                    style="@style/TextHeaderSub"
+                                    android:layout_gravity="center"
+                                    android:textColor="@android:color/white"
+                                    android:textStyle="italic"/>
+
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="@string/print_panel_y_axis"
+                                    android:textColor="@android:color/white"
+                                    style="@style/TextHeader"/>
+
+                                <TextView
+                                    android:id="@+id/print_panel_y_size"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="end"
+                                    android:textColor="@android:color/white"
+                                    style="@style/TextHeaderSub"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/print_panel_mm_axis"
+                                    style="@style/TextHeaderSub"
+                                    android:layout_gravity="center"
+                                    android:textColor="@android:color/white"
+                                    android:textStyle="italic"/>
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="@string/print_panel_z_axis"
+                                    android:textColor="@android:color/white"
+                                    style="@style/TextHeader"/>
+
+                                <TextView
+                                    android:id="@+id/print_panel_z_size"
+                                    android:layout_width="50dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="end"
+                                    android:textColor="@android:color/white"
+                                    style="@style/TextHeaderSub"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/print_panel_mm_axis"
+                                    style="@style/TextHeaderSub"
+                                    android:layout_gravity="center"
+                                    android:textColor="@android:color/white"
+                                    android:textStyle="italic"/>
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Seek bar to show/hide layers of the model -->
+                        <android.app.printerapp.util.ui.VerticalSeekBar
+                            android:id="@+id/barLayer"
+                            style="@style/TallerSeekBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="350dp"
+                            android:layout_gravity="right|center_vertical"
+                            android:layout_margin="@dimen/content_margin_small"
+                            android:maxHeight="6dp" />
+
+                    </FrameLayout>
+
+                    <!-- Visibility button-->
+                    <ImageButton
+                        android:id="@+id/visibility_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="@dimen/content_margin_small"
+                        android:background="@drawable/action_button_selector_dark"
+                        android:padding="@dimen/content_padding_small"
+                        android:src="@drawable/ic_viewer_visibility" />
+
+
+
+                    <FrameLayout
+                        android:id="@+id/bottom_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/printer_view_bottom_bar">
+
+
+
+                        <!-- Bottom bar to rotate the model -->
+                        <LinearLayout
+                            android:id="@+id/print_panel_edit_linearlayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/print_panel_bar_action_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/content_padding_small"/>
+
+                            <LinearLayout
+                                android:id="@+id/model_button_rotate_bar_linearlayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <android.app.printerapp.util.ui.CustomEditableSlider
+                                    android:id="@+id/print_panel_slider"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#1E88E5"
+                                    materialdesign:showNumberIndicator="true"/>
+
+
+                            </LinearLayout>
+
+                            <!-- Bottom bar to scale the model -->
+                            <LinearLayout
+                                android:id="@+id/model_button_scale_bar_linearlayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:descendantFocusability="afterDescendants"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextHeader"
+                                    android:layout_margin="@dimen/content_margin_small"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:text="@string/print_panel_x_axis"/>
+
+                                <EditText
+                                    android:id="@+id/scale_bar_x_edittext"
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionDone"
+                                    />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextHeader"
+                                    android:layout_margin="@dimen/content_margin_small"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:text="@string/print_panel_y_axis"/>
+
+                                <EditText
+                                    android:id="@+id/scale_bar_y_edittext"
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionDone"
+
+                                    />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/TextHeader"
+                                    android:layout_margin="@dimen/content_margin_small"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:text="@string/print_panel_z_axis"/>
+
+                                <EditText
+                                    android:id="@+id/scale_bar_z_edittext"
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionDone"
+                                    />
+
+                                <ImageButton
+                                    android:id="@+id/scale_uniform_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_editor_insert_link"
+                                    android:background="@drawable/button_toggle_selector"
+                                    />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/bottom_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/print_button_container"
-                    android:layout_alignEnd="@+id/print_button_container"
-                    android:layout_alignRight="@+id/print_button_container"
-                    android:background="@color/printer_view_bottom_bar">
+                    android:orientation="vertical"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
 
                     <!-- Bottom bar with the progress and axis info -->
                     <LinearLayout
                         android:id="@+id/model_status_bottom_bar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top"
                         android:orientation="vertical">
 
                         <ProgressBar
@@ -151,107 +379,60 @@
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:visibility="invisible" />
+                            android:visibility="visible"/>
 
 
                     </LinearLayout>
 
-                    <!-- Bottom bar to rotate the model -->
+                    <!-- Print button -->
                     <LinearLayout
-                        android:id="@+id/model_button_rotate_bar_linearlayout"
-                        android:layout_width="match_parent"
+                        android:id="@+id/print_button_container"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:visibility="visible">
+
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/text_axis"
-                            android:layout_width="60dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="left"
-                            style="@style/TextInfo"
-                            android:textColor="@android:color/white"/>
-
-                        <TextView
-                            android:id="@+id/text_rotation"
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/TextInfo"
-                            android:textColor="@android:color/white"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                            android:id="@+id/viewer_estimated_time_textview"
+                            android:textSize="@dimen/text_size_small"
+                            android:textColor="@color/body_text_1"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal">
+                            android:layout_gravity="center"
+                            android:text="@string/viewer_progress_time" />
 
-                            <SeekBar
-                                android:id="@+id/rotation_seek_bar"
-                                style="@style/TallerSeekBar"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/content_margin_small"
-                                android:layout_marginRight="@dimen/content_margin_small"/>
+                        <TextView
+                            android:id="@+id/viewer_text_estimated_time"
+                            android:textSize="@dimen/text_size_small"
+                            android:textColor="@color/body_text_2"
+                            android:textStyle="italic"
+                            android:paddingLeft="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textAllCaps="true"/>
 
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/viewer_text_progress_slice"
+                            android:textSize="@dimen/text_size_small"
+                            android:textColor="@color/body_text_2"
+                            android:textStyle="italic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingLeft="5dp"
+                            android:textAllCaps="true"/>
 
+                        <com.material.widget.PaperButton
+                            android:id="@+id/print_model_button"
+                            style="@style/MaterialDesignButton.Raised.Default"
+                            android:layout_width="150dp"
+                            widget:paper_text="@string/viewer_button_print" />
                     </LinearLayout>
-
-                </FrameLayout>
-
-
-                <!-- Print button -->
-                <LinearLayout
-                    android:id="@+id/print_button_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="end"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/viewer_estimated_time_textview"
-                        android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/body_text_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/viewer_progress_time" />
-
-                    <TextView
-                        android:id="@+id/viewer_text_estimated_time"
-                        android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/body_text_2"
-                        android:textStyle="italic"
-                        android:paddingLeft="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textAllCaps="true"/>
-
-                    <TextView
-                        android:id="@+id/viewer_text_progress_slice"
-                        android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/body_text_2"
-                        android:textStyle="italic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:paddingLeft="5dp"
-                        android:textAllCaps="true"/>
-
-                    <com.material.widget.PaperButton
-                        android:id="@+id/print_model_button"
-                        style="@style/MaterialDesignButton.Raised.Default"
-                        android:layout_width="150dp"
-                        widget:paper_text="@string/viewer_button_print" />
                 </LinearLayout>
+
+
             </RelativeLayout>
 
 

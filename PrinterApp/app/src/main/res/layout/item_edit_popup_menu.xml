@@ -24,18 +24,18 @@
     <ImageButton
         android:id="@+id/scale_item_button"
         style="@style/ActionButton"
-        android:src="@drawable/ic_viewer_scale" />
+        android:src="@drawable/ic_viewer_scale"/>
 
     <!-- Multiply action button -->
     <ImageButton
         android:id="@+id/multiply_item_button"
         style="@style/ActionButton"
-        android:src="@drawable/ic_viewer_multiply" />
+        android:src="@drawable/ic_viewer_multiply"/>
 
     <!-- Delete action button -->
     <ImageButton
         android:id="@+id/delete_item_button"
         style="@style/ActionButton"
-        android:src="@drawable/ic_action_delete" />
+        android:src="@drawable/ic_action_delete"/>
 
 </LinearLayout>

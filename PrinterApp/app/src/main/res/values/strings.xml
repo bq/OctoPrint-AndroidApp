@@ -344,7 +344,7 @@
     <string name="viewer_file_size">The model you are trying to load is too big. If you continue the application may run out of memory and crash.</string>
     <string name="viewer_progress_time">"ESTIMATED TIME:  "</string>
     <string name="viewer_progress_task_slicing">Slicing (%1$s)</string>
-    <string name="viewer_axis_info" translatable="false">" X = %1$.2f mm &#032;&#032; / &#032;&#032; Y = %2$.2f mm &#032;&#032; / &#032;&#032; Z = %3$.2f mm"</string>
+    <string name="viewer_axis_info" translatable="false">" X = %1$.2f mm &#032;&#032; \n &#032;&#032; Y = %2$.2f mm &#032;&#032; \n &#032;&#032; Z = %3$.2f mm"</string>
     <string name="viewer_text_downloaded">DOWNLOADED</string>
     <string name="viewer_text_downloading">DOWNLOADING</string>
     <string name="viewer_text_slicing">SLICING</string>
@@ -377,6 +377,11 @@
     <string name="dialog_create_profile_title">Create new profile</string>
     <string name="history_drawer_print_time">Print time:\u0020</string>
     <string name="history_drawer_date">Date:\u0020</string>
+
+    <string name="print_panel_x_axis"  translatable="false">X =</string>
+    <string name="print_panel_y_axis"  translatable="false">Y =</string>
+    <string name="print_panel_z_axis"  translatable="false">Z =</string>
+    <string name="print_panel_mm_axis"  translatable="false">&#032;mm</string>
 
 
 </resources>
