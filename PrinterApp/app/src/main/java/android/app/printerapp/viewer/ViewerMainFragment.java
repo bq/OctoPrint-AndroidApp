@@ -12,6 +12,7 @@ import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.util.ui.CustomEditableSlider;
 import android.app.printerapp.util.ui.CustomPopupWindow;
 import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
 import android.app.printerapp.viewer.sidepanel.SidePanelHandler;
@@ -22,7 +23,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,14 +36,18 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
@@ -85,6 +92,7 @@ public class ViewerMainFragment extends Fragment {
 
     private static final float POSITIVE_ANGLE = 15;
     private static final float NEGATIVE_ANGLE = -15;
+    private static final int MENU_HIDE_OFFSET = 20;
 
     //Variables
     private static File mFile;
@@ -99,6 +107,7 @@ public class ViewerMainFragment extends Fragment {
     private static ImageButton mVisibilityModeButton;
 
     private static SeekBar mSeekBar;
+    private boolean isKeyboardShown = false;
 
     private static List<DataStorage> mDataList = new ArrayList<DataStorage>();
 
@@ -112,8 +121,20 @@ public class ViewerMainFragment extends Fragment {
     private static View mRootView;
 
     private static LinearLayout mStatusBottomBar;
+    private static FrameLayout mBottomBar;
     private static LinearLayout mRotationLayout;
-    private static SeekBar mRotationSeekbar;
+    private static LinearLayout mScaleLayout;
+    private static CustomEditableSlider mRotationSlider;
+    private static ImageView mActionImage;
+
+    private static EditText mScaleEditX;
+    private static EditText mScaleEditY;
+    private static EditText mScaleEditZ;
+    private static ImageButton mUniformScale;
+
+    private static ScaleChangeListener mTextWatcherX;
+    private static ScaleChangeListener mTextWatcherY;
+    private static ScaleChangeListener mTextWatcherZ;
 
     /**
      * ****************************************************************************
@@ -126,9 +147,7 @@ public class ViewerMainFragment extends Fragment {
     private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
     ;
 
-    private static TextView mRotationText;
-    private static TextView mAxisText;
-    private static TextView mSizeText;
+    private static LinearLayout mSizeText;
     private static int mCurrentAxis;
 
     //Empty constructor
@@ -179,6 +198,40 @@ public class ViewerMainFragment extends Fragment {
 
             mSurface = new ViewerSurfaceView(mContext, mDataList, NORMAL, DONT_SNAPSHOT, mSlicingHandler);
             draw();
+
+            //Hide the action bar when editing the scale of the model
+            mRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    Rect r = new Rect();
+                    mRootView.getWindowVisibleDisplayFrame(r);
+
+                    if (mSurface.getEditionMode() == ViewerSurfaceView.SCALED_EDITION_MODE){
+
+                        int[] location = new int[2];
+
+                        int heightDiff = mRootView.getRootView().getHeight() - (r.bottom - r.top);
+                        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                            mActionModePopupWindow.getContentView().setVisibility(View.INVISIBLE);
+                            isKeyboardShown = true;
+                            mActionModePopupWindow.getContentView().getLocationInWindow(location);
+                            mActionModePopupWindow.update(location[0] + MENU_HIDE_OFFSET,location[1] + MENU_HIDE_OFFSET);
+                        } else {
+
+                            if (isKeyboardShown) {
+                                mActionModePopupWindow.getContentView().setVisibility(View.VISIBLE);
+                                isKeyboardShown = false;
+                                mActionModePopupWindow.getContentView().getLocationInWindow(location);
+                                mActionModePopupWindow.update(location[0] - MENU_HIDE_OFFSET,location[1] - MENU_HIDE_OFFSET);
+
+                            }
+
+                        }
+                    }
+
+                }
+            });
         }
 
         return mRootView;
@@ -270,148 +323,124 @@ public class ViewerMainFragment extends Fragment {
          *****************************/
         mProgress = (ProgressBar) mRootView.findViewById(R.id.progress_bar);
         mProgress.setVisibility(View.GONE);
-        mRotationText = (TextView) mRootView.findViewById(R.id.text_rotation);
-        mAxisText = (TextView) mRootView.findViewById(R.id.text_axis);
-        mSizeText = (TextView) mRootView.findViewById(R.id.axis_info_textview);
-        mRotationSeekbar = (SeekBar) mRootView.findViewById(R.id.rotation_seek_bar);
-        mRotationSeekbar.setProgress(12);
-        mRotationText.setText("");
-        mRotationSeekbar.setMax(24);
-        mRotationSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        mSizeText = (LinearLayout) mRootView.findViewById(R.id.axis_info_layout);
+        mActionImage = (ImageView) mRootView.findViewById(R.id.print_panel_bar_action_image);
 
-            boolean lock = true;
-            int previous = 2;
 
+        mRotationSlider = (CustomEditableSlider) mRootView.findViewById(R.id.print_panel_slider);
+        mRotationSlider.setValue(12);
+        mRotationSlider.setShownValue(0);
+        mRotationSlider.setMax(24);
+        mRotationSlider.setShowNumberIndicator(true);
+        mRotationSlider.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                int mode = mSurface.getEditionMode();
+                switch (motionEvent.getAction()){
 
-                switch (mode) {
-
-                    case ViewerSurfaceView.ROTATION_EDITION_MODE:
-
-                        //Calculation on a 12 point seekbar
-                        float newAngle = (i - 12) * POSITIVE_ANGLE;
-
-                        try {
-
-
-                            if (!lock) {
-
-                                switch (mCurrentAxis) {
-
-                                    case 0:
-                                        mSurface.rotateAngleAxisX(newAngle);
-                                        break;
-                                    case 1:
-                                        mSurface.rotateAngleAxisY(newAngle);
-                                        break;
-                                    case 2:
-                                        mSurface.rotateAngleAxisZ(newAngle);
-                                        break;
-                                    default:
-                                        return;
-
-                                }
-
-                            }
-
-
-                            mRotationText.setText((int) newAngle + "º");
-
-                            mSurface.requestRender();
-
-
-                        } catch (ArrayIndexOutOfBoundsException e) {
-
-                            e.printStackTrace();
-                        }
+                    case MotionEvent.ACTION_DOWN:
 
                         break;
 
+                    case MotionEvent.ACTION_UP:
 
-
-                    case ViewerSurfaceView.SCALED_EDITION_MODE:
-
-                        if (!lock){
-                            if (i < previous){
-
-                                mSurface.doScale((float)Math.pow(0.75f, (previous - i)));
-
-                            } else if (i > previous){
-
-                                mSurface.doScale((float) ( 1 / (Math.pow(0.75f, (i - previous))))) ;
-
-                            }
-                        }
-
-
-
-                        previous = i;
+                        if (mSurface.getEditionMode() == ViewerSurfaceView.ROTATION_EDITION_MODE)
+                            mSurface.refreshRotatedObject();
+                        slicingCallback();
 
                         break;
-
                 }
 
 
-
-
-
+                return false;
             }
+        });
+        mRotationSlider.setOnValueChangedListener(new CustomEditableSlider.OnValueChangedListener() {
+
+            boolean lock = false;
+
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                lock = false;
-                previous = seekBar.getProgress();
+            public void onValueChanged(int i) {
 
-                Log.i("Scale", "Scale previous @" + seekBar.getProgress());
+                //Calculation on a 12 point seekbar
+                float newAngle = (i - 12) * POSITIVE_ANGLE;
+
+                mRotationSlider.setShownValue((int)newAngle);
+
+                try {
+
+
+                    if (!lock) {
+
+                        switch (mCurrentAxis) {
+
+                            case 0:
+                                mSurface.rotateAngleAxisX(newAngle);
+                                break;
+                            case 1:
+                                mSurface.rotateAngleAxisY(newAngle);
+                                break;
+                            case 2:
+                                mSurface.rotateAngleAxisZ(newAngle);
+                                break;
+                            default:
+                                return;
+
+                        }
+
+                    }
+
+                    mSurface.requestRender();
+
+
+                } catch (ArrayIndexOutOfBoundsException e) {
+
+                    e.printStackTrace();
+                }
 
 
             }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-                lock = true;
-                if (mSurface.getEditionMode() == ViewerSurfaceView.ROTATION_EDITION_MODE) mSurface.refreshRotatedObject();
-                slicingCallback();
-                //previous = 2 ;
-
-            }
-
-
         });
 
-        mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
         mStatusBottomBar = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
-        mRotationLayout.setVisibility(View.INVISIBLE);
-        mStatusBottomBar.setVisibility(View.VISIBLE);
+        mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
+        mScaleLayout  = (LinearLayout) mRootView.findViewById(R.id.model_button_scale_bar_linearlayout);
 
+        mTextWatcherX = new ScaleChangeListener(0);
+        mTextWatcherY = new ScaleChangeListener(1);
+        mTextWatcherZ = new ScaleChangeListener(2);
+
+        mScaleEditX = (EditText) mScaleLayout.findViewById(R.id.scale_bar_x_edittext);
+        mScaleEditY = (EditText) mScaleLayout.findViewById(R.id.scale_bar_y_edittext);
+        mScaleEditZ = (EditText) mScaleLayout.findViewById(R.id.scale_bar_z_edittext);
+        mUniformScale = (ImageButton) mScaleLayout.findViewById(R.id.scale_uniform_button);
+        mUniformScale.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mUniformScale.isSelected()){
+                    mUniformScale.setSelected(false);
+                } else {
+                    mUniformScale.setSelected(true);
+                }
+
+
+            }
+        });
+        mUniformScale.setSelected(true);
+
+        mScaleEditX.addTextChangedListener(mTextWatcherX);
+        mScaleEditY.addTextChangedListener(mTextWatcherY);
+        mScaleEditZ.addTextChangedListener(mTextWatcherZ);
+
+        mStatusBottomBar.setVisibility(View.VISIBLE);
+        mBottomBar = (FrameLayout) mRootView.findViewById(R.id.bottom_bar);
+        mBottomBar.setVisibility(View.INVISIBLE);
         mCurrentAxis = -1;
 
     }
 
-    public static void prepareSeekBar(){
-
-        switch (mSurface.getEditionMode()){
-
-            case ViewerSurfaceView.ROTATION_EDITION_MODE:
-
-                mRotationSeekbar.setProgress(12);
-                mRotationSeekbar.setMax(24);
-                break;
-
-            case ViewerSurfaceView.SCALED_EDITION_MODE:
-                mRotationText.setText("");
-                mRotationSeekbar.setProgress(2);
-                mRotationSeekbar.setMax(4);
-                break;
-
-        }
-
-
-    }
 
     /**
      * Change the current rotation axis and update the text accordingly
@@ -427,29 +456,24 @@ public class ViewerMainFragment extends Fragment {
         switch (mCurrentAxis) {
 
             case 0:
-                mAxisText.setText("Eje X");
-
+                mRotationSlider.setBackgroundColor(Color.GREEN);
                 break;
 
             case 1:
-                mAxisText.setText("Eje Y");
-
+                mRotationSlider.setBackgroundColor(Color.RED);
                 break;
             case 2:
-                mAxisText.setText("Eje Z");
-
+                mRotationSlider.setBackgroundColor(Color.BLUE);
                 break;
             default:
-                mAxisText.setText("Eje X");
-
+                mRotationSlider.setBackgroundColor(Color.TRANSPARENT);
                 break;
 
         }
 
         mSurface.setRendererAxis(mCurrentAxis);
 
-        mRotationSeekbar.setProgress((int) currentAngle);
-        mRotationText.setText("");
+        mRotationSlider.setValue((int) currentAngle);
 
     }
 
@@ -776,11 +800,9 @@ public class ViewerMainFragment extends Fragment {
         mLayout.addView(mSurface, 0);
         mLayout.addView(mSeekBar, 1);
         mLayout.addView(mSizeText, 2);
-        mSizeText.setPadding(12,12,0,0);
 
 //      mLayout.addView(mUndoButtonBar, 3);
-//      mLayout.addView(mRotationLayout, 2);
-//      mLayout.addView(mStatusBottomBar, 3);
+//      mLayout.addView(mEditionLayout, 2);
     }
 
     /**
@@ -1008,8 +1030,10 @@ public class ViewerMainFragment extends Fragment {
         if (mActionModePopupWindow != null) {
             mActionModePopupWindow.dismiss();
             mSurface.exitEditionMode();
-            mRotationLayout.setVisibility(View.INVISIBLE);
+            mRotationLayout.setVisibility(View.GONE);
+            mScaleLayout.setVisibility(View.GONE);
             mStatusBottomBar.setVisibility(View.VISIBLE);
+            mBottomBar.setVisibility(View.INVISIBLE);
             mActionModePopupWindow = null;
             mSurface.setRendererAxis(-1);
         }
@@ -1029,6 +1053,17 @@ public class ViewerMainFragment extends Fragment {
             mCurrentActionPopupWindow.dismiss();
             mCurrentActionPopupWindow = null;
         }
+        hideSoftKeyboard();
+    }
+
+    public static void hideSoftKeyboard() {
+        try{
+            InputMethodManager inputMethodManager = (InputMethodManager)  mContext.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(((Activity)mContext).getCurrentFocus().getWindowToken(), 0);
+        } catch (NullPointerException e){
+
+        }
+
     }
 
     /**
@@ -1038,10 +1073,11 @@ public class ViewerMainFragment extends Fragment {
      */
     public static void onActionItemSelected(final ImageButton item) {
 
-        mRotationLayout.setVisibility(View.INVISIBLE);
         mStatusBottomBar.setVisibility(View.VISIBLE);
         mSurface.setRendererAxis(-1);
-
+        mRotationLayout.setVisibility(View.GONE);
+        mScaleLayout.setVisibility(View.GONE);
+        mBottomBar.setVisibility(View.INVISIBLE);
         mSizeText.setVisibility(View.VISIBLE);
 
         selectActionButton(item.getId());
@@ -1061,13 +1097,12 @@ public class ViewerMainFragment extends Fragment {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
-
+                                    mBottomBar.setVisibility(View.VISIBLE);
                                     mRotationLayout.setVisibility(View.VISIBLE);
-                                    mStatusBottomBar.setVisibility(View.INVISIBLE);
                                     mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
-                                    prepareSeekBar();
                                     hideCurrentActionPopUpWindow();
                                     item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
+                                    mActionImage.setImageDrawable(mContext.getResources().getDrawable(actionButtonsIcons.getResourceId(position, -1)));
                                 }
                             });
                 } else {
@@ -1076,12 +1111,11 @@ public class ViewerMainFragment extends Fragment {
                 break;
             case R.id.scale_item_button:
                 hideCurrentActionPopUpWindow();
-                mRotationLayout.setVisibility(View.VISIBLE);
-                mStatusBottomBar.setVisibility(View.INVISIBLE);
-
+                mBottomBar.setVisibility(View.VISIBLE);
+                mScaleLayout.setVisibility(View.VISIBLE);
                 mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
-                prepareSeekBar();
-
+                mActionImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_action_scale));
+                displayModelSize(mSurface.getObjectPresed());
                 break;
                 /*case R.id.mirror:
                     mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
@@ -1305,15 +1339,9 @@ public class ViewerMainFragment extends Fragment {
 
 
         if (mRootView != null) {
-
-            LinearLayout ll = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
-
             ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
             TextView tv = (TextView) mRootView.findViewById(R.id.viewer_text_progress_slice);
             TextView tve = (TextView) mRootView.findViewById(R.id.viewer_text_estimated_time);
-
-            ll.bringToFront();
-            ll.setVisibility(View.VISIBLE);
             pb.setVisibility(View.VISIBLE);
 
             switch (status) {
@@ -1428,7 +1456,28 @@ public class ViewerMainFragment extends Fragment {
 
             //Display size of the model
             //mSizeText.setText("W = " + width + " mm / D = " + depth + " mm / H = " + height + " mm");
-            mSizeText.setText(String.format(mContext.getResources().getString(R.string.viewer_axis_info), Double.parseDouble(width), Double.parseDouble(depth), Double.parseDouble(height)));
+            //mSizeText.setText(String.format(mContext.getResources().getString(R.string.viewer_axis_info), Double.parseDouble(width), Double.parseDouble(depth), Double.parseDouble(height)));
+
+            Log.i("Scale","Vamos a petar " + width);
+            ((TextView) mSizeText.findViewById(R.id.print_panel_x_size)).setText(width);
+            ((TextView) mSizeText.findViewById(R.id.print_panel_y_size)).setText(depth);
+            ((TextView) mSizeText.findViewById(R.id.print_panel_z_size)).setText(height);
+
+            if (mScaleLayout.getVisibility() == View.VISIBLE){
+
+                mScaleEditX.removeTextChangedListener(mTextWatcherX);
+                mScaleEditY.removeTextChangedListener(mTextWatcherY);
+                mScaleEditZ.removeTextChangedListener(mTextWatcherZ);
+
+                mScaleEditX.setText(width);
+                mScaleEditY.setText(depth);
+                mScaleEditZ.setText(height);
+
+                mScaleEditX.addTextChangedListener(mTextWatcherX);
+                mScaleEditY.addTextChangedListener(mTextWatcherY);
+                mScaleEditZ.addTextChangedListener(mTextWatcherZ);
+            }
+
         } catch (ArrayIndexOutOfBoundsException e) {
 
             e.printStackTrace();
@@ -1612,5 +1661,58 @@ public class ViewerMainFragment extends Fragment {
             }
 
     }
+
+    private class ScaleChangeListener implements TextWatcher{
+
+        int mAxis;
+
+        private ScaleChangeListener(int axis){
+
+            mAxis = axis;
+
+        }
+
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+            try{
+                switch (mAxis){
+
+                    case 0:
+
+                        mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
+                        break;
+
+                    case 1:
+                        mSurface.doScale(0, Float.parseFloat(editable.toString()), 0, mUniformScale.isSelected());
+                        break;
+
+                    case 2:
+                        mSurface.doScale(0, 0, Float.parseFloat(editable.toString()), mUniformScale.isSelected());
+                        break;
+
+                }
+            } catch (NumberFormatException e){
+
+                e.printStackTrace();
+
+            }
+
+
+
+        }
+    }
+
 
 }

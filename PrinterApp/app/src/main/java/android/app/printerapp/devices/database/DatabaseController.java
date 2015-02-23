@@ -278,8 +278,6 @@ public class DatabaseController {
         mDb.update(FeedEntry.TABLE_HISTORY_NAME, values,
                 FeedEntry.HISTORY_PATH + " = '" + oldPath + "'", null);
 
-        Log.i("Done", "Updated history: updated with " + oldPath + " where " + newPath);
-
 
         mDb.close();
 

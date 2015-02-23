@@ -412,6 +412,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
                         }
                         else {
+
                             ViewerMainFragment.hideActionModePopUpWindow();
                             ViewerMainFragment.hideCurrentActionPopUpWindow();
                         }
@@ -598,20 +599,49 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		}
 	}
 
-    public void doScale(float factor){
+    public void doScale(float x, float y, float z, boolean uniform){
+
         if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
 
             float factorX = mDataList.get(mObjectPressed).getLastScaleFactorX();
             float factorY = mDataList.get(mObjectPressed).getLastScaleFactorY();
             float factorZ = mDataList.get(mObjectPressed).getLastScaleFactorZ();
 
-            float fx = factorX*factor;
-            float fy = factorY*factor;
-            float fz = factorZ*factor;
+            DataStorage data = mDataList.get(mObjectPressed);
+
+            float scaleX = x / (data.getMaxX() - data.getMinX());
+            float scaleY = y / (data.getMaxY() - data.getMinY());
+            float scaleZ = z / (data.getMaxZ() - data.getMinZ());
+
+            float fx = factorX;
+            float fy = factorY;
+            float fz = factorZ;
+
+
+            if (!uniform){
+                if (x > 0) fx = factorX*scaleX;
+                if (y > 0) fy = factorY*scaleY;
+                if (z > 0) fz = factorZ*scaleZ;
+            } else {
+
+                if (x > 0) {
+                    fx = factorX*scaleX;  fy = fx; fz = fx;
+                }
+                if (y > 0) {
+                    fy = factorY*scaleY;  fx = fy; fz = fy;
+                }
+                if (z > 0) {
+                    fz = factorZ*scaleZ;  fx = fz; fy = fz;
+                }
+            }
+
+
+            Log.i("Scale","Scale " + fx + ";" + fy + ";" + fz);
 
             mRenderer.scaleObject(fx,fy,fz);
             ViewerMainFragment.displayModelSize(mObjectPressed);
             requestRender();
+
         }
     }
 	
