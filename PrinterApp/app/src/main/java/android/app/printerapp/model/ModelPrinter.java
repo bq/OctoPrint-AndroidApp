@@ -163,7 +163,7 @@ public class ModelPrinter {
 		
 		
 		if (status!=null){
-			
+
 			mJob.updateJob(status);
 			
 			try {

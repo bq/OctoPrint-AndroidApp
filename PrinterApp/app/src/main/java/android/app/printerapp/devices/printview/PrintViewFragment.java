@@ -537,6 +537,7 @@ public class PrintViewFragment extends Fragment {
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
         tv_profile.setText(" " + mPrinter.getProfile());
+        mRootView.findViewById(R.id.stop_button_container).setVisibility(View.VISIBLE);
 
         if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING) ||
                 (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) {
@@ -580,18 +581,16 @@ public class PrintViewFragment extends Fragment {
 
                 pb_prog.setProgress(100);
                 tv_file.setText(R.string.devices_text_completed);
-
                 button_pause.setText(getString(R.string.printview_finish_button));
                 icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_done));
+
+                mRootView.findViewById(R.id.stop_button_container).setVisibility(View.INVISIBLE);
 
             } else {
 
                 tv_prog.setText(mPrinter.getMessage() + " - ");
-
-
                 button_pause.setText(getString(R.string.printview_start_button));
                 icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
-
             }
 
             isPrinting = false;
