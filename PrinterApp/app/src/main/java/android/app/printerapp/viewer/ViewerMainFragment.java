@@ -92,7 +92,9 @@ public class ViewerMainFragment extends Fragment {
 
     private static final float POSITIVE_ANGLE = 15;
     private static final float NEGATIVE_ANGLE = -15;
-    private static final int MENU_HIDE_OFFSET = 20;
+
+    private static final int MENU_HIDE_OFFSET_SMALL = 20;
+    private static final int MENU_HIDE_OFFSET_BIG = 1000;
 
     //Variables
     private static File mFile;
@@ -149,6 +151,8 @@ public class ViewerMainFragment extends Fragment {
 
     private static LinearLayout mSizeText;
     private static int mCurrentAxis;
+
+    //private static Geometry.Point mPreviousOffset;
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -210,20 +214,26 @@ public class ViewerMainFragment extends Fragment {
                     if (mSurface.getEditionMode() == ViewerSurfaceView.SCALED_EDITION_MODE){
 
                         int[] location = new int[2];
-
                         int heightDiff = mRootView.getRootView().getHeight() - (r.bottom - r.top);
-                        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-                            mActionModePopupWindow.getContentView().setVisibility(View.INVISIBLE);
-                            isKeyboardShown = true;
-                            mActionModePopupWindow.getContentView().getLocationInWindow(location);
-                            mActionModePopupWindow.update(location[0] + MENU_HIDE_OFFSET,location[1] + MENU_HIDE_OFFSET);
-                        } else {
 
+                        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+
+                            if (!isKeyboardShown) {
+                                isKeyboardShown = true;
+                                mActionModePopupWindow.getContentView().getLocationInWindow(location);
+
+                                if (Build.VERSION.SDK_INT >= 19)
+                                    mActionModePopupWindow.update(location[0], location[1] - MENU_HIDE_OFFSET_SMALL);
+                                else  mActionModePopupWindow.update(location[0], location[1] + MENU_HIDE_OFFSET_BIG);
+                            }
+                        } else {
                             if (isKeyboardShown) {
-                                mActionModePopupWindow.getContentView().setVisibility(View.VISIBLE);
                                 isKeyboardShown = false;
                                 mActionModePopupWindow.getContentView().getLocationInWindow(location);
-                                mActionModePopupWindow.update(location[0] - MENU_HIDE_OFFSET,location[1] - MENU_HIDE_OFFSET);
+
+                                if (Build.VERSION.SDK_INT >= 19)
+                                    mActionModePopupWindow.update(location[0], location[1] + MENU_HIDE_OFFSET_SMALL);
+                                else  mActionModePopupWindow.update(location[0], location[1] - MENU_HIDE_OFFSET_BIG);
 
                             }
 
@@ -245,6 +255,10 @@ public class ViewerMainFragment extends Fragment {
         try {
             mDataList.remove(mDataList.size() - 1);
             mSurface.requestRender();
+
+            mCurrentViewMode = NORMAL;
+            mSurface.configViewMode(mCurrentViewMode);
+            mFile = new File(mSlicingHandler.getLastReference());
 
         } catch (Exception e) {
 
@@ -653,7 +667,6 @@ public class ViewerMainFragment extends Fragment {
             data = new DataStorage();
 
             mVisibilityModeButton.setVisibility(View.VISIBLE);
-
             mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
             mSidePanelHandler.enableProfileSelection(true);
@@ -717,6 +730,7 @@ public class ViewerMainFragment extends Fragment {
                     if (openStlFile()) {
 
                         mCurrentViewMode = state;
+
 
                     }
                     ;
@@ -1609,6 +1623,9 @@ public class ViewerMainFragment extends Fragment {
 
         JSONObject position = new JSONObject();
         try {
+
+            //mPreviousOffset = new Geometry.Point(x,y,0);
+
             position.put("x", (int) x + mCurrentPlate[0]);
             position.put("y", (int) y + mCurrentPlate[1]);
 

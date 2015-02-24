@@ -49,7 +49,7 @@ public class StlFile {
     private static final int COORDS_PER_TRIANGLE = 9;
     private static int mMode;
 
-    private static final int MAX_SIZE = 70000000; //25Mb
+    private static final int MAX_SIZE = 50000000; //50Mb
 
 
     public static void openStlFile(Context context, File file, DataStorage data, int mode) {
@@ -92,6 +92,8 @@ public class StlFile {
                         Log.e(TAG, "trying binary...");
                         if (mContinueThread) processBinary(arrayBytes);
                     }
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -163,6 +165,7 @@ public class StlFile {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 ViewerMainFragment.resetWhenCancel();
             }
         });
