@@ -14,6 +14,7 @@ import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.DiscoveryController;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
+import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.HttpUtils;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintControl;
@@ -30,7 +31,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,6 +49,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.material.widget.PaperButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -768,9 +771,6 @@ public class PrintViewFragment extends Fragment {
             mDataGcode = tempData;
             drawPrintView();
 
-            Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
-            Debug.getMemoryInfo(memoryInfo);
-
 
         } else {
 
@@ -778,7 +778,6 @@ public class PrintViewFragment extends Fragment {
             GcodeFile.openGcodeFile(context, file, mDataGcode, ViewerMainFragment.PRINT_PREVIEW);
 
             GcodeCache.addGcodeToCache(mDataGcode);
-
         }
 
 
@@ -798,6 +797,17 @@ public class PrintViewFragment extends Fragment {
         changeProgress(mActualProgress);
 
         mSurface.setZOrderOnTop(true);
+
+        JSONObject profile = ModelProfile.retrieveProfile(mContext, mPrinter.getProfile(), ModelProfile.TYPE_P);
+        try {
+            JSONObject volume = profile.getJSONObject("volume");
+
+            mSurface.changePlate(new int[]{volume.getInt("width") / 2, volume.getInt("depth") / 2, volume.getInt("height")});
+            mSurface.requestRender();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         return true;
