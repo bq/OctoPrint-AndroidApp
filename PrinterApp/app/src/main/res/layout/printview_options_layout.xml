@@ -630,6 +630,15 @@
             </uk.co.androidalliance.edgeeffectoverride.ScrollView>
         </LinearLayout>
 
+        <FrameLayout
+            android:id="@+id/disabled_gray_tint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/dark_almost_transparent"
+            android:clickable="true"
+            android:visibility="gone"/>
+
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

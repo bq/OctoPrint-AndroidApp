@@ -480,6 +480,8 @@ public class PrintViewFragment extends Fragment {
             }
         });
 
+        mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.VISIBLE);
+
     }
 
     private double convertProgress(int amount){
@@ -538,6 +540,7 @@ public class PrintViewFragment extends Fragment {
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
         tv_profile.setText(" " + mPrinter.getProfile());
         mRootView.findViewById(R.id.stop_button_container).setVisibility(View.VISIBLE);
+        mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.GONE);
 
         if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING) ||
                 (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) {
@@ -571,7 +574,7 @@ public class PrintViewFragment extends Fragment {
             if (mDataGcode != null)
                 changeProgress(Double.valueOf(mPrinter.getJob().getProgress()));
 
-        } else {
+        } else{
 
 
             if (!mPrinter.getLoaded()) tv_file.setText(R.string.devices_upload_waiting);
@@ -594,6 +597,13 @@ public class PrintViewFragment extends Fragment {
             }
 
             isPrinting = false;
+
+        }
+
+        //Tint the screen grey if the printer is unavailable
+        if ((mPrinter.getStatus() == StateUtils.STATE_NONE) ||(mPrinter.getStatus() == StateUtils.STATE_CLOSED)) {
+
+            mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.VISIBLE);
 
         }
 
