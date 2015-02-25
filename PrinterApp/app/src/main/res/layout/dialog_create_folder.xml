@@ -39,6 +39,8 @@
                 app:baseColor="@color/theme_accent_1"
                 app:errorColor="@color/theme_error"
                 app:primaryColor="@color/theme_accent_1"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
                 android:layout_width="270dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_medium">

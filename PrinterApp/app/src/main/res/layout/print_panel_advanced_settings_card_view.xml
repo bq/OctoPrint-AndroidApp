@@ -96,7 +96,9 @@
                                     style="@style/AdvancedSettingsEditText"
                                     android:layout_gravity="center_vertical"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"
+                                    />
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -112,7 +114,8 @@
                                     android:id="@+id/shell_thickness_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -157,7 +160,8 @@
                                     android:id="@+id/bottom_top_thickness_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -185,7 +189,8 @@
                                     android:id="@+id/print_speed_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -201,7 +206,8 @@
                                     android:id="@+id/print_temperature_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -229,7 +235,8 @@
                                     android:id="@+id/diameter_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -245,7 +252,8 @@
                                     android:id="@+id/flow_title_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -273,7 +281,8 @@
                                     android:id="@+id/travel_speed_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -289,7 +298,8 @@
                                     android:id="@+id/bottom_layer_speed_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -305,7 +315,8 @@
                                     android:id="@+id/infill_speed_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -321,7 +332,8 @@
                                     android:id="@+id/outher_shell_speed_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -337,7 +349,8 @@
                                     android:id="@+id/inner_shell_speed_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
@@ -365,7 +378,8 @@
                                     android:id="@+id/minimal_layer_time_edittext"
                                     style="@style/AdvancedSettingsEditText"
                                     android:digits="0123456789."
-                                    android:inputType="number|numberDecimal" />
+                                    android:inputType="number|numberDecimal"
+                                    android:imeOptions="actionDone"/>
                             </TableRow>
 
                             <TableRow android:gravity="center_vertical">
