@@ -26,6 +26,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+
+
         </LinearLayout>
 
         <!-- Right panel. Include a tab host with two views: video and render 3D -->

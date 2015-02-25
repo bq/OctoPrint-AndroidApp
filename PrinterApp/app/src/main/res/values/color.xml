@@ -8,6 +8,7 @@
     <color name="dark_gray">#90000000</color>
     <color name="transparent">#00000000</color>
     <color name="almost_transparent">#22000000</color>
+    <color name="dark_almost_transparent">#88cccccc</color>
 
     <!-- THEME COLORS -->
     <color name="theme_primary">#5BB433</color>
