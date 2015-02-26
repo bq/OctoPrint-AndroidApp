@@ -1708,7 +1708,7 @@ public class ViewerMainFragment extends Fragment {
 
                     case 0:
 
-                        mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
+                        //mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
                         break;
 
                     case 1:
