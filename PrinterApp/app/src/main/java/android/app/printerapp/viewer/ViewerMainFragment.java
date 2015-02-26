@@ -455,7 +455,6 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-
     /**
      * Change the current rotation axis and update the text accordingly
      * <p/>
@@ -1532,13 +1531,20 @@ public class ViewerMainFragment extends Fragment {
 
             mSidePanelHandler.reloadProfileAdapter();
 
-
         } catch (NullPointerException e) {
 
             e.printStackTrace();
         }
 
 
+    }
+
+    //Refresh printers when the fragmetn is shown
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        mSidePanelHandler.refreshPrinters();
     }
 
 
@@ -1708,7 +1714,7 @@ public class ViewerMainFragment extends Fragment {
 
                     case 0:
 
-                        //mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
+                        mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
                         break;
 
                     case 1:
