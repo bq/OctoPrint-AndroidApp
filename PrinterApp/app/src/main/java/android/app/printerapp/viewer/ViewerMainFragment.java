@@ -1552,6 +1552,7 @@ public class ViewerMainFragment extends Fragment {
     public static void slicingCallback() {
 
         SliceTask task = new SliceTask();
+        mSidePanelHandler.refreshPrinters();
         task.execute();
 
     }

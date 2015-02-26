@@ -283,7 +283,7 @@ public class OctoprintConnection {
 
         if (type.equals(ModelProfile.WITBOX_PROFILE)) p.setType(1, ModelProfile.WITBOX_PROFILE);
         else if (type.equals(ModelProfile.PRUSA_PROFILE)) p.setType(2, ModelProfile.PRUSA_PROFILE);
-        else p.setType(3, type);
+        else if ((p.getProfile() != null) && (!p.getProfile().equals("_default"))) p.setType(3, type);
 
 
     }
