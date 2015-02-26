@@ -134,9 +134,14 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                         //it's a printer folder because there's a printer with the same name
                         if (p != null) {
-                            //either sd or internal
-                            if (f.getParent().equals("sd")) {
-                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/sdcard/", false, true);
+                            Log.i("File","Clicking " + f.getAbsolutePath());
+                            //either sd or internal (must check for folders inside sd
+                            if (f.getAbsolutePath().substring(0,3).equals("/sd")) {
+
+                                String finalName = f.getAbsolutePath().substring(4,f.getAbsolutePath().length());
+                                Log.i("File","Loading " + finalName);
+
+                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), finalName, "/sdcard/", false, true);
                                 //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
                             } else
                                 OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false, true);

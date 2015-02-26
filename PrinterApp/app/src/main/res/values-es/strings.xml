@@ -191,7 +191,7 @@
     <string name="viewer_slice_wait">Espere a que termine de laminar</string>
     <string name="viewer_slice_error">Error subiendo el fichero</string>
     <string name="viewer_printer_unavailable">Impresora no disponible</string>
-    <string name="viewer_printer_selected">Sin impresora</string>
+    <string name="viewer_printer_selected">Impresora ocupada</string>
     <string name="viewer_profile_delete">¿Quieres eliminar este perfil?</string>
     <string name="viewer_profile_delete_error">No se puede eliminar ese perfil</string>
     <string name="viewer_multiply_error">No se pueden añadir mas modelos al plato</string>
