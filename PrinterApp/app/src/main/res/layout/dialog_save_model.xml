@@ -81,6 +81,7 @@
                 android:id="@+id/save_model_overwrite_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:text="@string/viewer_save_model_override" />
 
         </RadioGroup>

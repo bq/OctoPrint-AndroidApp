@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sort_library_radiogroup"
+
+        android:descendantFocusability="blocksDescendants">
+
+        <RadioButton
+            style="@style/DialogContent"
+            android:id="@+id/sort_name_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/library_menu_sort_by_name" />
+
+        <RadioButton
+            style="@style/DialogContent"
+            android:id="@+id/sort_recent_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/library_menu_sort_by_date" />
+
+        <RadioButton
+            style="@style/DialogContent"
+            android:id="@+id/sort_size_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/library_menu_sort_by_size" />
+
+    </RadioGroup>
+
+</LinearLayout>

@@ -323,7 +323,7 @@
     <string name="library_list_date_tag">Última modificación</string>
     <string name="library_list_go_back_tag">Ir atrás</string>
     <string name="library_print_model">Imprimir</string>
-    <string name="library_menu_sort">Ordenar modelos</string>
+    <string name="library_menu_sort">Ordenar por</string>
     <string name="printview_menu_add">Añadir modelo</string>
     <string name="printview_menu_auto_adjust">Auto ajustar</string>
     <string name="printview_menu_clean">Limpiar panel</string>
@@ -360,5 +360,8 @@
     <string name="dialog_create_profile_title">Crear nuevo perfil</string>
     <string name="history_drawer_print_time">Tiempo de impresión:\u0020</string>
     <string name="history_drawer_date">Fecha:\u0020</string>
+    <string name="library_menu_sort_by_name">Nombre</string>
+    <string name="library_menu_sort_by_date">Reciente</string>
+    <string name="library_menu_sort_by_size">Tamaño</string>
 
 </resources>
