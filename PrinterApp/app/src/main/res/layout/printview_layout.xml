@@ -79,12 +79,33 @@
                                 android:layout_height="match_parent"
                                 android:background="@color/black">
 
-                                <ImageView
+                                <RelativeLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:id="@+id/videocam_off_icon"
-                                    android:src="@drawable/ic_videocam_off_gray"/>
+                                    android:gravity="center"
+                                    android:id="@+id/videocam_off_layout">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:id="@+id/videocam_off_icon"
+                                        android:src="@drawable/ic_videocam_off_gray"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:id="@+id/videocam_off_text"
+                                        android:layout_below="@id/videocam_off_icon"
+                                        android:layout_margin="20dp"
+                                        android:textColor="@color/white"
+                                        android:text="Webcam no disponible"/>
+
+                                    </RelativeLayout>
+
 
                                  </FrameLayout>
 
@@ -92,7 +113,35 @@
                             <FrameLayout
                                 android:id="@+id/view_gcode"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"></FrameLayout>
+                                android:layout_height="match_parent"
+                                android:background="@color/black">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:id="@+id/render_off_icon"
+                                        android:src="@drawable/ic_nomodel_grey600"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:textColor="@color/white"
+                                        android:layout_below="@id/render_off_icon"
+                                        android:layout_margin="20dp"
+                                        android:text="No hay modelo cargado en el plato"/>
+                                    </RelativeLayout>
+
+
+                                </FrameLayout>
 
                         </FrameLayout>
 

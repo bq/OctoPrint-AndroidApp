@@ -580,11 +580,9 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
             mWitboxFaceDown.generatePlaneCoords(type, false);
 
 
-            Log.i("PrintView","Type setting!!");
-
         } catch (NullPointerException e){
 
-            Log.i("PrintView", "NULL not yet created");
+           e.printStackTrace();
         }
 
 

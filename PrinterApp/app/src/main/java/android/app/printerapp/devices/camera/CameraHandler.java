@@ -137,7 +137,7 @@ public class CameraHandler {
 
                 } else {
                     if (mRootView!=null)
-                        mRootView.findViewById(R.id.videocam_off_icon).bringToFront();
+                        mRootView.findViewById(R.id.videocam_off_layout).bringToFront();
                 }
 	        	
 
