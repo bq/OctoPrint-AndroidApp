@@ -173,7 +173,7 @@
     <string name="library_menu_refresh">Refresh models</string>
     <string name="library_menu_search">Search model</string>
     <string name="library_menu_scan">Escanear dispositivo</string>
-    <string name="library_menu_sort">Sort models</string>
+    <string name="library_menu_sort">Sort by</string>
     <string name="library_menu_filter">Filter models</string>
     <string name="library_menu_list">View as list</string>
     <string name="library_menu_grid">View as grid</string>
@@ -382,6 +382,9 @@
     <string name="print_panel_y_axis"  translatable="false">Y =</string>
     <string name="print_panel_z_axis"  translatable="false">Z =</string>
     <string name="print_panel_mm_axis"  translatable="false">&#032;mm</string>
+    <string name="library_menu_sort_by_name">Name</string>
+    <string name="library_menu_sort_by_date">Recent</string>
+    <string name="library_menu_sort_by_size">Size</string>
 
 
 </resources>

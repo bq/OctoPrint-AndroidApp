@@ -14,10 +14,9 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/library_filter_list"
+        android:id="@+id/library_sort"
         android:icon="@drawable/ic_filter_list"
-        android:title="@string/library_menu_filter"
-        android:visible="false"
+        android:title="@string/library_menu_sort"
         app:showAsAction="ifRoom" />
 
     <item

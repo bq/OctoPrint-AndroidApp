@@ -1,6 +1,7 @@
 package android.app.printerapp.library;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -39,7 +42,9 @@ import java.util.Comparator;
  */
 public class LibraryFragment extends Fragment {
 
-
+    private static final int SORT_NAME = 0;
+    private static final int SORT_DATE = 1;
+    private static final int SORT_SIZE = 2;
 
     private LibraryAdapter mListAdapter;
 
@@ -48,20 +53,13 @@ public class LibraryFragment extends Fragment {
 
     private String mCurrentFilter = null;
     private String mCurrentTab = LibraryController.TAB_ALL;
+    private int mSortType = SORT_NAME;
 
     private File mMoveFile = null;
 
     private View.OnClickListener mOnNavTextViewClick;
 
     private View mRootView;
-
-    public View getmRootView() {
-        return mRootView;
-    }
-
-    public void setmRootView(View mRootView) {
-        this.mRootView = mRootView;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,6 +209,9 @@ public class LibraryFragment extends Fragment {
             case R.id.library_add:
                 //optionAddLibrary();
                 optionSearchSystem();
+                return true;
+            case R.id.library_sort:
+                optionSort();
                 return true;
             case R.id.library_create:
                 optionCreateLibrary();
@@ -428,6 +429,82 @@ public class LibraryFragment extends Fragment {
     }
 
     /**
+     * Sort library by parameter sort type
+     */
+    public void optionSort(){
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View librarySortView = inflater.inflate(R.layout.dialog_library_sort, null);
+        final RadioGroup radioGroup = (RadioGroup) librarySortView.findViewById(R.id.sort_library_radiogroup);
+
+
+        //Pre-select option
+        switch(mSortType) {
+
+            case SORT_NAME:
+                radioGroup.check(R.id.sort_name_checkbox);
+                break;
+            case SORT_SIZE:
+                radioGroup.check(R.id.sort_size_checkbox);
+                break;
+            case SORT_DATE:
+                radioGroup.check(R.id.sort_recent_checkbox);
+                break;
+
+        }
+
+
+        new MaterialDialog.Builder(getActivity()).title(R.string.library_menu_sort)
+            .customView(librarySortView, true)
+            .positiveColorRes(R.color.theme_accent_1)
+            .positiveText(R.string.ok)
+            .callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onPositive(MaterialDialog dialog) {
+
+                    switch (radioGroup.getCheckedRadioButtonId()) {
+
+                        case R.id.sort_name_checkbox:
+
+                            mSortType = SORT_NAME;
+
+                            break;
+
+                        case R.id.sort_recent_checkbox:
+
+                            mSortType = SORT_DATE;
+
+                            break;
+
+                        case R.id.sort_size_checkbox:
+
+                            mSortType = SORT_SIZE;
+
+                            break;
+
+                        default:
+
+                            break;
+
+
+                    }
+
+                    sortAdapter();
+
+                }
+
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    dialog.dismiss();
+                }
+
+            })
+            .build()
+            .show();
+
+    }
+
+    /**
      * Show a dialog to select between Thingiverse or Yoymagine and open the selected url in the browser
      */
     public void optionGetModelsDialog() {
@@ -473,46 +550,87 @@ public class LibraryFragment extends Fragment {
         mListHeader.setVisibility(View.GONE);
     }
 
-    //Random adapter with lots of comparisons
-    @SuppressLint("DefaultLocale")
+   @SuppressLint("DefaultLocale")
     public void sortAdapter() {
 
         if (mCurrentFilter != null) mListAdapter.removeFilter();
 
-        //Sort by absolute file (puts folders before files)
-        mListAdapter.sort(new Comparator<File>() {
 
-            public int compare(File arg0, File arg1) {
+       switch (mSortType){
 
-                if (arg0.getParent().equals("printer")) return -1;
+           case SORT_NAME:
 
-                //Must check all cases, Folders > Projects > Files
-                if (arg0.isDirectory()) {
+               //Sort by absolute file (puts folders before files)
+               mListAdapter.sort(new Comparator<File>() {
 
-                    if (LibraryController.isProject(arg0)) {
+                   public int compare(File arg0, File arg1) {
 
-                        if (arg1.isDirectory()) {
-                            if (LibraryController.isProject(arg1))
-                                return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-                            else return 1;
-                        } else return -1;
+                       if (arg0.getParent().equals("printer")) return -1;
 
-                    } else {
-                        if (arg1.isDirectory()) {
-                            if (LibraryController.isProject(arg1)) return -1;
-                            else
-                                return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+                       //Must check all cases, Folders > Projects > Files
+                       if (arg0.isDirectory()) {
 
-                        } else return -1;
-                    }
-                } else {
-                    if (arg1.isDirectory()) return 1;
-                    else
-                        return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
-                }
+                           if (LibraryController.isProject(arg0)) {
 
-            }
-        });
+                               if (arg1.isDirectory()) {
+                                   if (LibraryController.isProject(arg1))
+                                       return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+                                   else return 1;
+                               } else return -1;
+
+                           } else {
+                               if (arg1.isDirectory()) {
+                                   if (LibraryController.isProject(arg1)) return -1;
+                                   else
+                                       return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+
+                               } else return -1;
+                           }
+                       } else {
+                           if (arg1.isDirectory()) return 1;
+                           else
+                               return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+                       }
+
+                   }
+               });
+
+               break;
+
+           case SORT_DATE:
+
+               //Sort by modified date
+               mListAdapter.sort(new Comparator<File>() {
+
+                   @TargetApi(Build.VERSION_CODES.KITKAT)
+                   public int compare(File arg0, File arg1) {
+                       return Long.compare(arg1.lastModified(), arg0.lastModified());
+
+                   }
+
+               });
+
+               break;
+
+           case SORT_SIZE:
+
+               //Sort by file size
+               mListAdapter.sort(new Comparator<File>() {
+
+                   @TargetApi(Build.VERSION_CODES.KITKAT)
+                   public int compare(File arg0, File arg1) {
+
+                       return Long.compare(arg1.length(), arg0.length());
+
+                   }
+
+               });
+
+
+               break;
+
+       }
+
 
         //Apply the current filter to the folder
         if (mCurrentFilter != null) mListAdapter.getFilter().filter(mCurrentFilter);
