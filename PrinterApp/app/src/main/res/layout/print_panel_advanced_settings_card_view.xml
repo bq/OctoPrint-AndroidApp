@@ -13,6 +13,7 @@
         android:background="@color/white">
 
         <LinearLayout
+            android:id="@+id/viewer_advanced_settings_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -75,6 +76,7 @@
                                 <TextView
                                     android:id="@+id/quality_title_view"
                                     style="@style/TextHeader"
+                                    android:textColor="@color/body_text_1_selector"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="8dp"

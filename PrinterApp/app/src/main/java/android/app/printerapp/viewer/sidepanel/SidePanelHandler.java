@@ -2,6 +2,7 @@ package android.app.printerapp.viewer.sidepanel;
 
 import android.app.Activity;
 import android.app.printerapp.Log;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
@@ -10,12 +11,14 @@ import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.StateUtils;
 import android.app.printerapp.util.ui.CustomPopupWindow;
+import android.app.printerapp.util.ui.ViewHelper;
 import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -174,6 +177,15 @@ public class SidePanelHandler {
             }
         });
 
+        mRootView.findViewById(R.id.connect_printer_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Open devices panel to connect a new printer
+                MainActivity.performClick(2);
+
+            }
+        });
 
         initTextWatchers();
 
@@ -378,6 +390,7 @@ public class SidePanelHandler {
                         @Override
                         public void onClick(View view) {
 
+                            refreshPrinters();
                             sendToPrint();
                         }
                     });
@@ -427,6 +440,8 @@ public class SidePanelHandler {
                 if (prefType != null) s_type.setSelection(Integer.parseInt(prefType));
                 if (prefQuality != null) s_profile.setSelection(Integer.parseInt(prefQuality));
                 //if (prefPrinter!=null) s_printer.setSelection(Integer.parseInt(prefPrinter));
+
+                refreshPrinters();
 
             }
         });
@@ -587,7 +602,7 @@ public class SidePanelHandler {
 
 
         } else
-            Toast.makeText(mActivity, R.string.viewer_printer_selected, Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity, R.string.viewer_printer_unavailable, Toast.LENGTH_LONG).show();
 
 
         /**
@@ -968,6 +983,39 @@ public class SidePanelHandler {
 
         }
 
+    }
+
+
+    public void refreshPrinters(){
+
+        CardView advanced_layout = (CardView) mRootView.findViewById(R.id.advanced_options_card_view);
+        LinearLayout simple_layout = (LinearLayout) mRootView.findViewById(R.id.simple_settings_layout);
+        LinearLayout buttons_layout = (LinearLayout) mRootView.findViewById(R.id.advanced_settings_buttons_container);
+
+        if (DatabaseController.count() < 1){
+            mRootView.findViewById(R.id.viewer_select_printer_layout).setVisibility(View.GONE);
+            mRootView.findViewById(R.id.viewer_no_printer_layout).setVisibility(View.VISIBLE);
+
+
+            ViewHelper.disableEnableAllViews(false,advanced_layout);
+            ViewHelper.disableEnableAllViews(false,simple_layout);
+            ViewHelper.disableEnableAllViews(false,buttons_layout);
+
+
+        } else {
+
+            mRootView.findViewById(R.id.viewer_select_printer_layout).setVisibility(View.VISIBLE);
+            mRootView.findViewById(R.id.viewer_no_printer_layout).setVisibility(View.GONE);
+
+            ViewHelper.disableEnableAllViews(true,advanced_layout);
+            ViewHelper.disableEnableAllViews(true,simple_layout);
+            ViewHelper.disableEnableAllViews(true,buttons_layout);
+
+            mPrinter = DevicesListController.selectAvailablePrinter(s_type.getSelectedItemPosition() + 1);
+            mSlicingHandler.setPrinter(mPrinter);
+        }
+
+        mRootView.invalidate();
 
 
 

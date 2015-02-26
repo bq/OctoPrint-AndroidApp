@@ -46,7 +46,7 @@
 
     <!-- Edit text -->
     <style name="AdvancedSettingsEditText">
-        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:textColor">@color/body_text_1_selector</item>
         <item name="android:layout_width">120dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">5dp</item>
@@ -126,7 +126,7 @@
     <style name="TextHeader">
         <item name="android:textSize">@dimen/text_size_large</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/body_text_1</item>
+        <item name="android:textColor">@color/body_text_1_selector</item>
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
         <item name="android:textIsSelectable">true</item>
@@ -135,7 +135,7 @@
     <style name="TextHeaderSub">
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/body_text_2</item>
+        <item name="android:textColor">@color/body_text_2_selector</item>
         <item name="android:textIsSelectable">true</item>
     </style>
 

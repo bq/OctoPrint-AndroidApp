@@ -385,6 +385,9 @@
     <string name="library_menu_sort_by_name">Name</string>
     <string name="library_menu_sort_by_date">Recent</string>
     <string name="library_menu_sort_by_size">Size</string>
+    <string name="viewer_printer_error">No printer found</string>
+    <string name="viewer_connect_button">Connect</string>
+    <string name="viewer_select_printer">Select printer type</string>
 
 
 </resources>

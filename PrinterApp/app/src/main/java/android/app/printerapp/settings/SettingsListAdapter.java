@@ -63,8 +63,14 @@ public class SettingsListAdapter extends ArrayAdapter<ModelPrinter> {
             TextView deviceNameTextView = (TextView) v.findViewById(R.id.device_name_textview);
             deviceNameTextView.setText(m.getDisplayName() + " [" + m.getAddress().replace("/", "") + "]");
 
-            TextView deviceNetworkTextView = (TextView) v.findViewById(R.id.device_network_textview);
-            deviceNetworkTextView.setText("(" + m.getNetwork().replace("\"", "") + ")");
+            try{
+                TextView deviceNetworkTextView = (TextView) v.findViewById(R.id.device_network_textview);
+                deviceNetworkTextView.setText("(" + m.getNetwork().replace("\"", "") + ")");
+            } catch (NullPointerException e){
+
+                e.printStackTrace(); //No network
+            }
+
 
             ImageView iv = (ImageView) v.findViewById(R.id.device_icon_imageview);
 

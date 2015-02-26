@@ -363,5 +363,8 @@
     <string name="library_menu_sort_by_name">Nombre</string>
     <string name="library_menu_sort_by_date">Reciente</string>
     <string name="library_menu_sort_by_size">Tamaño</string>
+    <string name="viewer_printer_error">No hay impresoras</string>
+    <string name="viewer_connect_button">Conectar</string>
+    <string name="viewer_select_printer">Seleccionar tipo de impresora</string>
 
 </resources>

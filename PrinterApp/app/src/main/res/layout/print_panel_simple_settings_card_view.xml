@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:widget="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_container_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -31,6 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:id="@+id/viewer_select_printer_layout"
                     android:orientation="vertical">
 
                     <TextView
@@ -51,6 +53,37 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/viewer_no_printer_layout"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_signal_wifi_off"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        style="@style/TextHeader"
+                        android:padding="@dimen/content_padding_small"
+                        android:text="@string/viewer_printer_error"/>
+
+                    <com.material.widget.PaperButton
+                        android:id="@+id/connect_printer_button"
+                        style="@style/MaterialDesignButton.Raised.Default"
+                        android:layout_width="150dp"
+                        widget:paper_text="@string/viewer_connect_button" />
+
+                </LinearLayout>
+
+
 
 
             </LinearLayout>
@@ -63,6 +96,7 @@
 
             <!-- Simple settings -->
             <LinearLayout
+                android:id="@+id/simple_settings_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
