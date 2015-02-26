@@ -398,7 +398,7 @@
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="visible"/>
+                            android:visibility="invisible"/>
 
 
                     </LinearLayout>
@@ -419,7 +419,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="@string/viewer_progress_time" />
+                            android:text="@string/viewer_progress_time"
+                            android:visibility="invisible"/>
 
                         <TextView
                             android:id="@+id/viewer_text_estimated_time"

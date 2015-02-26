@@ -592,6 +592,7 @@ public class ViewerMainFragment extends Fragment {
             mSlicingHandler.setLastReference(null);
             mSeekBar.setVisibility(View.INVISIBLE);
             mSurface.requestRender();
+            showProgressBar(0,0);
         }
 
 
@@ -1351,98 +1352,117 @@ public class ViewerMainFragment extends Fragment {
     public static void showProgressBar(int status, int i) {
 
 
-        if (mRootView != null) {
+        if (mRootView!=null){
+
+
             ProgressBar pb = (ProgressBar) mRootView.findViewById(R.id.progress_slice);
             TextView tv = (TextView) mRootView.findViewById(R.id.viewer_text_progress_slice);
             TextView tve = (TextView) mRootView.findViewById(R.id.viewer_text_estimated_time);
-            pb.setVisibility(View.VISIBLE);
+            TextView tve_title = (TextView) mRootView.findViewById(R.id.viewer_estimated_time_textview);
 
-            switch (status) {
+            if ( mSlicingHandler.getLastReference()!= null) {
 
-                case StateUtils.SLICER_HIDE:
+                tve_title.setVisibility(View.VISIBLE);
+                pb.setVisibility(View.VISIBLE);
 
-                    if (i < 0) {
+                switch (status) {
 
-                        tv.setText(R.string.error);
+                    case StateUtils.SLICER_HIDE:
 
-                    } else {
-                        tv.setText(R.string.viewer_text_downloaded);
-                    }
+                        if (i < 0) {
 
-                    pb.setVisibility(View.INVISIBLE);
+                            tv.setText(R.string.error);
 
-                    break;
+                        } else {
+                            tv.setText(R.string.viewer_text_downloaded);
+                        }
 
-                case StateUtils.SLICER_UPLOAD:
+                        pb.setVisibility(View.INVISIBLE);
 
-                    String uploadText = mContext.getString(R.string.viewer_text_uploading);
+                        break;
 
+                    case StateUtils.SLICER_UPLOAD:
 
-                    if (i == 0) pb.setIndeterminate(true);
-                    else {
-
-                        pb.setProgress(i);
-                        pb.setIndeterminate(false);
-
-                        uploadText += " (" + i + "%)";
-
-                    }
-
-                    tv.setText(uploadText);
-                    tve.setText(null);
-
-                    break;
-
-                case StateUtils.SLICER_SLICE:
-
-                    String slicingText = mContext.getString(R.string.viewer_text_slicing);
+                        String uploadText = mContext.getString(R.string.viewer_text_uploading);
 
 
-                    if (i == 0) {
+                        if (i == 0) pb.setIndeterminate(true);
+                        else {
+
+                            pb.setProgress(i);
+                            pb.setIndeterminate(false);
+
+                            uploadText += " (" + i + "%)";
+
+                        }
+
+                        tv.setText(uploadText);
+                        tve.setText(null);
+
+                        break;
+
+                    case StateUtils.SLICER_SLICE:
+
+                        String slicingText = mContext.getString(R.string.viewer_text_slicing);
+
+
+                        if (i == 0) {
+                            pb.setIndeterminate(true);
+
+                        } else if (i == 100) {
+
+                            pb.setIndeterminate(false);
+                            pb.setProgress(100);
+
+                            slicingText += "  " + mContext.getString(R.string.viewer_text_done);
+
+                        } else {
+
+                            pb.setProgress(i);
+                            pb.setIndeterminate(false);
+
+                            slicingText += "  (" + i + "%)";
+
+                        }
+
+                        tv.setText(slicingText);
+                        tve.setText(null);
+
+                        mRootView.invalidate();
+
+                        break;
+
+                    case StateUtils.SLICER_DOWNLOAD:
+
+
+                        if (i > 0) {
+                            tve.setText(OctoprintConnection.ConvertSecondToHHMMString(String.valueOf(i)));
+                        }
+                        tv.setText(R.string.viewer_text_downloading);
                         pb.setIndeterminate(true);
 
-                    } else if (i == 100) {
+                        break;
 
-                        pb.setIndeterminate(false);
-                        pb.setProgress(100);
+                    default:
 
-                        slicingText += "  " + mContext.getString(R.string.viewer_text_done);
-
-                    } else {
-
-                        pb.setProgress(i);
-                        pb.setIndeterminate(false);
-
-                        slicingText += "  (" + i + "%)";
-
-                    }
-
-                    tv.setText(slicingText);
-                    tve.setText(null);
-
-                    mRootView.invalidate();
-
-                    break;
-
-                case StateUtils.SLICER_DOWNLOAD:
+                        break;
 
 
-                    if (i > 0) {
-                        tve.setText(OctoprintConnection.ConvertSecondToHHMMString(String.valueOf(i)));
-                    }
-                    tv.setText(R.string.viewer_text_downloading);
-                    pb.setIndeterminate(true);
+                }
 
-                    break;
+            }else {
 
-                default:
+                pb.setVisibility(View.INVISIBLE);
+                tve_title.setVisibility(View.INVISIBLE);
+                tv.setText(null);
+                tve.setText(null);
+                mRootView.invalidate();
 
-                    break;
 
 
             }
-
         }
+
 
 
     }
