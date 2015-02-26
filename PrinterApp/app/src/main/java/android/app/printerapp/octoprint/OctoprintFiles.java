@@ -80,6 +80,7 @@ public class OctoprintFiles {
 
                                  //Set the storage to sd
                                  m = new File("sd/" +object.getString("name"));
+                                 if (!m.getParent().equals("sd")) m = null;
                              }
                              else   {
 

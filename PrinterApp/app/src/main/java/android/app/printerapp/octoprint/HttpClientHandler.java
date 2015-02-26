@@ -1,5 +1,6 @@
 package android.app.printerapp.octoprint;
 
+import android.app.printerapp.Log;
 import android.content.Context;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -129,7 +130,7 @@ public class HttpClientHandler {
   private static String getAbsoluteUrl(String relativeUrl) {
 
 
-      //Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));
+      Log.i("Connection", BASE_URL + relativeUrl + "?apikey=" + HttpUtils.getApiKey(relativeUrl));
       return BASE_URL + relativeUrl;
   }
 
