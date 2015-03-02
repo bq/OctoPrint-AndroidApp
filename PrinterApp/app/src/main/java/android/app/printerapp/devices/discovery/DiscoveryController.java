@@ -50,6 +50,7 @@ public class DiscoveryController {
     private void scanDelayDialog() {
 
         mServiceList.clear();
+        DevicesListController.getList().clear();
 
         if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
         else mNetworkManager.reloadNetworks();
@@ -209,6 +210,7 @@ public class DiscoveryController {
                 if (mWaitProgressDialog != null) {
                     mWaitProgressDialog.dismiss();
                     errorDialog();
+                    mWaitProgressDialog = null;
                 }
 
             }
@@ -257,7 +259,6 @@ public class DiscoveryController {
 
         if (mWaitProgressDialog != null) {
 
-
             if (printer.getStatus() == StateUtils.STATE_NEW)
                 if (mNetworkManager.checkNetworkId(printer.getName(), true)) {
 
@@ -275,7 +276,6 @@ public class DiscoveryController {
 
 
         } else {
-
 
             if (!DevicesListController.checkExisting(printer.getAddress()))
                 if (!checkExisting(printer)) {
