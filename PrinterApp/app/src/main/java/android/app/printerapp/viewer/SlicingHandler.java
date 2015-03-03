@@ -241,14 +241,17 @@ public class SlicingHandler {
 
                             Log.i("Slicer", "No printer available");
 
-                            Toast.makeText(mActivity, R.string.viewer_printer_unavailable,Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity, R.string.viewer_printer_selected,Toast.LENGTH_LONG).show();
 
                         }
 
 
                     } else {
 
-                        Toast.makeText(mActivity,R.string.viewer_printer_selected,Toast.LENGTH_LONG).show();
+                        if (DatabaseController.count() > 1){
+
+                        }
+                        Toast.makeText(mActivity,R.string.viewer_printer_unavailable,Toast.LENGTH_LONG).show();
 
                     }
                 }

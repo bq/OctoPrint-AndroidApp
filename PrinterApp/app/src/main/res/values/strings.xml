@@ -222,7 +222,7 @@
 
     <string name="viewer_slice_wait">Wait for the file to slice</string>
     <string name="viewer_slice_error">Error uploading the file</string>
-    <string name="viewer_printer_unavailable">Printer unavailable</string>
+    <string name="viewer_printer_unavailable">No available printers for the selected type</string>
     <string name="viewer_printer_selected">Printer is busy</string>
     <string name="viewer_profile_delete">Do you want to delete this profile?</string>
     <string name="viewer_profile_delete_error">That profile can\'t be deleted</string>
@@ -388,6 +388,7 @@
     <string name="viewer_printer_error">No printer found</string>
     <string name="viewer_connect_button">Connect</string>
     <string name="viewer_select_printer">Select printer type</string>
+    <string name="viewer_error_bigger_plate">Model can\'t be bigger than current plate: %1$s mm</string>
 
 
 </resources>

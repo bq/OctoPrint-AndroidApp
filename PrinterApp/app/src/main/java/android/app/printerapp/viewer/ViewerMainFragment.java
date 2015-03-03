@@ -1664,6 +1664,16 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
+    public static boolean isOutsidePlate(float x, float y){
+
+        if ((x < mCurrentPlate[1]) || (y < mCurrentPlate[2])){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     /********************************* RESTORE PANEL *************************/
 
     /**
@@ -1706,6 +1716,25 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
+    public static void displayErrorInAxis(int axis){
+
+        if (mScaleLayout.getVisibility() == View.VISIBLE){
+            switch (axis){
+
+                case 0: mScaleEditX.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate,mCurrentPlate[0] * 2));
+                    break;
+
+                case 1: mScaleEditY.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate,mCurrentPlate[1] * 2));
+                    break;
+
+            }
+        }
+
+
+
+    }
+
+
     private class ScaleChangeListener implements TextWatcher{
 
         int mAxis;
@@ -1720,6 +1749,10 @@ public class ViewerMainFragment extends Fragment {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
+            mScaleEditX.setError(null);
+            mScaleEditY.setError(null);
+            mScaleEditZ.setError(null);
+
         }
 
         @Override
@@ -1730,11 +1763,11 @@ public class ViewerMainFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable editable) {
 
+
             try{
                 switch (mAxis){
 
                     case 0:
-
                         mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
                         break;
 

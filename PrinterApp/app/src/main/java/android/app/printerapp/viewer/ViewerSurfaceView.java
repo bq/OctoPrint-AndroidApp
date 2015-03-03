@@ -465,7 +465,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                             float fz = pinchStartFactorZ*pinchScale;
 
                             Log.i("Scale", "Scale touch @" + fx + ";" + fy + ";" + fz);
-                            mRenderer.scaleObject(fx,fy,fz);
+                            mRenderer.scaleObject(fx,fy,fz, false);
                             ViewerMainFragment.displayModelSize(mObjectPressed);
 
                         } else {
@@ -500,13 +500,15 @@ public class ViewerSurfaceView extends GLSurfaceView{
                     float dx = x - mPreviousDragX;
                     float dy = y - mPreviousDragY;
 
-                    mPreviousDragX = x;
-                    mPreviousDragY = y;
+                        mPreviousDragX = x;
+                        mPreviousDragY = y;
 
 
-                    if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
-                        mRenderer.dragObject(normalizedX, normalizedY);
-                    } else 	if (!mEdition) dragAccordingToMode (dx,dy); //drag if there is no model
+                        if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
+                            mRenderer.dragObject(normalizedX, normalizedY);
+                        } else 	if (!mEdition) dragAccordingToMode (dx,dy); //drag if there is no model
+
+
                 }
 
 
@@ -635,10 +637,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                 }
             }
 
-
-            Log.i("Scale","Scale " + fx + ";" + fy + ";" + fz);
-
-            mRenderer.scaleObject(fx,fy,fz);
+            mRenderer.scaleObject(fx,fy,fz, true);
             ViewerMainFragment.displayModelSize(mObjectPressed);
             requestRender();
 
