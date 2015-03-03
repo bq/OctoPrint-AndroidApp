@@ -289,37 +289,49 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 		float maxY = data.getMaxY() + dy;
 		float minX = data.getMinX() + dx;
 		float minY = data.getMinY() + dy;
-		mDataList.get(mObjectPressed).setLastCenter(new Point (touched.x,touched.y,data.getLastCenter().z));
-		
-		data.setMaxX(maxX);
-		data.setMaxY(maxY);
-		data.setMinX(minX);
-		data.setMinY(minY);
 
-        /******
-         * Calculate new center by adding all previous centers
-         ******/
-        float finalx = 0;
-        float finaly = 0;
-        int i = 0;
+        //Out of the plate
+        if (maxX > mPlate[0] + data.getLong()|| minX < -mPlate[0] - data.getLong()
+                || maxY > mPlate[1] + data.getWidth() || minY < -mPlate[1] - data.getWidth()) {
 
-        for (DataStorage element : mDataList){
+            return;
 
-            finalx += element.getLastCenter().x;
-            finaly += element.getLastCenter().y;
-            i++;
+        } else {
+            mDataList.get(mObjectPressed).setLastCenter(new Point (touched.x,touched.y,data.getLastCenter().z));
 
+            data.setMaxX(maxX);
+            data.setMaxY(maxY);
+            data.setMinX(minX);
+            data.setMinY(minY);
+
+            /******
+             * Calculate new center by adding all previous centers
+             ******/
+            float finalx = 0;
+            float finaly = 0;
+            int i = 0;
+
+            for (DataStorage element : mDataList){
+
+                finalx += element.getLastCenter().x;
+                finaly += element.getLastCenter().y;
+                i++;
+
+            }
+
+            finalx = finalx/i;
+            finaly = finaly/i;
+
+            ViewerMainFragment.setSlicingPosition(finalx,finaly);
         }
 
-        finalx = finalx/i;
-        finaly = finaly/i;
 
-        ViewerMainFragment.setSlicingPosition(finalx,finaly);
+
     }
 	
 
 	
-	public void scaleObject (float fx, float fy, float fz) {
+	public void scaleObject (float fx, float fy, float fz, boolean error) {
 		if (/*Math.abs(fx)>0.1 && */Math.abs(fx)<10 && /*Math.abs(fy)>0.1 && */Math.abs(fy)<10 &&/* Math.abs(fz)>0.1 && */Math.abs(fz)<10) {	//Removed min value
 			mScaleFactorX = fx;
 			mScaleFactorY = fy;
@@ -347,18 +359,35 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			minX = (minX+(Math.abs(mScaleFactorX)-Math.abs(lastScaleFactorX))*(minX/Math.abs(lastScaleFactorX)))+lastCenter.x;
 			minY = (minY+(mScaleFactorY-lastScaleFactorY)*(minY/lastScaleFactorY))+lastCenter.y;
 			minZ = (minZ+(mScaleFactorZ-lastScaleFactorZ)*(minZ/lastScaleFactorZ))+lastCenter.z;
-						
-			data.setMaxX(maxX);
-			data.setMaxY(maxY);
-			data.setMaxZ(maxZ);
-			
-			data.setMinX(minX);
-			data.setMinY(minY);
-			data.setMinZ(minZ);
-									
-			data.setLastScaleFactorX(mScaleFactorX);
-			data.setLastScaleFactorY(mScaleFactorY);
-			data.setLastScaleFactorZ(mScaleFactorZ);
+
+            //Out of the plate
+            if (maxX > mPlate[0] || minX < -mPlate[0]
+                    || maxY > mPlate[1] || minY < -mPlate[1]) {
+
+                if (error){
+                    if (maxX > mPlate[0] || minX < -mPlate[0]) ViewerMainFragment.displayErrorInAxis(0);
+                    if (maxY > mPlate[1] || minY < -mPlate[1]) ViewerMainFragment.displayErrorInAxis(1);
+                }
+
+
+                return;
+
+            }else {
+
+                data.setMaxX(maxX);
+                data.setMaxY(maxY);
+                data.setMaxZ(maxZ);
+
+                data.setMinX(minX);
+                data.setMinY(minY);
+                data.setMinZ(minZ);
+
+                data.setLastScaleFactorX(mScaleFactorX);
+                data.setLastScaleFactorY(mScaleFactorY);
+                data.setLastScaleFactorZ(mScaleFactorZ);
+            }
+
+
 		}
 	}
 
