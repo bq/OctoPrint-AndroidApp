@@ -505,7 +505,7 @@ public class MainActivity extends ActionBarActivity {
         if (mCurrent!=null) mCurrent.setMenuVisibility(true);
     }
 
-    private void closeDetailView(){
+    public static void closeDetailView(){
         //Refresh printview fragment if exists
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DETAIL);
         if (fragment != null) ((DetailViewFragment) fragment).removeRightPanel();
