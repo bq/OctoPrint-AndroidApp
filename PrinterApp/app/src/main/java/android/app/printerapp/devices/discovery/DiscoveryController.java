@@ -50,7 +50,14 @@ public class DiscoveryController {
     private void scanDelayDialog() {
 
         mServiceList.clear();
-        DevicesListController.getList().clear();
+
+        //Clear list for unadded printers
+        for (ModelPrinter p : DevicesListController.getList()){
+
+            if ((p.getStatus() == StateUtils.STATE_NEW) || (p.getStatus() == StateUtils.STATE_ADHOC))
+                DevicesListController.getList().remove(p);
+
+        };
 
         if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
         else mNetworkManager.reloadNetworks();
