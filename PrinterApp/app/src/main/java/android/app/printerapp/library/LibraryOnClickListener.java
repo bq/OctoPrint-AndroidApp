@@ -86,6 +86,11 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
             LibraryAdapter listAdapter = (LibraryAdapter) mListView.getAdapter();
             listAdapter.setItemChecked(arg2, checked);
 
+            if (mListView.getCheckedItemCount() < 1){
+
+                mActionMode.finish();
+            }
+
             mContext.notifyAdapter();
 
 
@@ -373,6 +378,10 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
         }
     };
 
+    public void hideActionBar(){
+        if (mActionMode!=null) mActionMode.finish();
+    }
+
    private void  createDeleteDialog(final SparseBooleanArray ids){
 
        LayoutInflater inflater = (LayoutInflater) mContext.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -407,8 +416,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
                    public void onNegative(MaterialDialog dialog) {
                        super.onNegative(dialog);
 
-                       if (mActionMode!=null)
-                       mActionMode.finish();
+                       hideActionBar();
 
                    }
 
@@ -432,8 +440,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                            }
                        }
-                       if (mActionMode!=null)
-                       mActionMode.finish();
+                      hideActionBar();
                        mContext.refreshFiles();
                    }
                })
