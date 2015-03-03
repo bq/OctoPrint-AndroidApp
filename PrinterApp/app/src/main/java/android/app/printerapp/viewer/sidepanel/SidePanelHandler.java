@@ -991,6 +991,7 @@ public class SidePanelHandler {
         CardView advanced_layout = (CardView) mRootView.findViewById(R.id.advanced_options_card_view);
         LinearLayout simple_layout = (LinearLayout) mRootView.findViewById(R.id.simple_settings_layout);
         LinearLayout buttons_layout = (LinearLayout) mRootView.findViewById(R.id.advanced_settings_buttons_container);
+        LinearLayout print_button = (LinearLayout) mRootView.findViewById(R.id.print_button_container);
 
         if (DatabaseController.count() < 1){
             mRootView.findViewById(R.id.viewer_select_printer_layout).setVisibility(View.GONE);
@@ -1000,6 +1001,7 @@ public class SidePanelHandler {
             ViewHelper.disableEnableAllViews(false,advanced_layout);
             ViewHelper.disableEnableAllViews(false,simple_layout);
             ViewHelper.disableEnableAllViews(false,buttons_layout);
+            ViewHelper.disableEnableAllViews(false,print_button);
 
 
         } else {
@@ -1010,9 +1012,13 @@ public class SidePanelHandler {
             ViewHelper.disableEnableAllViews(true,advanced_layout);
             ViewHelper.disableEnableAllViews(true,simple_layout);
             ViewHelper.disableEnableAllViews(true,buttons_layout);
+            ViewHelper.disableEnableAllViews(true,print_button);
 
             mPrinter = DevicesListController.selectAvailablePrinter(s_type.getSelectedItemPosition() + 1);
             mSlicingHandler.setPrinter(mPrinter);
+
+            if (mPrinter!=null)   ViewHelper.disableEnableAllViews(true,print_button);
+            else ViewHelper.disableEnableAllViews(false,print_button);
         }
 
         mRootView.invalidate();

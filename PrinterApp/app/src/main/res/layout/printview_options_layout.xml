@@ -216,7 +216,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginRight="@dimen/content_margin_normal"
                                 android:textSize="@dimen/text_size_medium"
-                                android:textStyle="bold|italic" />
+                                android:textStyle="italic" />
                             <!---
                                         <com.gc.materialdesign.views.Slider
                                             android:id="@+id/printview_extruder_temp_slider"
@@ -629,15 +629,6 @@
 
             </uk.co.androidalliance.edgeeffectoverride.ScrollView>
         </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/disabled_gray_tint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@color/dark_almost_transparent"
-            android:clickable="true"
-            android:visibility="gone"/>
 
     </android.support.v7.widget.CardView>
 

@@ -20,6 +20,7 @@ import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintControl;
 import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.StateUtils;
+import android.app.printerapp.util.ui.ViewHelper;
 import android.app.printerapp.viewer.DataStorage;
 import android.app.printerapp.viewer.GcodeFile;
 import android.app.printerapp.viewer.ViewerMainFragment;
@@ -32,6 +33,7 @@ import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,6 +83,7 @@ public class PrintViewFragment extends Fragment {
     private TextView tv_profile;
 
     private ProgressBar pb_prog;
+    private SeekBar sb_head;
 
     private PaperButton button_pause;
     private PaperButton button_stop;
@@ -334,49 +337,49 @@ public class PrintViewFragment extends Fragment {
 
 
 
-        final SeekBar seekBarHead = (SeekBar) mRootView.findViewById(R.id.seekbar_head_movement_amount);
-        seekBarHead.setProgress(2);
+        sb_head = (SeekBar) mRootView.findViewById(R.id.seekbar_head_movement_amount);
+        sb_head.setProgress(2);
 
 
         mRootView.findViewById(R.id.button_xy_down).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", convertProgress(seekBarHead.getProgress()));
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", convertProgress(sb_head.getProgress()));
             }
         });
 
         mRootView.findViewById(R.id.button_xy_up).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", -convertProgress(seekBarHead.getProgress()));
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "y", -convertProgress(sb_head.getProgress()));
             }
         });
 
         mRootView.findViewById(R.id.button_xy_left).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", - convertProgress(seekBarHead.getProgress()));
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x", - convertProgress(sb_head.getProgress()));
             }
         });
 
         mRootView.findViewById(R.id.button_xy_right).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x",  convertProgress(seekBarHead.getProgress()));
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "x",  convertProgress(sb_head.getProgress()));
             }
         });
 
         mRootView.findViewById(R.id.button_z_down).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", - convertProgress(seekBarHead.getProgress()));
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", - convertProgress(sb_head.getProgress()));
             }
         });
 
         mRootView.findViewById(R.id.button_z_up).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", convertProgress(seekBarHead.getProgress()));
+                OctoprintControl.sendHeadCommand(getActivity(), mPrinter.getAddress(), "jog", "z", convertProgress(sb_head.getProgress()));
             }
         });
 
@@ -483,8 +486,6 @@ public class PrintViewFragment extends Fragment {
             }
         });
 
-        mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.VISIBLE);
-
     }
 
     private double convertProgress(int amount){
@@ -542,8 +543,7 @@ public class PrintViewFragment extends Fragment {
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
         tv_profile.setText(" " + mPrinter.getProfile());
-        mRootView.findViewById(R.id.stop_button_container).setVisibility(View.VISIBLE);
-        mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.GONE);
+        CardView printer_select_layout = (CardView) mRootView.findViewById(R.id.printer_select_card_view);
 
         if ((mPrinter.getStatus() == StateUtils.STATE_PRINTING) ||
                 (mPrinter.getStatus() == StateUtils.STATE_PAUSED)) {
@@ -603,11 +603,29 @@ public class PrintViewFragment extends Fragment {
 
         }
 
-        //Tint the screen grey if the printer is unavailable
         if ((mPrinter.getStatus() == StateUtils.STATE_NONE) ||(mPrinter.getStatus() == StateUtils.STATE_CLOSED)) {
 
-            mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.VISIBLE);
+            tv_file.setVisibility(View.INVISIBLE);
+            tv_prog.setVisibility(View.INVISIBLE);
+            tv_profile.setVisibility(View.INVISIBLE);
+            sb_head.setProgress(0);
+            mRootView.findViewById(R.id.printview_stop_image).setVisibility(View.INVISIBLE);
+            mRootView.findViewById(R.id.printview_pause_image).setVisibility(View.INVISIBLE);
+            mRootView.findViewById(R.id.printview_text_profile_tag).setVisibility(View.INVISIBLE);
 
+            ViewHelper.disableEnableAllViews(false, printer_select_layout);
+
+        } else {
+            //mRootView.findViewById(R.id.disabled_gray_tint).setVisibility(View.VISIBLE);
+            tv_file.setVisibility(View.VISIBLE);
+            tv_prog.setVisibility(View.VISIBLE);
+            tv_profile.setVisibility(View.VISIBLE);
+            sb_head.setProgress(2);
+            mRootView.findViewById(R.id.printview_stop_image).setVisibility(View.VISIBLE);
+            mRootView.findViewById(R.id.printview_pause_image).setVisibility(View.VISIBLE);
+            mRootView.findViewById(R.id.printview_text_profile_tag).setVisibility(View.VISIBLE);
+
+            ViewHelper.disableEnableAllViews(true, printer_select_layout);
         }
 
         getActivity().invalidateOptionsMenu();
