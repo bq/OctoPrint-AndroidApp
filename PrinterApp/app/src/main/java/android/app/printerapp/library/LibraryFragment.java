@@ -158,6 +158,7 @@ public class LibraryFragment extends Fragment {
 //                    }
                     if (!LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath())) {
                         LibraryController.reloadFiles(LibraryController.getCurrentPath().getParent());
+                        showListHeader(LibraryController.getCurrentPath().getName());
                         sortAdapter();
 
                         if (LibraryController.getCurrentPath().getAbsolutePath().equals(LibraryController.getParentFolder().getAbsolutePath() + "/Files")) {
