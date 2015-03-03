@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -176,6 +177,24 @@ public class LibraryFragment extends Fragment {
             ((TextView) mRootView.findViewById(R.id.library_nav_printer_models)).setOnClickListener(getOnNavTextViewClickListener());
             ((TextView) mRootView.findViewById(R.id.library_nav_fav_models)).setOnClickListener(getOnNavTextViewClickListener());
 
+
+            //Close detailview when clicking outside
+            mRootView.findViewById(R.id.library_nav_menu).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    MainActivity.closeDetailView();
+                    return false;
+                }
+            });
+
+            mListView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    MainActivity.closeDetailView();
+                    return false;
+                }
+            });
+
             sortAdapter();
 
         }
@@ -288,6 +307,7 @@ public class LibraryFragment extends Fragment {
                 }
                 refreshFiles();
                 hideListHeader();
+                MainActivity.closeDetailView();
                 getActivity().invalidateOptionsMenu();
             }
         };
