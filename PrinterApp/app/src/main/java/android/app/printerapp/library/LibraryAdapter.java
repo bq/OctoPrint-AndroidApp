@@ -148,7 +148,7 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
 
 
         //Hide overflow button in printer tab
-        if (mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER)){
+        if ((mListInSelectionMode) || (mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER))){
 
             overflowButton.setVisibility(View.GONE);
 

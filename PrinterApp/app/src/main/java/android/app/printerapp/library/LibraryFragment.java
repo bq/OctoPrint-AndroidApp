@@ -47,6 +47,7 @@ public class LibraryFragment extends Fragment {
     private static final int SORT_SIZE = 2;
 
     private LibraryAdapter mListAdapter;
+    private LibraryOnClickListener mListClickListener;
 
     private ListView mListView;
     private View mListHeader;
@@ -137,10 +138,10 @@ public class LibraryFragment extends Fragment {
 
 
 
-            LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
+            mListClickListener = new LibraryOnClickListener(this, mListView);
             mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
-            mListView.setOnItemClickListener(clickListener);
-            mListView.setOnItemLongClickListener(clickListener);
+            mListView.setOnItemClickListener(mListClickListener);
+            mListView.setOnItemLongClickListener(mListClickListener);
             mListView.setDivider(null);
             mListView.setAdapter(mListAdapter);
 
@@ -179,6 +180,13 @@ public class LibraryFragment extends Fragment {
 
         }
         return mRootView;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (mListClickListener!=null) mListClickListener.hideActionBar();
     }
 
     @Override
