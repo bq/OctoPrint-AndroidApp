@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/advanced_settings_buttons_container"
                     android:layout_alignParentTop="true"
-                    android:fadeScrollbars="false"
+                    android:fadeScrollbars="true"
                     app:edgeeffect_color="@color/theme_accent_1">
 
                     <LinearLayout
