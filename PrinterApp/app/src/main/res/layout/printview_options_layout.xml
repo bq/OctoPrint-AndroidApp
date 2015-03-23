@@ -282,7 +282,7 @@
                                 android:layout_margin="@dimen/content_margin_xsmall"
                                 android:layout_marginLeft="@dimen/content_margin_xsmall"
                                 android:textSize="@dimen/text_size_medium"
-                                android:textStyle="bold|italic" />
+                                android:textStyle="italic" />
 
                             <SeekBar
                                 android:id="@+id/printview_bed_temp_slider"

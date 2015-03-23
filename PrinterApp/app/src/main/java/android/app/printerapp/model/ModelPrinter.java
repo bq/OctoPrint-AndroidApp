@@ -36,6 +36,8 @@ public class ModelPrinter {
 	private String mMessage = "Offline";
 	private String mTemperature;
 	private String mTempTarget;
+    private String mBedTemperature;
+    private String mBedTempTarget;
 	
 	private ArrayList<File> mFileList;
 	
@@ -120,6 +122,14 @@ public class ModelPrinter {
 	public String getTempTarget(){
 		return mTempTarget;
 	}
+
+    public String getBedTemperature() {
+        return mBedTemperature;
+    }
+
+    public String getBedTempTarget() {
+        return mBedTempTarget;
+    }
 	
 	public ArrayList<File> getFiles(){
 		return mFileList;
@@ -172,6 +182,9 @@ public class ModelPrinter {
 				if (temperature.length()>0) {
 					mTemperature = temperature.getJSONObject(0).getJSONObject("tool0").getString("actual");
 					mTempTarget = temperature.getJSONObject(0).getJSONObject("tool0").getString("target");
+
+                    mBedTemperature = temperature.getJSONObject(0).getJSONObject("bed").getString("actual");
+                    mBedTempTarget = temperature.getJSONObject(0).getJSONObject("bed").getString("target");
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

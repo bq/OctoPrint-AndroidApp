@@ -164,6 +164,7 @@ public class OctoprintControl {
 
         JSONObject object = new JSONObject();
         StringEntity entity = null;
+        String destinationUrl = HttpUtils.URL_TOOL;
 
         try {
 
@@ -171,9 +172,19 @@ public class OctoprintControl {
 
             JSONObject json = new JSONObject();
 
+
             if (tool!=null){
-                json.put(tool,amount);
-                object.put("targets", json);
+
+                if (tool.equals("bed")){
+
+                    destinationUrl = HttpUtils.URL_BED;
+                    object.put("target",amount);
+
+                } else {
+                    json.put(tool,amount);
+                    object.put("targets", json);
+                }
+
             } else {
 
                 object.put("amount",amount);
@@ -188,7 +199,7 @@ public class OctoprintControl {
 
 
         Log.i("TOOL", "Sending: " + object.toString());
-        HttpClientHandler.post(context,url + HttpUtils.URL_TOOL,
+        HttpClientHandler.post(context,url + destinationUrl,
                 entity, "application/json", new JsonHttpResponseHandler(){
 
                     @Override
