@@ -151,12 +151,15 @@ public class OctoprintNetwork {
 		JSONObject object = new JSONObject();
 		StringEntity entity = null;
 
-        Log.i("Discovery", "Configure Network for: " + ssid);
+        Log.i("Manager", "Configure Network for: " + ssid);
 		
 		try {
 			object.put("command", "configure_wifi");
 			object.put("ssid", ssid);
-			object.put("psk", psk);
+
+			if (psk!=null) object.put("psk", psk);
+            else object.put("psk", "");
+
 			entity = new StringEntity(object.toString(), "UTF-8");
 			
 		} catch (JSONException e) {		e.printStackTrace();

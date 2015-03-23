@@ -287,6 +287,8 @@ public class LibraryFragment extends Fragment {
 
                 selectNavItem(v.getId());
 
+                if (mListClickListener!=null) mListClickListener.hideActionBar();
+
                 LibraryController.setCurrentPath(LibraryController.getParentFolder() + "/Files");
 
                 switch (v.getId()) {
@@ -309,6 +311,7 @@ public class LibraryFragment extends Fragment {
                 hideListHeader();
                 MainActivity.closeDetailView();
                 getActivity().invalidateOptionsMenu();
+
             }
         };
 
