@@ -65,6 +65,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -692,8 +697,15 @@ public class ViewerMainFragment extends Fragment {
 
         //Adding original project //TODO elsewhere?
         if (mSlicingHandler != null)
-            if (mSlicingHandler.getOriginalProject() == null)
+            if (mSlicingHandler.getOriginalProject() == null){
                 mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
+            } else {
+                if (!mFile.getAbsolutePath().contains("/temp")){
+                    mSlicingHandler.setOriginalProject(mFile.getParentFile().getParent());
+                }
+            }
+
+
 
 
     }
@@ -909,48 +921,53 @@ public class ViewerMainFragment extends Fragment {
                                     File fileTo = new File(actualFile + "/_gcode/" + proyectNameText.getText().toString().replace(" ", "_") + ".gcode");
 
                                     //Delete file if success
-                                    if (!fileFrom.renameTo(fileTo)) {
+                                    try {
+                                        fileCopy(fileFrom,fileTo);
 
-                                        openFile(fileTo.getAbsolutePath());
-
-                                        if (fileFrom.delete()) {
-                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
 
-                                    /**
-                                     * Use an intent because it's an asynchronous static method without any reference (yet)
-                                     */
-                                    Intent intent = new Intent("notify");
-                                    intent.putExtra("message", "Files");
-                                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
+                                    if (mFile.getName().equals(fileFrom.getName()))
+                                        openFile(fileTo.getAbsolutePath());
 
-                                } else {
-                                    Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
-                                }
+                                    //if (fileFrom.delete()) {}
 
-                                dialog.dismiss();
 
-                                break;
+                                /**
+                                 * Use an intent because it's an asynchronous static method without any reference (yet)
+                                 */
+                                Intent intent = new Intent("notify");
+                                intent.putExtra("message", "Files");
+                                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
 
-                            case R.id.save_model_overwrite_checkbox:
-
-                                Toast.makeText(getActivity(), R.string.option_unavailable, Toast.LENGTH_SHORT).show();
-
-                                dialog.dismiss();
-
-                                break;
-
-                            default:
-
-                                dialog.dismiss();
-
-                                break;
-
+                        }else{
+                            Toast.makeText(getActivity(), R.string.viewer_slice_wait, Toast.LENGTH_SHORT).show();
                         }
+
+                        dialog.dismiss();
+
+                        break;
+
+                        case R.id.save_model_overwrite_checkbox:
+
+                        Toast.makeText(getActivity(), R.string.option_unavailable, Toast.LENGTH_SHORT).show();
+
+                        dialog.dismiss();
+
+                        break;
+
+                        default:
+
+                        dialog.dismiss();
+
+                        break;
 
                     }
 
-                    @Override
+                }
+
+        @Override
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
                         dialog.dismiss();
@@ -959,6 +976,21 @@ public class ViewerMainFragment extends Fragment {
                 })
                 .show();
 
+    }
+
+    //Copy a file to another location
+    public void fileCopy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
     }
 
     /**
