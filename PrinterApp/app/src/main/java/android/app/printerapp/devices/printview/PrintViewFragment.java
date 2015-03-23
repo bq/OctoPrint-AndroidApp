@@ -79,6 +79,7 @@ public class PrintViewFragment extends Fragment {
     private TextView tv_printer;
     private TextView tv_file;
     private TextView tv_temp;
+    private TextView tv_temp_bed;
     private TextView tv_prog;
     private TextView tv_profile;
 
@@ -287,6 +288,7 @@ public class PrintViewFragment extends Fragment {
         tv_printer = (TextView) mRootView.findViewById(R.id.printview_printer_tag);
         tv_file = (TextView) mRootView.findViewById(R.id.printview_printer_file);
         tv_temp = (TextView) mRootView.findViewById(R.id.printview_extruder_temp);
+        tv_temp_bed = (TextView) mRootView.findViewById(R.id.printview_bed_temp);
         tv_prog = (TextView) mRootView.findViewById(R.id.printview_printer_progress);
         tv_profile = (TextView) mRootView.findViewById(R.id.printview_text_profile_text);
         pb_prog = (ProgressBar) mRootView.findViewById(R.id.printview_progress_bar);
@@ -542,6 +544,8 @@ public class PrintViewFragment extends Fragment {
         tv_printer.setText(mPrinter.getDisplayName() + ": " + mPrinter.getMessage() + " [" + mPrinter.getPort() + "]");
         tv_file.setText(mPrinter.getJob().getFilename());
         tv_temp.setText(mPrinter.getTemperature() + "ºC / " + mPrinter.getTempTarget() + "ºC");
+        tv_temp_bed.setText(mPrinter.getBedTemperature() + "ºC / " + mPrinter.getBedTempTarget() + "ºC");
+
         tv_profile.setText(" " + mPrinter.getProfile());
         CardView printer_select_layout = (CardView) mRootView.findViewById(R.id.printer_select_card_view);
 
