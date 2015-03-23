@@ -304,7 +304,12 @@ public class LibraryController {
     public static void deleteFiles(File file){
 
 
+
         if (file.isDirectory()){
+
+            if (DatabaseController.isPreference(DatabaseController.TAG_FAVORITES, file.getName())) {
+                DatabaseController.handlePreference(DatabaseController.TAG_FAVORITES, file.getName(), null, false);
+            }
 
             for (File f : file.listFiles()){
 
