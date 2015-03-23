@@ -88,8 +88,15 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
         //If selection mode is on, show the selection checkbox
         CheckBox selectModelCheckbox = (CheckBox) v.findViewById(R.id.select_model_checkbox);
         if (mListInSelectionMode) {
-            selectModelCheckbox.setChecked(mCheckedItems.get(position));
-            selectModelCheckbox.setVisibility(View.VISIBLE);
+
+            try{
+                selectModelCheckbox.setChecked(mCheckedItems.get(position));
+                selectModelCheckbox.setVisibility(View.VISIBLE);
+            } catch (IndexOutOfBoundsException e){
+
+                e.printStackTrace();
+            }
+
         } else {
             selectModelCheckbox.setChecked(false);
             selectModelCheckbox.setVisibility(View.INVISIBLE);

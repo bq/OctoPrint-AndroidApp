@@ -29,7 +29,6 @@ import org.json.JSONObject;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,7 +148,7 @@ public class PrintNetworkManager {
 
             mReceiver.unregister();
 
-            JSONArray wifis = response.getJSONArray("wifis");
+            final JSONArray wifis = response.getJSONArray("wifis");
             final ArrayList<String> wifiList = new ArrayList<String>();
             final ArrayList<String> wifiQualityList = new ArrayList<String>();
             for (int i = 0; i < wifis.length(); i++) {
@@ -191,6 +190,7 @@ public class PrintNetworkManager {
 
                     final EditText wifiPasswordEditText = (EditText) wifiPasswordDialogView.findViewById(R.id.wifi_password_edittext);
 
+
                     //Add check box to show/hide the password
                     final CheckBox showPasswordCheckbox = (CheckBox) wifiPasswordDialogView.findViewById(R.id.show_password_checkbox);
                     showPasswordCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -208,39 +208,54 @@ public class PrintNetworkManager {
                         }
                     });
 
+
                     wifiPasswordEditText.requestFocus();
 
-                    new MaterialDialog.Builder(getContext())
-                            .title(wifiList.get(position))
-                            .customView(wifiPasswordDialogView, false)
-                            .positiveText(R.string.ok)
-                            .positiveColorRes(R.color.theme_accent_1)
-                            .negativeText(R.string.cancel)
-                            .negativeColorRes(R.color.body_text_2)
-                            .autoDismiss(false)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onPositive(MaterialDialog dialog) {
-                                    final String ssid = wifiList.get(position).toString();
-                                    String psk = wifiPasswordEditText.getText().toString().trim();
+                    try {
+                        if (wifis.getJSONObject(position).getBoolean("encrypted")){
 
-                                    if (psk.equals("")) {
-                                        wifiPasswordEditText.setError(getContext().getString(R.string.empty_password_error));
-                                    } else {
-                                        configureSelectedNetwork(ssid, psk, url);
-                                        mReceiver.unregister();
-                                        dialog.dismiss();
-                                        selectNetworkDialog.dismiss();
-                                        wifiPasswordEditText.clearFocus();
-                                    }
-                                }
+                            new MaterialDialog.Builder(getContext())
+                                    .title(wifiList.get(position))
+                                    .customView(wifiPasswordDialogView, false)
+                                    .positiveText(R.string.ok)
+                                    .positiveColorRes(R.color.theme_accent_1)
+                                    .negativeText(R.string.cancel)
+                                    .negativeColorRes(R.color.body_text_2)
+                                    .autoDismiss(false)
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            final String ssid = wifiList.get(position).toString();
+                                            String psk = wifiPasswordEditText.getText().toString().trim();
 
-                                @Override
-                                public void onNegative(MaterialDialog dialog) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .show();
+                                            if (psk.equals("")) {
+                                                wifiPasswordEditText.setError(getContext().getString(R.string.empty_password_error));
+                                            } else {
+                                                configureSelectedNetwork(ssid, psk, url);
+                                                mReceiver.unregister();
+                                                dialog.dismiss();
+                                                selectNetworkDialog.dismiss();
+                                                wifiPasswordEditText.clearFocus();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onNegative(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .show();
+                        } else {
+
+                            configureSelectedNetwork(wifiList.get(position), null, url);
+                            mReceiver.unregister();
+                            selectNetworkDialog.dismiss();
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
 
                 }
             });
@@ -263,10 +278,12 @@ public class PrintNetworkManager {
         final WifiConfiguration target = new WifiConfiguration();
         //Set the parameters for the target network
         target.SSID = "\"" + ssid + "\"";
-        target.preSharedKey = "\"" + pass + "\"";
+
+        if (pass!=null) target.preSharedKey = "\"" + pass + "\"";
+        else target.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
 
         createNetworkDialog(getContext().getString(R.string.devices_discovery_config));
-
 
         //Send a network configuration request to the server
         OctoprintNetwork.configureNetwork(mReceiver, getContext(), ssid, pass, url);
@@ -335,6 +352,7 @@ public class PrintNetworkManager {
 
     public void connectSpecificNetwork(int nId) {
 
+        Log.i("Manager","Enabling " + nId);
         //Disconnect to the current network and reconnect to the new
         mManager.disconnect();
         mManager.enableNetwork(nId, true);
@@ -382,12 +400,12 @@ public class PrintNetworkManager {
             byte[] ipAddress = BigInteger.valueOf(mManager.getDhcpInfo().gateway).toByteArray();
             reverse(ipAddress);
             InetAddress myaddr;
-            try {
-                myaddr = InetAddress.getByAddress(ipAddress);
+
+               // myaddr = InetAddress.getByAddress(ipAddress);
 
 
                 //TODO HARDCODED ACCESS POINT
-                String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
+                //String hostaddr = "10.250.250.1";//myaddr.getHostAddress();
 
                 if (mPrinter != null) {
                     OctoprintNetwork.getNetworkList(this, mPrinter);
@@ -397,10 +415,6 @@ public class PrintNetworkManager {
 
                 }
 
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
         }
 
 
@@ -441,7 +455,6 @@ public class PrintNetworkManager {
         for (WifiConfiguration c : configs) {
             if (c.SSID.equals(ssid.SSID)) {
                 return c.networkId;
-
             }
         }
 

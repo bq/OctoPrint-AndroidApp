@@ -1,0 +1,183 @@
+diff --git a/PrinterApp/app/src/main/java/android/app/printerapp/MainActivity.java b/PrinterApp/app/src/main/java/android/app/printerapp/MainActivity.java
+index bcbaa07..d60a3d2 100644
+--- a/PrinterApp/app/src/main/java/android/app/printerapp/MainActivity.java
++++ b/PrinterApp/app/src/main/java/android/app/printerapp/MainActivity.java
+@@ -505,7 +505,7 @@ public class MainActivity extends ActionBarActivity {
+         if (mCurrent!=null) mCurrent.setMenuVisibility(true);
+     }
+ 
+-    private void closeDetailView(){
++    public static void closeDetailView(){
+         //Refresh printview fragment if exists
+         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DETAIL);
+         if (fragment != null) ((DetailViewFragment) fragment).removeRightPanel();
+diff --git a/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryAdapter.java b/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryAdapter.java
+index 6a3a79b..5b58eae 100644
+--- a/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryAdapter.java
++++ b/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryAdapter.java
+@@ -88,8 +88,15 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
+         //If selection mode is on, show the selection checkbox
+         CheckBox selectModelCheckbox = (CheckBox) v.findViewById(R.id.select_model_checkbox);
+         if (mListInSelectionMode) {
+-            selectModelCheckbox.setChecked(mCheckedItems.get(position));
+-            selectModelCheckbox.setVisibility(View.VISIBLE);
++
++            try{
++                selectModelCheckbox.setChecked(mCheckedItems.get(position));
++                selectModelCheckbox.setVisibility(View.VISIBLE);
++            } catch (IndexOutOfBoundsException e){
++
++                e.printStackTrace();
++            }
++
+         } else {
+             selectModelCheckbox.setChecked(false);
+             selectModelCheckbox.setVisibility(View.INVISIBLE);
+@@ -148,7 +155,7 @@ public class LibraryAdapter extends ArrayAdapter<File> implements Filterable {
+ 
+ 
+         //Hide overflow button in printer tab
+-        if (mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER)){
++        if ((mListInSelectionMode) || (mContext.getCurrentTab().equals(LibraryController.TAB_PRINTER))){
+ 
+             overflowButton.setVisibility(View.GONE);
+ 
+diff --git a/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryFragment.java b/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryFragment.java
+index 59ac9e8..5f38040 100644
+--- a/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryFragment.java
++++ b/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryFragment.java
+@@ -19,6 +19,7 @@ import android.os.Environment;
+ import android.view.LayoutInflater;
+ import android.view.Menu;
+ import android.view.MenuInflater;
++import android.view.MotionEvent;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.EditText;
+@@ -47,6 +48,7 @@ public class LibraryFragment extends Fragment {
+     private static final int SORT_SIZE = 2;
+ 
+     private LibraryAdapter mListAdapter;
++    private LibraryOnClickListener mListClickListener;
+ 
+     private ListView mListView;
+     private View mListHeader;
+@@ -137,10 +139,10 @@ public class LibraryFragment extends Fragment {
+ 
+ 
+ 
+-            LibraryOnClickListener clickListener = new LibraryOnClickListener(this, mListView);
++            mListClickListener = new LibraryOnClickListener(this, mListView);
+             mListView.setSelector(getResources().getDrawable(R.drawable.list_selector));
+-            mListView.setOnItemClickListener(clickListener);
+-            mListView.setOnItemLongClickListener(clickListener);
++            mListView.setOnItemClickListener(mListClickListener);
++            mListView.setOnItemLongClickListener(mListClickListener);
+             mListView.setDivider(null);
+             mListView.setAdapter(mListAdapter);
+ 
+@@ -175,6 +177,24 @@ public class LibraryFragment extends Fragment {
+             ((TextView) mRootView.findViewById(R.id.library_nav_printer_models)).setOnClickListener(getOnNavTextViewClickListener());
+             ((TextView) mRootView.findViewById(R.id.library_nav_fav_models)).setOnClickListener(getOnNavTextViewClickListener());
+ 
++
++            //Close detailview when clicking outside
++            mRootView.findViewById(R.id.library_nav_menu).setOnTouchListener(new View.OnTouchListener() {
++                @Override
++                public boolean onTouch(View view, MotionEvent motionEvent) {
++                    MainActivity.closeDetailView();
++                    return false;
++                }
++            });
++
++            mListView.setOnTouchListener(new View.OnTouchListener() {
++                @Override
++                public boolean onTouch(View view, MotionEvent motionEvent) {
++                    MainActivity.closeDetailView();
++                    return false;
++                }
++            });
++
+             sortAdapter();
+ 
+         }
+@@ -182,6 +202,13 @@ public class LibraryFragment extends Fragment {
+     }
+ 
+     @Override
++    public void onHiddenChanged(boolean hidden) {
++        super.onHiddenChanged(hidden);
++
++        if (mListClickListener!=null) mListClickListener.hideActionBar();
++    }
++
++    @Override
+     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+         super.onCreateOptionsMenu(menu, inflater);
+ 
+@@ -260,6 +287,8 @@ public class LibraryFragment extends Fragment {
+ 
+                 selectNavItem(v.getId());
+ 
++                if (mListClickListener!=null) mListClickListener.hideActionBar();
++
+                 LibraryController.setCurrentPath(LibraryController.getParentFolder() + "/Files");
+ 
+                 switch (v.getId()) {
+@@ -280,7 +309,9 @@ public class LibraryFragment extends Fragment {
+                 }
+                 refreshFiles();
+                 hideListHeader();
++                MainActivity.closeDetailView();
+                 getActivity().invalidateOptionsMenu();
++
+             }
+         };
+ 
+diff --git a/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryOnClickListener.java b/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryOnClickListener.java
+index 84c2ced..396ad19 100644
+--- a/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryOnClickListener.java
++++ b/PrinterApp/app/src/main/java/android/app/printerapp/library/LibraryOnClickListener.java
+@@ -86,6 +86,11 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
+             LibraryAdapter listAdapter = (LibraryAdapter) mListView.getAdapter();
+             listAdapter.setItemChecked(arg2, checked);
+ 
++            if (mListView.getCheckedItemCount() < 1){
++
++                mActionMode.finish();
++            }
++
+             mContext.notifyAdapter();
+ 
+ 
+@@ -373,6 +378,10 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
+         }
+     };
+ 
++    public void hideActionBar(){
++        if (mActionMode!=null) mActionMode.finish();
++    }
++
+    private void  createDeleteDialog(final SparseBooleanArray ids){
+ 
+        LayoutInflater inflater = (LayoutInflater) mContext.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+@@ -407,8 +416,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+ 
+-                       if (mActionMode!=null)
+-                       mActionMode.finish();
++                       hideActionBar();
+ 
+                    }
+ 
+@@ -432,8 +440,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
+ 
+                            }
+                        }
+-                       if (mActionMode!=null)
+-                       mActionMode.finish();
++                      hideActionBar();
+                        mContext.refreshFiles();
+                    }
+                })

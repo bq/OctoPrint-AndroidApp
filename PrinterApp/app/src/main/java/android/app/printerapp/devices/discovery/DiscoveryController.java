@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 /**
  * Created by alberto-baeza on 2/5/15.
@@ -51,51 +52,56 @@ public class DiscoveryController {
 
         mServiceList.clear();
 
-        //Clear list for unadded printers
-        for (ModelPrinter p : DevicesListController.getList()){
+        try{
+            //Clear list for unadded printers
+            for (ModelPrinter p : DevicesListController.getList()){
 
-            if ((p.getStatus() == StateUtils.STATE_NEW) || (p.getStatus() == StateUtils.STATE_ADHOC))
-                DevicesListController.getList().remove(p);
+                if ((p.getStatus() == StateUtils.STATE_NEW) || (p.getStatus() == StateUtils.STATE_ADHOC))
+                    DevicesListController.getList().remove(p);
 
-        };
+            };
 
-        if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
-        else mNetworkManager.reloadNetworks();
-        if (mServiceListener==null) mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
-        else mServiceListener.reloadListening();
+            if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
+            else mNetworkManager.reloadNetworks();
+            if (mServiceListener==null) mServiceListener = new JmdnsServiceListener(DiscoveryController.this);
+            else mServiceListener.reloadListening();
 
-        //Get progress dialog UI
-        View scanDelayDialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_progress_content_vertical, null);
-        ((TextView) scanDelayDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.printview_searching_networks_dialog_content);
+            //Get progress dialog UI
+            View scanDelayDialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_progress_content_vertical, null);
+            ((TextView) scanDelayDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.printview_searching_networks_dialog_content);
 
-        //Build progress dialog
-        final MaterialDialog.Builder scanDelayDialogBuilder = new MaterialDialog.Builder(mContext);
-        scanDelayDialogBuilder.title(R.string.printview_searching_networks_dialog_title)
-                .customView(scanDelayDialogView, true)
-                .cancelable(false)
-                .autoDismiss(false);
+            //Build progress dialog
+            final MaterialDialog.Builder scanDelayDialogBuilder = new MaterialDialog.Builder(mContext);
+            scanDelayDialogBuilder.title(R.string.printview_searching_networks_dialog_title)
+                    .customView(scanDelayDialogView, true)
+                    .cancelable(false)
+                    .autoDismiss(false);
 
-        scanDelayDialogBuilder.dismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                scanNetwork();
-            }
-        });
+            scanDelayDialogBuilder.dismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    scanNetwork();
+                }
+            });
 
-        //Show dialog
-        final Dialog scanDelayDialog = scanDelayDialogBuilder.build();
-        scanDelayDialog.show();
+            //Show dialog
+            final Dialog scanDelayDialog = scanDelayDialogBuilder.build();
+            scanDelayDialog.show();
 
-        Handler handler = new Handler();
+            Handler handler = new Handler();
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                scanDelayDialog.dismiss();
+                    scanDelayDialog.dismiss();
 
-            }
-        }, 3000);
+                }
+            }, 3000);
+        } catch (ConcurrentModificationException e){
+            e.printStackTrace();
+        }
+
 
     }
 
