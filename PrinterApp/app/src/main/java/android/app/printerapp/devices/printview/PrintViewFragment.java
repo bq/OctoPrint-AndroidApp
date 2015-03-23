@@ -325,9 +325,9 @@ public class PrintViewFragment extends Fragment {
             }
         });
 
-        ((ImageView) mRootView.findViewById(R.id.printview_stop_image)).
-                setColorFilter(mContext.getResources().getColor(android.R.color.holo_red_dark),
-                        PorterDuff.Mode.MULTIPLY);
+//        ((ImageView) mRootView.findViewById(R.id.printview_stop_image)).
+//                setColorFilter(mContext.getResources().getColor(android.R.color.holo_red_dark),
+//                        PorterDuff.Mode.MULTIPLY);
         button_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -609,8 +609,6 @@ public class PrintViewFragment extends Fragment {
             tv_prog.setVisibility(View.INVISIBLE);
             tv_profile.setVisibility(View.INVISIBLE);
             sb_head.setProgress(0);
-            mRootView.findViewById(R.id.printview_stop_image).setVisibility(View.INVISIBLE);
-            mRootView.findViewById(R.id.printview_pause_image).setVisibility(View.INVISIBLE);
             mRootView.findViewById(R.id.printview_text_profile_tag).setVisibility(View.INVISIBLE);
 
             ViewHelper.disableEnableAllViews(false, printer_select_layout);
@@ -621,8 +619,6 @@ public class PrintViewFragment extends Fragment {
             tv_prog.setVisibility(View.VISIBLE);
             tv_profile.setVisibility(View.VISIBLE);
             sb_head.setProgress(2);
-            mRootView.findViewById(R.id.printview_stop_image).setVisibility(View.VISIBLE);
-            mRootView.findViewById(R.id.printview_pause_image).setVisibility(View.VISIBLE);
             mRootView.findViewById(R.id.printview_text_profile_tag).setVisibility(View.VISIBLE);
 
             ViewHelper.disableEnableAllViews(true, printer_select_layout);

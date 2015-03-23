@@ -99,6 +99,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_toLeftOf="@+id/stop_button_container"
                             android:layout_toStartOf="@+id/stop_button_container"
+                            android:paddingRight="@dimen/content_padding_small"
                             android:orientation="horizontal">
 
                             <ImageView
@@ -106,12 +107,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_play" />
+                                android:src="@drawable/play_button_selector" />
 
                             <com.material.widget.PaperButton
                                 android:id="@+id/printview_pause_button"
                                 style="@style/MaterialDesignButton.Flat"
-                                android:layout_width="90dp"
+                                android:layout_width="100dp"
                                 app:paper_text="@string/printview_start_button"
                                 app:paper_text_color="@color/body_text_2" />
 
@@ -131,7 +132,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_stop" />
+                                android:src="@drawable/stop_button_selector" />
 
                             <com.material.widget.PaperButton
                                 android:id="@+id/printview_stop_button"
@@ -175,10 +176,10 @@
 
             <!-- Scroll zone -->
 
-            <uk.co.androidalliance.edgeeffectoverride.ScrollView
+            <android.app.printerapp.util.ui.LockableScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:edgeeffect_color="@color/theme_accent_1">
+                app:scroll_effect_color="@color/theme_accent_1">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -627,7 +628,7 @@
                 </LinearLayout>
 
 
-            </uk.co.androidalliance.edgeeffectoverride.ScrollView>
+            </android.app.printerapp.util.ui.LockableScrollView>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

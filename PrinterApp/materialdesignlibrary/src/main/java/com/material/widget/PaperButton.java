@@ -46,6 +46,7 @@ public class PaperButton extends View {
     private Rect mFingerRect;
     private Path rippleClipPath;
     private boolean mMoveOutside;
+    private boolean mClickable = true;
     private Point mTouchPoint = new Point();
 
     private Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -147,6 +148,13 @@ public class PaperButton extends View {
         invalidate();
     }
 
+    public void refreshTextColor(boolean enable) {
+        if(enable)
+            textPaint.setColor(mTextColor);
+        else textPaint.setColor(R.color.paper_text_color_disabled);
+        invalidate();
+    }
+
     private RectF getRectF() {
         if (backgroundRectF == null) {
             backgroundRectF = new RectF();
@@ -158,37 +166,47 @@ public class PaperButton extends View {
         return backgroundRectF;
     }
 
+    public boolean getClickable() {
+        return mClickable;
+    }
+
+    public void setClickable(boolean mClickable) {
+        this.mClickable = mClickable;
+    }
+
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mMoveOutside = false;
-                mFingerRect = new Rect(getLeft(), getTop(), getRight(), getBottom());
-                mTouchPoint.set(Math.round(event.getX()), Math.round(event.getY()));
-                mState = StateTouchDown;
-                mStartTime = System.currentTimeMillis();
-                invalidate();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!mFingerRect.contains(getLeft() + (int) event.getX(),
-                        getTop() + (int) event.getY())) {
-                    mMoveOutside = true;
-                    mState = StateNormal;
-                    invalidate();
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (!mMoveOutside) {
-                    mState = StateTouchUp;
+        if (mClickable) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mMoveOutside = false;
+                    mFingerRect = new Rect(getLeft(), getTop(), getRight(), getBottom());
+                    mTouchPoint.set(Math.round(event.getX()), Math.round(event.getY()));
+                    mState = StateTouchDown;
                     mStartTime = System.currentTimeMillis();
                     invalidate();
-                    performClick();
-                }
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                mState = StateNormal;
-                invalidate();
-                break;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (!mFingerRect.contains(getLeft() + (int) event.getX(),
+                            getTop() + (int) event.getY())) {
+                        mMoveOutside = true;
+                        mState = StateNormal;
+                        invalidate();
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (!mMoveOutside) {
+                        mState = StateTouchUp;
+                        mStartTime = System.currentTimeMillis();
+                        invalidate();
+                        performClick();
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    mState = StateNormal;
+                    invalidate();
+                    break;
+            }
         }
         return true;
     }

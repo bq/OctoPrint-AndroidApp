@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="LockableScrollView">
+        <attr name="scroll_effect_color" format="color"/>
+    </declare-styleable>
 
 </resources>
 
