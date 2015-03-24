@@ -1535,8 +1535,11 @@ public class ViewerMainFragment extends Fragment {
                 mScaleEditZ.removeTextChangedListener(mTextWatcherZ);
 
                 mScaleEditX.setText(width);
+                mScaleEditX.setSelection(mScaleEditX.getText().length());
                 mScaleEditY.setText(depth);
+                mScaleEditY.setSelection(mScaleEditY.getText().length());
                 mScaleEditZ.setText(height);
+                mScaleEditZ.setSelection(mScaleEditZ.getText().length());
 
                 mScaleEditX.addTextChangedListener(mTextWatcherX);
                 mScaleEditY.addTextChangedListener(mTextWatcherY);
