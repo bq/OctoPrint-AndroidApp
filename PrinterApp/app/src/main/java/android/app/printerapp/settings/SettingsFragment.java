@@ -188,52 +188,7 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    /**
-     * Add a new printer to the database by IP instead of service discovery
-     */
-    private void optionAddPrinter() {
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-
-
-        adb.setTitle(R.string.settings_add_title);
-
-        //Inflate the view
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.settings_add_printer_dialog, null, false);
-
-        final EditText et_name = (EditText) v.findViewById(R.id.et_name);
-        final EditText et_address = (EditText) v.findViewById(R.id.et_address);
-
-        adb.setView(v);
-
-        //On insertion write the printer onto the database and start updating the socket
-        adb.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                ModelPrinter m = new ModelPrinter(et_name.getText().toString(), "/" + et_address.getText().toString(), StateUtils.TYPE_CUSTOM);
-
-                if (!DevicesListController.checkExisting(m.getAddress())) {
-
-                    DevicesListController.addToList(m);
-                    m.setId(DatabaseController.writeDb(m.getName(), m.getAddress(), String.valueOf(m.getPosition()), String.valueOf(m.getType()),
-                    MainActivity.getCurrentNetwork(getActivity())));
-                    //m.setLinked(getActivity());
-                    notifyAdapter();
-
-                }
-
-            }
-        });
-
-        adb.setNegativeButton(R.string.cancel, null);
-
-        adb.setView(v);
-
-        adb.show();
-    }
 
     public void notifyAdapter() {
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DEVICES_SETTINGS);

@@ -137,7 +137,7 @@
                                         android:textColor="@color/white"
                                         android:layout_below="@id/render_off_icon"
                                         android:layout_margin="20dp"
-                                        android:text="No hay modelo cargado en el plato"/>
+                                        android:text="@string/printview_render_error"/>
                                     </RelativeLayout>
 
 
