@@ -392,6 +392,7 @@
     <string name="viewer_select_printer">Select printer type</string>
     <string name="viewer_error_bigger_plate">Model can\'t be bigger than current plate: %1$s mm</string>
     <string name="dialog_add_printer_address">Printer IP address</string>
+    <string name="dialog_add_printer_error">That printer already exists</string>
     <string name="printview_render_error">No model loaded on the plate</string>
     <string name="dialog_add_printer_timeout">Connection taking longer than usual, reconnecting to previous network</string>
     <string name="dialog_printer_manual_add">Add manually</string>

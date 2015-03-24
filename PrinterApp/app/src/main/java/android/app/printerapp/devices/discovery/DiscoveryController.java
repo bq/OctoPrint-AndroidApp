@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
@@ -17,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -80,7 +80,7 @@ public class DiscoveryController {
                     .customView(scanDelayDialogView, true)
                     .cancelable(true)
                     .positiveColorRes(R.color.theme_accent_1)
-                    .positiveText(R.string.add)
+                    .positiveText(R.string.dialog_printer_manual_add)
                     .negativeText(R.string.cancel)
                     .callback(new MaterialDialog.ButtonCallback() {
 
@@ -340,13 +340,12 @@ public class DiscoveryController {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.settings_add_printer_dialog, null, false);
 
-        //final EditText et_name = (EditText) v.findViewById(R.id.et_name);
         final EditText et_address = (EditText) v.findViewById(R.id.et_address);
 
         new MaterialDialog.Builder(mContext)
                 .title(R.string.settings_add_title)
                 .customView(v, false)
-                .positiveText(R.string.dialog_printer_manual_add)
+                .positiveText(R.string.add)
                 .positiveColorRes(R.color.theme_accent_1)
                 .negativeText(R.string.cancel)
                 .negativeColorRes(R.color.body_text_2)
@@ -355,10 +354,9 @@ public class DiscoveryController {
                     public void onPositive(MaterialDialog dialog) {
                         ModelPrinter p = new ModelPrinter(mContext.getString(R.string.app_name), "/" + et_address.getText().toString() + ":80", StateUtils.STATE_NEW);
 
-                        if (!DatabaseController.checkExisting(p)) {
 
-                            if (!DevicesListController.checkExisting(p.getAddress())) DevicesListController.addToList(p);
-
+                        if (!DevicesListController.checkExisting(p.getAddress())) {
+                            DevicesListController.addToList(p);
                             if (p.getStatus() == StateUtils.STATE_NEW) {
 
 
@@ -370,7 +368,11 @@ public class DiscoveryController {
                                 DevicesListController.addToList(p);
                                 mNetworkManager.setupNetwork(p, p.getPosition());
                             }
-                        } 
+
+                        } else {
+                            Toast.makeText(mContext,"That printer already exists", Toast.LENGTH_SHORT).show();
+                        }
+
 
                     }
                 })
