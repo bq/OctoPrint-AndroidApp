@@ -372,5 +372,6 @@
     <string name="printview_render_error">No hay modelo cargado en el plato</string>
     <string name="dialog_add_printer_timeout">La conexión está tardando más de lo esperado, volviendo a conectar a la red anterior</string>
     <string name="dialog_printer_manual_add">Añadir manualmente</string>
+    <string name="printview_profiles_overwrite">Perfil sobrescrito</string>
 
 </resources>
