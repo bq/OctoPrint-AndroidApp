@@ -149,9 +149,16 @@ public class PaperButton extends View {
     }
 
     public void refreshTextColor(boolean enable) {
-        if(enable)
+        if (enable) {
             textPaint.setColor(mTextColor);
-        else textPaint.setColor(R.color.paper_text_color_disabled);
+            backgroundPaint.setColor(mColor);
+        }
+        else {
+            textPaint.setColor(getResources().getColor(R.color.paper_text_color_disabled));
+            if (mColor != getResources().getColor(R.color.paper_button_color_transparent)) {
+                backgroundPaint.setColor(getResources().getColor(R.color.paper_button_color_disabled));
+            }
+        }
         invalidate();
     }
 

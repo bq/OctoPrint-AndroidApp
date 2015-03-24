@@ -69,14 +69,14 @@
     </style>
 
     <style name="MaterialDesignButton.Flat">
-        <item name="paper_color">@color/transparent</item>
-        <item name="paper_shadow_color">@color/transparent</item>
+        <item name="paper_color">@color/paper_button_color_transparent</item>
+        <item name="paper_shadow_color">@color/paper_button_color_transparent</item>
         <item name="paper_text_color">@color/body_text_1</item>
     </style>
 
     <style name="MaterialDesignButton.Flat.Default">
-        <item name="paper_color">@color/transparent</item>
-        <item name="paper_shadow_color">@color/transparent</item>
+        <item name="paper_color">@color/paper_button_color_transparent</item>
+        <item name="paper_shadow_color">@color/paper_button_color_transparent</item>
         <item name="paper_text_color">@color/theme_primary_dark</item>
     </style>
 
