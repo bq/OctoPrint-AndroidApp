@@ -15,9 +15,11 @@ import android.app.printerapp.util.ui.ViewHelper;
 import android.app.printerapp.viewer.SlicingHandler;
 import android.app.printerapp.viewer.ViewerMainFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -76,6 +78,7 @@ public class SidePanelHandler {
 
     //UI elements
     private PaperButton printButton;
+    private PaperButton sliceButton;
     private PaperButton saveButton;
     private PaperButton restoreButton;
     private PaperButton deleteButton;
@@ -135,6 +138,7 @@ public class SidePanelHandler {
         infillText = (TextView) mRootView.findViewById(R.id.infill_number_view);
 
         printButton = (PaperButton) mRootView.findViewById(R.id.print_model_button);
+        sliceButton = (PaperButton) mRootView.findViewById(R.id.slice_model_button);
         saveButton = (PaperButton) mRootView.findViewById(R.id.save_settings_button);
         restoreButton = (PaperButton) mRootView.findViewById(R.id.restore_settings_button);
         deleteButton = (PaperButton) mRootView.findViewById(R.id.delete_settings_button);
@@ -395,6 +399,15 @@ public class SidePanelHandler {
                         }
                     });
 
+                    sliceButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            ViewerMainFragment.slicingCallbackForced();
+                            switchSlicingButton(false);
+
+                        }
+                    });
 
                     saveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -907,9 +920,22 @@ public class SidePanelHandler {
 
 
 
+
     /*******************************************
      * ADAPTERS
      ******************************************/
+
+    public void switchSlicingButton(boolean enable){
+
+        if (mPrinter!=null) {
+            sliceButton.setClickable(enable);
+            sliceButton.refreshTextColor(enable);
+        } else {
+            sliceButton.setClickable(false);
+            sliceButton.refreshTextColor(false);
+        }
+
+    }
 
     public void reloadProfileAdapter(){
 
@@ -1017,6 +1043,10 @@ public class SidePanelHandler {
             if (mPrinter!=null)   ViewHelper.disableEnableAllViews(true,print_button);
             else ViewHelper.disableEnableAllViews(false,print_button);
         }
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        if (sharedPref.getBoolean(mActivity.getResources().getString(R.string.shared_preferences_autoslice), false)) sliceButton.setVisibility(View.INVISIBLE);
+        else sliceButton.setVisibility(View.VISIBLE);
 
         mRootView.invalidate();
 

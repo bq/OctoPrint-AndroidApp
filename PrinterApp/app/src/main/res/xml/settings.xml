@@ -13,5 +13,9 @@
         android:key="@string/shared_preferences_print"
         android:defaultValue="true"/>
 
+    <CheckBoxPreference
+        android:key="@string/shared_preferences_autoslice"
+        android:defaultValue="false"/>
+
 
 </PreferenceScreen>
