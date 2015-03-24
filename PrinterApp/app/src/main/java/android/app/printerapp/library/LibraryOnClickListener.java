@@ -99,7 +99,7 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
             Log.d("LibraryOnClickListener", "onItemClick");
 
             //Logic for getting file type
-            File f = LibraryController.getFileList().get(arg2);
+            final File f = LibraryController.getFileList().get(arg2);
 
             //If it's folder open it
             if (f.isDirectory()) {
@@ -128,41 +128,63 @@ public class LibraryOnClickListener implements OnItemClickListener, OnItemLongCl
 
                 //it's a printer file
                 if (f.getParent().contains("printer")) {
+
                     LibraryController.retrievePrinterFiles(Long.parseLong(f.getName()));
                     mContext.notifyAdapter();
+
 
                 } else {
 
                     try {
 
-                        ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
+                        new MaterialDialog.Builder(mContext.getActivity())
+                                .title(mContext.getResources().getString(R.string.library_select_printer_title))
+                                .content(f.getName())
+                                .positiveColorRes(R.color.theme_accent_1)
+                                .positiveText(R.string.confirm)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        super.onPositive(dialog);
 
-                        //it's a printer folder because there's a printer with the same name
-                        if (p != null) {
-                            Log.i("File","Clicking " + f.getAbsolutePath());
-                            //either sd or internal (must check for folders inside sd
-                            if (f.getAbsolutePath().substring(0,3).equals("/sd")) {
 
-                                String finalName = f.getAbsolutePath().substring(4,f.getAbsolutePath().length());
-                                Log.i("File","Loading " + finalName);
+                                        ModelPrinter p = DevicesListController.getPrinter(Long.parseLong(LibraryController.getCurrentPath().getName()));
 
-                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), finalName, "/sdcard/", false, true);
-                                //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
-                            } else
-                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false, true);
-                            Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
-                        } else {
+                                        //it's a printer folder because there's a printer with the same name
+                                        if (p != null) {
+                                            Log.i("File","Clicking " + f.getAbsolutePath());
+                                            //either sd or internal (must check for folders inside sd
+                                            if (f.getAbsolutePath().substring(0,3).equals("/sd")) {
 
-                            //it's a raw file
-                            if (f.getAbsoluteFile().length() > 0) {
-                                //TODO select printer for raw files?
-                                //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
-                                MainActivity.requestOpenFile(f.getAbsolutePath());
+                                                String finalName = f.getAbsolutePath().substring(4,f.getAbsolutePath().length());
+                                                Log.i("File","Loading " + finalName);
 
-                            } else {
-                                Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
-                            }
-                        }
+                                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), finalName, "/sdcard/", false, true);
+                                                //OctoprintSlicing.sliceCommand(mContext.getActivity(), p.getAddress(), f, "/local/");
+                                            } else
+                                                OctoprintFiles.fileCommand(mContext.getActivity(), p.getAddress(), f.getName(), "/local/", false, true);
+                                            Toast.makeText(mContext.getActivity(), "Loading " + f.getName() + " in " + p.getDisplayName(), Toast.LENGTH_LONG).show();
+                                        } else {
+
+                                            //it's a raw file
+                                            if (f.getAbsoluteFile().length() > 0) {
+                                                //TODO select printer for raw files?
+                                                //DevicesListController.selectPrinter(mContext.getActivity(), f , 0);
+                                                MainActivity.requestOpenFile(f.getAbsolutePath());
+
+                                            } else {
+                                                Toast.makeText(mContext.getActivity(), R.string.storage_toast_corrupted, Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+
+                                    }
+                                })
+                                .negativeText(R.string.cancel)
+                                .show();
+
+
+
                     } catch (NumberFormatException e) {
 
                         e.printStackTrace();
