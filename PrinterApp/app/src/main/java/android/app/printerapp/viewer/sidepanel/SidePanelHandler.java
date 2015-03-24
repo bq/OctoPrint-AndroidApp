@@ -744,7 +744,7 @@ public class SidePanelHandler {
         int[] infillSpinnerCoordinates = new int[2];
         s_infill.getLocationOnScreen(infillSpinnerCoordinates);
         int popupLayoutPadding = (int) mActivity.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
-        int popupLayoutWidth = 180; //FIXED WIDTH
+        int popupLayoutWidth = 360; //FIXED WIDTH
         int popupLayoutHeight = popupLayout.getMeasuredHeight();
         final int popupLayoutX = infillSpinnerCoordinates[0] - 2; //Remove the background padding
         final int popupLayoutY = infillSpinnerCoordinates[1];

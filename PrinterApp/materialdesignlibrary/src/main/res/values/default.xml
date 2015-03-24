@@ -62,6 +62,8 @@
     <dimen name="paper_button_corner_radius">2dp</dimen>
     <dimen name="paper_padding">7dp</dimen>
     <color name="paper_text_color_disabled">#60000000</color>
+    <color name="paper_button_color_transparent">#00000000</color>
+    <color name="paper_button_color_disabled">#ebebeb</color>
 
     <!-- CircularProgress Default -->
     <color name="circular_progress_color">#ff3f51b5</color>
