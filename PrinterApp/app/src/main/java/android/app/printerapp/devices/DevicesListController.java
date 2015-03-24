@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -305,7 +306,7 @@ public class DevicesListController {
 
             ViewerMainFragment.optionClean();
 
-        }
+        } else Toast.makeText(context,R.string.viewer_printer_selected,Toast.LENGTH_SHORT).show();
 
 
 
