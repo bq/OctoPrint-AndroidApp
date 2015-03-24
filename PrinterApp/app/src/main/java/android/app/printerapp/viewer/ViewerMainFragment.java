@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -29,6 +30,7 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -172,6 +174,7 @@ public class ViewerMainFragment extends Fragment {
 
         mSlicingHandler = new SlicingHandler(getActivity());
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1603,13 +1606,27 @@ public class ViewerMainFragment extends Fragment {
     }
 
 
-    //TODO callback for a slicing request
     public static void slicingCallback() {
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (sharedPref.getBoolean(mContext.getResources().getString(R.string.shared_preferences_autoslice), true)) {
+
+            SliceTask task = new SliceTask();
+            mSidePanelHandler.refreshPrinters();
+            task.execute();
+        } else {
+
+            mSidePanelHandler.refreshPrinters();
+            mSidePanelHandler.switchSlicingButton(true);
+        }
+
+
+    }
+
+    public static void slicingCallbackForced(){
         SliceTask task = new SliceTask();
         mSidePanelHandler.refreshPrinters();
         task.execute();
-
     }
 
     static class SliceTask extends AsyncTask {

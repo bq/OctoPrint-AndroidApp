@@ -84,6 +84,18 @@ public class SettingsGeneralFragment extends Fragment {
                 }
             });
 
+            CheckBox checkBox_autoslice = (CheckBox) rootView.findViewById(R.id.settings_automatic_checkbox);
+            checkBox_autoslice.setChecked(sharedPref.getBoolean(getString(R.string.shared_preferences_autoslice), false));
+            checkBox_autoslice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                    sharedPref.edit().putBoolean(getString(R.string.shared_preferences_autoslice), b).apply();
+
+
+                }
+            });
+
 
             /*********************************************************/
 

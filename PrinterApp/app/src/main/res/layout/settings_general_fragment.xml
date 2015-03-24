@@ -96,6 +96,27 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginBottom="@dimen/content_margin_normal">
+
+        <TextView
+            style="@style/SettingsSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Automatic slicing" />
+
+        <CheckBox
+            android:id="@+id/settings_automatic_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
     <!-- Network Title -->
     <TextView
         style="@style/SettingsTitle"

@@ -357,7 +357,7 @@ public class DiscoveryController {
 
                         if (!DatabaseController.checkExisting(p)) {
 
-                            DevicesListController.addToList(p);
+                            if (!DevicesListController.checkExisting(p.getAddress())) DevicesListController.addToList(p);
 
                             if (p.getStatus() == StateUtils.STATE_NEW) {
 

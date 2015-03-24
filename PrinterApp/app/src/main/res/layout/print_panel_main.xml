@@ -406,7 +406,7 @@
                     <!-- Print button -->
                     <LinearLayout
                         android:id="@+id/print_button_container"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
                         android:layout_gravity="end"
@@ -444,11 +444,29 @@
                             android:paddingLeft="5dp"
                             android:textAllCaps="true"/>
 
-                        <com.material.widget.PaperButton
-                            android:id="@+id/print_model_button"
-                            style="@style/MaterialDesignButton.Raised.Default"
-                            android:layout_width="150dp"
-                            widget:paper_text="@string/viewer_button_print" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:layout_gravity="end"
+                            android:orientation="horizontal">
+
+                            <com.material.widget.PaperButton
+                                android:id="@+id/slice_model_button"
+                                style="@style/MaterialDesignButton.Raised.Default"
+                                android:layout_width="150dp"
+                                widget:paper_text="@string/slice" />
+
+                            <com.material.widget.PaperButton
+                                android:id="@+id/print_model_button"
+                                style="@style/MaterialDesignButton.Raised.Default"
+                                android:layout_width="150dp"
+                                widget:paper_text="@string/viewer_button_print" />
+
+
+                            </LinearLayout>
+
+
                     </LinearLayout>
                 </LinearLayout>
 

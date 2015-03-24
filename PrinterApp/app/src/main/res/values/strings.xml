@@ -364,6 +364,7 @@
     <string name="shared_preferences_save" translatable="false">save</string>
     <string name="shared_preferences_slice" translatable="false">slice</string>
     <string name="shared_preferences_print" translatable="false">print</string>
+    <string name="shared_preferences_autoslice" translatable="false">autoslice</string>
     <string name="option_unavailable">Option unavailable</string>
     <string name="printview_finish_button">FINISH</string>
     <string name="share_subject_text">Shared model</string>
@@ -395,6 +396,7 @@
     <string name="dialog_add_printer_timeout">Connection taking longer than usual, reconnecting to previous network</string>
     <string name="dialog_printer_manual_add">Add manually</string>
     <string name="printview_profiles_overwrite">Profile overwritten</string>
+    <string name="slice">Slice</string>
 
 
 </resources>
