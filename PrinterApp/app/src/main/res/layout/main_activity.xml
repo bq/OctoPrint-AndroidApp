@@ -48,24 +48,21 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@color/pager_background"
-                            android:orientation="vertical">
-                        </LinearLayout>
+                            android:orientation="vertical"></LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/maintab2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@color/pager_background"
-                            android:orientation="vertical">
-                        </LinearLayout>
+                            android:orientation="vertical"></LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/maintab3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@color/pager_background"
-                            android:orientation="vertical">
-                        </LinearLayout>
+                            android:orientation="vertical"></LinearLayout>
 
                     </FrameLayout>
                 </LinearLayout>
@@ -76,16 +73,34 @@
                 android:id="@+id/right_panel_container"
                 android:layout_width="380dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="right|center_vertical"/>
+                android:layout_gravity="right|center_vertical" />
         </FrameLayout>
 
         <!-- The navigation drawer -->
-        <ListView android:id="@+id/left_drawer"
+        <FrameLayout
             android:layout_width="340dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:footerDividersEnabled="false"
-            android:background="#FFFFFF"/>
+            android:background="#FFFFFF"
+            android:layout_gravity="start">
+
+            <ListView
+                android:id="@+id/left_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:footerDividersEnabled="false" />
+
+            <TextView
+                android:id="@+id/history_empty_view"
+                style="@style/TextInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/content_margin_large"
+                android:text="@string/history_empty_text"
+                android:textSize="@dimen/text_size_xlarge" />
+
+        </FrameLayout>
 
     </android.support.v4.widget.DrawerLayout>
 

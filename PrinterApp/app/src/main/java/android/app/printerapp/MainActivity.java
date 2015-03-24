@@ -174,6 +174,9 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setSelector(getResources().getDrawable(R.drawable.selectable_rect_background_green));
 
+        View drawerListEmptyView = findViewById(R.id.history_empty_view);
+        mDrawerList.setEmptyView(drawerListEmptyView);
+
         LayoutInflater inflater = getLayoutInflater();
         mDrawerList.addHeaderView(inflater.inflate(R.layout.history_drawer_header, null));
         mDrawerAdapter = new HistoryDrawerAdapter(this, LibraryController.getHistoryList());
