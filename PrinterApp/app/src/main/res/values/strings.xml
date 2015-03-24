@@ -377,6 +377,7 @@
     <string name="dialog_create_profile_title">Create new profile</string>
     <string name="history_drawer_print_time">Print time:\u0020</string>
     <string name="history_drawer_date">Date:\u0020</string>
+    <string name="history_empty_text">The printing history is empty</string>
 
     <string name="print_panel_x_axis"  translatable="false">X =</string>
     <string name="print_panel_y_axis"  translatable="false">Y =</string>

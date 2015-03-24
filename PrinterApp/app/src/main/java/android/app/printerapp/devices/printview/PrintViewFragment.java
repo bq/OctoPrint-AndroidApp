@@ -601,6 +601,8 @@ public class PrintViewFragment extends Fragment {
                 tv_prog.setText(mPrinter.getMessage() + " - ");
                 button_pause.setText(getString(R.string.printview_start_button));
                 icon_pause.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+
+                mRootView.findViewById(R.id.stop_button_container).setVisibility(View.VISIBLE);
             }
 
             isPrinting = false;

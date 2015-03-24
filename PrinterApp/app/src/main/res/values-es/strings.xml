@@ -360,6 +360,7 @@
     <string name="dialog_create_profile_title">Crear nuevo perfil</string>
     <string name="history_drawer_print_time">Tiempo de impresión:\u0020</string>
     <string name="history_drawer_date">Fecha:\u0020</string>
+    <string name="history_empty_text">El historial de impresión está vacío</string>
     <string name="library_menu_sort_by_name">Nombre</string>
     <string name="library_menu_sort_by_date">Reciente</string>
     <string name="library_menu_sort_by_size">Tamaño</string>
