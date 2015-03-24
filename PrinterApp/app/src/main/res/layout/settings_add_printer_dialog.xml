@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/settings_text_name"
-        android:layout_margin="10dp"
-        android:textStyle="bold"/>
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_small">
 
-    <EditText
-        android:id="@+id/et_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:ems="10"
-        android:text="@string/settings_default_name">
+        <ImageView
+            android:id="@+id/delete_files_icon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/content_margin_normal"
+            android:src="@drawable/printer_custom_default" />
 
-    </EditText>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/settings_text_address"
-        android:layout_margin="10dp"
-        android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/new_folder_name_textview"
+                style="@style/DialogContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/dialog_add_printer_address"
+                android:textColor="@color/body_text_1" />
 
-    <EditText
-        android:id="@+id/et_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:inputType="number|numberDecimal"
-        android:digits="0123456789."
-        android:ems="10" >
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/et_address"
+                app:baseColor="@color/theme_accent_1"
+                app:errorColor="@color/theme_error"
+                app:primaryColor="@color/theme_accent_1"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:layout_width="270dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium">
 
-    </EditText>
+                <requestFocus />
+            </com.rengwuxian.materialedittext.MaterialEditText>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

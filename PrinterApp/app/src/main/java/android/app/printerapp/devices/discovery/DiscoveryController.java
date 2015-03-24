@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.StateUtils;
@@ -13,6 +14,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -70,11 +72,39 @@ public class DiscoveryController {
             View scanDelayDialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_progress_content_vertical, null);
             ((TextView) scanDelayDialogView.findViewById(R.id.progress_dialog_text)).setText(R.string.printview_searching_networks_dialog_content);
 
+            final Handler handler = new Handler();
+
             //Build progress dialog
             final MaterialDialog.Builder scanDelayDialogBuilder = new MaterialDialog.Builder(mContext);
             scanDelayDialogBuilder.title(R.string.printview_searching_networks_dialog_title)
                     .customView(scanDelayDialogView, true)
-                    .cancelable(false)
+                    .cancelable(true)
+                    .positiveColorRes(R.color.theme_accent_1)
+                    .positiveText(R.string.add)
+                    .negativeText(R.string.cancel)
+                    .callback(new MaterialDialog.ButtonCallback() {
+
+
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+
+
+                            optionAddPrinter();
+                            dialog.setOnDismissListener(null);
+                            dialog.dismiss();
+
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            super.onNegative(dialog);
+
+                            dialog.setOnDismissListener(null);
+                            dialog.dismiss();
+
+                        }
+                    })
                     .autoDismiss(false);
 
             scanDelayDialogBuilder.dismissListener(new DialogInterface.OnDismissListener() {
@@ -88,7 +118,7 @@ public class DiscoveryController {
             final Dialog scanDelayDialog = scanDelayDialogBuilder.build();
             scanDelayDialog.show();
 
-            Handler handler = new Handler();
+
 
             handler.postDelayed(new Runnable() {
                 @Override
@@ -299,6 +329,52 @@ public class DiscoveryController {
                 }
         }
 
+    }
+
+    /**
+     * Add a new printer to the database by IP instead of service discovery
+     */
+    private void optionAddPrinter() {
+
+        //Inflate the view
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.settings_add_printer_dialog, null, false);
+
+        //final EditText et_name = (EditText) v.findViewById(R.id.et_name);
+        final EditText et_address = (EditText) v.findViewById(R.id.et_address);
+
+        new MaterialDialog.Builder(mContext)
+                .title(R.string.settings_add_title)
+                .customView(v, false)
+                .positiveText(R.string.add)
+                .positiveColorRes(R.color.theme_accent_1)
+                .negativeText(R.string.cancel)
+                .negativeColorRes(R.color.body_text_2)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        ModelPrinter p = new ModelPrinter(mContext.getString(R.string.app_name), "/" + et_address.getText().toString() + ":80", StateUtils.STATE_NEW);
+
+                        if (!DatabaseController.checkExisting(p)) {
+
+                            DevicesListController.addToList(p);
+
+                            if (p.getStatus() == StateUtils.STATE_NEW) {
+
+
+                                OctoprintConnection.getNewConnection(mContext, p);
+
+
+                            } else if (p.getStatus() == StateUtils.STATE_ADHOC) {
+
+                                DevicesListController.addToList(p);
+                                mNetworkManager.setupNetwork(p, p.getPosition());
+                            }
+                        } 
+
+                    }
+                })
+                .show();
     }
 
 

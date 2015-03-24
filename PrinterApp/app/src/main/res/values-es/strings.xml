@@ -367,5 +367,8 @@
     <string name="viewer_connect_button">Conectar</string>
     <string name="viewer_select_printer">Seleccionar tipo de impresora</string>
     <string name="viewer_error_bigger_plate">El modelo no puede ser mayor que el plato: %1$s mm</string>
+    <string name="dialog_add_printer_address">Dirección IP de impresora</string>
+    <string name="printview_render_error">No hay modelo cargado en el plato</string>
+    <string name="dialog_add_printer_timeout">La conexión está tardando más de lo esperado, volviendo a conectar a la red anterior</string>
 
 </resources>

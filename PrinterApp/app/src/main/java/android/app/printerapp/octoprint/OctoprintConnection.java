@@ -180,12 +180,24 @@ public class OctoprintConnection {
         View configurePrinterDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_progress_content_horizontal, null);
         ((TextView) configurePrinterDialogView.findViewById (R.id.progress_dialog_text)).setText(R.string.devices_discovery_connect);
 
+
 //        try{
             //Show progress dialog
             final MaterialDialog.Builder configurePrinterDialogBuilder = new MaterialDialog.Builder(context);
             configurePrinterDialogBuilder.title(R.string.devices_discovery_title)
                     .customView(configurePrinterDialogView, true)
-                    .cancelable(false)
+                    .cancelable(true)
+                    .negativeText(R.string.cancel)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            super.onNegative(dialog);
+                            dialog.setOnDismissListener(null);
+                            dialog.dismiss();
+
+
+                        }
+                    })
                     .autoDismiss(false);
             //Progress dialog to notify command events
             final Dialog progressDialog = configurePrinterDialogBuilder.build();
@@ -206,7 +218,8 @@ public class OctoprintConnection {
 
                 //TODO Random crash
                 try{
-                    progressDialog.dismiss();
+                    if (progressDialog.isShowing()) progressDialog.dismiss();
+                   else return;
                 } catch (ArrayIndexOutOfBoundsException e){
 
                     e.printStackTrace();
@@ -214,6 +227,8 @@ public class OctoprintConnection {
                 }catch (NullPointerException e){
 
                     e.printStackTrace();
+
+                    return;
 
                 }
 

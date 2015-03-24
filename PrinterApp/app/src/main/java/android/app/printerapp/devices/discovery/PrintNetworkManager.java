@@ -380,7 +380,17 @@ public class PrintNetworkManager {
         final MaterialDialog.Builder configurePrinterDialogBuilder = new MaterialDialog.Builder(mController.getActivity());
         configurePrinterDialogBuilder.title(R.string.devices_discovery_title)
                 .customView(configurePrinterDialogView, true)
-                .cancelable(true)
+                .cancelable(false)
+                .negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        dialog.setOnDismissListener(null);
+                        dialog.dismiss();
+
+                    }
+                })
                 .autoDismiss(false);
         //Progress dialog to notify command events
         mDialog = configurePrinterDialogBuilder.build();
@@ -426,7 +436,7 @@ public class PrintNetworkManager {
 
             mDialog.dismiss();
             connectSpecificNetwork(mOriginalNetwork);
-            createNetworkDialog("Connection taking longer than usual, reconnecting to previous network");
+            createNetworkDialog(getContext().getString(R.string.dialog_add_printer_timeout));
 
         }
 
