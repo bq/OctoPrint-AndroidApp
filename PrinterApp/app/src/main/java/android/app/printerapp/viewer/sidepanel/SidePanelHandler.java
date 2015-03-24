@@ -846,10 +846,7 @@ public class SidePanelHandler {
                                     try {
                                         if (profile.get("displayName").equals(s)) {
 
-                                            //TODO hardcoded
-                                            Toast.makeText(mActivity, "Error saving profile: Duplicated name", Toast.LENGTH_LONG).show();
-
-                                            return;
+                                            Toast.makeText(mActivity, mActivity.getString(R.string.printview_profiles_overwrite) + ": " + s, Toast.LENGTH_LONG).show();
 
                                         }
 

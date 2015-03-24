@@ -394,6 +394,7 @@
     <string name="printview_render_error">No model loaded on the plate</string>
     <string name="dialog_add_printer_timeout">Connection taking longer than usual, reconnecting to previous network</string>
     <string name="dialog_printer_manual_add">Add manually</string>
+    <string name="printview_profiles_overwrite">Profile overwritten</string>
 
 
 </resources>
