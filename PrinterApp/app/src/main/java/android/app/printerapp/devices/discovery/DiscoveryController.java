@@ -346,7 +346,7 @@ public class DiscoveryController {
         new MaterialDialog.Builder(mContext)
                 .title(R.string.settings_add_title)
                 .customView(v, false)
-                .positiveText(R.string.add)
+                .positiveText(R.string.dialog_printer_manual_add)
                 .positiveColorRes(R.color.theme_accent_1)
                 .negativeText(R.string.cancel)
                 .negativeColorRes(R.color.body_text_2)

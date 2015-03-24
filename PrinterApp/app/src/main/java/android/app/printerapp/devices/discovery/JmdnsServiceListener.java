@@ -29,6 +29,8 @@ public class JmdnsServiceListener implements ServiceListener{
 	//Allows this application to receive Multicast packets, can cause a noticable battery drain.
 		private static WifiManager.MulticastLock mMulticastLock;
 
+    private static final String OCTOPRINT_SERVICE = "_octoprint._tcp.local.";
+
 		//New thread to handle both listeners.
 	private Handler mHandler;
     private DiscoveryController mContext;
@@ -72,7 +74,7 @@ public class JmdnsServiceListener implements ServiceListener{
 	
 				mJmdns = JmDNS.create(deviceIpAddress, null); //Creating an instance of JmDNS			
 				//Search for an specific service type
-	            mJmdns.addServiceListener("_ipp3._tcp.local.", this);
+	            mJmdns.addServiceListener(OCTOPRINT_SERVICE, this);
 	            
 			} catch (IOException e) {
 				e.printStackTrace();
