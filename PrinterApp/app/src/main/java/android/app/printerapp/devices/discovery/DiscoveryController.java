@@ -6,6 +6,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
+import android.app.printerapp.octoprint.OctoprintNetwork;
 import android.app.printerapp.octoprint.StateUtils;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,11 +47,11 @@ public class DiscoveryController {
         mContext = context;
         mServiceList = new ArrayList<ModelPrinter>();
 
-        scanDelayDialog();
+        //scanDelayDialog();
 
     }
 
-    private void scanDelayDialog() {
+    public void scanDelayDialog() {
 
         mServiceList.clear();
 
@@ -131,6 +132,14 @@ public class DiscoveryController {
         } catch (ConcurrentModificationException e){
             e.printStackTrace();
         }
+
+
+    }
+
+    public void changePrinterNetwork(ModelPrinter p){
+
+        if (mNetworkManager==null) mNetworkManager = new PrintNetworkManager(DiscoveryController.this);
+        OctoprintNetwork.getNetworkList(mNetworkManager, p);
 
 
     }
@@ -243,7 +252,7 @@ public class DiscoveryController {
         });
         mWaitProgressDialog.show();
 
-        mServiceListener.reloadListening();
+        if (mServiceListener!=null) mServiceListener.reloadListening();
 
         Handler timeOut = new Handler();
         timeOut.postDelayed(new Runnable() {

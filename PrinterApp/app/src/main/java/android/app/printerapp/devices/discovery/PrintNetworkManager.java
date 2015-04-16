@@ -296,6 +296,7 @@ public class PrintNetworkManager {
          * Remove AP from the network list and connect to the Target network
          */
         Handler handler = new Handler();
+
         handler.postDelayed((new Runnable() {
 
             @Override
@@ -304,6 +305,7 @@ public class PrintNetworkManager {
                 //Configuring network
                 isOffline = true;
 
+                if (mManager == null ) mManager = (WifiManager) mController.getActivity().getSystemService(Context.WIFI_SERVICE);
                 mManager.disconnect();
 
                 final String origin = getNetworkId(mManager.getConnectionInfo().getSSID());
@@ -350,7 +352,7 @@ public class PrintNetworkManager {
 
     }
 
-    public void connectSpecificNetwork(int nId) {
+    public void  connectSpecificNetwork(int nId) {
 
         Log.i("Manager","Enabling " + nId);
         //Disconnect to the current network and reconnect to the new
@@ -407,8 +409,11 @@ public class PrintNetworkManager {
         if (isOffline) {
             isOffline = false;
             mDialog.dismiss();
-            byte[] ipAddress = BigInteger.valueOf(mManager.getDhcpInfo().gateway).toByteArray();
-            reverse(ipAddress);
+            if (mManager!=null)  {
+                byte[] ipAddress = BigInteger.valueOf(mManager.getDhcpInfo().gateway).toByteArray();
+                reverse(ipAddress);
+            }
+
             InetAddress myaddr;
 
                // myaddr = InetAddress.getByAddress(ipAddress);

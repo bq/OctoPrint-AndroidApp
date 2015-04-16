@@ -374,5 +374,6 @@
     <string name="dialog_printer_manual_add">Añadir manualmente</string>
     <string name="printview_profiles_overwrite">Perfil sobrescrito</string>
     <string name="slice">Laminar</string>
+    <string name="settings_change_network">Cambiar red</string>
 
 </resources>

@@ -269,7 +269,7 @@ public class PrintViewFragment extends Fragment {
                 return true;
 
             case R.id.printview_add:
-                new DiscoveryController(getActivity());
+                new DiscoveryController(getActivity()).scanDelayDialog();
                 return true;
 
             case R.id.printview_settings:

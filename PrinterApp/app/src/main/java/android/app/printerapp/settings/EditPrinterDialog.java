@@ -8,6 +8,7 @@ import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
+import android.app.printerapp.devices.discovery.DiscoveryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
 import android.app.printerapp.octoprint.OctoprintConnection;
@@ -290,14 +291,28 @@ public class EditPrinterDialog {
         MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext)
                 .title(R.string.settings_edit_name)
                 .customView(editPrinterDialogView, false)
-                .negativeText(R.string.cancel)
+                .neutralText(R.string.cancel)
+                .neutralColorRes(R.color.body_text_2)
+                .negativeText(R.string.settings_change_network)
                 .negativeColorRes(R.color.body_text_2)
                 .positiveText(R.string.ok)
                 .positiveColorRes(R.color.theme_accent_1)
                 .cancelable(false)
                 .callback(new MaterialDialog.ButtonCallback() {
+
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        super.onNeutral(dialog);
+
+
+                        dialog.dismiss();
+
+                    }
+
                     @Override
                     public void onNegative(MaterialDialog dialog) {
+
+                        new DiscoveryController(mContext).changePrinterNetwork(mPrinter);
                         dialog.dismiss();
                     }
                     @Override
