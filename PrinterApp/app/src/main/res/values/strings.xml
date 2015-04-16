@@ -252,7 +252,8 @@
     <string name="settings_default_color">Keep current color</string>
     <string name="settings_profile_add">Name new profile</string>
     <string name="settings_profile_delete">If you delete this profile, all printers that share it will be unconfigured.\nYou can configure them again in the Devices panel.</string>
-    
+    <string name="settings_change_network">Change network</string>
+
     <string name="settings_tabhost_tab_connection">Connection and network</string>
     <string name="settings_tabhost_tab_devices">Devices</string>
     <string name="settings_tabhost_tab_users">Users</string>

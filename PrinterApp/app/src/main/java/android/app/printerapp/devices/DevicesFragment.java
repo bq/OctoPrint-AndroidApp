@@ -120,7 +120,7 @@ import android.widget.Toast;
         switch (item.getItemId()) {
 
             case R.id.devices_add:
-                new DiscoveryController(getActivity());
+                new DiscoveryController(getActivity()).scanDelayDialog();
                 return true;
 
             case R.id.settings:
