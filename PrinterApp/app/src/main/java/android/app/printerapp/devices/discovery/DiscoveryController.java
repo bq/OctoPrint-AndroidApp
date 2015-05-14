@@ -2,8 +2,10 @@ package android.app.printerapp.devices.discovery;
 
 import android.app.Dialog;
 import android.app.printerapp.Log;
+import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.DevicesListController;
+import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.octoprint.OctoprintConnection;
 import android.app.printerapp.octoprint.OctoprintNetwork;
@@ -158,6 +160,14 @@ public class DiscoveryController {
             mServiceNames[i] = p.getName() + " " + p.getAddress();
 
         }
+        if (mServiceList.size()==0){
+            discoveryPrintersDialogView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    scanDelayDialog();
+                }
+            });
+        }
 
         MaterialDialog.Builder adb;
         final Dialog dialog;
@@ -165,14 +175,17 @@ public class DiscoveryController {
         adb = new MaterialDialog.Builder(mContext)
                 .title(R.string.printview_searching_networks_dialog_title)
                 .customView(discoveryPrintersDialogView, false)
-                .positiveText(R.string.retry)
+                .positiveText(R.string.dialog_printer_manual_add)
                 .positiveColorRes(R.color.theme_accent_1)
                 .negativeText(R.string.cancel)
                 .negativeColorRes(R.color.body_text_2)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        scanDelayDialog();
+                        //scanDelayDialog();
+                        optionAddPrinter();
+                        dialog.setOnDismissListener(null);
+                        dialog.dismiss();
                     }
                 });
 
@@ -350,6 +363,8 @@ public class DiscoveryController {
         View v = inflater.inflate(R.layout.settings_add_printer_dialog, null, false);
 
         final EditText et_address = (EditText) v.findViewById(R.id.et_address);
+        final EditText et_port = (EditText) v.findViewById(R.id.et_port);
+        final EditText et_key = (EditText) v.findViewById(R.id.et_apikey);
 
         new MaterialDialog.Builder(mContext)
                 .title(R.string.settings_add_title)
@@ -361,22 +376,37 @@ public class DiscoveryController {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        ModelPrinter p = new ModelPrinter(mContext.getString(R.string.app_name), "/" + et_address.getText().toString() + ":80", StateUtils.STATE_NEW);
 
+
+                        String port = et_port.getText().toString();
+                        if (port == null) port = "80";
+
+                        ModelPrinter p = new ModelPrinter(mContext.getString(R.string.app_name), "/" + et_address.getText().toString() + ":" + port, StateUtils.STATE_NEW);
+                        DatabaseController.handlePreference(DatabaseController.TAG_KEYS, PrintNetworkManager.getNetworkId(p.getAddress()), et_key.getText().toString(), true);
 
                         if (!DevicesListController.checkExisting(p.getAddress())) {
                             DevicesListController.addToList(p);
-                            if (p.getStatus() == StateUtils.STATE_NEW) {
 
 
-                                OctoprintConnection.getNewConnection(mContext, p);
+                            OctoprintConnection.getSettings(p);
+                            String network = MainActivity.getCurrentNetwork(mContext);
+                            p.setNetwork(network);
 
+                            p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType()), network));
 
-                            } else if (p.getStatus() == StateUtils.STATE_ADHOC) {
+                            p.startUpdate(mContext);
 
-                                DevicesListController.addToList(p);
-                                mNetworkManager.setupNetwork(p, p.getPosition());
-                            }
+//                            if (p.getStatus() == StateUtils.STATE_NEW) {
+//
+//
+//                                OctoprintConnection.getNewConnection(mContext, p);
+//
+//
+//                            } else if (p.getStatus() == StateUtils.STATE_ADHOC) {
+//
+//                                DevicesListController.addToList(p);
+//                                mNetworkManager.setupNetwork(p, p.getPosition());
+//                            }
 
                         } else {
                             Toast.makeText(mContext,"That printer already exists", Toast.LENGTH_SHORT).show();

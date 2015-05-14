@@ -52,7 +52,6 @@ public class HttpUtils {
         for (ModelPrinter p : DevicesListController.getList()) {
 
 
-
             switch (p.getStatus()){
 
                 case StateUtils.STATE_ADHOC:
@@ -64,8 +63,14 @@ public class HttpUtils {
 
                 default:
 
-                    if (p.getAddress().equals(parsedUrl))
+                    if (p.getAddress().equals(parsedUrl)){
                         id = PrintNetworkManager.getNetworkId(p.getName());
+
+                        if (!DatabaseController.isPreference(DatabaseController.TAG_KEYS, id))
+                            id = PrintNetworkManager.getNetworkId(p.getAddress());
+                    }
+
+
 
                     break;
 
