@@ -1815,7 +1815,17 @@ public class ViewerMainFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable editable) {
 
+            boolean valid = true;
 
+
+            //Check decimals
+           if (editable.toString().endsWith(".")){
+               valid = false;
+
+            }
+
+
+            if (valid)
             try{
                 switch (mAxis){
 
