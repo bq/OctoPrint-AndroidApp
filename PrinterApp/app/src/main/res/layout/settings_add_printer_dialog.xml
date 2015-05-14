@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/content_padding_small">
@@ -20,35 +20,111 @@
             android:src="@drawable/printer_custom_default" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/new_folder_name_textview"
+                    style="@style/DialogContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    android:text="@string/dialog_add_printer_address"
+                    android:textColor="@color/body_text_1"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/manual_add_port_textview"
+                    style="@style/DialogContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    android:text="@string/devices_edit_port"
+                    android:textColor="@color/body_text_1"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/et_address"
+                    app:baseColor="@color/theme_accent_1"
+                    app:errorColor="@color/theme_error"
+                    app:primaryColor="@color/theme_accent_1"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number|numberDecimal"
+                    android:digits="0123456789."
+                    android:textSize="@dimen/text_size_medium"
+                    android:layout_weight="1">
+
+                    <requestFocus />
+                </com.rengwuxian.materialedittext.MaterialEditText>
+
+                <TextView
+                    android:id="@+id/manual_add_separator"
+                    style="@style/DialogContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    android:text=" : "
+                    android:textColor="@color/body_text_1" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/et_port"
+                    app:baseColor="@color/theme_accent_1"
+                    app:errorColor="@color/theme_error"
+                    app:primaryColor="@color/theme_accent_1"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number|numberDecimal"
+                    android:digits="0123456789."
+                    android:textSize="@dimen/text_size_medium"
+                    android:layout_weight="2">
+                </com.rengwuxian.materialedittext.MaterialEditText>
+
+                </LinearLayout>
+
             <TextView
-                android:id="@+id/new_folder_name_textview"
+                android:id="@+id/manual_add_key_textview"
                 style="@style/DialogContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="false"
-                android:text="@string/dialog_add_printer_address"
+                android:text="@string/manual_add_octoprint_key"
                 android:textColor="@color/body_text_1" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/et_address"
+                android:id="@+id/et_apikey"
                 app:baseColor="@color/theme_accent_1"
                 app:errorColor="@color/theme_error"
                 app:primaryColor="@color/theme_accent_1"
                 android:singleLine="true"
                 android:imeOptions="actionDone"
-                android:layout_width="270dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number|numberDecimal"
-                android:digits="0123456789."
-                android:textSize="@dimen/text_size_medium">
-
-                <requestFocus />
+                android:textSize="@dimen/text_size_medium"
+                android:layout_weight="1">
             </com.rengwuxian.materialedittext.MaterialEditText>
+
+
 
         </LinearLayout>
 
