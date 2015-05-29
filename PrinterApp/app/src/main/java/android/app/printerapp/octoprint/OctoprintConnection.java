@@ -7,6 +7,7 @@ import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
+import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
 import android.app.printerapp.model.ModelProfile;
@@ -415,6 +416,8 @@ public class OctoprintConnection {
                 super.onFailure(statusCode, headers, responseString, throwable);
 
                 Log.i("Connection", "Settings failure: " + responseString);
+                DatabaseController.handlePreference(DatabaseController.TAG_KEYS, PrintNetworkManager.getNetworkId(p.getAddress()), null, false);
+                MainActivity.showDialog(responseString);
             }
         });
 

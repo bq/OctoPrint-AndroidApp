@@ -71,6 +71,7 @@
                 style="@style/SettingsDeviceInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/about_feedback_url"
                 android:padding="1dp" />
 
         </LinearLayout>

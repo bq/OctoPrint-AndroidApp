@@ -375,6 +375,6 @@
     <string name="printview_profiles_overwrite">Perfil sobrescrito</string>
     <string name="slice">Laminar</string>
     <string name="settings_change_network">Cambiar red</string>
-    <string name="manual_add_octoprint_key"></string>
+    <string name="manual_add_octoprint_key">OctoPrint API Key</string>
 
 </resources>
