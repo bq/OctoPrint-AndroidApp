@@ -112,12 +112,9 @@ public class CameraHandler {
 	                }
 	                return new MjpegInputStream(res.getEntity().getContent());
 
-	            } catch (HttpHostConnectException e) {
+	            } catch (Exception e) {
 	                //Error connecting to camera
                     e.printStackTrace();
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	                //Error connecting to camera
 	            }
 
 	            return null;

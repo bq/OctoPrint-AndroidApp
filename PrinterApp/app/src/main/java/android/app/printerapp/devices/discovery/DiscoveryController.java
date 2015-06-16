@@ -1,5 +1,6 @@
 package android.app.printerapp.devices.discovery;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.printerapp.Log;
 import android.app.printerapp.MainActivity;
@@ -16,6 +17,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -373,13 +375,20 @@ public class DiscoveryController {
                 .positiveColorRes(R.color.theme_accent_1)
                 .negativeText(R.string.cancel)
                 .negativeColorRes(R.color.body_text_2)
+                .autoDismiss(false)
                 .callback(new MaterialDialog.ButtonCallback() {
+
                     @Override
                     public void onPositive(MaterialDialog dialog) {
 
+                        if (et_address.getText().toString().equals("")) {
+                            et_address.setError(mContext.getString(R.string.manual_add_error_address));
+                            return;
+                        }
+
 
                         String port = et_port.getText().toString();
-                        if (port == null) port = "80";
+                        if (port.equals("")) port = "80";
 
                         ModelPrinter p = new ModelPrinter(mContext.getString(R.string.app_name), "/" + et_address.getText().toString() + ":" + port, StateUtils.STATE_NEW);
                         DatabaseController.handlePreference(DatabaseController.TAG_KEYS, PrintNetworkManager.getNetworkId(p.getAddress()), et_key.getText().toString(), true);
@@ -409,13 +418,21 @@ public class DiscoveryController {
 //                            }
 
                         } else {
-                            Toast.makeText(mContext,"That printer already exists", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "That printer already exists", Toast.LENGTH_SHORT).show();
                         }
 
+                        dialog.dismiss();
+                    }
 
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        dialog.dismiss();
                     }
                 })
                 .show();
+
+
     }
 
 

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">OctoPrint</string>
-    <string name="about_app_name" translatable="false">Octoprint 3d bq printer controller</string>
+    <string name="about_app_name" translatable="false">OctoPrint 3d bq printer controller</string>
     <string name="about_url" translatable="false">http://www.octoprint.org</string>
     <string name="title_item_detail">Item Detail</string>
     
@@ -400,6 +400,7 @@
     <string name="slice">Slice</string>
     <string name="manual_add_octoprint_key" translatable="false">Octoprint Api Key</string>
     <string name="about_feedback_url" translatable="false">https://github.com/bq/OctoPrintApp</string>
+    <string name="manual_add_error_address">Address can\'t be empty</string>
 
 
 </resources>

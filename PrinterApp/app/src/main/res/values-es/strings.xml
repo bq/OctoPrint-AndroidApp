@@ -376,5 +376,6 @@
     <string name="slice">Laminar</string>
     <string name="settings_change_network">Cambiar red</string>
     <string name="manual_add_octoprint_key">OctoPrint API Key</string>
+    <string name="manual_add_error_address">La dirección no puede estar vacía</string>
 
 </resources>

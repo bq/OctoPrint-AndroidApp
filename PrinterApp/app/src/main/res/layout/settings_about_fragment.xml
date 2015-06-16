@@ -29,7 +29,7 @@
             android:layout_height="70dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/content_margin_small"
-            android:src="@drawable/bqlogo" />
+            android:src="@drawable/logobq" />
 
         <!-- Texts container -->
         <LinearLayout
