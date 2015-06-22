@@ -396,14 +396,16 @@ public class DiscoveryController {
                         if (!DevicesListController.checkExisting(p.getAddress())) {
                             DevicesListController.addToList(p);
 
+                            OctoprintConnection.getNewConnection(mContext, p);
 
-                            OctoprintConnection.getSettings(p);
-                            String network = MainActivity.getCurrentNetwork(mContext);
-                            p.setNetwork(network);
 
-                            p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType()), network));
-
-                            p.startUpdate(mContext);
+//                            OctoprintConnection.getSettings(p);
+//                            String network = MainActivity.getCurrentNetwork(mContext);
+//                            p.setNetwork(network);
+//
+//                            p.setId(DatabaseController.writeDb(p.getName(), p.getAddress(), String.valueOf(p.getPosition()), String.valueOf(p.getType()), network));
+//
+//                            p.startUpdate(mContext);
 
 //                            if (p.getStatus() == StateUtils.STATE_NEW) {
 //
