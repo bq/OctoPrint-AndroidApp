@@ -174,7 +174,7 @@ public class StlObject {
 		mNormalBuffer.put(mNormalArray);
 		mNormalBuffer.position(0);
 				
-		// prepare shaders and OpenGL program		
+		// prepare shaders and OpenGL program
 		int vertexOverhangShader = ViewerRenderer.loadShader(
 	        GLES20.GL_VERTEX_SHADER,
 	        vertexOverhangShaderCode);

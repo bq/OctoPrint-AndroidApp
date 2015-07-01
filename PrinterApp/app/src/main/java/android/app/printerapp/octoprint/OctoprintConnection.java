@@ -297,9 +297,23 @@ public class OctoprintConnection {
 
     private static void convertType(ModelPrinter p, String type){
 
+        Log.i("Profile","Converting type " + type);
+
         if (type.equals(ModelProfile.WITBOX_PROFILE)) p.setType(1, ModelProfile.WITBOX_PROFILE);
         else if (type.equals(ModelProfile.PRUSA_PROFILE)) p.setType(2, ModelProfile.PRUSA_PROFILE);
-        else if ((p.getProfile() != null) && (!p.getProfile().equals("_default"))) p.setType(3, type);
+        else if (p.getProfile() == null)  {
+
+            Log.i("Profile","Setting type ");
+
+            p.setType(3, type);
+        } else if (!p.getProfile().equals("_default")){
+            Log.i("Profile","Setting type default");
+
+            p.setType(3, type);
+
+        } else  Log.i("Profile", "Basura " + p.getProfile());
+
+        Log.i("Profile","Get type " + p.getProfile());
 
 
     }

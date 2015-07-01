@@ -260,7 +260,7 @@ public class WitboxPlate {
         }
      
         if (textureHandle[0] == 0)  {
-            throw new RuntimeException("Error loading texture.");
+//            throw new RuntimeException("Error loading texture.");
         }
      
         return textureHandle[0];

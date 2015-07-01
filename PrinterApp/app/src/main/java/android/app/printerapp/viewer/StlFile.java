@@ -438,7 +438,7 @@ public class StlFile {
 
         //The file consists of the header, the vertex and normal coordinates (4 bytes per component) and
         //a flag (2 bytes per triangle) to indicate the final of the triangle.
-        ByteBuffer bb = ByteBuffer.allocateDirect(84 + (coordinateCount + normals) * 4 + coordinateCount * 2);
+        ByteBuffer bb = ByteBuffer.allocate(84 + (coordinateCount + normals) * 4 + coordinateCount * 2);
         bb.order(ByteOrder.LITTLE_ENDIAN);
 
         //TODO Out of Memory when saving file to slice
