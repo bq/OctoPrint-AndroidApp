@@ -124,7 +124,7 @@
     <string name="printview_motors_switch">Motors</string>
     <string name="printview_download_dialog">File not available, downloading</string>
     <string name="printview_download_toast_error">Error while downloading the file</string>
-    <string name="printview_initial_text">Octopidev had not been found.\nMake sure everything is connected correctly.</string>
+    <string name="printview_initial_text">No OctoPrint instance found.\nMake sure everything is connected correctly.</string>
     <string name="printview_scan_network">Scan network</string>
     <string name="printview_searching_networks_dialog_title">Add new printer</string>
     <string name="printview_searching_networks_dialog_content">Searching networks&#8230;</string>
@@ -398,9 +398,10 @@
     <string name="dialog_printer_manual_add">Add manually</string>
     <string name="printview_profiles_overwrite">Profile overwritten</string>
     <string name="slice">Slice</string>
-    <string name="manual_add_octoprint_key" translatable="false">Octoprint Api Key</string>
+    <string name="manual_add_octoprint_key" translatable="false">OctoPrint Api Key</string>
     <string name="about_feedback_url" translatable="false">https://github.com/bq/OctoPrintApp</string>
     <string name="manual_add_error_address">Address can\'t be empty</string>
+    <string name="printview_video_error">Webcam not available</string>
 
 
 </resources>

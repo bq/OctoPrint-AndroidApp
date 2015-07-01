@@ -106,7 +106,7 @@
     <string name="printview_stop_button">DETENER</string>
     <string name="printview_download_dialog">Archivo no disponible, descargando</string>
     <string name="printview_download_toast_error">Error al descargar el archivo</string>
-    <string name="printview_initial_text">No se ha encontrado Octopidev.\nAsegúrate de que todo esté conectado correctamente.</string>
+    <string name="printview_initial_text">No se ha encontrado instancia de OctoPrint.\nAsegúrate de que todo esté conectado correctamente.</string>
     <string name="printview_scan_network">Escanear red</string>
     <string name="printview_searching_networks_dialog_title">Añadir nueva impresora</string>
     <string name="printview_searching_networks_dialog_content">Buscando redes&#8230;</string>
@@ -377,5 +377,6 @@
     <string name="settings_change_network">Cambiar red</string>
     <string name="manual_add_octoprint_key">OctoPrint API Key</string>
     <string name="manual_add_error_address">La dirección no puede estar vacía</string>
+    <string name="printview_video_error">Webcam no disponible</string>
 
 </resources>

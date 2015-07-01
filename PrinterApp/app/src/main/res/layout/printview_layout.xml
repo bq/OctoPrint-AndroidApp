@@ -102,7 +102,7 @@
                                         android:layout_below="@id/videocam_off_icon"
                                         android:layout_margin="20dp"
                                         android:textColor="@color/white"
-                                        android:text="Webcam no disponible"/>
+                                        android:text="@string/printview_video_error"/>
 
                                     </RelativeLayout>
 
