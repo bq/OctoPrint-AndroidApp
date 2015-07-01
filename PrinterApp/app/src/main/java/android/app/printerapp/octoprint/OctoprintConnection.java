@@ -499,7 +499,7 @@ public class OctoprintConnection {
                      //TODO unify this method
 		            Log.i("Connection", "Status: Connected to " + wsuri);
                      Log.i("CONNECTION", "Connection from: SOCKET");
-//                    doConnection(context,p);
+                    doConnection(context,p);
 
 		         }
 
