@@ -402,7 +402,6 @@ public class SidePanelHandler {
                     sliceButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-
                             ViewerMainFragment.slicingCallbackForced();
                             switchSlicingButton(false);
 
@@ -1028,7 +1027,6 @@ public class SidePanelHandler {
 
 
         } else {
-
             mRootView.findViewById(R.id.viewer_select_printer_layout).setVisibility(View.VISIBLE);
             mRootView.findViewById(R.id.viewer_no_printer_layout).setVisibility(View.GONE);
 
@@ -1036,10 +1034,8 @@ public class SidePanelHandler {
             ViewHelper.disableEnableAllViews(true,simple_layout);
             ViewHelper.disableEnableAllViews(true,buttons_layout);
             ViewHelper.disableEnableAllViews(true,print_button);
-
             mPrinter = DevicesListController.selectAvailablePrinter(s_type.getSelectedItemPosition() + 1);
             mSlicingHandler.setPrinter(mPrinter);
-
             if (mPrinter!=null)   ViewHelper.disableEnableAllViews(true,print_button);
             else ViewHelper.disableEnableAllViews(false,print_button);
         }

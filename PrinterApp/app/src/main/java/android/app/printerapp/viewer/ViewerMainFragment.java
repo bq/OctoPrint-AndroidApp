@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -1624,16 +1625,51 @@ public class ViewerMainFragment extends Fragment {
     }
 
     public static void slicingCallbackForced(){
-        SliceTask task = new SliceTask();
+
+//        SliceTask task = new SliceTask();
         mSidePanelHandler.refreshPrinters();
-        task.execute();
+//        task.execute();
+
+        Handler slicingHandler = new Handler();
+        slicingHandler.post(mSliceRunnable);
     }
+
+    static Runnable mSliceRunnable = new Runnable(){
+
+        @Override
+        public void run() {
+
+            final List<DataStorage> newList = new ArrayList<DataStorage>(mDataList);
+
+            //Code to update the UI─aÇ >
+            //Check if the file is not yet loaded
+            for (int i = 0; i < newList.size(); i++) {
+
+                if (newList.get(i).getVertexArray() == null) {
+                    return;
+                }
+
+            }
+
+            if ((mSlicingHandler != null) && (mFile != null)) {
+
+                if (LibraryController.hasExtension(0, mFile.getName())) {
+                    // StlFile.saveModel(newList, null, mSlicingHandler);
+                    mSlicingHandler.sendTimer(newList);
+                }
+
+            }
+
+        }
+    };
 
     static class SliceTask extends AsyncTask {
 
 
         @Override
         protected Object doInBackground(Object[] objects) {
+
+            Log.i("Slicer","Starting background slicing task");
 
             final List<DataStorage> newList = new ArrayList<DataStorage>(mDataList);
 

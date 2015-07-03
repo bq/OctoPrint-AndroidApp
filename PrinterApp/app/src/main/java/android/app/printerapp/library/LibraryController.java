@@ -279,7 +279,7 @@ public class LibraryController {
 			
 		case 0: if (name.toLowerCase().endsWith(".stl"))  return true;
 			break;
-		case 1: if ((name.toLowerCase().endsWith(".gcode")) || (name.toLowerCase().endsWith(".gco"))) return true;
+		case 1: if ((name.toLowerCase().endsWith(".gcode")) || (name.toLowerCase().endsWith(".gco")) || (name.toLowerCase().endsWith(".g"))) return true;
 			break;
 		}
 		

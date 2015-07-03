@@ -10,6 +10,7 @@ import android.app.printerapp.octoprint.OctoprintFiles;
 import android.app.printerapp.octoprint.OctoprintSlicing;
 import android.app.printerapp.octoprint.StateUtils;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -227,7 +228,7 @@ public class SlicingHandler {
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("Slicer", "Starting task");
+                    Log.i("Slicer", "Timer ended, Starting task");
 
                     if (mPrinter!=null){
 
@@ -235,7 +236,10 @@ public class SlicingHandler {
 
                             OctoprintFiles.deleteFile(mActivity, mPrinter.getAddress(), DatabaseController.getPreference(DatabaseController.TAG_SLICING, "Last"), "/local/");
 
-                            new SaveTask().execute();
+                            Handler saveHandler = new Handler();
+                            saveHandler.post(mSaveRunnable);
+
+//                            new SaveTask().execute();
 
                         } else {
 
@@ -264,6 +268,22 @@ public class SlicingHandler {
 
         }
     }
+    private Runnable mSaveRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            File mFile = createTempFile();
+
+            Log.i("Slicer", "Sending slice command");
+            OctoprintSlicing.sliceCommand(mActivity,mPrinter.getAddress(),mFile,mExtras);
+            //if (mExtras.has("print")) mExtras.remove("print");
+
+            Log.i("Slicer", "Showing progress bar");
+            ViewerMainFragment.showProgressBar(StateUtils.SLICER_UPLOAD, 0);
+
+
+        }
+    };
 
     /**
      * Task to save the actual file ia background process and then upload it to the server

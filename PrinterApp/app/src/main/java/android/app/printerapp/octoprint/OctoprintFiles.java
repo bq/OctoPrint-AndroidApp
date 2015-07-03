@@ -84,7 +84,7 @@ public class OctoprintFiles {
                              }
                              else   {
 
-                                 if (object.getString("name").contains(".stl")){
+                                 if (LibraryController.hasExtension(0,object.getString("name"))){
 
                                      if (DatabaseController.getPreference(DatabaseController.TAG_SLICING,"Last")!=null){
 
@@ -106,7 +106,7 @@ public class OctoprintFiles {
                                      }
 
 
-                                 }else {
+                                 }else if (LibraryController.hasExtension(1,object.getString("name"))) {
 
                                      //Set the storage to Witbox
                                      m = new File("local/" +object.getString("name"));

@@ -162,14 +162,6 @@ public class DiscoveryController {
             mServiceNames[i] = p.getName() + " " + p.getAddress();
 
         }
-        if (mServiceList.size()==0){
-            discoveryPrintersDialogView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    scanDelayDialog();
-                }
-            });
-        }
 
         MaterialDialog.Builder adb;
         final Dialog dialog;
@@ -192,6 +184,19 @@ public class DiscoveryController {
                 });
 
         dialog = adb.build();
+
+        if (mServiceList.size()==0){
+            discoveryPrintersDialogView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    dialog.setOnDismissListener(null);
+                    dialog.dismiss();
+                    scanDelayDialog();
+                }
+            });
+        }
+
 
         mAdapter = new DiscoveryDevicesGridAdapter(mContext, mServiceList);
 
