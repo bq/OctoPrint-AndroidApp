@@ -167,7 +167,7 @@ public class PrintViewFragment extends Fragment {
                 mLayoutVideo = (FrameLayout) mRootView.findViewById(R.id.printview_video);
 
                 //TODO CAMERA DISABLED
-                mCamera = new CameraHandler(mContext, mPrinter.getAddress(), mLayoutVideo);
+                mCamera = new CameraHandler(mContext, mPrinter.getWebcamAddress(), mLayoutVideo);
 
 
 

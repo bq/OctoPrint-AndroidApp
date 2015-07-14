@@ -391,6 +391,8 @@ public class OctoprintConnection {
      */
     public static void getSettings(final ModelPrinter p){
 
+        final String PREFIX = "http:/";
+
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_SETTINGS, null, new JsonHttpResponseHandler(){
 
             @Override
@@ -410,6 +412,24 @@ public class OctoprintConnection {
                         }
 
                     p.setDisplayColor(convertColor(appearance.getString("color")));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+                try {
+
+                    JSONObject webcam = response.getJSONObject("webcam");
+
+                    if (webcam.has("streamUrl")){
+                        if (webcam.getString("streamUrl").startsWith("/")) {
+                            p.setWebcamAddress(PREFIX + p.getAddress() + webcam.getString("streamUrl"));
+                        } else {
+                            p.setWebcamAddress(webcam.getString("streamUrl"));
+                        }
+                    }
 
 
                 } catch (JSONException e) {

@@ -31,6 +31,7 @@ public class ModelPrinter {
 	private int mStatus = StateUtils.STATE_NONE;
     private String mPort;
     private String mNetwork;
+    private String mWebcamAddress;
 	
 	//TODO hardcoded string
 	private String mMessage = "Offline";
@@ -106,6 +107,8 @@ public class ModelPrinter {
 	public String getAddress(){
 		return mAddress;
 	}
+
+    public String getWebcamAddress() { return mWebcamAddress;    }
 	
 	public int getStatus(){
 		return mStatus;
@@ -261,6 +264,10 @@ public class ModelPrinter {
     public void setType(int type, String profile) {
         mPrinterType = type;
         mPrinterProfile = profile;
+    }
+
+    public void setWebcamAddress(String address){
+        mWebcamAddress = address;
     }
 
 }

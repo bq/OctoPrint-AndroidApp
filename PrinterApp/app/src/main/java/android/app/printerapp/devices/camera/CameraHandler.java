@@ -25,7 +25,7 @@ import java.net.URI;
 public class CameraHandler {
 
    private static final String STREAM_PORT = ":8080/?action=stream";
-	
+
    //UI reference to the video view
 	private MjpegView mv = null;
     private Context mContext;
@@ -70,9 +70,10 @@ public class CameraHandler {
 				
 			}
 		});
-        
+
         //Create URL
-        URL = "http:/" + address.substring(0,address.lastIndexOf(':')) + STREAM_PORT;
+//        URL = "http:/" + address.substring(0,address.lastIndexOf(':')) + STREAM_PORT;
+        URL = address;
 
        //Read stream
         Log.i("CAMERA", "Executing " + URL);
