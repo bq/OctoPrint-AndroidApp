@@ -277,7 +277,7 @@ public class SidePanelHandler {
                             }
 
 
-                            mPrinter = DevicesListController.selectAvailablePrinter(i + 1);
+                            mPrinter = DevicesListController.selectAvailablePrinter(i + 1, s_type.getSelectedItem().toString());
                             mSlicingHandler.setPrinter(mPrinter);
 
                             ViewerMainFragment.slicingCallback();
@@ -1034,7 +1034,7 @@ public class SidePanelHandler {
             ViewHelper.disableEnableAllViews(true,simple_layout);
             ViewHelper.disableEnableAllViews(true,buttons_layout);
             ViewHelper.disableEnableAllViews(true,print_button);
-            mPrinter = DevicesListController.selectAvailablePrinter(s_type.getSelectedItemPosition() + 1);
+            mPrinter = DevicesListController.selectAvailablePrinter(s_type.getSelectedItemPosition() + 1, s_type.getSelectedItem().toString());
             mSlicingHandler.setPrinter(mPrinter);
             if (mPrinter!=null)   ViewHelper.disableEnableAllViews(true,print_button);
             else ViewHelper.disableEnableAllViews(false,print_button);

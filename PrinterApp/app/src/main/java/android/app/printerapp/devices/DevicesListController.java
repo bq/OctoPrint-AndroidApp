@@ -345,15 +345,24 @@ public class DevicesListController {
      *
      * @return
      */
-    public static ModelPrinter selectAvailablePrinter(int type) {
+    public static ModelPrinter selectAvailablePrinter(int type, String typeName) {
 
         //search for operational printers
 
         for (ModelPrinter p : DevicesListController.getList()) {
 
-            if (p.getType() == type)
-                if (p.getStatus() == StateUtils.STATE_OPERATIONAL)
-                    return p;
+           if (type<3) {
+               if (p.getType() == type)
+                   if (p.getStatus() == StateUtils.STATE_OPERATIONAL)
+                       return p;
+           } else {
+
+               if (p.getProfile().equals(typeName))
+                   if (p.getStatus() ==  StateUtils.STATE_OPERATIONAL)
+                       return p;
+
+           }
+
 
         }
         return null;
