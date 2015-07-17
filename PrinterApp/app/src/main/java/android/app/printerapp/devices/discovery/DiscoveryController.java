@@ -363,7 +363,7 @@ public class DiscoveryController {
     /**
      * Add a new printer to the database by IP instead of service discovery
      */
-    private void optionAddPrinter() {
+    public void optionAddPrinter() {
 
         //Inflate the view
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

@@ -162,8 +162,6 @@ public class OctoprintFiles {
 					String responseString, Throwable throwable) {
 				
 				super.onFailure(statusCode, headers, responseString, throwable);
-				
-				Log.i("OUT", "PEDAZO DE FAIL " + responseString);
 			}
 
 		});

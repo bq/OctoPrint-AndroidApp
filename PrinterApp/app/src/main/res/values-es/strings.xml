@@ -378,5 +378,6 @@
     <string name="manual_add_octoprint_key">OctoPrint API Key</string>
     <string name="manual_add_error_address">La dirección no puede estar vacía</string>
     <string name="printview_video_error">Webcam no disponible</string>
+    <string name="connection_error_api_disabled">No se puede configurar la conexión automáticamente, añade la impresora de forma manual</string>
 
 </resources>

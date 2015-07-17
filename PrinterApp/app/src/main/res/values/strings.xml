@@ -402,6 +402,7 @@
     <string name="about_feedback_url" translatable="false">https://github.com/bq/OctoPrintApp</string>
     <string name="manual_add_error_address">Address can\'t be empty</string>
     <string name="printview_video_error">Webcam not available</string>
+    <string name="connection_error_api_disabled">The connection cannot be configured automatically, please add it manually</string>
 
 
 </resources>

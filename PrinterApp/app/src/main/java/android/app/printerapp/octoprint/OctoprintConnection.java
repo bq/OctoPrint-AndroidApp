@@ -7,6 +7,7 @@ import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.database.DeviceInfo;
+import android.app.printerapp.devices.discovery.DiscoveryController;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
 import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.model.ModelPrinter;
@@ -53,6 +54,8 @@ public class OctoprintConnection {
     private static final int SOCKET_TIMEOUT = 10000;
     public static final String DEFAULT_PORT = "/dev/ttyUSB0";
     private static final String DEFAULT_PROFILE = "_default";
+    private static final String API_DISABLED_MSG = "API disabled";
+    private static final String API_INVALID_MSG = "Invalid API key";
 
 	/**
 	 * 
@@ -165,7 +168,14 @@ public class OctoprintConnection {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                OctoprintAuthentication.getAuth(context, p, false);
+
+                if (statusCode == 401 && responseString.equals(API_DISABLED_MSG)){
+                    Log.i("Connection", responseString);
+                } else {
+                    OctoprintAuthentication.getAuth(context, p, false);
+                }
+
+
             }
         });
 
@@ -282,11 +292,16 @@ public class OctoprintConnection {
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
-				Log.i("Connection", "Failure while connecting " + responseString);
+				Log.i("Connection", "Failure while connecting " + statusCode + " == " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
 
+                if (statusCode == 401 && responseString.equals(API_DISABLED_MSG)){
+                    showApiDisabledDialog(context);
+                } else {
+                    OctoprintAuthentication.getAuth(context, p, true);
+                }
                 progressDialog.dismiss();
-                OctoprintAuthentication.getAuth(context, p, true);
+
 			}
 
 		});
@@ -294,6 +309,24 @@ public class OctoprintConnection {
 		
 		
 	}
+
+    private static void showApiDisabledDialog(final Context context){
+
+        new MaterialDialog.Builder(context)
+                .title(R.string.error)
+                .content(R.string.connection_error_api_disabled)
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        new DiscoveryController(context).optionAddPrinter();
+                    }
+                }).show();
+
+
+    }
 
     private static void convertType(ModelPrinter p, String type){
 
