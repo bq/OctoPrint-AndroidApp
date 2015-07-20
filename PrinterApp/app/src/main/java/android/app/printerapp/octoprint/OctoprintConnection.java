@@ -292,8 +292,10 @@ public class OctoprintConnection {
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
-				Log.i("Connection", "Failure while connecting " + statusCode + " == " + responseString);
 				super.onFailure(statusCode, headers, responseString, throwable);
+
+
+                Log.i("Connection", "Failure while connecting " + statusCode + " == " + responseString);
 
                 if (statusCode == 401 && responseString.equals(API_DISABLED_MSG)){
                     showApiDisabledDialog(context);
@@ -310,7 +312,7 @@ public class OctoprintConnection {
 		
 	}
 
-    private static void showApiDisabledDialog(final Context context){
+    public static void showApiDisabledDialog(final Context context){
 
         new MaterialDialog.Builder(context)
                 .title(R.string.error)

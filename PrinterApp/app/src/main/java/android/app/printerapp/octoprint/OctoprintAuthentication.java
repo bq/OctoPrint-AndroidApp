@@ -1,6 +1,7 @@
 package android.app.printerapp.octoprint;
 
 import android.app.printerapp.Log;
+import android.app.printerapp.devices.DevicesListController;
 import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.devices.discovery.AuthenticationUtils;
 import android.app.printerapp.devices.discovery.PrintNetworkManager;
@@ -29,6 +30,9 @@ import javax.crypto.NoSuchPaddingException;
  * Created by alberto-baeza on 11/21/14.
  */
 public class OctoprintAuthentication {
+
+    private static final String API_INVALID_MSG = "Invalid app";
+
 
     /**
      * Send an authentication petition to retrieve an unverified api key
@@ -145,6 +149,14 @@ public class OctoprintAuthentication {
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         super.onFailure(statusCode, headers, responseString, throwable);
                         Log.i("Connection", responseString + " for " + p.getAddress());
+
+                        if (statusCode == 401 && responseString.contains(API_INVALID_MSG)) {
+
+                            //Remove element and show dialog to add manually
+                            DevicesListController.removeElement(p.getPosition());
+                            OctoprintConnection.showApiDisabledDialog(context);
+                        }
+
 
                     }
                 });
