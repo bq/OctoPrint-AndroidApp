@@ -399,7 +399,7 @@
     <string name="printview_profiles_overwrite">Profile overwritten</string>
     <string name="slice">Slice</string>
     <string name="manual_add_octoprint_key" translatable="false">OctoPrint Api Key</string>
-    <string name="about_feedback_url" translatable="false">https://github.com/bq/OctoPrintApp</string>
+    <string name="about_feedback_url" translatable="false">https://github.com/bq/OctoPrint-AndroidApp</string>
     <string name="manual_add_error_address">Address can\'t be empty</string>
     <string name="printview_video_error">Webcam not available</string>
     <string name="connection_error_api_disabled">The connection cannot be configured automatically, please add it manually</string>
