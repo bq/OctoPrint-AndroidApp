@@ -10,8 +10,6 @@ import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +24,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+
 public class OctoprintNetwork {
 	
 	/**
@@ -38,11 +39,6 @@ public class OctoprintNetwork {
 
         HttpClientHandler.sync_get(p.getAddress() + HttpUtils.URL_AUTHENTICATION, null, new JsonHttpResponseHandler()
         {
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -96,11 +92,6 @@ public class OctoprintNetwork {
                                     HttpClientHandler.get(p.getAddress() + HttpUtils.URL_NETWORK, null, new JsonHttpResponseHandler(){
 
                                         @Override
-                                        public void onProgress(int bytesWritten, int totalSize) {
-
-                                        }
-
-                                        @Override
                                         public void onSuccess(int statusCode, Header[] headers,
                                                               JSONObject response) {
                                             super.onSuccess(statusCode, headers, response);
@@ -109,8 +100,6 @@ public class OctoprintNetwork {
                                             controller.selectNetworkPrinter(response,p.getAddress());
 
                                         }
-
-
 
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers,
@@ -163,7 +152,6 @@ public class OctoprintNetwork {
 			entity = new StringEntity(object.toString(), "UTF-8");
 			
 		} catch (JSONException e) {		e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {	e.printStackTrace();
 		}
 		
 		HttpClientHandler.post(context,url + HttpUtils.URL_NETWORK,

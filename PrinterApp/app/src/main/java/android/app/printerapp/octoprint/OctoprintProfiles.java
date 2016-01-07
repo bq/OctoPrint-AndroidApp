@@ -5,12 +5,11 @@ import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * Created by alberto-baeza on 12/9/14.
@@ -41,7 +40,6 @@ public class OctoprintProfiles {
 
             id = profile.getString("id");
 
-        } catch (UnsupportedEncodingException e) {	e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -50,11 +48,6 @@ public class OctoprintProfiles {
         final String finalId = id;
         HttpClientHandler.post(context,url + HttpUtils.URL_PROFILES,
                 entity, "application/json", new JsonHttpResponseHandler(){
-
-                    @Override
-                    public void onProgress(int bytesWritten,
-                                           int totalSize) {
-                    }
 
                     @Override
                     public void onSuccess(int statusCode,
@@ -124,7 +117,6 @@ public class OctoprintProfiles {
             entity = new StringEntity(finalProfile.toString(), "UTF-8");
             Log.i("OUT", "Profile to add:" + finalProfile.toString());
 
-        } catch (UnsupportedEncodingException e) {	e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }

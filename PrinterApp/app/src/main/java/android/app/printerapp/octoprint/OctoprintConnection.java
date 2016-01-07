@@ -28,17 +28,16 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 import de.tavendo.autobahn.WebSocketHandler;
@@ -76,20 +75,12 @@ public class OctoprintConnection {
 			entity = new StringEntity(object.toString(), "UTF-8");
 		} catch (JSONException e) {
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
 		}
 
         Log.i("Profile", "Start connection on " + profile);
 		
 		HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION, 
 				entity, "application/json", new JsonHttpResponseHandler(){
-
-			//Override onProgress because it's faulty
-			@Override
-			public void onProgress(int bytesWritten, int totalSize) {						
-			}
-
 			@Override
 			public void onFailure(int statusCode, Header[] headers,
 					String responseString, Throwable throwable) {
@@ -100,9 +91,7 @@ public class OctoprintConnection {
 				super.onFailure(statusCode, headers, responseString, throwable);
 			}
 			
-		});	
-		
-		
+		});
 		
 	}
     public static void disconnect(Context context, String url){
@@ -114,29 +103,15 @@ public class OctoprintConnection {
             entity = new StringEntity(object.toString(), "UTF-8");
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
 
         HttpClientHandler.post(context,url + HttpUtils.URL_CONNECTION,
-                entity, "application/json", new JsonHttpResponseHandler(){
-
-                    //Override onProgress because it's faulty
-                    @Override
-                    public void onProgress(int bytesWritten, int totalSize) {
-                    }
-                });
+                entity, "application/json", new JsonHttpResponseHandler());
     }
 
     public static void getLinkedConnection(final Context context, final ModelPrinter p){
 
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_CONNECTION, null, new JsonHttpResponseHandler(){
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -375,16 +350,9 @@ public class OctoprintConnection {
 
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_PROFILES + "/" + profile, null, new JsonHttpResponseHandler(){
 
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-
 
                 Log.i("Connection", response.toString());
 
@@ -470,14 +438,6 @@ public class OctoprintConnection {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-
-            }
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-
             }
 
             @Override
@@ -507,17 +467,10 @@ public class OctoprintConnection {
             entity = new StringEntity(object.toString(), "UTF-8");
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
 
         HttpClientHandler.post(context, p.getAddress() + HttpUtils.URL_SETTINGS,
                 entity, "application/json", new JsonHttpResponseHandler() {
-
-                    //Override onProgress because it's faulty
-                    @Override
-                    public void onProgress(int bytesWritten, int totalSize) {
-                    }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
