@@ -73,7 +73,7 @@ dependencies {
     compile 'com.github.navasmdc:MaterialDesign:1.5@aar'
     compile 'com.github.fengdai:alertdialogpro-theme-material:0.2.6'
     compile project(':materialdesignlibrary')
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.6@aar') {
         transitive = true
     }
     compile 'com.pnikosis:materialish-progress:1.4'
