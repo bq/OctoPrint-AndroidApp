@@ -1,6 +1,5 @@
 package android.app.printerapp.library;
 
-import android.app.AlertDialog;
 import android.app.printerapp.Log;
 import android.app.printerapp.R;
 import android.app.printerapp.viewer.DataStorage;
@@ -14,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class LibraryModelCreation {
 	
-	static AlertDialog mAlert;
+	static MaterialDialog mAlert;
 	static String mName;
 	public static ViewerSurfaceView mSnapshotSurface;
 	public static FrameLayout mSnapshotLayout;

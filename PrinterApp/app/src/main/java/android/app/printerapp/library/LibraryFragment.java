@@ -29,8 +29,8 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.MaterialDialogCompat;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
@@ -359,7 +359,7 @@ public class LibraryFragment extends Fragment {
 
         final EditText et = new EditText(getActivity());
 
-        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(getActivity());
+        AlertDialogWrapper.Builder adb = new AlertDialogWrapper.Builder(getActivity());
         adb.setTitle(R.string.library_search_dialog_title);
         adb.setView(et);
 

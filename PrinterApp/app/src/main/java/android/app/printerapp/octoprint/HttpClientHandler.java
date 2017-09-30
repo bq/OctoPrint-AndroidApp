@@ -9,20 +9,20 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.net.ssl.SSLContext;
+
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.client.ClientProtocolException;
+import cz.msebera.android.httpclient.client.methods.CloseableHttpResponse;
+import cz.msebera.android.httpclient.client.methods.HttpPatch;
+import cz.msebera.android.httpclient.conn.ssl.SSLConnectionSocketFactory;
+import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
+import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
+import cz.msebera.android.httpclient.ssl.SSLContexts;
 
 /**
  * Static class to handle Http requests with the old API or the new one (with API_KEY)
@@ -87,7 +87,7 @@ public class HttpClientHandler {
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                     sslContext,
                     SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-            CloseableHttpClient  httpClient= HttpClientBuilder.create()
+            CloseableHttpClient httpClient= HttpClientBuilder.create()
                     .setSSLSocketFactory(sslsf)
                     .build();
 

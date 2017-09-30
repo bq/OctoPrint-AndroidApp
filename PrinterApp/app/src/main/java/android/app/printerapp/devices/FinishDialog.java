@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.afollestad.materialdialogs.MaterialDialogCompat;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.File;
 
@@ -41,7 +41,7 @@ public class FinishDialog {
     public void createDialog(){
 
         //Constructor
-        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(mContext);
+        AlertDialogWrapper.Builder adb = new AlertDialogWrapper.Builder(mContext);
         adb.setTitle(mContext.getString(R.string.finish_dialog_title) + " " + mPrinter.getJob().getFilename());
 
         //Inflate the view
@@ -107,7 +107,7 @@ public class FinishDialog {
     public void createFinishDialogSave(final ModelPrinter m, final File file) {
 
         //Constructor
-        MaterialDialogCompat.Builder adb = new MaterialDialogCompat.Builder(mContext);
+        AlertDialogWrapper.Builder adb = new AlertDialogWrapper.Builder(mContext);
         adb.setTitle(m.getDisplayName() + " (100%) - " +file.getName());
 
         //Inflate the view

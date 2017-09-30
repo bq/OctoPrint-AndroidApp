@@ -10,8 +10,6 @@ import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +23,9 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * Created by alberto-baeza on 11/21/14.
@@ -46,7 +47,9 @@ public class OctoprintAuthentication {
         HttpClientHandler.get(p.getAddress() + HttpUtils.URL_AUTHENTICATION, null, new JsonHttpResponseHandler(){
 
             @Override
-            public void onProgress(int bytesWritten, int totalSize) {
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.i("Connection", "Failure! " + responseString);
             }
 
             @Override
@@ -60,13 +63,6 @@ public class OctoprintAuthentication {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.i("Connection", "Failure! " + responseString);
             }
         });
 
@@ -117,11 +113,6 @@ public class OctoprintAuthentication {
 
         HttpClientHandler.post(context, p.getAddress() + HttpUtils.URL_AUTHENTICATION,
                 entity, "application/json", new JsonHttpResponseHandler() {
-
-                    //Override onProgress because it's faulty
-                    @Override
-                    public void onProgress(int bytesWritten, int totalSize) {
-                    }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

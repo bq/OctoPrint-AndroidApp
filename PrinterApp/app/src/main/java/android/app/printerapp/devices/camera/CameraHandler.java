@@ -8,13 +8,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.HttpHostConnectException;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
 import java.net.URI;
+
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 /**
  * This class will handle the Camera connection.
@@ -103,7 +101,7 @@ public class CameraHandler {
 	        	
 
 	            HttpResponse res = null;
-	            DefaultHttpClient httpclient = new DefaultHttpClient();     
+	            DefaultHttpClient httpclient = new DefaultHttpClient();
 	            
 	            try {      	
 	                res = httpclient.execute(new HttpGet(URI.create(url[0])));
